@@ -88,7 +88,7 @@ class TestQuestions extends Model
      * @return mixed
      */
     public function complex() {
-        return $this->hasMany('ULogic\Tests\Models\Test', 'parent_id', 'id');
+        return $this->hasMany('App\Models\TestQuestions', 'parent_id', 'id');
     }
 
     /**

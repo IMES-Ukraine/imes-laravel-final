@@ -13,6 +13,7 @@ use App\Http\Controllers\API\ModerationController;
 use App\Http\Controllers\API\WithdrawController;
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\AnalyticsController;
+use App\Http\Controllers\API\TestsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,10 +61,11 @@ Route::group(
                 'prefix' => 'users'
             ],
             function () {
-                Route::resource('/',
-                    UsersController::class,
-                    ['except' => ['index', 'destroy', 'create', 'edit']]
-                );
+                Route::get ('/',  [UsersController::class, 'index']);
+                Route::get('/{id}', [UsersController::class, 'show']);
+                Route::delete('/{id}', [UsersController::class, 'destroy']);
+                Route::post('/', [UsersController::class, 'create']);
+                Route::post('/{id}', [ProjectsController::class, 'update']);
             }
         );
 
@@ -160,6 +162,19 @@ Route::group(
 
         Route::group(
             [
+                'prefix' => 'tests'
+            ],
+            function () {
+                Route::get ('/',  [TestsController::class, 'index'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                Route::get('/{id}', [TestsController::class, 'show'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                Route::delete('/{id}', [TestsController::class, 'destroy'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                Route::post('/', [TestsController::class, 'create'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                Route::post('/{id}', [TestsController::class, 'update'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+            }
+        );
+
+        Route::group(
+            [
                 'prefix' => 'account'
             ],
             function () {
@@ -194,6 +209,17 @@ Route::group(
             ],
             function () {
                 Route::get('/', [AnalyticsController::class, 'index'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+            }
+        );
+
+        Route::group(
+            [
+                'prefix' => 'agreement'
+            ],
+            function () {
+                Route::get('/{id}', [TestsController::class, 'showAgreement'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                Route::post('/{id}', [TestsController::class, 'acceptAgreement'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+
             }
         );
 
