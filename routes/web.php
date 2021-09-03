@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\AdminController;
+use App\Http\Controllers\API\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,6 +14,18 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::post('admin/api/v1/notification/all',
+    [AdminController::class, 'NotificationSendAll']
+);
+
+Route::post('admin/api/v1/notification/to',
+    [AdminController::class, 'notificationSendTo']
+);
+
+Route::get('admin/api/v1/withdraw',
+    [ProfileController::class, 'withdraws'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check'/*, 'ULogic\Profile\Models\BanMiddleware'*/);
+
 
 Route::get('/share/{id}', function ($id) {
 
