@@ -12,6 +12,8 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        '/admin/api/v1/notification/to',
+        'admin/api/v1/notification/all',
+        'admin/api/v1/withdraw',
     ];
 }
