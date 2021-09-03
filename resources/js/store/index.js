@@ -82,7 +82,8 @@ export default new Vuex.Store({
                         content: null,
                     }
                 ],
-                link: 'http://imes.pro/',
+                //link: 'http://imes.pro/',
+                link: 'https://laravel-dev-final.imes.pro/',
                 count: null,
                 points: null,
                 frequency: null,

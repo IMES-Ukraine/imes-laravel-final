@@ -1,4 +1,5 @@
-const BASE_URL = 'https://imes.pro/'
+//const BASE_URL = 'https://imes.pro/'
+const BASE_URL = 'https://laravel-dev-final.imes.pro/'
 const V1 = BASE_URL + 'api/v1/'
 //const V1 = BASE_URL + 'api/v1/'
 const V1_ADMIN = BASE_URL + 'admin/api/v1/'
