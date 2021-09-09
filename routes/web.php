@@ -26,6 +26,18 @@ Route::post('admin/api/v1/notification/to',
 Route::get('admin/api/v1/withdraw',
     [ProfileController::class, 'withdraws'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check'/*, 'ULogic\Profile\Models\BanMiddleware'*/);
 
+Route::get('admin/api/v1/profile/verification',
+    [AdminController::class, 'verificationsList']
+);
+
+Route::post('admin/api/v1/profile/verification/accept',
+    [AdminController::class, 'acceptVerification']
+);
+
+Route::post('admin/api/v1/profile/verification/decline',
+    [AdminController::class, 'declineVerification']
+);
+
 
 Route::get('/share/{id}', function ($id) {
 

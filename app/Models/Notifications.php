@@ -50,7 +50,7 @@ class Notifications extends Model
     ];
 
     public $belongsTo = [
-        'user' => ['RainLab\User\Models\User'],
+        'user' => ['App\Models\User'],
     ];
 
 

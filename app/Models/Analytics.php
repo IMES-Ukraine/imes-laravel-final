@@ -28,7 +28,7 @@ class Analytics extends Model
     ];
 
     public $hasOne = [
-        'user' => ['RainLab\User\Models\User', 'key' => 'id', ]
+        'user' => ['App\Models\User', 'key' => 'id', ]
     ];
 
     public function scopeIsInProgress($query)

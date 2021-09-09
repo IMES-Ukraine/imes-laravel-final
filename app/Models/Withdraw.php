@@ -24,7 +24,7 @@ class Withdraw extends Model
     ];
 
     public $belongsTo = [
-        'user' => ['RainLab\User\Models\User'],
+        'user' => ['App\Models\User'],
     ];
 
     public function user() {

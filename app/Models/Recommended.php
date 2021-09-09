@@ -30,9 +30,9 @@ class Recommended extends Model
 
     public function article()
     {
-        return $this->hasOne('RainLab\Blog\Models\Post', 'id', 'recommended_id');
+        return $this->hasOne('App\Models\Post', 'id', 'recommended_id');
         /* return $this->hasManyThrough(
-            'RainLab\Blog\Models\Post',
+            'App\Models\Post',
             'ULogic\News\Models\Recommended',
             'recommended_id',
             'id',
