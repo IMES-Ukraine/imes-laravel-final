@@ -62,7 +62,7 @@ class TestsController extends Controller
             return $this->helpers->apiArrayResponseBuilder(400, 'user_not_verified', []);
         }
 
-        $countOnPage = get('count', 15);
+        $countOnPage = 15;//get('count', 15);
 
         $data = TestQuestions::with( ['cover_image', 'featured_images', 'agreementAccepted' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }])->where( 'test_type', '!=', 'child')->orderBy('id', 'desc')->whereNotIn('id', $passedIds)->paginate($countOnPage);
         $data->makeHidden(['agreement']);
