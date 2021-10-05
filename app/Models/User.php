@@ -89,6 +89,8 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'username',
+        'phone'
     ];
 
     /**
@@ -109,4 +111,17 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Looks up a user by their email address.
+     * @return self
+     */
+    public static function findByEmail($email)
+    {
+        if (!$email) {
+            return;
+        }
+
+        return self::where('email', $email)->first();
+    }
 }

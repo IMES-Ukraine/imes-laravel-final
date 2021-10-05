@@ -3,7 +3,7 @@
 
 
         <template v-slot:sidebar>
-            <ProjectFormSidebar></ProjectFormSidebar>
+            <SidebarUsers></SidebarUsers>
         </template>
 
         <div class="main-db">
@@ -27,7 +27,7 @@
 <script>
 
 import VContent from "./templates/Content";
-import ProjectFormSidebar from "./templates/project/form/sidebar";
+import SidebarUsers from "./templates/SidebarUsers";
 import RequestsTable from './templates/withdrawal/table'
 import { WITHDRAWAL, WITHDRAWAL_CONFIRMATION, WITHDRAWAL_DECLINE } from "../api/endpoints"
 import VPreloader from "./fragmets/preloader"
@@ -35,7 +35,7 @@ import VPreloader from "./fragmets/preloader"
 export default {
     name: "Withdrawal",
     components: {
-        VContent,ProjectFormSidebar,RequestsTable,VPreloader
+        VContent,SidebarUsers,RequestsTable,VPreloader
     },
     data() {
         return {
@@ -59,7 +59,6 @@ export default {
         async decline(id) {
 
             this.$get(WITHDRAWAL_DECLINE, {id: id}).then()
-
         }
     },
     mounted() {

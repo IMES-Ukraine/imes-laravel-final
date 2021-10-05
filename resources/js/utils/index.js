@@ -17,7 +17,7 @@ const variantTemplate = {
         text: 'Текст',
         description: '',
         //link: 'http://imes.pro/',
-        link: 'https://laravel-dev-final.imes.pro/',
+        link: 'http://imes-laravel.local/',
         button: 123,
         count: null,
         points: null,

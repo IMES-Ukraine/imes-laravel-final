@@ -1,8 +1,8 @@
 <template>
     <a
-        :class="{active: isActive}"
-        class="btn btn-outline-primary btn-block text-uppercase"
-        href="#"
+        :class="[{ active: isActive }, icon]"
+        class="btn btn-outline-primary btn-block has-icon"
+        :href="url"
     >
         <slot></slot>
     </a>
@@ -15,7 +15,15 @@ export default {
         isActive: {
             type: Boolean,
             default: false
+        },
+        icon: {
+            type: String,
+            default: ''
+        },
+        url: {
+            type: String,
+            default: ''
         }
-    }
+    },
 }
 </script>

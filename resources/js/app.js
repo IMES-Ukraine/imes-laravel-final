@@ -14,21 +14,48 @@ import axios from 'axios'
 import VueRouter from 'vue-router'
 import router from './router'
 import VueAxios from 'vue-axios'
-import {get, post} from './utils/axios'
+import {get, post, deleteItem} from './utils/axios'
 import 'es6-promise/auto'
 import auth from '@websanova/vue-auth/dist/v2/vue-auth.esm.js';
 import Vuelidate from 'vuelidate'
 import './utils/vee-validate'
 import store from './store'
+import Autocomplete from 'v-autocomplete'
+
+// You need a specific loader for CSS files like https://github.com/webpack/css-loader
+import 'v-autocomplete/dist/v-autocomplete.css'
+
+Vue.use(Autocomplete)
 
 // Set router
 Vue.router = router;
 Vue.use(VueRouter);
 
+import { extend, setInteractionMode, localize } from "vee-validate";
+import { dimensions } from "vee-validate/dist/rules";
+
+import ru from "vee-validate/dist/locale/ru.json";
+
+Vue.config.productionTip = false;
+
+setInteractionMode("lazy");
+
+extend("dimensions", dimensions);
+
+import { required, ext, size, min, max } from 'vee-validate/dist/rules.umd.js'
+extend('required', required)
+extend('ext', ext)
+extend('size', size)
+extend('min', min)
+extend('max', max)
+
+localize({ ru });
+
 // Set Axios
 Vue.use(VueAxios, axios);
 Vue.prototype.$get = get
 Vue.prototype.$post = post
+Vue.prototype.$delete = deleteItem
 
 // Vue auth
 import authOptions           from './api/auth'

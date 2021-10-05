@@ -2,10 +2,14 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccountVerificationRequests;
+use App\Services\UsersService;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Illuminate\Support\Facades\Redirect;
 
 class UsersController extends Controller
 {
@@ -16,14 +20,40 @@ class UsersController extends Controller
     public function __construct(User $User, Helpers $helpers)
     {
         $this->User    = $User;
-        $this->helpers          = $helpers;
+        $this->helpers = $helpers;
     }
 
     public function index(){
 
-        $data = $this->User->all()->toArray();
+        $data = $this->User->all();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
+    public function create(Request $request){
+        $email = substr(filter_var( $request->post('phone'), FILTER_SANITIZE_NUMBER_INT), 3);
+
+        $email = $email . '@imes.pro';
+
+        $number = mt_rand(1, 4294967294);
+        $password = Hash::make($request->post('password'));
+
+        // create a user
+        $user = User::create([
+            'name' => $request->post('name'),
+            'phone' => $request->post('phone'),
+            'email' => $email,
+            'username' => $email,
+            'password' => $password
+        ]);
+
+        $user->save();
+
+        return Redirect::to('/clients');
+    }
+
+    protected function generateUserId( $id) {
+        return 100000 + (int)$id;
     }
 
     public function show($id){
@@ -33,7 +63,6 @@ class UsersController extends Controller
         if( count($data) > 0){
 
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
-
         }
 
         $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
@@ -77,16 +106,43 @@ class UsersController extends Controller
 
     public function delete($id){
 
-        $this->User->where('id',$id)->delete();
+        $this->User->where('id', $id)->delete();
+
+        $request = AccountVerificationRequests::where( 'user_id', $id);
+        $request->delete();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
     }
 
     public function destroy($id){
 
-        $this->User->where('id',$id)->delete();
+        $this->User->where('id', $id)->delete();
+        //return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
+    }
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
+    public function block($id){
+
+        $user = User::find($id);
+        $user->is_activated = 0;
+        $user->save();
+        //$user->delete();
+    }
+
+    public function unblock($id){
+
+        $user = User::find($id);
+        $user->is_activated = 1;
+        $user->save();
+    }
+
+    public function search($query){
+        return User::where('name', 'like', '%' . $query . '%')
+            ->orWhere('id', 'like', '%' . $query . '%')
+            ->get();
+    }
+
+    public function balance(Request $request){
+        UsersService::setBalance($request->post('id'), $request->post('count'));
     }
 
 }

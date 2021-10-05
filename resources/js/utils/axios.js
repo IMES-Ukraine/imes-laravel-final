@@ -96,3 +96,19 @@ export function post(url, params, config) {
             });
     });
 }
+
+export function deleteItem(url, params, config) {
+    return new Promise((resolve, reject) => {
+        axios
+            .delete(url, {
+                params: params,
+                ...config
+            })
+            .then(res => {
+                resolve(res.data);
+            })
+            .catch(err => {
+                reject(err.data);
+            });
+    });
+}

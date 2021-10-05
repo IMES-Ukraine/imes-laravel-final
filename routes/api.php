@@ -62,10 +62,14 @@ Route::group(
             ],
             function () {
                 Route::get ('/',  [UsersController::class, 'index']);
-                Route::get('/{id}', [UsersController::class, 'show']);
-                Route::delete('/{id}', [UsersController::class, 'destroy']);
+                //Route::get('/{id}', [UsersController::class, 'show']);
+                Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
                 Route::post('/', [UsersController::class, 'create']);
                 Route::post('/{id}', [ProjectsController::class, 'update']);
+                Route::get('/block/{id}', [UsersController::class, 'block']);
+                Route::get('/unblock/{id}', [UsersController::class, 'unblock']);
+                Route::get('/search/{query}', [UsersController::class, 'search']);
+                Route::post('/balance', [UsersController::class, 'balance']);
             }
         );
 
@@ -138,13 +142,18 @@ Route::group(
                 Route::post('/image/{type}',
                     [ProfileController::class, 'setImage']);
 
-                Route::get('/decline',
+                Route::get('/decline?id={id}',
                     [ProfileController::class, 'decline'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check'/*, 'ULogic\Profile\Models\BanMiddleware'*/);
 
-                Route::get('/confirm',
-                    [ProfileController::class, 'confirm'])
-                    ->middleware('\Tymon\JWTAuth\Http\Middleware\Check'/*, 'ULogic\Profile\Models\BanMiddleware'*/);
+                Route::get('/confirm?id={id}',
+                    [ProfileController::class, 'confirm']);
+                    //->middleware('\Tymon\JWTAuth\Http\Middleware\Check'/*, 'ULogic\Profile\Models\BanMiddleware'*/);
 
+                Route::get('/confirm-request/{id}', [ProfileController::class, 'confirmRequest']);
+                Route::get('/decline-request/{id}', [ProfileController::class, 'declineRequest']);
+
+                Route::get('/accept/{id}', [ProfileController::class, 'onAcceptVerification']);
+                Route::get('/decline/{id}', [ProfileController::class, 'onDeclineVerification']);
             }
         );
 

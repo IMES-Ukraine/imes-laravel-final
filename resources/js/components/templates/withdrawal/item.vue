@@ -1,24 +1,56 @@
 <template>
-    <tr class="db__row">
+    <tr v-if="user.email" class="db__row">
 
+        <td class="db__td is-id">
+            {{ id }}
+        </td>
         <td class="db__td is-account">
-            {{ email }}
+            {{ user.id }}
         </td>
         <td class="db__td is-sum">
-                            <span class="db__sum">
-{{ total }}						</span>
+            <button type="button" class="db__button" aria-label="переглянути реєстраційні дані" title="переглянути реєстраційні дані" data-toggle="modal" :data-target="'#db-modal--' + id"> <!-- --224 -->
+                <span class="icon-is-doc"></span>
+            </button>
+            <span class="db__sum">{{ total }}</span>
             <!-- modal -->
-            <div class="modal fade report-modal"
-                 id="db-modal--1"
-                 tabindex="-1"
-                 role="dialog"
-                 aria-hidden="true"> <!-- --1 -->
-                <div class="modal-dialog modal-dialog-centered"
-                     role="document">
-                    <div class="report__content modal-content">
-                        <div class="modal-body p-0 text-center">
-                            <!-- img чекa -->
-                            <img class="report__img" src="assets/report.jpg">
+            <div class="modal db-modal fade" :id="'db-modal--' + id" tabindex="-1" role="dialog" aria-modal="true" style="display: none;"><!-- 224 -->
+                <div class="modal-dialog modal-dialog-centered db-edit-modal__dialog" role="document">
+                    <div class="db-edit-modal__content modal-content">
+                        <div class="modal-body p-0">
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label class="form-control__label">ПІБ</label>
+                                    <input class="form-control db-edit-modal__input" type="text" value="" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label class="form-control__label">Email</label>
+                                    <input class="form-control db-edit-modal__input" type="text" :value="user.email" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-6">
+                                    <label class="form-control__label">Телефон</label>
+                                    <input class="form-control db-edit-modal__input" type="text" value="" readonly="">
+                                </div>
+                                <div class="form-group col-6">
+                                    <label class="form-control__label">Город</label>
+                                    <input class="form-control db-edit-modal__input" type="text" value="" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label class="form-control__label">Місце роботи</label>
+                                    <input class="form-control db-edit-modal__input" type="text" value="" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label class="form-control__label">Сотрудник номер</label>
+                                    <input class="form-control db-edit-modal__input" type="text" value="" readonly="">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -71,8 +103,8 @@ export default {
             type: Number,
             require: true
         },
-        email: {
-            type: String,
+        user: {
+            type: Array,
             require: true
         },
         comment: {

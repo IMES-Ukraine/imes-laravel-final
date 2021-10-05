@@ -17,6 +17,30 @@
                         <div class="card-body">
                             <div class="row mb-4">
                                 <div class="article-edit__text col-3">
+                                    Выбор шаблона
+                                </div>
+                                <div class="col-9">
+                                    <div class="row">
+                                        <div class="col-6 mb-2">
+                                            <ValidationProvider>
+                                                <router-link :to="{path:'/project/content'}" @click.native="storeProject">
+                                                    <PlusButton label="Партнерский пакет №1"></PlusButton>
+                                                </router-link>
+                                            </ValidationProvider>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <ValidationProvider>
+                                                <router-link :to="{path:'/project/content'}" @click.native="storeProject">
+                                                    <PlusButton label="Уникальный пакет"></PlusButton>
+                                                </router-link>
+                                            </ValidationProvider>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row mb-4">
+                                <div class="article-edit__text col-3">
                                     Називання
                                 </div>
                                 <div class="col-9">

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,11 +25,17 @@ Route::post('admin/api/v1/notification/to',
 );
 
 Route::get('admin/api/v1/withdraw',
-    [ProfileController::class, 'withdraws'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check'/*, 'ULogic\Profile\Models\BanMiddleware'*/);
+    [ProfileController::class, 'withdraws']);
 
 Route::get('admin/api/v1/profile/verification',
     [AdminController::class, 'verificationsList']
 );
+
+Route::get('admin/api/v1/request',
+    [ProfileController::class, 'requests']);
+
+Route::get('admin/api/v1/clients',
+    [UsersController::class, 'index']);
 
 Route::post('admin/api/v1/profile/verification/accept',
     [AdminController::class, 'acceptVerification']

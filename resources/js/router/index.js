@@ -36,10 +36,15 @@ export default new Router({
             name: "loginPage",
             component: () => import("../components/Login.vue")
         },
-        {
+        /*{
             path: "/project/new",
             name: "createProject",
             component: () => import("../components/ProjectForm.vue")
+        },*/
+        {
+            path: "/project/new",
+            name: "createProject",
+            component: () => import("../components/CreateProjectForm.vue")
         },
         {
             path: '/project/view/:projectId',
@@ -99,7 +104,12 @@ export default new Router({
         {
             path: '/requests',
             name: 'requests',
-            component: () => import("../components/ClientList.vue")
+            component: () => import("../components/Request.vue")
+        },
+        {
+            path: "/client/new",
+            name: "createClient",
+            component: () => import("../components/CreateClientForm.vue")
         },
 
     ]

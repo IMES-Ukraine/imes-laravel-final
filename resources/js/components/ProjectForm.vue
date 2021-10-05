@@ -34,9 +34,9 @@
                                 <PlusButton v-on:clickPlus="submitForm" label="Додати"></PlusButton>
                             </div>
 
-                            <div class="col-6">
+                            <!--<div class="col-6">
                                 <label class="btn btn-outline-second btn-centered-content is-small">
-                                <span v-if="options.files.audience">
+                                <span v-if="options.files.audience.file_name">
                                     <span class="input-file-name">{{ options.files.audience.file_name }}</span>
                                 </span>
                                     <span v-else>
@@ -46,7 +46,7 @@
                                 </span>
                                     <input type="file" data-ref="audience" class="input-file-hidden" @change="handleUpload">
                                 </label>
-                            </div>
+                            </div>-->
                         </div>
                         <div v-if="getStep > 1">
                             <div class="row mb-4">
@@ -160,7 +160,7 @@ import FragmentFormText from "./fragmets/text";
 import ProjectClose from "./templates/project/Close";
 
 export default {
-    name: 'CreateProjectForm',
+    name: 'EditProjectForm',
     components: {
         //Form,
         ProjectClose,

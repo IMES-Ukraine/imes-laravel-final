@@ -83,6 +83,7 @@ export default new Vuex.Store({
                     }
                 ],
                 //link: 'http://imes.pro/',
+                //link: 'http://imes-laravel.local/',
                 link: 'https://laravel-dev-final.imes.pro/',
                 count: null,
                 points: null,
@@ -108,7 +109,11 @@ export default new Vuex.Store({
                 ],
             }
         ],
-        questions: [],
+        questions: [
+            {
+                points: null
+            }
+        ],
         tests: [],
         projects: [],
         lists: {
@@ -136,6 +141,10 @@ export default new Vuex.Store({
         },
         isEdit: false,
         inEdit: false,
+        checkbox: {
+            0: 'Разблокувати',
+            1: 'Заблокувати'
+        }
     },
     getters: {
         currentStep: state => {
@@ -192,10 +201,12 @@ export default new Vuex.Store({
         },
         storeContent(state, content) {
             console.log('into storeContent')
+            console.log(content)
 
             state.content = content
             state.articles[0].points = content.article.points
-            state.questions[0].question.points = content.test.points
+            //state.questions[0].question.points = content.test.points
+            state.questions[0].points = content.test.points
         },
         storeTestContent(){
             state.questions[0].points = content

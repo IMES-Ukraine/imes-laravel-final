@@ -1,16 +1,26 @@
 <template>
-    <router-link :to="{path:'/'}">
-        <router-button>
+    <div>
+        <router-button :href="'/'">
             < проекти
         </router-button>
-    </router-link>
+        <div id="tag-result" v-if="tag">
+            <div># {{tag}}</div>
+        </div>
+    </div>
 </template>
 
 <script>
 import RouterButton from "../../../fragmets/router-button";
 export default {
 name: "project-form-sidebar",
-    components: {RouterButton}
+    components: {RouterButton},
+    props: {
+        tag: {
+            type: String,
+            require: false,
+            default: ''
+        },
+    }
 }
 </script>
 

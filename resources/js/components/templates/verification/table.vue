@@ -3,9 +3,9 @@
         <!-- line header -->
         <tr class="db__row is-th">
             <th class="db__th">№ п</th>
-            <th class="db__th">Базова iнформацiя</th>
-            <th class="db__th">Спецiалiзована iнформацiя</th>
-            <th class="db__th">Управлiння</th>
+            <th class="db__th">№ аккаунта</th>
+            <th class="db__th">Реєстраційні дані</th>
+            <th class="db__th">Бали</th>
             <th class="db__th">Управлiння</th>
         </tr>
         <!-- line header -->
@@ -15,6 +15,7 @@
             <item v-for="(request) in requests"
                   v-bind:key=request.user_id
                   :user_id = request.user_id
+                  :record = request
                   :id= request.user.email
                   :email = request.user.email
                   :basic_information = request.user.basic_information

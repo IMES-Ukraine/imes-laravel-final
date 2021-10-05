@@ -1,4 +1,5 @@
 //const BASE_URL = 'https://imes.pro/'
+//const BASE_URL = 'http://imes-laravel.local/'
 const BASE_URL = 'https://laravel-dev-final.imes.pro/'
 const V1 = BASE_URL + 'api/v1/'
 //const V1 = BASE_URL + 'api/v1/'
@@ -18,8 +19,22 @@ export const WITHDRAWAL = V1_ADMIN + 'withdraw';
 export const WITHDRAWAL_CONFIRMATION = PROFILE + 'confirm'
 export const WITHDRAWAL_DECLINE = PROFILE + 'decline'
 
+export const REQUEST = V1_ADMIN + 'request'
+
+export const CLIENTS = V1_ADMIN + 'clients'
+export const CLIENTS_BLOCK_USER = USER + '/block'
+export const CLIENTS_UNBLOCK_USER = USER + '/unblock'
+export const CLIENTS_DELETE_USER = USER + '/destroy'
+export const SEARCH_USER = USER + '/search'
+export const CLIENT_CHANGE_BALANCE = USER + '/balance'
+
+export const REQUEST_CONFIRM = PROFILE + 'confirm-request'
+export const REQUEST_DECLINE = PROFILE + 'decline-request'
+
 export const NOTIFICATION_ALL = V1_ADMIN + NOTIFICATION + '/all'
 export const NOTIFICATION_TO = V1_ADMIN + NOTIFICATION + '/to'
 
 export const PROFILE_VERIFICATION_LIST = V1_ADMIN + 'profile/verification'
 export const PROFILE_VERIFICATION = PROFILE_VERIFICATION_LIST + '/'
+export const PROFILE_ACCEPT_VERIFICATION = PROFILE + 'accept'
+export const PROFILE_DECLINE_VERIFICATION = PROFILE + 'decline'

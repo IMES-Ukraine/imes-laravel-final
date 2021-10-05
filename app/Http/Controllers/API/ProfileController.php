@@ -3,9 +3,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers;
+use App\Models\AccountRequests;
 use App\Models\Analytics;
 use App\Models\File;
 use App\Models\Notifications;
+use App\Traits\NotificationsHelper;
 use App\Traits\UserSettings;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Request;
@@ -16,21 +18,22 @@ use App\Models\ImageHelper;
 use App\Models\Withdraw;
 use App\Traits\RetrieveFirebaseToken;
 use App\Models\AccountVerificationRequests;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class ProfileController extends Controller
 {
     use RetrieveFirebaseToken;
     use UserSettings;
+    use NotificationsHelper;
 
     protected $User;
-
     protected $helpers;
 
     public function __construct(User $User, Helpers $helpers)
     {
-        //parent::__construct();
-        $this->User    = $User;
-        $this->helpers          = $helpers;
+        $this->User         = $User;
+        $this->helpers      = $helpers;
     }
 
     /**
@@ -39,7 +42,6 @@ class ProfileController extends Controller
      */
     public function index(){
 
-        //$apiUser = Auth::getUser();
         $apiUser = Auth::user();
 
         $user = User::find($apiUser->id);
@@ -65,7 +67,6 @@ class ProfileController extends Controller
      */
     public function verify(){
 
-        //$apiUser = Auth::getUser();
         $apiUser = Auth::user();
 
         $userId = $apiUser->id;
@@ -123,7 +124,6 @@ class ProfileController extends Controller
         $file->attachment_type = 'App\Models\TestQuestions';
         $data = $file->beforeSave();
 
-        //$apiUser = Auth::getUser();
         $apiUser = Auth::user();
 
         $helper = new ImageHelper( $apiUser);
@@ -211,8 +211,6 @@ class ProfileController extends Controller
      */
     public function token(\Illuminate\Http\Request $request){
 
-
-        //$apiUser = Auth::getUser();
         $apiUser = Auth::user();
 
         $model = User::find($apiUser->id);
@@ -229,9 +227,9 @@ class ProfileController extends Controller
     public function withdraw(){
 
         //$apiUser = Auth::getUser();
-        //$apiUser = Auth::user();
+        $apiUser = Auth::user();
 
-        $model       = User::find(250);
+        $model       = User::find($apiUser->id);
         if ( !$model) return $this->helpers->apiArrayResponseBuilder(401, 'error', ['You must be logged in!']);
         $userBalance = (int) $model->balance;
         $total       = (int) Request::post('total');
@@ -298,12 +296,27 @@ class ProfileController extends Controller
     }
 
     /*
+     * Admin Lists fresh requests
+     */
+    public function requests()
+    {
+        $requests = AccountRequests::with('userCity')
+            ->with('userWork')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return $this->helpers->apiArrayResponseBuilder(
+            200,
+            'success',
+            $requests);
+    }
+
+    /*
      * Admin Accept withdraw
      */
-    public function confirm()
+    public function confirm($id)
     {
-
-        $withdraw = Withdraw::find(get('id'));
+        $withdraw = Withdraw::find($id);
         $withdraw->status = Analytics::APPROVED;
         $withdraw->save();
 
@@ -320,9 +333,9 @@ class ProfileController extends Controller
     /*
      * Admin Decline withdraw
      */
-    public function decline()
+    public function decline($id)
     {
-        $model = Withdraw::find( get('id'));
+        $model = Withdraw::find($id);
         $model->status = Analytics::DECLINED;
         $model->save();
 
@@ -330,6 +343,89 @@ class ProfileController extends Controller
         $balance = (int) $user->balance;
         $user->balance = $balance + (int) $model->total;
         $user->save();
+    }
+
+    /**
+     * Confirm user registration from admin panel
+     * @return mixed
+     */
+    public function confirmRequest($id)
+    {
+        $request = AccountRequests::findOrFail($id);
+
+        $password = Str::lower(Str::random(8));
+
+        $params = [
+            'email' => $request['email'],
+            'name' => $request['name'],
+            'phone' => $request['phone'],
+            'city' => $request['city'],
+            'work' => $request['work'],
+            'password' => $password,
+            'password_confirmation' => $password,
+        ];
+
+        /*$user = Auth::register($params);
+
+        $user->convertToRegistered(false);*/
+
+        $savedUser = User::findByEmail($params['email']);
+        $savedUser->work = $params['work'];
+        $savedUser->city = $params['city'];
+        $savedUser->phone = $params['phone'];
+        $savedUser->username = $this->generateUserId( $savedUser->id);
+        $savedUser->balance = 0;
+        $savedUser->company_id = $request['company_id'];
+        $savedUser->is_activated = 1;
+
+        $savedUser->save();
+        $request->delete();
+
+        try {
+            //Mail::sendTo($user, 'ulogic.registration::mail.new_user', $params);
+            Mail::send('emails.email', ['data' => $params], function ($message) use ($request) {
+                $message->subject('Запросы');
+                $message->to($request->email, $request->name);
+            });
+        } catch (\Exception $exception) {
+
+        }
+    }
+
+    /**
+     * Confirm user registration from admin panel
+     * @return mixed
+     */
+    public function declineRequest($id)
+    {
+        $request = AccountRequests::findOrFail($id);
+
+        try {
+            $request->delete();
+        } catch (\Exception $exception) {
+
+        }
+    }
+
+    protected function generateUserId( $id) {
+        return 100000 + (int)$id;
+    }
+
+    public function onAcceptVerification($id)
+    {
+        $user = User::find($id);
+        $user->is_verified = 1;
+        $user->save();
+
+        $request = AccountVerificationRequests::where( 'user_id', $id);
+        $request->delete();
+    }
+
+    public function onDeclineVerification($id)
+    {
+        $request = AccountVerificationRequests::where( 'user_id', $id);
+        $request->delete();
+
     }
 
 }
