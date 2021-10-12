@@ -23,7 +23,28 @@ class AdminController extends BaseController
         $this->helpers = $helpers;
     }
 
+    public function NotificationSendAll(Request $request)
+    {
 
+        /*$users = User::all();
+        $body = $request->post('body');
+
+        try {
+
+            foreach ($users as $user) {
+                $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body);
+
+                //Flash::success('Вiдправлено успiшно!');
+            }
+
+            Session::flash('success', 'Вiдправлено успiшно!');
+
+        } catch (Exception $exception) {
+            //Flash::error($exception->getMessage());
+            Session::flash('error', $exception->getMessage());
+        }*/
+        //$this->NotificationSendAll('MESSAGE', $request->post('body'));
+    }
 
     public function notificationSendTo(Request $request)
     {

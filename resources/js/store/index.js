@@ -63,11 +63,13 @@ export default new Vuex.Store({
                 headings: 1,
                 author: 1,
                 button: null,
+                text_button: null,
                 recommended: [],
                 authors: [],
                 user_id: [],
                 chosenRecommended: [],
                 images: null,
+                multiples: null,
                 insert: [
                     {
                         type: 'insert',
@@ -83,8 +85,8 @@ export default new Vuex.Store({
                     }
                 ],
                 //link: 'http://imes.pro/',
-                //link: 'http://imes-laravel.local/',
-                link: 'https://laravel-dev-final.imes.pro/',
+                link: '',//'http://imes-laravel.local/',
+                //link: 'https://laravel-dev-final.imes.pro/',
                 count: null,
                 points: null,
                 frequency: null,
@@ -109,11 +111,7 @@ export default new Vuex.Store({
                 ],
             }
         ],
-        questions: [
-            {
-                points: null
-            }
-        ],
+        questions: [],
         tests: [],
         projects: [],
         lists: {

@@ -2,8 +2,9 @@
     <div class="row mb-4">
         <div class="article-edit__text col-3">
                 <v-checkbox
-                    :name="name"
+                    name="button"
                     :id="id"
+                    :checked="isChecked"
                     v-bind:value.sync="isChecked"
                     v-on:update:value="getText('')"
                 />
@@ -15,7 +16,8 @@
                     <div class="input-group input-group">
                         <v-input-text
                             :isDisabled="!isChecked"
-                            :name="name"
+                            name="text_button"
+                            v-model="text_button"
                             :classes="'input-is-form is-text'"
                             :aria-label="'теги'"
                             v-on:update:value="getText"
@@ -39,8 +41,8 @@ export default {
         }
     },
     props: {
-        button: {
-            type: String,
+        v: {
+            type: Object,
             require: true
         },
         label: {
@@ -51,14 +53,19 @@ export default {
             type: String,
             require: true
         },
-        name: {
+        text_button: {
             type: String,
-            require: true
+            default: ''
         }
     },
     methods: {
         getText (value) {
-            this.$emit('update:value', value);
+            this.$emit('update', value);
+        }
+    },
+    beforeMount() {
+        if (this.text_button) {
+             this.$set(this, 'isChecked', true)
         }
     }
 }

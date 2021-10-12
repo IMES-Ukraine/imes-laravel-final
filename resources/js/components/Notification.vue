@@ -1,10 +1,6 @@
 <template>
     <v-content>
 
-        <template v-slot:sidebar>
-            <notification-sidebar />
-        </template>
-
         <div class="main-db">
             <div class="db__block">
                 <div class="db-edit card is-alert">

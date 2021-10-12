@@ -3,7 +3,7 @@
         <div class="card-body">
 
             <fragment-form-text>
-                <input class="form-control" type="text" name="title" v-model="question.title">
+                <input class="form-control" type="text" name="title" id="question_title" v-model="question.title">
             </fragment-form-text>
 
             <template v-if="question.isComplex"></template>
@@ -71,6 +71,22 @@
 
             <SimpleTestVariants v-bind:answer="answer" v-bind:variants="variants"></SimpleTestVariants>
 
+            <div class="row mb-4">
+                <div class="article-edit__text col-3">
+                    Категории
+                </div>
+                <div class="col-4">
+                    <label class="btn btn-outline-second btn-centered-content is-small">
+                        <select class="form-control" v-model="category">
+                            <option v-for="item in categoryList" :value="item.id" :key="item.id">
+                                {{ item.name }}
+                            </option>
+                        </select>
+                    </label>
+                </div>
+
+            </div>
+
             <div class="row">
                 <div class="col-12 text-center">
                     <button type="button" class="btn btn-outline-primary" @click="addAnswer">
@@ -130,7 +146,13 @@ export default {
             coverRandomId: getRandomId(),
             files: {},
             cover: null,
-            video: null
+            video: null,
+            categoryList: [
+                {name: 'ВСЕ', id: 1},
+                {name: 'Дерматология', id: 2},
+                {name: 'Кардиология', id: 3},
+                {name: 'Гастроэнтерология', id: 4},
+            ],
         }
     },
     validations: {
@@ -188,6 +210,9 @@ export default {
                 //this.options.files[input.dataset.ref] = file.data
             })
         },
+    },
+    mounted() {
+        this.addAnswer();
     }
 }
 </script>

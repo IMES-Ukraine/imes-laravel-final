@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers;
 use App\Models\ProjectItems;
+use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -36,6 +37,15 @@ class ProjectsController extends Controller
      */
     public function index() {
         $data = Projects::all();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function tags() {
+        $data = Tag::all();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }

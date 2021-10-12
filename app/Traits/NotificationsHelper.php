@@ -108,7 +108,7 @@ trait NotificationsHelper
     private function createMessaging() {
 
         $factory = (new Factory)
-            ->withServiceAccount(plugins_path('ulogic/notifications/imes-v1-firebase-adminsdk-9r636-7af97231d5.json'));
+            ->withServiceAccount(base_path('resources/notifications/imes-v1-firebase-adminsdk-9r636-7af97231d5.json'));
 
         return $factory->createMessaging();
     }
@@ -143,7 +143,7 @@ trait NotificationsHelper
         ]);
 
         $vare = $messaging->send($message);
-        echo $vare;
+        //echo $vare;
     }
 
     /**

@@ -11,7 +11,7 @@
                     v-on:update:text="getText"
                 />
             </label>
-            <div class="error" v-if="v.text.$error">
+            <div class="errors" v-if="v.text.$error">
                 {{error}}
             </div>
         </div>

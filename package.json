@@ -34,6 +34,7 @@
         "vue-axios": "^3.2.4",
         "vue-loading-overlay": "^3.4.2",
         "vue-router": "^3.5.1",
+        "vue-upload-multiple-image": "^1.1.6",
         "vuelidate": "^0.7.6"
     }
 }

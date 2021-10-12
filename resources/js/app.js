@@ -31,6 +31,10 @@ Vue.use(Autocomplete)
 Vue.router = router;
 Vue.use(VueRouter);
 
+import VueLazyload from 'vue-lazyload'
+
+Vue.use(VueLazyload)
+
 import { extend, setInteractionMode, localize } from "vee-validate";
 import { dimensions } from "vee-validate/dist/rules";
 

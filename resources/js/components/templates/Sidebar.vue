@@ -2,7 +2,6 @@
     <div class="col-2 sidebar">
         <div class="mt-4 mr-3 ml-3">
             <slot>
-                Sidebar default text
             </slot>
         </div>
     </div>

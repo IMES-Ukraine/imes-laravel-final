@@ -16,15 +16,18 @@
                                 <label class="form-control__label">Пользователь</label>
                                 <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :component-item='template' @update-items="updateItems"></v-autocomplete>
                                 <div id="users-result" v-if="userSelect">
-                                    <div><b @click="removeUser">X</b> {{userSelect}}</div>
+                                    <div>
+                                        <b @click="removeUser">X</b> {{userSelect}}
+                                    </div>
                                 </div>
+                                <input type="hidden" id="user_id" value=""/>
                             </div>
                         </div>
                         <hr>
                         <div class="form-row">
                             <div class="form-group col-12">
                                 <label class="form-control__label">Кол-во балов</label>
-                                <input class="form-control db-edit-modal__input" name="balance" type="text" value="">
+                                <input class="form-control db-edit-modal__input" id="user_balabce" name="balance" type="text" value="">
                             </div>
                         </div>
                         <div class="form-row">
@@ -64,7 +67,11 @@
                 this.userSelect = ''
             },
             getLabel (item) {
-                this.userSelect = item.name
+                if (item) {
+                    this.userSelect = item.name
+                    $('#user_id').val(item.id);
+                    return item.name
+                }
             },
             async updateItems (text) {
                 await fetch(SEARCH_USER + '/' + text).then( async(response) => {
@@ -72,11 +79,9 @@
                 })
             },
             changeBalance () {
-                //CLIENT_CHANGE_BALANCE
-                this.$post(CLIENT_CHANGE_BALANCE, {id: 265, count: 10}).then(
+                this.$post(CLIENT_CHANGE_BALANCE, {id: $('#user_id').val(), count: $('#user_balabce').val()}).then(
                     response => {
-
-                        //this.title = response.data.id
+                        $('#db-balance').modal('hide');
                     }
                 )
             }

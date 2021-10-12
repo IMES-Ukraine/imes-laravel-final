@@ -51,6 +51,15 @@
                             </label>
                         </div>
                     </div>
+                    <div class="row mb-4" id="my-strictly-unique-vue-upload-multiple-image" style="text-align: center;">
+
+                        <vue-upload-multiple-image
+                            @upload-success="uploadImageSuccess"
+                            @before-remove="beforeRemove"
+                            @edit-image="editImage"
+                            @data-change="dataChange"
+                        ></vue-upload-multiple-image>
+                    </div>
                     <div class="row mb-3">
                         <div class="article-edit__text col-3">
                             Текст статьи
@@ -239,11 +248,14 @@ import {required} from 'vuelidate/lib/validators'
 import Multiselect from 'vue-multiselect'
 import VContent from "./templates/Content"
 import axios from 'axios'
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
+
 export default {
     name: 'CreateArticleForm',
     components: {
         Multiselect,
-        VContent
+        VContent,
+        VueUploadMultipleImage
     },
     data() {
         return {

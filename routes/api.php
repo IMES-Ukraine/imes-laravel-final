@@ -64,12 +64,13 @@ Route::group(
                 Route::get ('/',  [UsersController::class, 'index']);
                 //Route::get('/{id}', [UsersController::class, 'show']);
                 Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
+                Route::post('/balance', [UsersController::class, 'balance']);
+                Route::get('/create-name/{name}', [UsersController::class, 'createName']);
                 Route::post('/', [UsersController::class, 'create']);
                 Route::post('/{id}', [ProjectsController::class, 'update']);
                 Route::get('/block/{id}', [UsersController::class, 'block']);
                 Route::get('/unblock/{id}', [UsersController::class, 'unblock']);
                 Route::get('/search/{query}', [UsersController::class, 'search']);
-                Route::post('/balance', [UsersController::class, 'balance']);
             }
         );
 
@@ -78,6 +79,7 @@ Route::group(
                 'prefix' => 'project'
             ],
             function () {
+                Route::get('/tags', [ProjectsController::class, 'tags']);
                 Route::get('/', [ProjectsController::class, 'index']);
                 Route::get('/{id}', [ProjectsController::class, 'show']);
                 Route::post('/{id}', [ProjectsController::class, 'update']);

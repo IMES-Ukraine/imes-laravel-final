@@ -1,6 +1,7 @@
 //const BASE_URL = 'https://imes.pro/'
 //const BASE_URL = 'http://imes-laravel.local/'
-const BASE_URL = 'https://laravel-dev-final.imes.pro/'
+const BASE_URL = 'http://imes.nextdoorcoders.com/'
+//const BASE_URL = 'https://laravel-dev-final.imes.pro/'
 const V1 = BASE_URL + 'api/v1/'
 //const V1 = BASE_URL + 'api/v1/'
 const V1_ADMIN = BASE_URL + 'admin/api/v1/'
@@ -21,12 +22,15 @@ export const WITHDRAWAL_DECLINE = PROFILE + 'decline'
 
 export const REQUEST = V1_ADMIN + 'request'
 
+export const TAGS = PROJECT + '/tags'
+
 export const CLIENTS = V1_ADMIN + 'clients'
 export const CLIENTS_BLOCK_USER = USER + '/block'
 export const CLIENTS_UNBLOCK_USER = USER + '/unblock'
 export const CLIENTS_DELETE_USER = USER + '/destroy'
 export const SEARCH_USER = USER + '/search'
 export const CLIENT_CHANGE_BALANCE = USER + '/balance'
+export const USER_CREATE_NAME = USER + '/create-name'
 
 export const REQUEST_CONFIRM = PROFILE + 'confirm-request'
 export const REQUEST_DECLINE = PROFILE + 'decline-request'

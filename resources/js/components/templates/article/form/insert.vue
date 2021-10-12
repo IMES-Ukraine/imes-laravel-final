@@ -36,6 +36,7 @@
                     name="article-has-insert"
                     id="article-has-insert"
                     v-model="textLocale"
+                    :checked="textLocale"
                     @onclick="getTextInsert"
                 >
                 <label for="article-has-insert" class="custom-checkbox__label"></label>
@@ -77,7 +78,7 @@ export default {
     data () {
         return {
             textLocale: this.textInsert,
-            insertLocal: this.insert
+            insertLocal: this.insert,
         }
     },
     components: {ArticleInputText, VInputText, VTextarea},
@@ -109,10 +110,15 @@ export default {
             this.getInsert()
         },
         getInsert () {
-            this.$emit('update:insert', this.insertLocal)
+            this.$emit('insert', this.insertLocal)
         },
         getTextInsert () {
-            this.$emit('update:textInsert', this.textLocale)
+            this.$emit('textInsert', this.textLocale)
+        }
+    },
+    beforeMount() {
+        if (this.insert[1].content || this.insert[0].content) {
+            this.$set(this, 'textLocale', true)
         }
     }
 }

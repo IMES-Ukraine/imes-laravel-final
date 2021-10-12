@@ -18,7 +18,7 @@
                             v-model="v.title.$model"
                         >
                     </label>
-                    <div class="error" v-if="v.title.$error">
+                    <div class="errors" v-if="v.title.$error">
                         Заголовок обов'язковий
                     </div>
                 </div>
@@ -28,7 +28,7 @@
                         :id="this.name+'_1'"
                         :name="this.name"
                         :value="1"
-                        :checked="true"
+                        :checked="(articleType==1)?true:false"
                         v-on:update:value="getType"
                     >
                         Новини
@@ -37,6 +37,7 @@
                         :id="this.name+'_2'"
                         :name="this.name"
                         :value="2"
+                        :checked="(articleType==2)?true:false"
                         v-on:update:value="getType"
                     >
                         Iнформацiя
@@ -68,12 +69,16 @@ export default {
         type: {
             type: Number,
             require: true
+        },
+        articleType: {
+            type: Boolean,
+            default: 1
         }
     },
     components: {VRadio},
     methods: {
         getType (value) {
-            this.$emit('update:type', value);
+            this.$emit('update', value);
         }
     }
 }

@@ -74,6 +74,7 @@ export default {
 
             this.$delete(CLIENTS_DELETE_USER + '/' + id).then()
             $('#db-remove--' + id + ' .is-close').click();
+
             for (const [index, value] of Object.entries(this.requests)) {
                 if (value.id === id) {
                     this.requests.splice(index, 1)
