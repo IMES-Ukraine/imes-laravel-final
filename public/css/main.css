@@ -2312,6 +2312,10 @@ select {
     position: relative;
 }
 
+.main_content {
+    padding: 44px 110px
+}
+
 /* Временные стили */
 .btn-outline-primary.has-icon::before {
     display: none;

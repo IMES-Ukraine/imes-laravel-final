@@ -3,10 +3,8 @@
         <router-button :href="'/'">
             < проекти
         </router-button>
-        <div id="tags-result">
-            <div v-for="field in tags">
-                #{{ field.name }}
-            </div>
+        <div class="sidebar__tags">
+            <a class="sidebar__tags-link" v-for="field in tags">#{{ field.name }}</a>
         </div>
         <div id="tag-result" v-if="tag">
             <div># {{tag}}</div>

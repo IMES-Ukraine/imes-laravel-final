@@ -5,7 +5,7 @@
                 <slot name="sidebar" />
             </v-sidebar>
 
-            <div class="col-10 mt-5 mb-5">
+            <div class="col-10 main_content">
                 <slot>
                     Content
                 </slot>
