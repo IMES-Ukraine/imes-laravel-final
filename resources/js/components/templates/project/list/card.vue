@@ -3,13 +3,23 @@
         :to="{name: routeName, params: {projectId: id}}"
         class="col-4 mb-3 rectangle"
     >
-        <div class="logotype d-flex mb-2">
+        <div class="articles_list__block">
+            <div class="articles_list__block-content">
+                <div class="articles_list__block-img">
+                    <logotype class="m-auto"/>
+                </div>
+                <ul>
+                    <li>Исследование №1</li>
+                </ul>
+            </div>
+        </div>
+        <!--<div class="logotype d-flex mb-2">
             <logotype class="m-auto"/>
         </div>
         <div class="line mb-2"/>
         <div class="rectangle__comment">
             {{ desc }}
-        </div>
+        </div>-->
     </router-link>
 </template>
 

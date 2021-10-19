@@ -26,7 +26,7 @@
                                                 <span class="icon-is-left icon-is-load-grey"></span>Загрузить
                                             </span>
                                         <!--</span>-->
-                                        <input type="file" name="сover" class="input-file-hidden" @change="handleUpload('cover')"/>
+                                        <input type="file" name="cover" class="input-file-hidden" @change="handleUpload('cover')"/>
                                     </label>
                                     <div v-if="errorFile" class="errors">{{ errorFile }}</div>
                                 </div>
@@ -38,29 +38,14 @@
                                 <div class="col-9">
                                     <div class="row">
                                         <div class="col-8 mb-2">
-                                            <!--<input class="form-control" type="text" name="title">-->
-                                            <!--<div class="error" v-if="$v.title.$error">
-                                                Название обязательно v-model="$v.title.$model"
-                                            </div>-->
-                                            <!--<ValidationProvider name="title" rules="required|min:3|max:6">
-                                                <div slot-scope="{ errors }">
-                                                    <input v-model="title" type="text" name="title" class="form-control">
-                                                    <div class="errors">{{ errors[0] }}</div>
-                                                </div>
-                                            </ValidationProvider>-->
-                                            <validation-provider
-                                                rules="required"
-                                                v-slot="{ errors }">
+                                            <input
+                                                class="form-control"
+                                                type="text"
+                                                name="title"
+                                                v-model="options.title"
+                                                placeholder="Название">
 
-                                                <input
-                                                    class="form-control"
-                                                    type="text"
-                                                    name="title"
-                                                    v-model="options.title"
-                                                    placeholder="Название">
-
-                                                <span class="errors">{{ errors[0] }}</span>
-                                            </validation-provider>
+                                            <div v-if="errorTitle" class="errors">{{ errorTitle }}</div>
                                         </div>
                                         <div class="col-4 mb-2">
                                             <input class="form-control" type="text" name="tag" v-model="project.tag" placeholder="#">
@@ -525,14 +510,6 @@
                                                     :variants="item.variants"
                                                     :answer="item.answer"></TestComplex>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-12 text-center">
-                                            <button type="button" class="btn btn-outline-primary" @click="submitComplex">
-                                                <div>Добавить блок</div>
-                                            </button>
-                                        </div>
-                                    </div>
                                     <br>
                                     <div class="row">
                                         <div class="col-12 text-center">
@@ -662,6 +639,7 @@
                 questions: this.$store.state.questions,
                 project: {},
                 errorFile: '',
+                errorTitle: '',
                 currentStep: 1,
                 isComplex: false,
                 content: {
@@ -696,10 +674,7 @@
             }
         },
         props: {
-            msg: String,
-            /*errorFile: {
-                type: Object
-            },*/
+            msg: String
         },
         methods: {
             sendForm() {
@@ -800,8 +775,21 @@
                 });
             },
             showContent() {
-                this.validate()
-                $('#block_content').show()
+                //this.validate()
+                this.errorFile = '';
+                this.errorTitle = '';
+
+                if (this.options.files.cover == null) {
+                    this.errorFile = 'Поле обязательно'
+                }
+
+                if (this.options.title === '') {
+                    this.errorTitle = 'Требуется указать название'
+                }
+
+                if (this.errorTitle === '' && this.errorFile === '') {
+                    $('#block_content').show()
+                }
             },
             nextStep() {
                 this.currentStep++
@@ -849,37 +837,21 @@
                 this.multiples = value
             },
             submitComplex() {
-                this.isComplex = true;
-                this.addComplexQuestion()
+                //this.isComplex = true;
+                //this.addComplexQuestion()
             },
             addComplexQuestion() {
                 this.questions.push({
                     question: {
-                        title: '',
-                        text: '',
-                        description: '',
-                        link: '',
-                        button: null,
-                        count: null,
-                        points: null,
-                        media: {
-                            cover: null,
-                            video: null,
-                        },
-                        isComplex: this.isComplex,
-                        agreement: null
-                    },
-                    variants: [
-                        {
-                            itemId: 'variant-' + Math.random().toString(36).substr(2, 9),
-                            title: 'A',
-                            variant: '',
-                            isCorrect: false,
+                        complex: {
+                            title: '',
+                            text: '',
+                            points: null,
+                            media: {
+                                cover: null,
+                                video: null,
+                            },
                         }
-                    ],
-                    answer: {
-                        correct: [],
-                        type: 'text' //answer type (variants | text field)
                     },
                 })
             },

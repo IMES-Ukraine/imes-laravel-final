@@ -5,7 +5,7 @@
             <project-list-sidebar/>
         </template>
 
-        <div class="col">
+        <!--<div class="col">
             <div class="col-sm-12">
                 <div class="row" v-if="hasProjects()">
                     <project-list-card
@@ -17,6 +17,72 @@
                 </div>
                 <v-preloader v-else />
             </div>
+        </div>-->
+        <div class="articles">
+            <div class="articles_list" v-if="hasProjects()">
+                <project-list-card
+                    v-for="(project) in projectList"
+                    v-bind:key="project.id"
+                    :id="project.id"
+                    :desc="project.options.title"
+                />
+
+                <!--<div class="articles_list__block">
+                    <div class="articles_list__block-content">
+                        <div class="articles_list__block-img">
+                            <img src="img/articles-logo-2.png" alt="">
+                        </div>
+                        <ul>
+                            <li>Маркетинговоеисследование</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="articles_list__block">
+                    <div class="articles_list__block-content">
+                        <div class="articles_list__block-img">
+                            <img src="img/articles-logo-3.png" alt="">
+                        </div>
+                        <ul>
+                            <li>Проект повышения квалификации</li>
+                        </ul>
+                    </div>
+                    <div class="articles_list__block-status">
+                        <p class="done"><span>Проект завершен</span></p>
+                    </div>
+                </div>
+                <div class="articles_list__block">
+                    <div class="articles_list__block-content">
+                        <div class="articles_list__block-img">
+                            <img src="img/articles-logo-4.png" alt="">
+                        </div>
+                        <ul>
+                            <li>Обучение</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="articles_list__block">
+                    <div class="articles_list__block-content">
+                        <div class="articles_list__block-img">
+                            <img src="img/articles-logo-5.png" alt="">
+                        </div>
+                        <ul>
+                            <li>Знания</li>
+                            <li>Симптомы</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="articles_list__block">
+                    <div class="articles_list__block-content">
+                        <div class="articles_list__block-img">
+                            <img src="img/articles-logo-5.png" alt="">
+                        </div>
+                        <ul>
+                            <li>Исследование рынка</li>
+                        </ul>
+                    </div>
+                </div>-->
+            </div>
+            <v-preloader v-else />
         </div>
 
     </v-content>

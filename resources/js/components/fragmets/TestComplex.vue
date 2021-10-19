@@ -57,14 +57,23 @@
                 </div>
 
             </div>
+        </div>
 
+        <ComplexTestVariants @file_сhange="fileChange" :complex="complex"></ComplexTestVariants>
+
+        <div class="row">
+            <div class="col-12 text-center">
+                <button type="button" class="btn btn-outline-primary" @click="addComplex">
+                    <div>Добавить блок</div>
+                </button>
+            </div>
         </div>
     </div>
 </template>
 <script>
     import {required} from 'vuelidate/lib/validators'
     //import SimpleTestVariant from './../components/inputs/SimpleTestVariant.vue';
-    import SimpleTestVariants from './../inputs/SimpleTestVariantsArray.vue';
+    import ComplexTestVariants from './../inputs/ComplexTestVariantsArray.vue';
     import VContent from "../templates/Content"
     import { getRandomId } from '../../utils'
     import FragmentFormText from "./text";
@@ -77,7 +86,7 @@
         components: {
             FragmentFormText,
             //SimpleTestVariant,
-            SimpleTestVariants,
+            ComplexTestVariants,
             VContent
         },
 
@@ -88,6 +97,7 @@
                 files: {},
                 cover: null,
                 video: null,
+                complex: [],
                 categoryList: [
                     {name: 'ВСЕ', id: 1},
                     {name: 'Дерматология', id: 2},
@@ -116,7 +126,7 @@
             /**
              * Adding one more answer variant to question
              */
-            addAnswer() {
+            /*addAnswer() {
                 const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
                 let length = this.variants.length
                 let obj = {
@@ -126,6 +136,16 @@
                     isCorrect: false,
                 };
                 this.variants.push(obj)
+            },*/
+            addComplex() {
+                //let length = this.complex.length
+                let obj = {
+                    itemId: getRandomId(),
+                    title: '',
+                    variant: '',
+                    isCorrect: false,
+                };
+                this.complex.push(obj)
             },
             /**
              * Handle changing of file input (cover, video, variants)
@@ -153,7 +173,7 @@
             },
         },
         mounted() {
-            this.addAnswer();
+            //this.addComplex();
         }
     }
 </script>
