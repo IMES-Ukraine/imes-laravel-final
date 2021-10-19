@@ -17,6 +17,7 @@
             <div class="modal db-modal fade" :id="'db-modal--' + id" tabindex="-1" role="dialog" aria-hidden="true"><!-- --{{ record.id }} -->
                 <div class="modal-dialog modal-dialog-centered db-edit-modal__dialog" role="document">
                     <div class="db-edit-modal__content modal-content">
+                        <button class="articles_create-close" data-dismiss="modal"></button>
                         <div class="modal-body p-0">
                             <div class="form-row">
                                 <div class="form-group col-12">

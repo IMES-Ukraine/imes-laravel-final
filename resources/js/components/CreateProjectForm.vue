@@ -347,11 +347,57 @@
                             </h4>
                             <br>
                             <!-- article-title -->
-                            <article-input-title
+                            <!--<article-input-title
                                 v-bind:type.sync="type"
                                 :articleType="articleType"
                                 @update="articleTypeStore"
-                            />
+                            />-->
+                            <div class="row mb-4">
+
+                                <div class="article-edit__text col-3">
+                                    Заголовок
+                                </div>
+
+                                <div class="col-9">
+                                    <div class="row">
+
+                                        <div class="col-12 mb-2">
+                                            <label>
+                                                <input
+                                                    class="form-control"
+                                                    type="text"
+                                                    name="title"
+                                                    v-model="articles.title"
+                                                >
+                                            </label>
+                                            <div v-if="errorArticleTitle" class="errors">{{ errorArticleTitle }}</div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <v-radio
+                                                id="typePublication_1"
+                                                name="typePublication"
+                                                :value="1"
+                                                :checked="(articleType==1)?true:false"
+                                                v-on:update:value="getType"
+                                            >
+                                                Новини
+                                            </v-radio>
+                                            <v-radio
+                                                id="typePublication_2"
+                                                name="typePublication"
+                                                :value="2"
+                                                :checked="(articleType==2)?true:false"
+                                                v-on:update:value="getType"
+                                            >
+                                                Iнформацiя
+                                            </v-radio>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
                             <!-- end-article-title -->
 
                             <!-- article-cover -->
@@ -393,7 +439,6 @@
 
                             <!-- article-insert -->
                             <article-form-insert
-                                :v="$v"
                                 v-bind:insert.sync="insert"
                                 v-bind:textInsert.sync="textInsert"
                                 @insert="insertStore"
@@ -634,12 +679,14 @@
                 options: {
                     ...this.$store.state.project.options
                 },
+                ...this.$store.state.articles[0],
                 articles: this.$store.state.articles,
                 tests: this.$store.state.questions,
                 questions: this.$store.state.questions,
                 project: {},
                 errorFile: '',
                 errorTitle: '',
+                errorArticleTitle: '',
                 currentStep: 1,
                 isComplex: false,
                 content: {
@@ -647,7 +694,8 @@
                 },
                 test: this.$store.state.tests,
                 picked: 'test',
-                type: 'easy'
+                type: 'easy',
+                new_user: ''
             }
         },
         computed: {
@@ -932,6 +980,9 @@
 
                 //this.currentStep = 4
                 //this.$store.dispatch('nextStep')
+            },
+            getType (value) {
+                this.$emit('update', value);
             }
         },
         mounted() {

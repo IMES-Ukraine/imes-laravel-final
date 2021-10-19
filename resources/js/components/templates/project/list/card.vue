@@ -1,9 +1,13 @@
 <template>
-    <router-link
+    <!--<router-link
         :to="{name: routeName, params: {projectId: id}}"
         class="col-4 mb-3 rectangle"
-    >
+    >-->
         <div class="articles_list__block">
+            <router-link
+                :to="{name: routeName, params: {projectId: id}}"
+                class="articles_list__block-link"
+            ></router-link>
             <div class="articles_list__block-content">
                 <div class="articles_list__block-img">
                     <logotype class="m-auto"/>
@@ -20,7 +24,7 @@
         <div class="rectangle__comment">
             {{ desc }}
         </div>-->
-    </router-link>
+    <!--</router-link>-->
 </template>
 
 <script>
