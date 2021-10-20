@@ -22,8 +22,8 @@
                                             <p><span data-placeholder="Загрузить"></span></p>
                                             <button class="delete_file deleteFile" type="button"></button>
                                         </div>
+                                        <div v-if="errorFile" class="errors">{{ errorFile }}</div>
                                     </div>
-                                    <div v-if="errorFile" class="errors">{{ errorFile }}</div>
                                 </div>
                                 <div class="articles_create__item">
                                     <p class="articles_create__item-title">Название</p>
