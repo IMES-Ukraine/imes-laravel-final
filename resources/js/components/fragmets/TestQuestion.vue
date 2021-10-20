@@ -89,7 +89,7 @@
 
             <div class="row">
                 <div class="col-12 text-center">
-                    <button type="button" class="btn btn-outline-primary" @click="addAnswer">
+                    <button type="button" class="btn btn-outline-primary" @click="addAnswerTest">
                         Додати вiдповiдь
                     </button>
                 </div>
@@ -175,7 +175,7 @@ export default {
         /**
          * Adding one more answer variant to question
          */
-        addAnswer() {
+        addAnswerTest() {
             const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
             let length = this.variants.length
             let obj = {
@@ -212,7 +212,10 @@ export default {
         },
     },
     mounted() {
-        this.addAnswer();
+        if (this.$store.state.statusAddAnswer) {
+            this.addAnswerTest()
+            this.$store.state.statusAddAnswer = false
+        }
     }
 }
 </script>

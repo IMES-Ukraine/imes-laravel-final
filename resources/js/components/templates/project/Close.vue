@@ -26,10 +26,10 @@
 
             <template slot="footer">
                 <div class="d-flex justify-content-center ml-auto mr-auto buttons mb-1">
-                    <button class="btn btn-outline-primary mr-4" @click="close">
+                    <button class="btn btn-outline-primary mr-4" type="button" @click="close">
                         Да
                     </button>
-                    <button class="btn btn-outline-primary" @click="toggle">
+                    <button class="btn btn-outline-primary" type="button" @click="toggle">
                         Нет
                     </button>
                 </div>

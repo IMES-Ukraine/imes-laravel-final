@@ -58,4 +58,13 @@ class Projects extends Model
         )->where('item_type', Articles::class);
         //return $this->hasMany(ProjectItems::class, 'project_id')->where('item_type', Articles::class);
     }
+
+    /**
+     * Tags
+     * @return mixed
+     */
+    public function tags()
+    {
+        return $this->hasOne('App\Models\PostTag', 'post_id', 'id')->with('project_tags');
+    }
 }

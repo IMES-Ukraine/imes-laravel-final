@@ -4,10 +4,12 @@
             < проекти
         </router-button>
         <div class="sidebar__tags">
-            <a class="sidebar__tags-link" v-for="field in tags">#{{ field.name }}</a>
-        </div>
-        <div id="tag-result" v-if="tag">
-            <div># {{tag}}</div>
+            <div class="sidebar__tags-item" v-for="field in tags">
+                <a class="sidebar__tags-link" :href="'/#'+field.slug">{{ field.name }}</a>
+            </div>
+            <div class="sidebar__tags-item" v-if="tag">
+                <div># {{tag}}</div>
+            </div>
         </div>
     </div>
 </template>
@@ -26,7 +28,7 @@ name: "project-form-sidebar",
     },
     props: {
         tag: {
-            type: String,
+            type: Array,
             require: false,
             default: ''
         },

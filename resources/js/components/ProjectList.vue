@@ -25,6 +25,8 @@
                     v-bind:key="project.id"
                     :id="project.id"
                     :desc="project.options.title"
+                    :options="project.options"
+                    :tag="(project.tags)?'#'+project.tags.project_tags.slug:''"
                 />
 
                 <!--<div class="articles_list__block">

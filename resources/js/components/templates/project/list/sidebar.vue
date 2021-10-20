@@ -4,7 +4,9 @@
             Створити проект
         </router-button>
         <div class="sidebar__tags">
-            <a class="sidebar__tags-link" v-for="field in tags">{{ field.name }}</a>
+            <div class="sidebar__tags-item" v-for="field in tags">
+                <a class="sidebar__tags-link" :href="'#'+field.slug">{{ field.name }}</a>
+            </div>
         </div>
     </div>
 </template>

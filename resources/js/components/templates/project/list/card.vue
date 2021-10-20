@@ -3,7 +3,7 @@
         :to="{name: routeName, params: {projectId: id}}"
         class="col-4 mb-3 rectangle"
     >-->
-        <div class="articles_list__block">
+        <div class="articles_list__block" v-if="(this.$route.hash && this.$route.hash == tag) || (!this.$route.hash)">
             <router-link
                 :to="{name: routeName, params: {projectId: id}}"
                 class="articles_list__block-link"
@@ -16,15 +16,10 @@
                     <li>Исследование №1</li>
                 </ul>
             </div>
+            <div class="articles_list__block-status" v-if="options.status == 'inactive'">
+                <p class="done"><span>Проект завершен</span></p>
+            </div>
         </div>
-        <!--<div class="logotype d-flex mb-2">
-            <logotype class="m-auto"/>
-        </div>
-        <div class="line mb-2"/>
-        <div class="rectangle__comment">
-            {{ desc }}
-        </div>-->
-    <!--</router-link>-->
 </template>
 
 <script>
@@ -44,6 +39,14 @@ export default {
         },
         desc: {
             type: String,
+            require: true
+        },
+        tag: {
+            type: String,
+            require: false
+        },
+        options: {
+            type: Object,
             require: true
         }
     }

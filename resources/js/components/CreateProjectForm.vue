@@ -7,109 +7,126 @@
             :tag="project.tag"/>
         </template>
 
-        <div class="article-edit card">
-            <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-                <form>
-                    <div class="card-body">
+        <div class="articles">
+            <div class="articles_create">
+                <project-close/>
+                <ValidationObserver ref="form" v-slot="{ handleSubmit }">
+                    <form class="articles_create-box">
                         <div v-show="getStep == 1">
-                            <div class="row mb-4">
-                                <div class="article-edit__text col-3">
-                                    Обложка
-                                </div>
-                                <div class="col-4">
-                                    <label class="btn btn-outline-second btn-centered-content upload-cover is-small">
-                                        <!--<span v-if="files.cover">
-                                            <span class="input-file-name">{{ files.cover }}</span>
-                                        </span>
-                                        <span v-else>-->
-                                            <span class="input-file-label">
-                                                <span class="icon-is-left icon-is-load-grey"></span>Загрузить
-                                            </span>
-                                        <!--</span>-->
-                                        <input type="file" name="cover" class="input-file-hidden" @change="handleUpload('cover')"/>
-                                    </label>
+                            <div class="articles_create-block">
+                                <div class="articles_create__item">
+                                    <p class="articles_create__item-title">Обложка</p>
+                                    <div class="articles_create__item-content">
+                                        <div class="articles_create__item-file width-auto buttonAddFile">
+                                            <input type="file" name="cover" @change="handleUpload('cover')">
+                                            <p><span data-placeholder="Загрузить"></span></p>
+                                            <button class="delete_file deleteFile" type="button"></button>
+                                        </div>
+                                    </div>
                                     <div v-if="errorFile" class="errors">{{ errorFile }}</div>
                                 </div>
-                            </div>
-                            <div class="row mb-4">
-                                <div class="article-edit__text col-3">
-                                    Название
-                                </div>
-                                <div class="col-9">
-                                    <div class="row">
-                                        <div class="col-8 mb-2">
-                                            <input
-                                                class="form-control"
-                                                type="text"
-                                                name="title"
-                                                v-model="options.title"
-                                                placeholder="Название">
-
-                                            <div v-if="errorTitle" class="errors">{{ errorTitle }}</div>
-                                        </div>
-                                        <div class="col-4 mb-2">
-                                            <input class="form-control" type="text" name="tag" v-model="project.tag" placeholder="#">
+                                <div class="articles_create__item">
+                                    <p class="articles_create__item-title">Название</p>
+                                    <div class="articles_create__item-content">
+                                        <div class="articles_create__name">
+                                            <div class="articles_create__name-block">
+                                                <input type="text" name="name" v-model="options.title">
+                                                <p class="articles_create__name-note">50 символов</p>
+                                                <div v-if="errorTitle" class="errors">{{ errorTitle }}</div>
+                                            </div>
+                                            <div class="articles_create__name-block articles_create__name-block--number">
+                                                <input type="text" name="tag" v-model="project.tag" placeholder="#">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="row mb-4">
-                                <div class="article-edit__text col-3">
-                                    Аудитория
-                                </div>
-                                <div class="col-3">
-                                    <label class="btn btn-outline-second btn-centered-content upload-cover is-small">
-                                        <span class="input-file-label">
-                                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M2.25922 6.13763L1.56299 6.13763C1.17847 6.13763 0.866761 6.44934 0.86676 6.83386C0.866759 7.21838 1.17847 7.53009 1.56299 7.53009L12.1059 7.53009C12.4905 7.53009 12.8022 7.21837 12.8022 6.83386C12.8022 6.44934 12.4905 6.13762 12.1059 6.13762L2.25922 6.13763Z" fill="#00B7FF"/>
-                                            <path d="M5.96771 11.2393L5.96771 11.9355C5.96771 12.3201 6.27942 12.6318 6.66394 12.6318C7.04846 12.6318 7.36017 12.3201 7.36017 11.9355L7.36016 1.39259C7.36016 1.00808 7.04845 0.696363 6.66393 0.696363C6.27941 0.696363 5.9677 1.00808 5.9677 1.3926L5.96771 11.2393Z" fill="#00B7FF"/>
-                                            </svg>Добавить</span>
-                                        <input type="button" name="addCover" class="input-file-hidden" @click="showTargeting">
-                                    </label>
-                                </div>
-
-                                <div class="col-6">
-                                    <label class="btn btn-outline-second btn-centered-content is-small">
-                                        <!--<span v-if="files.audience">
-                                            <span class="input-file-name">{{ files.audience }}</span>
-                                        </span>
-                                        <span v-else>-->
-                                            <span class="input-file-label">
-                                                <span class="icon-is-left icon-is-load-grey"></span>Загрузить персонализацию
-                                            </span>
-                                        <!--</span>-->
-                                        <input type="file" name="audience" class="input-file-hidden" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" @change="handleUpload('audience')">
-                                    </label>
+                            <div class="articles_create-block">
+                                <div class="articles_create__item">
+                                    <p class="articles_create__item-title">Аудитория</p>
+                                    <div class="articles_create__item-content">
+                                        <div class="articles_create__grid width-half column-gap-50">
+                                            <div class="articles_create__grid-block">
+                                                <button class="articles_create-add_btn" @click="showTargeting" type="button"><span class="icon-left">Добавить</span></button>
+                                            </div>
+                                            <div class="articles_create__grid-block">
+                                                <div class="articles_create__item-file buttonAddFile">
+                                                    <input type="file" name="audience" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" @change="handleUpload('audience')">
+                                                    <p><span data-placeholder="Загрузить персональную аудиторию"></span></p>
+                                                    <button class="delete_file deleteFile" type="button"></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="row mb-4" style="display: none;" id="block_targeting">
-                                <div class="article-edit__text col-3">
-                                    Таргетинг
+                            <div class="articles_create-block" v-show="targeting">
+                                <div class="articles_create__item">
+                                    <p class="articles_create__item-title">Таргетинг</p>
+                                    <div class="articles_create__item-content">
+                                        <div class="articles_create__grid width-half column-gap-50">
+                                            <div class="articles_create__grid-block">
+                                                <select class="articles_create-select" v-model="options.selected.category">
+                                                    <option v-for="item in options.category" :value="item.id" :key="item.id">
+                                                        {{ item.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="articles_create__grid-block">
+                                                <div class="articles_create__several">
+                                                    <div class="articles_create__several-block">
+                                                        <select class="articles_create-select" v-model="options.selected.region">
+                                                            <option v-for="item in options.region" :value="item.id" :key="item.id">
+                                                                {{ item.name }}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <!--<div class="articles_create__several-block">
+                                                        <select class="articles_create-select">
+                                                            <option value="1" selected>Вся Украина</option>
+                                                            <option value="2">Харьковская обл.</option>
+                                                            <option value="3">Киевская обл.</option>
+                                                        </select>
+                                                        <button class="articles_create-plus"></button>
+                                                    </div>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-4">
-                                    <label class="btn btn-outline-second btn-centered-content is-small">
-                                        <select class="form-control" v-model="options.selected.category">
-                                            <option v-for="item in options.category" :value="item.id" :key="item.id">
-                                                {{ item.name }}
-                                            </option>
-                                        </select>
-                                    </label>
-                                </div>
-
-                                <div class="col-4">
-                                    <label class="btn btn-outline-second btn-centered-content is-small">
-                                        <select class="form-control" v-model="options.selected.region">
-                                            <option v-for="item in options.region" :value="item.id" :key="item.id">
-                                                {{ item.name }}
-                                            </option>
-                                        </select>
-                                    </label>
+                            </div>
+                            <div class="articles_create-block" v-show="block_content">
+                                <div class="articles_create__item">
+                                    <p class="articles_create__item-title height-47">Контент</p>
+                                    <div class="articles_create__item-content">
+                                        <div class="articles_create__grid width-third column-gap-25">
+                                            <div class="articles_create__grid-block">
+                                                <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(2)"><span class="icon-right">Создать</span></button>
+                                            </div>
+                                            <!--<div class="articles_create__grid-block">
+                                                <div class="articles_create__study">
+                                                    <p class="articles_create__study-title">Исследование 1.1</p>
+                                                    <div class="articles_create__study-controls">
+                                                        <button class="articles_create__study-button articles_create__study-button--edit"></button>
+                                                        <button class="articles_create__study-button articles_create__study-button--delete"></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="articles_create__grid-block">
+                                                <div class="articles_create__study">
+                                                    <p class="articles_create__study-title">Исследование 1.2</p>
+                                                    <div class="articles_create__study-controls">
+                                                        <button class="articles_create__study-button articles_create__study-button--edit"></button>
+                                                        <button class="articles_create__study-button articles_create__study-button--delete"></button>
+                                                    </div>
+                                                </div>
+                                            </div>-->
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="row mb-4" style="display: none;" id="block_content">
+                            <!--<div class="row mb-4" style="display: none;" id="block_content">
                                 <div class="article-edit__text col-3">
                                     Контент
                                 </div>
@@ -124,23 +141,12 @@
                                     </ValidationProvider>
                                 </div>
 
-                            </div>
-
-                            <div class="col-12 text-center">
-                                <button type="button" class="btn btn-outline-primary" @click="showContent">
-                                    <template v-if="finishProject">Сохранить</template>
-                                    <template v-else>Далее</template>
-                                </button>
-                            </div>
-
-                            <!--<div class="row">
-                                <div class="col-12 text-center">
-                                    <button type="button" class="btn btn-outline-primary" @click="submitForm">
-                                        <template v-if="finishProject">Сохранить</template>
-                                        <template v-else>Далее</template>
-                                    </button>
-                                </div>
                             </div>-->
+
+                            <button class="articles_create-submit button-border" type="button" @click="showContent">
+                                <template v-if="finishProject">Сохранить</template>
+                                <template v-else>Далее</template>
+                            </button>
                         </div>
 
                         <div v-show="getStep == 2">
@@ -620,9 +626,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </ValidationObserver>
+                    </form>
+                </ValidationObserver>
+            </div>
         </div>
     </v-content>
 </template>
@@ -695,7 +701,9 @@
                 test: this.$store.state.tests,
                 picked: 'test',
                 type: 'easy',
-                new_user: ''
+                new_user: '',
+                targeting: false,
+                block_content: false
             }
         },
         computed: {
@@ -797,7 +805,7 @@
             },
             handleUpload(fileName) {
                 //if ( typeof this.files[fileName] !== 'undefined' ) {
-                    if (event.target.files[0].size <= 1024 * 1024) {
+                    if (event.target.files[0].size <= 1024 * 1024 * 1024) {
                         //this.files[fileName] = event.target.files[0].name;
                         this.options.files.cover = event.target.files[0]
                     } else {
@@ -807,7 +815,8 @@
                 //}
             },
             showTargeting() {
-                $('#block_targeting').show()
+                //$('#block_targeting').show()
+                this.targeting = true
             },
             validate() {
                 this.$refs.form.validate().then( success => {
@@ -835,8 +844,13 @@
                     this.errorTitle = 'Требуется указать название'
                 }
 
+                if (this.options.title.length > 50) {
+                    this.errorTitle = 'Требуется указать название не больше 50 символов'
+                }
+
                 if (this.errorTitle === '' && this.errorFile === '') {
-                    $('#block_content').show()
+                    //$('#block_content').show()
+                    this.block_content = true;
                 }
             },
             nextStep() {

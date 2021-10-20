@@ -1,5 +1,5 @@
 <template>
-    <a href="#" class="article-edit__close" aria-label="закрити" title="закрити" @click="$emit('click')"></a>
+    <button class="articles_create-close" @click="$emit('click')"></button>
 </template>
 
 <script>

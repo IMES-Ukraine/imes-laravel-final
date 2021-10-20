@@ -142,7 +142,8 @@ export default new Vuex.Store({
         checkbox: {
             0: 'Разблокувати',
             1: 'Заблокувати'
-        }
+        },
+        statusAddAnswer: true
     },
     getters: {
         currentStep: state => {
