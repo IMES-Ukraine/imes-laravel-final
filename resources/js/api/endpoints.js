@@ -2,7 +2,7 @@
 //const BASE_URL = 'http://imes-laravel.local/'
 // const BASE_URL = 'http://imes.nextdoorcoders.com/'
 //const BASE_URL = 'https://laravel-dev-final.imes.pro/'
-const BASE_URL = '172.16.1.94/'
+const BASE_URL = '/'
 
 const V1 = BASE_URL + 'api/v1/'
 //const V1 = BASE_URL + 'api/v1/'
