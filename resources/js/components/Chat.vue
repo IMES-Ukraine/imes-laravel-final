@@ -1,6 +1,6 @@
 <template>
     <v-content>
-        <div class="main-content__container">
+        <div class="main-content__container" style="height: calc(100vh - 100px); ">
             <!-- main 4 -->
             <div class="main-chat">
                 <div class="chat__block" id="chatBlock">
@@ -49,51 +49,11 @@
                     </div>
                 </div>
             </div>
-
-            <script id="template-message-item" type="text/template">
-                <div class="chat__item">
-                    <div class="chat-message ${class}">
-                        ${content}
-                    </div>
-                </div>
-            </script>
         </div>
 
     </v-content>
 
 </template>
-<style>
-.chat__item {
-    padding-left: 27px;
-    padding-right: 25px;
-    line-height: 1;
-}
-
-.chat-message {
-    position: relative;
-    display: inline-block;
-    vertical-align: top;
-    min-width: 175px;
-    max-width: 50%;
-    padding: 10px 20px;
-    background-color: #E5E6EA;
-    -webkit-border-radius: 18px;
-    border-radius: 18px;
-    color: #000;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 1.25;
-    margin: 5px 0;
-}
-
-.chat-message.is-my {
-    float: right;
-    background-color: #00B7FF;
-    color: #fff;
-}
-
-</style>
-
 <script>
 
 import VContent from "./templates/Content";
@@ -145,7 +105,7 @@ export default {
             }
         },
         async chatWindow(documentId, userId) {
-
+            this.chatData = [];
             $('#current-user__id').data('request-data', {"id": userId});
 
             //     this.unsubscribe();
@@ -155,18 +115,14 @@ export default {
             let collectionRef = collection(store, 'sessions');
 
 
-            let chatWindowHtml = '';
-            let template = document.getElementById("template-message-item");
-            let templateHtml = template.innerHTML;
-
             let q = query(collection(doc(store, "sessions", documentId), 'messages'));
             const querySnapshot = await getDocs(q);
 
             querySnapshot.forEach((item) => {
                 this.chatData.push({id: item.id, data: item.data()});
-                console.log(item.id, " => ", item.data());
+                // console.log(item.id, " => ", item.data());
             });
-
+            $(".chat__outer").scrollTop($(".chat__outer")[0].scrollHeight);
 
             /*
 
