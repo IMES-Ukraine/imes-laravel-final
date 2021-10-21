@@ -39,7 +39,6 @@ class ProjectsController extends Controller
      */
     public function index() {
         $data = Projects::with('tags')->get();
-
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 

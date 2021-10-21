@@ -27,6 +27,11 @@ export default new Router({
             component: () => import("../components/Notification.vue")
         },
         {
+            path: "/chat",
+            name: "chat",
+            component: () => import("../components/Chat.vue")
+        },
+        {
             path: "/verification",
             name: "accountsVerification",
             component: () => import("../components/Verification")
