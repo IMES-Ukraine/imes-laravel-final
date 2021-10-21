@@ -308,15 +308,11 @@
                                                 </div>
                                                 <div class="articles_create__grid-block">
                                                     <div class="articles_create__field_with_label">
-                                                        <div class="articles_create__field_with_label-checkbox">
-                                                            <v-checkbox
-                                                                :id="'can-retake-button'"
-                                                                :name="'can-retake-button'"
-                                                                v-model="test.canRetake"
-                                                            />
-                                                            <i></i>
-                                                            <p>Повторное прохождение</p>
-                                                        </div>
+                                                        <v-checkbox
+                                                            :id="'can-retake-button'"
+                                                            :name="'can-retake-button'"
+                                                            v-model="test.canRetake"
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
@@ -501,25 +497,67 @@
                         </div>
 
                         <div v-show="getStep == 4">
+                            <p class="articles_create-title">Создание теста</p>
                             <project-close/>
-                            <h4>Создание</h4>
 
-                            <div class="col-12">
+                            <div class="articles_create-block">
+                                <div class="articles_create__item">
+                                    <p class="articles_create__item-title">Создание</p>
+                                    <div class="articles_create__item-content">
+                                        <div class="articles_create__grid width-half column-gap-50">
+                                            <div class="articles_create__grid-block">
+                                                <div class="articles_create__sorting">
+                                                    <input type="radio" name="radio" id="one" value="test" v-model="picked" checked="">
+                                                    <p><span class="icon-plus">Теста</span></p>
+                                                </div>
+                                            </div>
+                                            <div class="articles_create__grid-block">
+                                                <div class="articles_create__sorting">
+                                                    <input type="radio" name="radio" id="two" value="survey" v-model="picked">
+                                                    <p><span class="icon-plus">Опроса</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="col-12">
                                 <input type="radio" name="radio" id="one" value="test" v-model="picked">
                                 <label for="one">Теста</label>
                                 <input type="radio" name="radio" id="two" value="survey" v-model="picked">
                                 <label for="two">Опроса</label>
                                 <br>
-                            </div>
+                            </div>-->
 
                             <div v-if="picked === 'test'">
-                                <div class="col-12">
+                                <div class="articles_create-block">
+                                    <div class="articles_create__item">
+                                        <p class="articles_create__item-title">Формат теста</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__grid width-half column-gap-50">
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__sorting">
+                                                        <input type="radio" name="radio_type" id="easy" value="easy" v-model="type" checked="">
+                                                        <p><span class="icon-plus">Простой</span></p>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__sorting">
+                                                        <input type="radio" name="radio_type" id="complex" value="complex" v-model="type">
+                                                        <p><span class="icon-plus">Сложный</span></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--<div class="col-12">
                                     <input type="radio" name="radio_type" id="easy" value="easy" v-model="type">
                                     <label for="easy">Простой</label>
                                     <input type="radio" name="radio_type" id="complex" value="complex" v-model="type">
                                     <label for="complex">Сложный</label>
                                     <br>
-                                </div>
+                                </div>-->
 
                                 <div v-if="type === 'easy'">
                                     <div v-for="item in questions" v-bind:key="item.title">

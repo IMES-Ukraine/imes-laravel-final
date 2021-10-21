@@ -1,19 +1,19 @@
 <template>
-    <div class="article-edit__btn-pos custom-checkbox">
+    <div class="articles_create__field_with_label-checkbox">
         <input
-            class="custom-checkbox__input"
             type="checkbox"
             :checked="checked"
             :name="name"
             :aria-label="ariaLabel"
-            :id="id"
             v-model="status"
             @click="update"
         >
-        <label
+        <!--<label
             :for="id"
             class="custom-checkbox__label">
-        </label>
+        </label>-->
+        <i></i>
+        <p>Повторное прохождение</p>
     </div>
 </template>
 

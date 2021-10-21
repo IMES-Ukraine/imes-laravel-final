@@ -124,14 +124,14 @@ class ProfileController extends Controller
         $file->attachment_type = 'App\Models\TestQuestions';
         $data = $file->beforeSave();
 
-        $apiUser = Auth::user();
+        /*$apiUser = Auth::user();
 
         $helper = new ImageHelper( $apiUser);
         $response = $helper->uploadImage( $type, $data);
 
         if( !$response){
             return $this->helpers->apiArrayResponseBuilder(401, 'error', []);
-        }
+        }*/
 
         $arr = [
             'status_code' => 200,

@@ -103,7 +103,7 @@ class ProjectsController extends Controller
             'options' => 'required',
             'options.title' => 'required',
             'articles' => 'required',
-            //'articles.*.images.cover.id' => 'required',
+            'articles.*.images.cover.id' => 'required',
             'tests'    => 'required',
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -130,8 +130,7 @@ class ProjectsController extends Controller
     /**
      * Set cover articles and license image
      */
-    public function setImage( $type){
-
+    public function setImage(){
         $file = new File;
         $file->data = \Illuminate\Support\Facades\Request::file('file');
         $file->is_public = true;
