@@ -18,8 +18,8 @@ class ArticleService
         $model->slug = uniqid();
         $model->published = true;
         $model->content_html = '';
-        $model->type = $article['type'];
-        $model->learning_bonus = $article['points'];
+        $model->type = 1;//$article['type'];
+        $model->learning_bonus = 12.0;//$article['points'];
         $model->is_popular = rand(0,1);
         $model->action = $action;
         $model->user_id = 0;//$article['user_id']['id'];

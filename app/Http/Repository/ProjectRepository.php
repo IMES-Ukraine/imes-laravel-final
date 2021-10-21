@@ -87,13 +87,12 @@ class ProjectRepository
         $project->options = $request->input('options');
         $isProjectSaved = $project->save();
 
-
         foreach ( $projectItems as $item) {
             $items = new ProjectItems;
             $items->item_type = $item['type'];
             $items->project_id = $project->id;
             $items->item_id    = $item['id'];
-            $items->data    = $request->post('content', []);
+            $items->data    = json_encode($request->post('content', []));
             $isProjectItemsSaved = $items->save();
         }
 

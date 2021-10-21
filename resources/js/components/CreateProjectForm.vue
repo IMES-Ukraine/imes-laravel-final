@@ -151,199 +151,182 @@
 
                         <div v-show="getStep == 2">
                             <project-close/>
-                            <h4>
-                                <center>Створення пакета контента</center>
-                            </h4>
-                            <br>
-
-                            <div class="row mb-4">
-                                <div class="article-edit__text col-3">
-                                    Выбор шаблона
-                                </div>
-                                <div class="col-9">
-                                    <div class="row">
-                                        <div class="col-6 mb-2">
-                                            <ValidationProvider>
-                                                <router-link :to="{path:'/project/content'}" @click.native="storeProject">
-                                                    <PlusButton label="Партнерский пакет №1"></PlusButton>
-                                                </router-link>
-                                            </ValidationProvider>
-                                        </div>
-                                        <div class="col-6 mb-2">
-                                            <ValidationProvider>
-                                                <router-link :to="{path:'/project/content'}" @click.native="storeProject">
-                                                    <PlusButton label="Уникальный пакет"></PlusButton>
-                                                </router-link>
-                                            </ValidationProvider>
+                            <p class="articles_create-title">Создание пакета контента</p>
+                            <div class="articles_create-box">
+                                <div class="articles_create-block">
+                                    <div class="articles_create__item">
+                                        <p class="articles_create__item-title">Выбор шаблона</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__grid width-half column-gap-50">
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__sorting">
+                                                        <input type="radio" name="sorting-1" checked="">
+                                                        <p><span class="icon-plus">Партнерский пакет №1</span></p>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__sorting">
+                                                        <input type="radio" name="sorting-1">
+                                                        <p><span class="icon-plus">Уникальный пакет</span></p>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <hr>
-                            <div class="row mb-4">
-                                <div class="article-edit__text col-3">
-                                    Називання
-                                </div>
-                                <div class="col-9">
-                                    <div class="row">
-                                        <div class="col-12 mb-2">
-                                            <validation-provider
-                                                rules="required"
-                                                v-slot="{ errors }">
+                                <div class="articles_create-block">
+                                    <div class="articles_create__item">
+                                        <p class="articles_create__item-title">Название</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__name-block">
+                                                <validation-provider
+                                                    rules="required|max:35"
+                                                    :custom-messages="{ max: 'Максимальное количество 35 символов' }"
+                                                    v-slot="{ errors }">
 
-                                                <input
-                                                    class="form-control"
-                                                    type="text"
-                                                    v-model="content.title">
+                                                    <input
+                                                        class="form-control"
+                                                        type="text"
+                                                        v-model="content.title">
+                                                    <span class="errors">{{ errors[0] }}</span>
+                                                </validation-provider>
+                                                <p class="articles_create__name-note">35 символов</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="articles_create__item">
+                                        <p class="articles_create__item-title height-47">Статьи</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__grid width-main-1">
+                                                <div class="articles_create__grid-block">
+                                                    <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(3)" id="add_new_article_button"><span class="icon-right">Создать</span></button>
+                                                    <div class="articles_create__study" id="add_new_article">
+                                                        <p class="articles_create__study-title">Статья 1.1. Заголовок статьи</p>
+                                                        <div class="articles_create__study-controls">
+                                                            <button class="articles_create__study-button articles_create__study-button--edit" @click.prevent="setStep(3)" type="button"></button>
+                                                            <button class="articles_create__study-button articles_create__study-button--delete" @click.prevent="reloadBlockArticle"></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__field_with_label">
+                                                        <p class="articles_create__field_with_label-label">Количество</p>
+                                                        <validation-provider rules="required" v-slot="{ errors }">
+                                                            <input
+                                                                type="number"
+                                                                class="form-control"
+                                                                name="name"
+                                                                v-model="content.count">
 
-                                                <span class="errors">{{ errors[0] }}</span>
-                                            </validation-provider>
+                                                            <span class="errors">{{ errors[0] }}</span>
+                                                        </validation-provider>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__field_with_label">
+                                                        <p class="articles_create__field_with_label-label">Баллы</p>
+                                                        <validation-provider
+                                                            rules="required"
+                                                            v-slot="{ errors }">
+
+                                                            <input
+                                                                type="number"
+                                                                class="form-control"
+                                                                name="name"
+                                                                v-model="content.points">
+
+                                                            <span class="errors">{{ errors[0] }}</span>
+                                                        </validation-provider>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__field_with_label">
+                                                        <p class="articles_create__field_with_label-label">Частота</p>
+                                                        <validation-provider
+                                                            rules="required"
+                                                            v-slot="{ errors }">
+
+                                                            <input
+                                                                class="form-control"
+                                                                type="number"
+                                                                name="name"
+                                                                v-model="content.frequency">
+
+                                                            <span class="errors">{{ errors[0] }}</span>
+                                                        </validation-provider>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="articles_create__item">
+                                        <p class="articles_create__item-title height-47">Тесты</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__grid width-main-1">
+                                                <div class="articles_create__grid-block">
+                                                    <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(4)" id="add_new_test_button"><span class="icon-right">Создать</span></button>
+                                                    <div class="articles_create__study" id="add_new_test">
+                                                        <p class="articles_create__study-title">Статья 1.1. Заголовок статьи</p>
+                                                        <div class="articles_create__study-controls">
+                                                            <button class="articles_create__study-button articles_create__study-button--edit" type="button" @click.prevent="setStep(4)"></button>
+                                                            <button class="articles_create__study-button articles_create__study-button--delete" type="button" @click.prevent="reloadBlockSurveyTest"></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__field_with_label">
+                                                        <p class="articles_create__field_with_label-label">Количество</p>
+                                                        <validation-provider
+                                                            rules="required"
+                                                            v-slot="{ errors }">
+
+                                                            <input
+                                                                class="form-control"
+                                                                type="number"
+                                                                name="name"
+                                                                v-model="test.count">
+                                                            <span class="errors">{{ errors[0] }}</span>
+                                                        </validation-provider>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__field_with_label">
+                                                        <p class="articles_create__field_with_label-label">Баллы</p>
+                                                        <validation-provider
+                                                            rules="required"
+                                                            v-slot="{ errors }">
+
+                                                            <input
+                                                                class="form-control"
+                                                                type="number"
+                                                                name="name"
+                                                                v-model="test.points">
+
+                                                            <span class="errors">{{ errors[0] }}</span>
+                                                        </validation-provider>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__grid-block">
+                                                    <div class="articles_create__field_with_label">
+                                                        <div class="articles_create__field_with_label-checkbox">
+                                                            <v-checkbox
+                                                                :id="'can-retake-button'"
+                                                                :name="'can-retake-button'"
+                                                                v-model="test.canRetake"
+                                                            />
+                                                            <i></i>
+                                                            <p>Повторное прохождение</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-
-                            <div class="row mb-4">
-                                <div class="article-edit__text col-3">
-                                    Статтi
-                                </div>
-                                <div class="col-3">
-                                    <div @click.prevent="setStep(3)"><PlusButton label="Додати"></PlusButton></div>
-                                    <!--<router-link
-                                        :to="{name:'createArticle'}"
-                                        @click.native="storeContent">
-
-                                        <PlusButton label="Додати"></PlusButton>
-                                    </router-link>-->
-                                </div>
-                                <div class="col-2">
-                                    <div class="row">
-                                        <div class="col-12 mb-2">
-                                            <validation-provider rules="required" v-slot="{ errors }">
-                                                <input
-                                                    type="number"
-                                                    class="form-control"
-                                                    name="name"
-                                                    v-model="content.count"
-                                                    placeholder="Кiлькiсть">
-
-                                                <span class="errors">{{ errors[0] }}</span>
-                                            </validation-provider>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <div class="row">
-                                        <div class="col-12 mb-2">
-                                            <validation-provider
-                                                rules="required"
-                                                v-slot="{ errors }">
-
-                                                <input
-                                                    type="number"
-                                                    class="form-control"
-                                                    name="name"
-                                                    v-model="content.points"
-                                                    placeholder="Бали">
-
-                                                <span class="errors">{{ errors[0] }}</span>
-                                            </validation-provider>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <div class="row">
-                                        <div class="col-12 mb-2">
-                                            <validation-provider
-                                                rules="required"
-                                                v-slot="{ errors }">
-
-                                                <input
-                                                    class="form-control"
-                                                    type="number"
-                                                    name="name"
-                                                    v-model="content.frequency"
-                                                    placeholder="Частота">
-
-                                                <span class="errors">{{ errors[0] }}</span>
-                                            </validation-provider>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-4">
-                                <div class="article-edit__text col-3">
-                                    Тести
-                                </div>
-                                <div class="col-3">
-                                    <div @click.prevent="setStep(4)" id="add_new_test_button"><PlusButton label="Створити новий"></PlusButton></div>
-                                    <div id="add_new_test">
-                                        <span></span>
-                                        <div @click.prevent="setStep(4)"><i class="fa fa-pencil" aria-hidden="true"></i></div>
-                                        <div @click.prevent="reloadBlockSurveyTest"><i class="fa fa-trash" aria-hidden="true"></i></div>
-                                    </div>
-                                    <!--<PlusButton label="Створити новий"></PlusButton>
-                                    <router-link :to="{ name:'test' }">
-                                        <input type="button" name="addCover" id="addCover" class="input-file-hidden"
-                                               @click.native="storeContent">
-                                    </router-link>-->
-                                </div>
-                                <div class="col-2">
-                                    <div class="row">
-                                        <div class="col-12 mb-2">
-                                            <validation-provider
-                                                rules="required"
-                                                v-slot="{ errors }">
-
-                                                <input
-                                                    class="form-control"
-                                                    type="number"
-                                                    name="name"
-                                                    v-model="test.count"
-                                                    placeholder="Кiлькiсть">
-                                                <span class="errors">{{ errors[0] }}</span>
-                                            </validation-provider>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <div class="row">
-                                        <div class="col-12 mb-2">
-                                            <validation-provider
-                                                rules="required"
-                                                v-slot="{ errors }">
-
-                                                <input
-                                                    class="form-control"
-                                                    type="number"
-                                                    name="name"
-                                                    v-model="test.points"
-                                                    placeholder="Бали">
-
-                                                <span class="errors">{{ errors[0] }}</span>
-                                            </validation-provider>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <div class="row">
-                                        <v-checkbox
-                                            :id="'can-retake-button'"
-                                            :name="'can-retake-button'"
-                                        />
-                                        Повторне проходження
-                                    </div>
-                                </div>
+                                <p class="articles_create-note">1 пользователь = 1 тест + 2 статьи = 60 баллов</p>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 text-center">
-                                    <button type="button" class="btn btn-outline-primary" @click="submitForm">
-                                        Зберегти
-                                    </button>
-                                </div>
-                            </div>
+                            <button class="articles_create-submit button-gradient" type="button" @click="submitForm">сохранить</button>
                         </div>
 
                         <div v-show="getStep == 3">
@@ -373,6 +356,7 @@
                                                     class="form-control"
                                                     type="text"
                                                     name="title"
+                                                    id="article_title"
                                                     v-model="articles.title"
                                                 >
                                             </label>
@@ -409,7 +393,8 @@
                             <!-- article-cover -->
                             <article-input-cover
                                 v-bind:file.sync="images"
-                                :file-key="'cover'"
+                                :file-key="'article'"
+                                @change="handleUpload('article')"
                             />
                             <!-- end-article-cover -->
 
@@ -512,7 +497,7 @@
                             <!-- end-article-form-recommend-article -->
 
                             <!-- publish button -->
-                            <v-button @click="submitForm"/>
+                            <v-button @click="saveArticle"/>
                             <!-- end publish button -->
                         </div>
 
@@ -634,7 +619,7 @@
 </template>
 <script>
     //import {required/*,minLength*/} from 'vuelidate/lib/validators'
-    import {ARTICLE, USER, USER_CREATE_NAME, PROJECT} from "../api/endpoints";
+    import {ARTICLE, USER, USER_CREATE_NAME, PROJECT, ARTICLE_COVER, PROJECT_IMAGE} from "../api/endpoints";
     import { ValidationProvider, ValidationObserver } from 'vee-validate'
     import PlusButton from './controls/PlusButton'
     import VContent from "./templates/Content"
@@ -766,18 +751,28 @@
                         return;
                     }
 
-                    console.log(this.options)
-                    let formData = new FormData();
-                    //formData.append('coverImage', this.files.cover)
-                    //formData.append('audienceDatabase', this.files.audience)
-                    formData.append('options', this.options)
-                    formData.append('articles', this.articles)
-                    formData.append('tests', this.tests)
-                    formData.append('questions', this.questions)
-                    formData.append('project', this.project)
-                    formData.append('content', this.content)
+                    let content = {
+                        "title": this.content.title,
+                        "article": {
+                            "count": this.content.count,
+                            "points": this.content.points,
+                            "frequency": this.content.frequency
+                        },
+                        "test": {
+                            "count": this.test.count,
+                            "points": this.test.points,
+                            "canRetake": this.test.canRetake
+                        }
+                    }
 
-                    this.$post(PROJECT, formData)
+                    console.log(content)
+
+                    this.$post(PROJECT, {
+                        options: this.options,
+                        articles: this.articles,
+                        tests: this.questions,
+                        content: content
+                    })
                         .then((res) => {
                             this.$router.push({ name: 'projectList' });
                         })
@@ -954,7 +949,7 @@
             saveTestSurvey() {
                 $('#add_new_test_button').hide();
                 $('#add_new_test').show();
-                $('#add_new_test span').html($('#survey_question_title').val());
+                $('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
 
                 this.currentStep = 2
                 this.$store.dispatch('nextStep')
@@ -962,7 +957,15 @@
             saveTest() {
                 $('#add_new_test_button').hide();
                 $('#add_new_test').show();
-                $('#add_new_test span').html($('#question_title').val());
+                $('#add_new_test .articles_create__study-title').html($('#question_title').val());
+
+                this.currentStep = 2
+                this.$store.dispatch('nextStep')
+            },
+            saveArticle() {
+                $('#add_new_article_button').hide();
+                $('#add_new_article').show();
+                $('#add_new_article .articles_create__study-title').html($('#article_title').val());
 
                 this.currentStep = 2
                 this.$store.dispatch('nextStep')
@@ -995,9 +998,33 @@
                 //this.currentStep = 4
                 //this.$store.dispatch('nextStep')
             },
+            reloadBlockArticle() {
+                for (const [index, value] of Object.entries(this.articles)) {
+                    this.articles.splice(index, 1)
+                    //return
+                }
+
+                $('#add_new_article_button').show();
+                $('#add_new_article').hide();
+            },
             getType (value) {
                 this.$emit('update', value);
-            }
+            },
+            /*saveArticleImage(event) { //console.log(event.target);
+                let imageForm = new FormData();
+                //imageForm.append('file', this.$refs.add_cover.files[0]);
+                imageForm.append('file', event.target.files[0]);
+                this.$post(ARTICLE_COVER + event.target.dataset.ref,
+                    imageForm,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                ).then((file) => {
+                    this.articles.files[event.target.dataset.ref] = file.data
+                })
+            }*/
         },
         mounted() {
             this.addQuestion()
@@ -1026,6 +1053,9 @@
       font-size: 0.8rem;
   }
   #add_new_test {
+      display: none;
+  }
+  #add_new_article {
       display: none;
   }
 </style>

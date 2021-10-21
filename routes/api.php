@@ -84,7 +84,7 @@ Route::group(
                 Route::get('/{id}', [ProjectsController::class, 'show']);
                 Route::post('/{id}', [ProjectsController::class, 'update']);
                 Route::post('/', [ProjectsController::class, 'create']);
-
+                Route::post('/cover/{type}', [ProjectsController::class, 'setImage']);
                 Route::post('/image/{type}', [ProfileController::class, 'setImage']);
             }
         );

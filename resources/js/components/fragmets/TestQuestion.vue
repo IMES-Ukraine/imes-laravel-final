@@ -62,7 +62,7 @@
                     Питання
                 </div>
                 <div class="col-9">
-                    <textarea class="form-control" rows="4" v-model="question.text"></textarea>
+                    <textarea class="form-control" name="text" rows="4" v-model="question.text"></textarea>
                     <!--<div class="error" v-if="$v.text.$error">
                         Текст вопроса обязателен
                     </div>-->

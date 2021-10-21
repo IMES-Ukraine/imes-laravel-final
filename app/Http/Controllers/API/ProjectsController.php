@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers;
+use App\Models\File;
+use App\Models\ImageHelper;
 use App\Models\ProjectItems;
 use App\Models\Tag;
 use Carbon\Carbon;
@@ -101,7 +103,7 @@ class ProjectsController extends Controller
             'options' => 'required',
             'options.title' => 'required',
             'articles' => 'required',
-            'articles.*.images.cover.id' => 'required',
+            //'articles.*.images.cover.id' => 'required',
             'tests'    => 'required',
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -123,6 +125,36 @@ class ProjectsController extends Controller
             'type' => 'test_submit',
             'project' => $project->data
         ]);
+    }
+
+    /**
+     * Set cover articles and license image
+     */
+    public function setImage( $type){
+
+        $file = new File;
+        $file->data = \Illuminate\Support\Facades\Request::file('file');
+        $file->is_public = true;
+        $file->field = 'cover_image';
+        $file->attachment_type = 'App\Models\Articles';
+        $data = $file->beforeSave();
+
+        //$apiUser = Auth::user();
+
+        /*$helper = new ImageHelper( $apiUser);
+        $response = $helper->uploadImage( $type, $data);
+
+        if( !$response){
+            return $this->helpers->apiArrayResponseBuilder(401, 'error', []);
+        }*/
+
+        $arr = [
+            'status_code' => 200,
+            'message' => 'success',
+            'data' => $file
+        ];
+        return response()->json($arr, 200);
+        //return $this->helpers->apiArrayResponseBuilder(200, 'success', [$file]);
     }
 
 }
