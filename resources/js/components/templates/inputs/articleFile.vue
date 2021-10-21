@@ -1,0 +1,111 @@
+<template>
+    <label class="btn btn-outline-second btn-centered-content upload-cover is-small" role="button">
+
+        <span class="input-file-label" role="button">
+            <span v-if="name !== ''">
+                {{ name }}
+            </span>
+            <span class="d-flex align-items-center" role="button" v-else>
+                <span class="icon-is-left icon-is-load-grey"></span>
+                Завантажити
+            </span>
+        </span>
+
+        <input
+            type="file"
+            id="articleCover"
+            name="addCover"
+            class="input-file-hidden"
+            v-on:change="handleUpload"
+            :disabled="isInvalidType()"
+            role="button"
+        >
+
+    </label>
+</template>
+
+<script>
+    import {ARTICLE_COVER} from "../../../api/endpoints";
+    import axios from 'axios'
+
+    export default {
+        name: "v-article-file",
+        data() {
+            return {
+                file: {},
+                validTypes: [
+                    'cover',
+                    'video',
+                    'variants',
+                    'article'
+                ]
+            }
+        },
+        props: {
+            type: {
+                type: String,
+                default: 'cover'
+            },
+            fileKey: {
+                type: String,
+                require: true
+            },
+            name: {
+                type: String,
+                default: ''
+            },
+        },
+        methods: {
+            async handleUpload(event) {
+                /*let imageForm = new FormData();
+                //imageForm.append('file', this.$refs.add_cover.files[0]);
+                imageForm.append('file', event.target.files[0]);
+                this.$post(ARTICLE_COVER,
+                    imageForm,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                ).then((file) => {
+                    this.articles.files[event.target.dataset.ref] = file.data
+                })*/
+
+
+
+
+                //
+                let imageForm = new FormData()
+                imageForm.append('file', event.target.files[0])
+
+                await axios.post(
+                    ARTICLE_COVER,
+                    imageForm,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                ).then((file) => {
+                    this.name = event.target.files[0].name
+                    this.file[this.fileKey] = file.data.data
+                    this.$emit('update:file', this.file);
+                }).catch((error) => {
+                    console.log(error), (this.network = false);
+                })
+
+            },
+
+            isInvalidType() {
+                let result = true
+                let type = this.type
+                this.validTypes.forEach(function(value) {
+                    if (type === value) {
+                        result = false
+                    }
+                });
+                return result
+            },
+        }
+    }
+</script>

@@ -8,8 +8,8 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/common.js') }}" defer></script>
-    <script src="{{ asset('js/jquery.maskedinput.js') }}" defer></script>
+    <script src="{{ asset('custom-js/common.js') }}" defer></script>
+    <script src="{{ asset('custom-js/jquery.maskedinput.js') }}" defer></script>
 
     <!-- Fonts -->
     <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">

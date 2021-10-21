@@ -394,7 +394,6 @@
                             <article-input-cover
                                 v-bind:file.sync="images"
                                 :file-key="'article'"
-                                @change="handleUpload('article')"
                             />
                             <!-- end-article-cover -->
 

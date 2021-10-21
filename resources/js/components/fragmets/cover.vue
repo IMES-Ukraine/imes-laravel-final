@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import VFile from "../templates/inputs/file";
+import VFile from "../templates/inputs/articleFile"
+
 export default {
     name: "fragment-form-cover",
     components: {VFile},
