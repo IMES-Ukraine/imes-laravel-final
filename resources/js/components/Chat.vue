@@ -37,9 +37,10 @@
                         <div class="chat__bottom">
                             <div class="chat-sender">
                                 <input type="text" name="chat-message is-user" class="chat-sender__input"
-                                       id="messageInput" placeholder="Введіть ваше повідомлення">
+                                       id="messageInput" placeholder="Введіть ваше повідомлення"  v-model="newMessage">
+
                                 <button id="sendButton" class="chat-sender__button"
-                                        aria-label="відправити повідомлення"></button>
+                                        aria-label="відправити повідомлення" @click="sendMessage(currentChatId, newMessage)"></button>
                                 <span id="current-user__id" data-request-data="id: 0"><button
                                     class="chat-notify__button" data-request="onSubmitSupportResponse"
                                     data-request-flash=""
@@ -74,13 +75,13 @@ export default {
             list: [],
             sessionRef: null,
             filterId: null,
-            chatData: []
+            chatData: [],
+            currentChatId: null,
+            newMessage: ''
         }
     },
     mounted() {
         this.getList();
-        console.log(this.list);
-
     },
     methods: {
         async getList() {
@@ -105,10 +106,9 @@ export default {
             }
         },
         async chatWindow(documentId, userId) {
+            this.currentChatId = userId;
             this.chatData = [];
             $('#current-user__id').data('request-data', {"id": userId});
-
-            //     this.unsubscribe();
 
             $('.chat__header').html('Чат підтримки ' + userId);
 
@@ -124,35 +124,6 @@ export default {
             });
             $(".chat__outer").scrollTop($(".chat__outer")[0].scrollHeight);
 
-            /*
-
-                    $('.chat-sender__button').data('to', documentId);
-
-
-                    unsubscribe = collectionRef.doc(documentId).collection("messages").onSnapshot(snapshot => {
-                        var received = new Promise((r, j) => {
-                            snapshot.docChanges().forEach(function (change) {
-                                if (change.type === "added") {
-
-                                    chatWindowHtml = '';
-
-                                    let messageClass = change.doc.data().fromUser ? 'is-user' : 'is-my';
-
-                                    chatWindowHtml = templateHtml.replace(/\${content}/g, change.doc.data().content)
-                                        .replace(/\${class}/g, messageClass);
-                                    r();
-                                }
-                            });
-
-                        });
-
-                        received.then(() => {
-                            $('#chatBody').append(chatWindowHtml);
-                            $(".chat__outer").scrollTop($(".chat__outer")[0].scrollHeight);
-                        });
-
-                    });
-            */
         },
         submitMessage(to, content) {
 
@@ -173,38 +144,6 @@ export default {
                 });
 
         },
-        chatList(id) {
-
-            this.db.collection('sessions').onSnapshot(function (doc) {
-
-                let innerHtml = '';
-
-                doc.docs.forEach(function (val) {
-
-                    let sessionId = val.id;
-
-                    if (0 === this.filterId.val().length) {
-                        if (val.data().unreadCount > 0) {
-
-                            innerHtml = innerHtml + '<li data-message="' + val.data().unreadCount + '" class="chat-contacts__item is-message" onclick="chatWindow(\'' + val.id + '\', \'' + val.id + '\' );">' + val.id + '</li>';
-                        } else {
-                            innerHtml = innerHtml + '<li class="chat-contacts__item" onclick="chatWindow(\'' + val.id + '\', \'' + val.id + '\' );">' + val.id + '</li>';
-                        }
-                    } else {
-                        if (id) if (id == sessionId) innerHtml = '<li class="chat-contacts__item" onclick="chatWindow(\'' + val.id + '\', \'' + val.id + '\' );">' + val.id + '</li>';
-                    }
-                    //console.log(this.filterId.val());
-
-
-                });
-
-                $('#contactList').html(innerHtml);
-
-            });
-        },
-        unsubscribe() {
-
-        }
     }
 }
 </script>
