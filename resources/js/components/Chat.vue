@@ -1,28 +1,48 @@
 <template>
     <v-content>
+        <template v-slot:sidebar>
+            <div class="sidebar-content__block">
+                <!-- активная в данный момент ссылка с классом is-active -->
+                <button type="button" class="btn btn-outline-primary btn-block is-active">
+                    Чати
+                </button>
+                <div class="input-group input-group mt-5 mb-4">
+                    <input type="text" id="filterId" class="form-control input-is-small input-has-append"
+                           placeholder="пошук по № аккаунта"
+                           v-model="filterId"
+                           aria-label="пошук по № аккаунта" >
+                    <div class="input-group-append">
+                        <button class="button-group-input" aria-label="знайти" @click="findChat()">
+                            <span class="icon-is-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+
         <div class="main-content__container" style="height: calc(100vh - 100px); ">
             <!-- main 4 -->
             <div class="main-chat">
                 <div class="chat__block" id="chatBlock">
                     <div class="chat__contacts" style="overflow: hidden;">
-                        <ul class="chat-contacts__list js-scroller-chat-list _scrollbar" id="contactList"
-                            style="overflow-y: scroll; box-sizing: border-box; margin: 0px; border: 0px none; width: 222px; min-width: 222px; max-width: 222px;"
-                            data-baron-v-id="1">
+                        <ul class="chat-contacts__list js-scroller-chat-list _scrollbar" id="contactList" >
+
                             <li v-for="item in list"
-                                class="chat-contacts__item"
+                                :class="{unread: item.unread, current: (item.id == currentChatId), 'chat-contacts__item': true}"
+                                :key="item.id"
                                 @click="chatWindow(item.id, item.id )">
                                 {{ item.id }}
+                                <div v-if="item.unread > 0" class="unread_count">{{ item.unread }}</div>
                             </li>
-
                         </ul>
                     </div>
                     <div class="chat__messages" id="chatWindow" style="overflow: hidden;">
                         <div class="chat__header">
-
+                            Чат підримки користувача {{ currentChatId }}
                         </div>
                         <div class="chat__outer js-scroller-chat"
-                             style="overflow-y: scroll; box-sizing: border-box; margin: 0px; border: 0px none; width: 503px; min-width: 503px; max-width: 503px;"
-                             data-baron-v-id="0">
+                            data-baron-v-id="0">
                             <div class="chat__body" id="chatBody">
 
                                 <div v-for="item in chatData"
@@ -30,6 +50,7 @@
                                     <div :class="  item.data.fromUser ? 'chat-message is-user' : 'chat-message is-my' ">
                                         {{ item.data.content }}
                                     </div>
+
                                 </div>
 
                             </div>
@@ -37,14 +58,19 @@
                         <div class="chat__bottom">
                             <div class="chat-sender">
                                 <input type="text" name="chat-message is-user" class="chat-sender__input"
-                                       id="messageInput" placeholder="Введіть ваше повідомлення"  v-model="newMessage">
+                                       id="messageInput" placeholder="Введіть ваше повідомлення" v-model="newMessage">
 
                                 <button id="sendButton" class="chat-sender__button"
-                                        aria-label="відправити повідомлення" @click="sendMessage(currentChatId, newMessage)"></button>
-                                <span id="current-user__id" data-request-data="id: 0"><button
-                                    class="chat-notify__button" data-request="onSubmitSupportResponse"
-                                    data-request-flash=""
-                                    style="border:none; background-color:transparent; outline:none;">🔔</button></span>
+                                        aria-label="відправити повідомлення"
+                                        @click="sendMessage(currentChatId, newMessage)">
+
+                                </button>
+                                <span id="current-user__id">
+                                    <button
+                                        class="chat-notify__button" data-request="onSubmitSupportResponse"
+                                        data-request-flash=""
+                                        style="border:none; background-color:transparent; outline:none;">🔔</button>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -55,18 +81,39 @@
     </v-content>
 
 </template>
+<style>
+.current {
+    border-color: #00B7FF;
+    border-width: 3px;
+}
+.unread {
+    background-color: lightpink;
+    position: relative;
+}
+
+.unread_count {
+    font-weight: bold;
+    float: right;
+}
+.chat__header {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+</style>
+
 <script>
+
 
 import VContent from "./templates/Content";
 import NotificationSidebar from "./templates/notification/sidebar";
-import {database, store} from "../firebase/app";
-import {limitToLast, query, ref, onValue, get} from "firebase/database";
+import {store} from "../firebase/app";
 
-import {collection, onSnapshot, getDoc, doc, getDocs} from "firebase/firestore";
+import {collection, setDoc, getDoc, doc, onSnapshot} from "firebase/firestore";
 
 
 export default {
-    name: "Notification",
+    name: "Chat",
     components: {VContent, NotificationSidebar},
     data() {
         return {
@@ -77,6 +124,7 @@ export default {
             filterId: null,
             chatData: [],
             currentChatId: null,
+            currentChat: {},
             newMessage: ''
         }
     },
@@ -85,45 +133,68 @@ export default {
     },
     methods: {
         async getList() {
-            const q = query(collection(store, "sessions"));
-            const querySnapshot = await getDocs(q);
-
-            querySnapshot.forEach((item) => {
-                // doc.data() is never undefined for query doc snapshots
-                this.list.push({id: item.id, data: item.data});
-                //      console.log(item.id, " => ", item.data());
-            });
+            onSnapshot(collection(store, "sessions"), (chatList) => {
+                this.list = [];
+                chatList.forEach((item) => {
+                    this.list.push({id: item.id, unread: item.data().unreadCount});
+                    //   console.log(item.id, " => ", item.data().unreadCount);
+                });
+            })
         },
         async getData(id) {
+            this.currentChat = {};
             const docRef = doc(store, "sessions", id);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                console.log("Document data:", docSnap.data());
+                this.currentChat = docSnap.data();
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
             }
+            return this.currentChat;
         },
-        async chatWindow(documentId, userId) {
-            this.currentChatId = userId;
+        async chatWindow(documentId) {
+            this.currentChatId = documentId;
+            await this.getData(documentId);  //получаем текущий объект чата
             this.chatData = [];
-            $('#current-user__id').data('request-data', {"id": userId});
 
-            $('.chat__header').html('Чат підтримки ' + userId);
-
-            let collectionRef = collection(store, 'sessions');
-
-
-            let q = query(collection(doc(store, "sessions", documentId), 'messages'));
-            const querySnapshot = await getDocs(q);
-
-            querySnapshot.forEach((item) => {
-                this.chatData.push({id: item.id, data: item.data()});
-                // console.log(item.id, " => ", item.data());
+            // Формируем слущателя для записей указанного чата
+            onSnapshot(collection(doc(store, "sessions", documentId), 'messages'), (chatDoc) => {
+                this.chatData = [];
+                // Загружаем записи
+                chatDoc.forEach((item) => {
+                    this.chatData.push({id: item.id, data: item.data()});
+                });
+                $(".chat__outer").scrollTop($(".chat__outer")[0].scrollHeight);
             });
-            $(".chat__outer").scrollTop($(".chat__outer")[0].scrollHeight);
+// Сбрасываем счётчик просмотров
+            if (this.currentChat.unreadCount) {
+                await setDoc(doc(store, 'sessions', documentId), {
+                    unreadCount: 0,
+                }).then(() => {
+                    this.getList();
+                });
+            }
+        },
 
+        findChat() {
+            this.chatWindow(this.filterId);
+        },
+
+        sendMessage(chatId) {
+            console.log(chatId, this.newMessage);
+            let time = String(Date.now());
+            let messData = {
+                content: this.newMessage,
+                fromUser: false,
+                isRead: false,
+                time: time,
+            };
+            setDoc(doc(doc(store, "sessions", chatId), 'messages', time ), messData).then( () => {
+                this.newMessage = '';
+                // this.chatWindow(this.currentChatId)
+            });
         },
         submitMessage(to, content) {
 
