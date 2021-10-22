@@ -38,7 +38,7 @@ class ProjectsController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function index() {
-        $data = Projects::with('tags')->get();
+        $data = Projects::with('tags')->with('items')->get();
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 
