@@ -387,10 +387,30 @@
                             <!-- end-article-title -->
 
                             <!-- article-cover -->
-                            <article-input-cover
+                            <!--<article-input-cover
                                 v-bind:file.sync="images"
                                 :file-key="'article'"
-                            />
+                                @update="articleFile"
+                            />-->
+                            <label class="btn btn-outline-second btn-centered-content upload-cover is-small" role="button">
+
+                                <span class="input-file-label" role="button">
+                                    <span class="d-flex align-items-center" role="button">
+                                        <span class="icon-is-left icon-is-load-grey"></span>
+                                        Завантажити
+                                    </span>
+                                </span>
+
+                                <input
+                                    type="file"
+                                    id="articleCover"
+                                    name="addCover"
+                                    class="input-file-hidden"
+                                    v-on:change="handleUploadArticle"
+                                    role="button"
+                                >
+
+                            </label>
                             <!-- end-article-cover -->
 
                             <!-- article-cover -->
@@ -656,7 +676,7 @@
 </template>
 <script>
     //import {required/*,minLength*/} from 'vuelidate/lib/validators'
-    import {ARTICLE, USER, USER_CREATE_NAME, PROJECT, ARTICLE_COVER, PROJECT_IMAGE} from "../api/endpoints";
+    import {ARTICLE, USER, USER_CREATE_NAME, PROJECT, ARTICLE_COVER, TOKEN} from "../api/endpoints";
     import { ValidationProvider, ValidationObserver } from 'vee-validate'
     import PlusButton from './controls/PlusButton'
     import VContent from "./templates/Content"
@@ -802,8 +822,6 @@
                         }
                     }
 
-                    console.log(content)
-
                     this.$post(PROJECT, {
                         options: this.options,
                         articles: this.articles,
@@ -830,6 +848,30 @@
                     }*/
                 })
 
+            },
+            handleUploadArticle(event) {
+                let imageForm = new FormData()
+                imageForm.append('file', event.target.files[0])
+
+                axios.post(
+                    ARTICLE_COVER,
+                    imageForm,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        },
+                        params: {
+                            access_token: TOKEN
+                        },
+                    }
+                ).then((file) => {
+                    //this.articles.*.images.cover.id
+                    this.name = event.target.files[0].name
+                    //this.file[this.fileKey] = file.data
+                    this.articles.imeges = file.data
+                    this.articles[0]['images'] = file.data.data.id
+                    //this.$emit('update:file', this.file);
+                })
             },
             storeProject() {
                 this.$store.dispatch('storeProject', this.options )
@@ -1046,22 +1088,7 @@
             },
             getType (value) {
                 this.$emit('update', value);
-            },
-            /*saveArticleImage(event) { //console.log(event.target);
-                let imageForm = new FormData();
-                //imageForm.append('file', this.$refs.add_cover.files[0]);
-                imageForm.append('file', event.target.files[0]);
-                this.$post(ARTICLE_COVER + event.target.dataset.ref,
-                    imageForm,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }
-                ).then((file) => {
-                    this.articles.files[event.target.dataset.ref] = file.data
-                })
-            }*/
+            }
         },
         mounted() {
             this.addQuestion()

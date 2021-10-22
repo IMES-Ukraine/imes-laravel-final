@@ -9,11 +9,15 @@
                 class="articles_list__block-link"
             ></router-link>
             <div class="articles_list__block-content">
-                <div class="articles_list__block-img">
-                    <logotype class="m-auto"/>
+                <div class="articles_list__block-img" v-if="options.files && options.files.cover">
+                    <cover :image="options.files.cover" :title="title" class="m-auto"/>
                 </div>
-                <ul>
-                    <li>Исследование №1</li>
+                <ul v-if="items">
+                    <template v-for="item in items">
+                        <li v-if="item.item_type=='App\\Models\\TestQuestions'">
+                            {{ item.data.title }}
+                        </li>
+                    </template>
                 </ul>
             </div>
             <div class="articles_list__block-status" v-if="options.status == 'inactive'">
@@ -23,10 +27,10 @@
 </template>
 
 <script>
-import Logotype from "../../../fragmets/logotype";
+import Cover from "../../../fragmets/cover-project";
 export default {
     name: "project-list-card",
-    components: {Logotype},
+    components: {Cover},
     data () {
         return {
             routeName: 'viewProject'
@@ -37,7 +41,7 @@ export default {
             type: Number,
             require: true
         },
-        desc: {
+        title: {
             type: String,
             require: true
         },
@@ -47,6 +51,10 @@ export default {
         },
         options: {
             type: Object,
+            require: true
+        },
+        items: {
+            type: Array,
             require: true
         }
     }
