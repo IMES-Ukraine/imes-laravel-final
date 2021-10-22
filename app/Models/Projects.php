@@ -67,4 +67,13 @@ class Projects extends Model
     {
         return $this->hasOne('App\Models\PostTag', 'post_id', 'id')->with('project_tags');
     }
+
+    /**
+     * Items
+     * @return mixed
+     */
+    public function items()
+    {
+        return $this->hasMany('App\Models\ProjectItems', 'project_id', 'id');
+    }
 }

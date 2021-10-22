@@ -200,13 +200,14 @@
                                             <div class="articles_create__grid width-main-1">
                                                 <div class="articles_create__grid-block">
                                                     <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(3)" id="add_new_article_button"><span class="icon-right">Создать</span></button>
-                                                    <div class="articles_create__study" id="add_new_article">
+                                                    <div class="articles_create__study" id="add_new_article" v-show="add_new_article">
                                                         <p class="articles_create__study-title">Статья 1.1. Заголовок статьи</p>
                                                         <div class="articles_create__study-controls">
                                                             <button class="articles_create__study-button articles_create__study-button--edit" @click.prevent="setStep(3)" type="button"></button>
                                                             <button class="articles_create__study-button articles_create__study-button--delete" @click.prevent="reloadBlockArticle"></button>
                                                         </div>
                                                     </div>
+                                                    <div v-if="errorNewArticle" class="errors">{{ errorNewArticle }}</div>
                                                 </div>
                                                 <div class="articles_create__grid-block">
                                                     <div class="articles_create__field_with_label">
@@ -233,6 +234,7 @@
                                                                 type="number"
                                                                 class="form-control"
                                                                 name="name"
+                                                                @change="onChange"
                                                                 v-model="content.points">
 
                                                             <span class="errors">{{ errors[0] }}</span>
@@ -265,13 +267,14 @@
                                             <div class="articles_create__grid width-main-1">
                                                 <div class="articles_create__grid-block">
                                                     <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(4)" id="add_new_test_button"><span class="icon-right">Создать</span></button>
-                                                    <div class="articles_create__study" id="add_new_test">
+                                                    <div class="articles_create__study" id="add_new_test" v-show="add_new_test">
                                                         <p class="articles_create__study-title">Статья 1.1. Заголовок статьи</p>
                                                         <div class="articles_create__study-controls">
                                                             <button class="articles_create__study-button articles_create__study-button--edit" type="button" @click.prevent="setStep(4)"></button>
                                                             <button class="articles_create__study-button articles_create__study-button--delete" type="button" @click.prevent="reloadBlockSurveyTest"></button>
                                                         </div>
                                                     </div>
+                                                    <div v-if="errorNewTest" class="errors">{{ errorNewTest }}</div>
                                                 </div>
                                                 <div class="articles_create__grid-block">
                                                     <div class="articles_create__field_with_label">
@@ -300,6 +303,7 @@
                                                                 class="form-control"
                                                                 type="number"
                                                                 name="name"
+                                                                @change="onChange"
                                                                 v-model="test.points">
 
                                                             <span class="errors">{{ errors[0] }}</span>
@@ -319,10 +323,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="articles_create-note">1 пользователь = 1 тест + 2 статьи = 60 баллов</p>
+                                <div class="articles_create-line" v-show="is_points"></div>
+                                <div class="articles_create-note" v-show="is_points">1 пользователь = 1 тест + 1 статья = <p>0</p> баллов</div>
                             </div>
 
-                            <button class="articles_create-submit button-gradient" type="button" @click="submitForm">сохранить</button>
+                            <button class="articles_create-submit button-gradient" type="button" @click="showFirstContent" v-show="is_points">сохранить</button>
                         </div>
 
                         <div v-show="getStep == 3">
@@ -387,10 +392,30 @@
                             <!-- end-article-title -->
 
                             <!-- article-cover -->
-                            <article-input-cover
+                            <!--<article-input-cover
                                 v-bind:file.sync="images"
                                 :file-key="'article'"
-                            />
+                                @update="articleFile"
+                            />-->
+                            <label class="btn btn-outline-second btn-centered-content upload-cover is-small" role="button">
+
+                                <span class="input-file-label" role="button">
+                                    <span class="d-flex align-items-center" role="button">
+                                        <span class="icon-is-left icon-is-load-grey"></span>
+                                        Завантажити
+                                    </span>
+                                </span>
+
+                                <input
+                                    type="file"
+                                    id="articleCover"
+                                    name="addCover"
+                                    class="input-file-hidden"
+                                    v-on:change="handleUploadArticle"
+                                    role="button"
+                                >
+
+                            </label>
                             <!-- end-article-cover -->
 
                             <!-- article-cover -->
@@ -656,7 +681,7 @@
 </template>
 <script>
     //import {required/*,minLength*/} from 'vuelidate/lib/validators'
-    import {ARTICLE, USER, USER_CREATE_NAME, PROJECT, ARTICLE_COVER, PROJECT_IMAGE} from "../api/endpoints";
+    import {ARTICLE, USER, USER_CREATE_NAME, PROJECT, ARTICLE_COVER, TOKEN} from "../api/endpoints";
     import { ValidationProvider, ValidationObserver } from 'vee-validate'
     import PlusButton from './controls/PlusButton'
     import VContent from "./templates/Content"
@@ -715,6 +740,8 @@
                 errorFile: '',
                 errorTitle: '',
                 errorArticleTitle: '',
+                errorNewTest: '',
+                errorNewArticle: '',
                 currentStep: 1,
                 isComplex: false,
                 content: {
@@ -725,7 +752,10 @@
                 type: 'easy',
                 new_user: '',
                 targeting: false,
-                block_content: false
+                block_content: false,
+                is_points: false,
+                add_new_test: false,
+                add_new_article: false
             }
         },
         computed: {
@@ -802,8 +832,6 @@
                         }
                     }
 
-                    console.log(content)
-
                     this.$post(PROJECT, {
                         options: this.options,
                         articles: this.articles,
@@ -830,6 +858,30 @@
                     }*/
                 })
 
+            },
+            handleUploadArticle(event) {
+                let imageForm = new FormData()
+                imageForm.append('file', event.target.files[0])
+
+                axios.post(
+                    ARTICLE_COVER,
+                    imageForm,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        },
+                        params: {
+                            access_token: TOKEN
+                        },
+                    }
+                ).then((file) => {
+                    //this.articles.*.images.cover.id
+                    this.name = event.target.files[0].name
+                    //this.file[this.fileKey] = file.data
+                    this.articles.imeges = file.data
+                    this.articles[0]['images'] = file.data.data.id
+                    //this.$emit('update:file', this.file);
+                })
             },
             storeProject() {
                 this.$store.dispatch('storeProject', this.options )
@@ -864,7 +916,6 @@
                 });
             },
             showContent() {
-                //this.validate()
                 this.errorFile = '';
                 this.errorTitle = '';
 
@@ -881,9 +932,30 @@
                 }
 
                 if (this.errorTitle === '' && this.errorFile === '') {
-                    //$('#block_content').show()
                     this.block_content = true;
                 }
+            },
+            showFirstContent() {
+                this.errorNewTest = '';
+                this.errorNewArticle = '';
+
+                if (!this.add_new_test) {
+                    this.errorNewTest = 'Тест обязательный'
+                }
+
+                if (!this.add_new_article) {
+                    this.errorNewArticle = 'Статья обязательна'
+                }
+
+                this.$refs.form.validate().then( success => {
+                    if (!success) {
+                        return;
+                    } else {
+                        if (this.add_new_test && this.add_new_article) {
+                            this.setStep(1)
+                        }
+                    }
+                });
             },
             nextStep() {
                 this.currentStep++
@@ -985,7 +1057,8 @@
             },
             saveTestSurvey() {
                 $('#add_new_test_button').hide();
-                $('#add_new_test').show();
+                //$('#add_new_test').show();
+                this.add_new_test = true
                 $('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
 
                 this.currentStep = 2
@@ -993,7 +1066,8 @@
             },
             saveTest() {
                 $('#add_new_test_button').hide();
-                $('#add_new_test').show();
+                //$('#add_new_test').show();
+                this.add_new_test = true
                 $('#add_new_test .articles_create__study-title').html($('#question_title').val());
 
                 this.currentStep = 2
@@ -1016,7 +1090,8 @@
                 this.addQuestion()
 
                 $('#add_new_test_button').show();
-                $('#add_new_test').hide();
+                //$('#add_new_test').hide();
+                this.add_new_test = false
 
                 //this.currentStep = 4
                 //this.$store.dispatch('nextStep')
@@ -1030,7 +1105,8 @@
                 this.addQuestion()
 
                 $('#add_new_test_button').show();
-                $('#add_new_test').hide();
+                //$('#add_new_test').hide();
+                this.add_new_test = false
 
                 //this.currentStep = 4
                 //this.$store.dispatch('nextStep')
@@ -1047,21 +1123,15 @@
             getType (value) {
                 this.$emit('update', value);
             },
-            /*saveArticleImage(event) { //console.log(event.target);
-                let imageForm = new FormData();
-                //imageForm.append('file', this.$refs.add_cover.files[0]);
-                imageForm.append('file', event.target.files[0]);
-                this.$post(ARTICLE_COVER + event.target.dataset.ref,
-                    imageForm,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }
-                ).then((file) => {
-                    this.articles.files[event.target.dataset.ref] = file.data
-                })
-            }*/
+            onChange() {
+                let content_points = parseInt(this.content.points)
+                let test_points = parseInt(this.test.points)
+
+                if (content_points && test_points) {
+                    this.is_points = true
+                    $('.articles_create-note p').html(parseInt(this.content.points) + parseInt(this.test.points))
+                }
+            }
         },
         mounted() {
             this.addQuestion()
@@ -1071,7 +1141,7 @@
             this.$get(USER + '?count=12').then( response => {
                 this.authors = response.data
             })
-        }
+        },
         /*validations: {
             title: {
                 required

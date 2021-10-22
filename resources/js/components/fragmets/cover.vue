@@ -38,13 +38,12 @@ export default {
     },
     computed: {
         fileName() {
-
             if (this.file) {
-                return this.file.cover.file_name;
+
+                return this.file.article.data.file_name;
             }
+
             return '';
-
-
         }
     }
 }

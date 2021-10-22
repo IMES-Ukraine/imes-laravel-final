@@ -24,8 +24,9 @@
                     v-for="(project) in projectList"
                     v-bind:key="project.id"
                     :id="project.id"
-                    :desc="project.options.title"
+                    :title="project.options.title"
                     :options="project.options"
+                    :items="project.items"
                     :tag="(project.tags)?'#'+project.tags.project_tags.slug:''"
                 />
 
