@@ -1,33 +1,27 @@
 <template>
     <div>
-        <div class="card-body">
+        <div class="articles_create-box">
 
             <fragment-form-text>
                 <input class="form-control" type="text" id="survey_question_title" name="title" v-model="question.title">
+                <div v-if="errorTestSurveyTitle" class="errors">{{ errorTestSurveyTitle }}</div>
             </fragment-form-text>
 
-            <div class="row mb-3">
-                <div class="article-edit__text col-3">
-                    Опис
-                </div>
-                <div class="col-9">
-                    <textarea class="form-control" rows="4" v-model="question.text"></textarea>
-                    <!--<div class="error" v-if="$v.text.$error">
-                        Текст вопроса обязателен
-                    </div>-->
+
+            <div class="articles_create-block">
+                <div class="articles_create__item">
+                    <p class="articles_create__item-title">Вопрос</p>
+                    <div class="articles_create__item-content direction-column">
+                        <textarea class="form-control" rows="4" v-model="question.text"></textarea>
+                        <div v-if="errorTestSurveyText" class="errors">{{ errorTestSurveyText }}</div>
+                    </div>
                 </div>
             </div>
 
             <SurveyTestVariants v-bind:answer="answer" v-bind:variants="variants"></SurveyTestVariants>
+            <div class="mb20"></div>
 
-            <div class="row">
-                <div class="col-12 text-center">
-                    <button type="button" class="btn btn-outline-primary" @click="addSurvey">
-                        Додати опрос
-                    </button>
-                </div>
-            </div>
-            <br>
+            <button class="articles_create-submit button-border" type="button" @click="addSurvey">добавить ответ</button>
 
         </div>
     </div>
@@ -45,7 +39,7 @@
     //import { mapActions, mapState } from 'vuex'
     export default {
         name: 'TestQuestion',
-        props: ['title', 'text', 'link', 'button', 'variants', 'answer', 'question'],
+        props: ['title', 'text', 'link', 'button', 'variants', 'answer', 'question', 'errorTestSurveyTitle', 'errorTestSurveyText'],
         components: {
             FragmentFormText,
             //SimpleTestVariant,
@@ -83,31 +77,7 @@
                     isCorrect: false,
                 };
                 this.variants.push(obj)
-            },
-            /**
-             * Handle changing of file input (cover, video, variants)
-             * @param event
-             */
-            handleUpload( event) {
-
-                let imageForm = new FormData();
-                let input = event.target
-                let type = input.getAttribute('img_type')
-
-                imageForm.append('file', input.files[0]);
-                this.$post(PROJECT_IMAGE + type,
-                    imageForm,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }
-                ).then((file) => {
-                    //this[type] = file.data
-                    this.question.media[type] = file.data
-                    //this.options.files[input.dataset.ref] = file.data
-                })
-            },
+            }
         }
     }
 </script>

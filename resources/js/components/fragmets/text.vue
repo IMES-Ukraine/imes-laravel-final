@@ -1,15 +1,11 @@
 <template>
-    <div class="row mb-4">
-        <div class="article-edit__text col-3">
-            {{title}}
-        </div>
-        <div class="col-9">
-            <div class="row">
-                <div class="col-12 mb-2">
-                    <slot>
-                        --> input place <--
-                    </slot>
-                </div>
+    <div class="articles_create__item">
+        <p class="articles_create__item-title">{{title}}</p>
+        <div class="articles_create__item-content">
+            <div class="articles_create__name-block">
+                <slot>
+                    --> input place <--
+                </slot>
             </div>
         </div>
     </div>
@@ -21,7 +17,7 @@ export default {
     props: {
         title: {
             type: String,
-            default: 'Називання'
+            default: 'Название'
         }
     }
 }

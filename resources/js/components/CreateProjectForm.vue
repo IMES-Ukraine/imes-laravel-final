@@ -623,16 +623,13 @@
                                 <div v-for="item in questions" v-bind:key="item.title">
                                     <TestSurvey :question="item.question"
                                                 :variants="item.variants"
+                                                :errorTestSurveyTitle="errorTestSurveyTitle"
+                                                :errorTestSurveyText="errorTestSurveyText"
                                                 :answer="item.answer"></TestSurvey>
                                 </div>
+                                <div class="mb20"></div>
+                                <button class="articles_create-submit button-gradient" type="button" @click="saveTestSurvey">сохранить</button>
 
-                                <div class="row">
-                                    <div class="col-12 text-center">
-                                        <button type="button" class="btn btn-outline-primary" @click="saveTestSurvey">
-                                            Зберегти
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -742,6 +739,8 @@
                 errorArticleTitle: '',
                 errorNewTest: '',
                 errorNewArticle: '',
+                errorTestSurveyTitle: '',
+                errorTestSurveyText: '',
                 currentStep: 1,
                 isComplex: false,
                 content: {
@@ -1056,17 +1055,40 @@
                 this.check = value
             },
             saveTestSurvey() {
-                $('#add_new_test_button').hide();
-                //$('#add_new_test').show();
-                this.add_new_test = true
-                $('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
+                this.errorTestSurveyTitle = ''
+                this.errorTestSurveyText = ''
+                let error = false
 
-                this.currentStep = 2
-                this.$store.dispatch('nextStep')
+                $('#survey-test input').css('border', '1px solid #D9D9D9')
+
+                if (this.questions[0].question.title == '') {
+                    this.errorTestSurveyTitle = 'Название обязательно'
+                    error = true
+                }
+
+                if (this.questions[0].question.text == '') {
+                    this.errorTestSurveyText = 'Вопрос обязателен'
+                    error = true
+                }
+
+                for (const [index, value] of Object.entries(this.questions[0].variants)) {
+                    if (value.variant == '') {
+                        $('#variant-' + value.title).css('border', '1px solid red')
+                        error = true
+                    }
+                }
+
+                if (!error) {
+                    $('#add_new_test_button').hide();
+                    this.add_new_test = true
+                    $('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
+
+                    this.currentStep = 2
+                    this.$store.dispatch('nextStep')
+                }
             },
             saveTest() {
                 $('#add_new_test_button').hide();
-                //$('#add_new_test').show();
                 this.add_new_test = true
                 $('#add_new_test .articles_create__study-title').html($('#question_title').val());
 
@@ -1158,12 +1180,6 @@
   }
   .smaller-text__article {
       font-size: 0.8rem;
-  }
-  #add_new_test {
-      display: none;
-  }
-  #add_new_article {
-      display: none;
   }
 </style>
 
