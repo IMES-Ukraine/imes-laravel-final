@@ -1,21 +1,40 @@
 <template>
     <v-content>
+        <template v-slot:sidebar>
+            <div class="sidebar-content__block">
+                <!-- активная в данный момент ссылка с классом is-active -->
+                <button type="button" class="btn btn-outline-primary btn-block is-active">
+                    Чати
+                </button>
+                <div class="input-group input-group mt-5 mb-4">
+                    <input type="text" id="filterId" class="form-control input-is-small input-has-append"
+                           placeholder="пошук по № аккаунта"
+                           v-model="filterId"
+                           aria-label="пошук по № аккаунта" >
+                    <div class="input-group-append">
+                        <button class="button-group-input" aria-label="знайти" @click="findChat()">
+                            <span class="icon-is-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+
         <div class="main-content__container" style="height: calc(100vh - 100px); ">
             <!-- main 4 -->
             <div class="main-chat">
                 <div class="chat__block" id="chatBlock">
                     <div class="chat__contacts" style="overflow: hidden;">
-                        <ul class="chat-contacts__list js-scroller-chat-list _scrollbar" id="contactList"
-                            style="overflow-y: scroll; box-sizing: border-box; margin: 0px; border: 0px none; width: 222px; min-width: 222px; max-width: 222px;" >
+                        <ul class="chat-contacts__list js-scroller-chat-list _scrollbar" id="contactList" >
 
                             <li v-for="item in list"
-                                :class="item.unread ? 'chat-contacts__item unread' : 'chat-contacts__item' "
+                                :class="{unread: item.unread, current: (item.id == currentChatId), 'chat-contacts__item': true}"
                                 :key="item.id"
                                 @click="chatWindow(item.id, item.id )">
                                 {{ item.id }}
                                 <div v-if="item.unread > 0" class="unread_count">{{ item.unread }}</div>
                             </li>
-
                         </ul>
                     </div>
                     <div class="chat__messages" id="chatWindow" style="overflow: hidden;">
@@ -63,6 +82,10 @@
 
 </template>
 <style>
+.current {
+    border-color: #00B7FF;
+    border-width: 3px;
+}
 .unread {
     background-color: lightpink;
     position: relative;
@@ -81,16 +104,16 @@
 
 <script>
 
+
 import VContent from "./templates/Content";
 import NotificationSidebar from "./templates/notification/sidebar";
-import {database, store} from "../firebase/app";
-import {update, set, query, ref, onValue, get} from "firebase/database";
+import {store} from "../firebase/app";
 
-import {collection, setDoc, addDoc, getDoc, doc, getDocs, onSnapshot} from "firebase/firestore";
+import {collection, setDoc, getDoc, doc, onSnapshot} from "firebase/firestore";
 
 
 export default {
-    name: "Notification",
+    name: "Chat",
     components: {VContent, NotificationSidebar},
     data() {
         return {
@@ -110,15 +133,13 @@ export default {
     },
     methods: {
         async getList() {
-            this.list = [];
-            const q = query(collection(store, "sessions"));
-            const querySnapshot = await getDocs(q);
-
-            querySnapshot.forEach((item) => {
-                // doc.data() is never undefined for query doc snapshots
-                this.list.push( {id: item.id, unread: item.data().unreadCount} );
-             //   console.log(item.id, " => ", item.data().unreadCount);
-            });
+            onSnapshot(collection(store, "sessions"), (chatList) => {
+                this.list = [];
+                chatList.forEach((item) => {
+                    this.list.push({id: item.id, unread: item.data().unreadCount});
+                    //   console.log(item.id, " => ", item.data().unreadCount);
+                });
+            })
         },
         async getData(id) {
             this.currentChat = {};
@@ -127,7 +148,6 @@ export default {
 
             if (docSnap.exists()) {
                 this.currentChat = docSnap.data();
-                console.log("Document data:", this.currentChat);
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
@@ -136,10 +156,10 @@ export default {
         },
         async chatWindow(documentId) {
             this.currentChatId = documentId;
-            await this.getData(documentId);
+            await this.getData(documentId);  //получаем текущий объект чата
             this.chatData = [];
 
-            // Формируем запрос на все записи указанного чата
+            // Формируем слущателя для записей указанного чата
             onSnapshot(collection(doc(store, "sessions", documentId), 'messages'), (chatDoc) => {
                 this.chatData = [];
                 // Загружаем записи
@@ -148,8 +168,6 @@ export default {
                 });
                 $(".chat__outer").scrollTop($(".chat__outer")[0].scrollHeight);
             });
-
-
 // Сбрасываем счётчик просмотров
             if (this.currentChat.unreadCount) {
                 await setDoc(doc(store, 'sessions', documentId), {
@@ -158,6 +176,10 @@ export default {
                     this.getList();
                 });
             }
+        },
+
+        findChat() {
+            this.chatWindow(this.filterId);
         },
 
         sendMessage(chatId) {
