@@ -38,8 +38,7 @@ class ProjectsController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function index() {
-        $data = Projects::with('tags')->with('items')->get();
-
+        $data = Projects::with('tags')->get();
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 
@@ -62,8 +61,7 @@ class ProjectsController extends Controller
             'options' => 'required',
             'options.title' => 'required',
             'articles' => 'required',
-            //'articles.*.images.cover.id' => 'required',
-            'articles.images' => 'required',
+            'articles.*.images.cover.id' => 'required',
             'tests'    => 'required',
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -104,8 +102,7 @@ class ProjectsController extends Controller
             'options' => 'required',
             'options.title' => 'required',
             'articles' => 'required',
-            //'articles.*.images.cover.id' => 'required',
-            'articles.images' => 'required',
+            'articles.*.images.cover.id' => 'required',
             'tests'    => 'required',
         ];
         $validation = Validator::make($request->all(), $rules);
