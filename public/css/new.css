@@ -136,6 +136,11 @@ button {
     max-width: 100%;
 }
 
+.modal-backdrop {
+    background: #000;
+    opacity: .5;
+}
+
 .button-border {
     display: -webkit-box;
     display: -ms-flexbox;

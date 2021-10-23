@@ -13,13 +13,14 @@
                         <div class="sending__block">
                             <p class="sending__block-title">Пользователь</p>
                             <div class="sending__block-content">
-                                <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :component-item='template' @update-items="updateItems"></v-autocomplete>
+                                <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :input-attrs="{placeholder: 'Введите ID пользователя, ФИО, телефон, почта'}" :component-item='template' @update-items="updateItems"></v-autocomplete>
                                 <div id="users-result" v-if="userSelect">
                                     <div>
                                         <b @click="removeUser"></b> {{userSelect}}
                                     </div>
                                 </div>
                                 <input type="hidden" id="user_id" value=""/>
+                                <div v-if="errorUser" class="errors">{{ errorUser }}</div>
                             </div>
                         </div>
                         <div class="articles_create-line"></div>
@@ -27,6 +28,7 @@
                             <p class="sending__block-title">Кол-во балов</p>
                             <div class="sending__block-content">
                                 <input id="user_balabce" name="balance" type="text" value="" class="template-field">
+                                <div v-if="errorBalance" class="errors">{{ errorBalance }}</div>
                             </div>
                         </div>
                     </div>
@@ -52,7 +54,9 @@
                 item: {},
                 items: [],
                 template: ItemTemplate,
-                userSelect: ''
+                userSelect: '',
+                errorUser: '',
+                errorBalance: ''
             }
         },
         methods: {
@@ -72,11 +76,30 @@
                 })
             },
             changeBalance () {
-                this.$post(CLIENT_CHANGE_BALANCE, {id: $('#user_id').val(), count: $('#user_balabce').val()}).then(
-                    response => {
-                        $('#db-balance').modal('hide');
-                    }
-                )
+                this.errorUser = ''
+                this.errorBalance = ''
+
+                let user_id = $('#user_id').val()
+                let count = $('#user_balabce').val()
+                let error = false
+
+                if (!user_id) {
+                    this.errorUser = 'Поле обязательно'
+                    error = true
+                }
+
+                if (count == '') {
+                    this.errorBalance = 'Поле обязательно'
+                    error = true
+                }
+
+                if (!error) {
+                    this.$post(CLIENT_CHANGE_BALANCE, {id: user_id, count: count}).then(
+                        response => {
+                            $('#db-balance').modal('hide');
+                        }
+                    )
+                }
             }
         }
     }

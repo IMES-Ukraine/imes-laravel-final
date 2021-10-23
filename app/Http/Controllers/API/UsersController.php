@@ -160,6 +160,10 @@ class UsersController extends Controller
     public function search($query){
         return User::where('name', 'like', '%' . $query . '%')
             ->orWhere('id', 'like', '%' . $query . '%')
+            ->orWhere('username', 'like', '%' . $query . '%')
+            ->orWhere('surname', 'like', '%' . $query . '%')
+            ->orWhere('phone', 'like', '%' . $query . '%')
+            ->orWhere('email', 'like', '%' . $query . '%')
             ->get();
     }
 
