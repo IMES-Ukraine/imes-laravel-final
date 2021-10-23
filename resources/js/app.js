@@ -23,7 +23,7 @@ import store from './store'
 import Autocomplete from 'v-autocomplete'
 
 // You need a specific loader for CSS files like https://github.com/webpack/css-loader
-import 'v-autocomplete/dist/v-autocomplete.css'
+//import 'v-autocomplete/dist/v-autocomplete.css'
 
 
 

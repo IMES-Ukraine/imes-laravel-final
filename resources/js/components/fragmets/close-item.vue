@@ -1,5 +1,5 @@
 <template>
-    <button class="articles_create-close" @click="$emit('click')"></button>
+    <button class="articles_create-close" @click="$emit('click')" type="button"></button>
 </template>
 
 <script>
