@@ -161,6 +161,9 @@ export default {
                 title: alphabet[length],
                 variant: '',
                 isCorrect: false,
+                answer: {
+                    type: 'text'
+                }
             };
             this.variants.push(obj)
         },

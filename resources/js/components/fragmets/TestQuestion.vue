@@ -1,9 +1,89 @@
 <template>
     <div>
-        <div class="card-body">
+        <div class="articles_create-box">
+            <div class="articles_create-block">
+                <div class="articles_create__item">
+                    <p class="articles_create__item-title">Название</p>
+                    <div class="articles_create__item-content">
+                        <div class="articles_create__name-block">
+                            <input type="text" name="title" id="question_title" v-model="question.title">
+                        </div>
+                    </div>
+                </div>
+                <div class="articles_create__item half">
+                    <p class="articles_create__item-title">Обложка</p>
+                    <div class="articles_create__item-content">
+                        <div class="articles_create__item-file width-auto buttonAddFile">
+                            <input type="file" name="name" v-on:change="handleUpload">
+                            <p><span data-placeholder="Загрузить"></span></p>
+                            <button class="delete_file deleteFile"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="articles_create-block">
+                <div class="articles_create__item">
+                    <p class="articles_create__item-title">Вопрос</p>
+                    <div class="articles_create__item-content">
+                        <textarea v-model="question.text"></textarea>
+                    </div>
+                </div>
+                <div class="articles_create__item half">
+                    <div class="articles_create__item-title has_radio">
+                        <input type="checkbox" name="checkbox_file" @change="checkboxChange">
+                        <i></i>
+                        <p>Изображения</p>
+                    </div>
+                    <div class="articles_create__item-content">
+                        <div class="articles_create__item-file width-auto buttonAddFile" :class = "(!isCheckedFile)?'fileDisabled':''">
+                            <input type="file" name="name" :disabled="!isCheckedFile">
+                            <p><span data-placeholder="Загрузить"></span></p>
+                            <button class="delete_file deleteFile" type="button"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="articles_create__item half"></div>
+                <div class="articles_create__item half">
+                    <div class="articles_create__item-title has_radio">
+                        <input type="checkbox" name="checkbox_video" @change="checkboxChangeVideo">
+                        <i></i>
+                        <p>Видео</p>
+                    </div>
+                    <div class="articles_create__item-content">
+                        <div class="articles_create__item-file width-auto buttonAddFile" :class = "(!isCheckedVideo)?'fileDisabled':''">
+                            <input type="file" name="name" :disabled="!isCheckedVideo">
+                            <p><span data-placeholder="Загрузить"></span></p>
+                            <button class="delete_file deleteFile" type="button"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <SimpleTestVariants v-bind:answer="answer" v-bind:variants="variants"></SimpleTestVariants>
+
+            <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest">добавить ответ</button>
+            <div class="articles_create-line"></div>
+
+            <div class="articles_create-block">
+                <div class="articles_create__item">
+                    <div class="articles_create__item-title has_radio">
+                        <input type="radio" name="title_radio">
+                        <i></i>
+                        <p>Изучить</p>
+                    </div>
+                    <div class="articles_create__item-content">
+                        <div class="articles_create__name-block">
+                            <input type="text" name="name" placeholder="http//">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--<div class="card-body">
 
             <fragment-form-text>
-                <input class="form-control" type="text" name="title" id="question_title" v-model="question.title">
+                <input class="form-control" type="text" name="title" >
             </fragment-form-text>
 
             <template v-if="question.isComplex"></template>
@@ -62,14 +142,9 @@
                     Питання
                 </div>
                 <div class="col-9">
-                    <textarea class="form-control" name="text" rows="4" v-model="question.text"></textarea>
-                    <!--<div class="error" v-if="$v.text.$error">
-                        Текст вопроса обязателен
-                    </div>-->
+                    <textarea class="form-control" name="text" rows="4" ></textarea>
                 </div>
             </div>
-
-            <SimpleTestVariants v-bind:answer="answer" v-bind:variants="variants"></SimpleTestVariants>
 
             <div class="row mb-4">
                 <div class="article-edit__text col-3">
@@ -117,7 +192,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 </template>
 <script>
@@ -153,6 +228,8 @@ export default {
                 {name: 'Кардиология', id: 3},
                 {name: 'Гастроэнтерология', id: 4},
             ],
+            isCheckedFile: false,
+            isCheckedVideo: false
         }
     },
     validations: {
@@ -183,6 +260,11 @@ export default {
                 title: alphabet[length],
                 variant: '',
                 isCorrect: false,
+                answer: {
+                    type: true,
+                    right: false,
+                    media: []
+                }
             };
             this.variants.push(obj)
         },
@@ -210,6 +292,20 @@ export default {
                 //this.options.files[input.dataset.ref] = file.data
             })
         },
+        checkboxChange() {
+            if (this.isCheckedFile) {
+                this.isCheckedFile = false
+            } else {
+                this.isCheckedFile = true
+            }
+        },
+        checkboxChangeVideo() {
+            if (this.isCheckedVideo) {
+                this.isCheckedVideo = false
+            } else {
+                this.isCheckedVideo = true
+            }
+        }
     },
     mounted() {
         if (this.$store.state.statusAddAnswer) {

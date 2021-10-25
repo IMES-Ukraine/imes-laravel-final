@@ -81,7 +81,7 @@ Route::group(
             function () {
                 Route::get('/tags', [ProjectsController::class, 'tags']);
                 Route::get('/', [ProjectsController::class, 'index']);
-                Route::post('/cover', [ProjectsController::class, 'setImage']);
+                Route::post('/cover/{type}', [ProjectsController::class, 'setImage']);
                 Route::post('/image/{type}', [ProfileController::class, 'setImage']);
                 Route::get('/{id}', [ProjectsController::class, 'show']);
                 Route::post('/{id}', [ProjectsController::class, 'update']);
