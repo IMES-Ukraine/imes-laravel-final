@@ -942,7 +942,7 @@ class File extends EloquentModel
     public function getPublicPath()
     {
         if ($this->isPublic()) {
-            return 'http://imes-laravel.local/storage/';
+            return '/storage/';
             //return 'http://imes-laravel.local/uploads/public/';
         }
 
