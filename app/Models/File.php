@@ -929,7 +929,8 @@ class File extends EloquentModel
     public function getStorageDirectory()
     {
         if ($this->isPublic()) {
-            return 'uploads/public/';
+            //return 'uploads/public/';
+            return 'public/';
         }
 
         return 'uploads/protected/';
@@ -941,7 +942,8 @@ class File extends EloquentModel
     public function getPublicPath()
     {
         if ($this->isPublic()) {
-            return 'http://imes-laravel.local/public/images/';
+            return '/storage/';
+            //return 'http://imes-laravel.local/uploads/public/';
         }
 
         return 'http://localhost/uploads/protected/';

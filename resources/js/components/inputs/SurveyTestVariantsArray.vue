@@ -1,28 +1,12 @@
 <template>
     <div>
-        <div v-for="(variant, index) in variants" v-bind:key="variant.itemId">
-            <div class="row mb-4">
-                <div class="article-edit__text col-3">
-                    Вибір
-                </div>
-                <div class="col-9">
-                    <div class="row">
-                        <div class="col-12 mb-2">
-                            <div className="row mb-4">
-                                <div className="col-1">
-                                    {{ variant.title }}
-                                </div>
-                                <div className="col-5">
-                                    <div className="row">
-                                        <div className="col-12 mb-2">
-                                            <input className="form-control" type="text" name="title" placeholder=""
-                                                   v-model.lazy="variant.variant">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="articles_create__item" id="survey-test" v-for="(variant, index) in variants" v-bind:key="variant.itemId">
+            <p class="articles_create__item-title">Выбор</p>
+            <div class="articles_create__item-content">
+                <div class="articles_create__ready_answer full_width">
+                    <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
+                    <input type="text" name="title" placeholder="" :id="'variant-' + variant.title" v-model.lazy="variant.variant">
+                    <button class="articles_create__ready_answer-delete" type="button" @click="removeVariant(variant.itemId)"></button>
                 </div>
             </div>
         </div>
@@ -39,31 +23,14 @@
         props: ['variants', 'answer'],
 
         methods: {
-
-            /**
-             * Handle changing of file input (cover, video, variants)
-             * @param event
-             */
-            handleUpload(index, event) {
-
-                let imageForm = new FormData();
-                let input = event.target
-                let type = input.getAttribute('img_type')
-
-
-                imageForm.append('file', input.files[0]);
-
-                this.$post(PROJECT_IMAGE + type,
-                    imageForm,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
+            removeVariant(id) {
+                for (const [index, value] of Object.entries(this.variants)) {
+                    if (value.itemId === id) {
+                        this.variants.splice(index, 1)
+                        return
                     }
-                ).then((file) => {
-                    this.variants[index].file = file.data
-                })
-            },
+                }
+            }
         },
         validations: {
             text: {

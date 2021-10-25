@@ -1,6 +1,52 @@
 <template>
     <div>
-        <div v-for="(variant, index) in variants" v-bind:key="variant.itemId">
+        <div class="articles_create-block" v-for="(variant, index) in variants" v-bind:key="variant.itemId" :id="'block-'+variant.itemId">
+            <div class="articles_create-line"></div>
+            <div class="articles_create__item">
+                <div class="articles_create__item-title has_radio">
+                    <input type="checkbox" v-model="variant.answer.type" :id="'type-'+variant.itemId" :checked="variant.answer.type" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <i></i>
+                    <p>Готовый <br>ответ</p>
+                </div>
+                <div class="articles_create__item-content">
+                    <div class="articles_create__ready_answer">
+                        <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
+                        <input type="text" name="text">
+                        <div class="articles_create-checkbox">
+                            <input type="checkbox" :id="'right_answer_' + variant.itemId" v-model="variant.answer.right">
+                            <i></i>
+                            <p>Правильный ответ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="articles_create__item">
+                <div class="articles_create__item-title has_radio">
+                    <input type="checkbox" v-bind:name="'answer_'+variant.itemId" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <i></i>
+                    <p>Поле ввода ответа</p>
+                </div>
+                <div class="articles_create__item-content">
+                    <textarea v-model.lazy="variant.variant"></textarea>
+                </div>
+            </div>
+            <div class="articles_create__item">
+                <div class="articles_create__item-title has_radio">
+                    <input type="checkbox" v-bind:name="'media_'+variant.itemId" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <i></i>
+                    <p>Медиа</p>
+                </div>
+                <div class="articles_create__item-content">
+                    <div class="articles_create__media">
+                        <SimpleTestMedia :media="variant.answer.media"></SimpleTestMedia>
+                        <div class="articles_create__media-add">
+                            <input type="file" name="file" :id="'file-'+variant.itemId" @change="addMedia(index, variant.itemId, $event)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<div v-for="(variant, index) in variants" v-bind:key="variant.itemId">
             <div class="row mb-4">
                 <div class="article-edit__text col-3">
                     <div class="article-edit__btn-pos custom-checkbox">
@@ -66,17 +112,21 @@
                     </label>
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 </template>
 
 <script>
 import {required} from 'vuelidate/lib/validators'
-import {PROJECT_IMAGE} from "../../api/endpoints";
+import {PROJECT_IMAGE, TOKEN, ARTICLE_COVER} from "../../api/endpoints";
+import SimpleTestMedia from "../fragmets/SimpleTestMedia"
+import { getRandomId } from '../../utils'
 
 export default {
     name: 'SimpleTestVariantsArray',
-
+    components: {
+        SimpleTestMedia
+    },
     props: ['variants', 'answer'],
 
     methods: {
@@ -105,11 +155,62 @@ export default {
                 this.variants[index].file = file.data
             })
         },
+        hasActiveCheckbox(id, index) {
+            var sList = [];
+            $('#block-'+id+' input[type=checkbox]').each(function () {
+                if (this.id != 'right_answer_' + id) {
+                    var sThisVal = (this.checked ? 1 : 0);
+                    sList.push(sThisVal)
+                }
+            });
+
+            if (!sList.includes(1)) {
+                this.$set(this.variants[index].answer, 'type', true)
+                $('#modalAlertTest').modal('show')
+                $('#type-' + id).prop('checked', true)
+            }
+        },
+        addMedia(index, id, event) {
+            let imageForm = new FormData()
+            imageForm.append('file', event.target.files[0])
+
+            axios.post(
+                ARTICLE_COVER + '/test',
+                imageForm,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    params: {
+                        access_token: TOKEN
+                    },
+                }
+            ).then((file) => {
+                /*this.name = event.target.files[0].name
+                this.articles.imeges = file.data
+                this.articles[0]['images'] = file.data.data.id*/
+                let obj = {
+                    itemId: getRandomId(),
+                    file: file.data.data.id,
+                    name: event.target.files[0].name,
+                    data: file.data,
+                    path: file.data.data.path
+                };
+                this.variants[index].answer.media.push(obj)
+                $('#file-' + id).val(null);
+            })
+        }
     },
     validations: {
         text: {
             required
         }
+    },
+    mounted() {
+        //if (this.$store.state.statusAddAnswer) {
+            //this.addMedia()
+            //this.$store.state.statusAddAnswer = false
+        //}
     }
 }
 </script>

@@ -10,6 +10,7 @@
         <div class="articles">
             <div class="articles_create">
                 <project-close/>
+                <project-alert-test/>
                 <ValidationObserver ref="form" v-slot="{ handleSubmit }">
                     <form class="articles_create-box">
                         <div v-show="getStep == 1">
@@ -576,13 +577,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!--<div class="col-12">
-                                    <input type="radio" name="radio_type" id="easy" value="easy" v-model="type">
-                                    <label for="easy">Простой</label>
-                                    <input type="radio" name="radio_type" id="complex" value="complex" v-model="type">
-                                    <label for="complex">Сложный</label>
-                                    <br>
-                                </div>-->
 
                                 <div v-if="type === 'easy'">
                                     <div v-for="item in questions" v-bind:key="item.title">
@@ -591,15 +585,9 @@
                                             :question="item.question"
                                             :variants="item.variants"
                                             :answer="item.answer"></Question>
-                                        <hr>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 text-center">
-                                            <button type="button" class="btn btn-outline-primary" @click="saveTest">
-                                                Зберегти
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <div class="mb20"></div>
+                                    <button class="articles_create-submit button-gradient" type="button" @click="saveTest">сохранить</button>
                                 </div>
 
                                 <div v-if="type === 'complex'">
@@ -623,16 +611,13 @@
                                 <div v-for="item in questions" v-bind:key="item.title">
                                     <TestSurvey :question="item.question"
                                                 :variants="item.variants"
+                                                :errorTestSurveyTitle="errorTestSurveyTitle"
+                                                :errorTestSurveyText="errorTestSurveyText"
                                                 :answer="item.answer"></TestSurvey>
                                 </div>
+                                <div class="mb20"></div>
+                                <button class="articles_create-submit button-gradient" type="button" @click="saveTestSurvey">сохранить</button>
 
-                                <div class="row">
-                                    <div class="col-12 text-center">
-                                        <button type="button" class="btn btn-outline-primary" @click="saveTestSurvey">
-                                            Зберегти
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -688,6 +673,7 @@
     import axios from 'axios'
     import ProjectFormSidebar from "./templates/project/form/sidebar"
     import ProjectClose from "./templates/project/Close"
+    import ProjectAlertTest from "./templates/project/AlertTest"
     import VCheckbox from "./templates/inputs/checkbox"
     import ArticleInputText from "./templates/article/form/text"
     import FragmentFormText from "./fragmets/text"
@@ -712,6 +698,7 @@
             ValidationObserver,
             PlusButton,
             ProjectClose,
+            ProjectAlertTest,
             VCheckbox,
             ArticleInputText,
             FragmentFormText,
@@ -742,6 +729,8 @@
                 errorArticleTitle: '',
                 errorNewTest: '',
                 errorNewArticle: '',
+                errorTestSurveyTitle: '',
+                errorTestSurveyText: '',
                 currentStep: 1,
                 isComplex: false,
                 content: {
@@ -875,12 +864,9 @@
                         },
                     }
                 ).then((file) => {
-                    //this.articles.*.images.cover.id
                     this.name = event.target.files[0].name
-                    //this.file[this.fileKey] = file.data
                     this.articles.imeges = file.data
                     this.articles[0]['images'] = file.data.data.id
-                    //this.$emit('update:file', this.file);
                 })
             },
             storeProject() {
@@ -1044,6 +1030,11 @@
                             title: 'A',
                             variant: '',
                             isCorrect: false,
+                            answer: {
+                                type: true,
+                                right: true,
+                                media: []
+                            }
                         }
                     ],
                     answer: {
@@ -1056,17 +1047,40 @@
                 this.check = value
             },
             saveTestSurvey() {
-                $('#add_new_test_button').hide();
-                //$('#add_new_test').show();
-                this.add_new_test = true
-                $('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
+                this.errorTestSurveyTitle = ''
+                this.errorTestSurveyText = ''
+                let error = false
 
-                this.currentStep = 2
-                this.$store.dispatch('nextStep')
+                $('#survey-test input').css('border', '1px solid #D9D9D9')
+
+                if (this.questions[0].question.title == '') {
+                    this.errorTestSurveyTitle = 'Название обязательно'
+                    error = true
+                }
+
+                if (this.questions[0].question.text == '') {
+                    this.errorTestSurveyText = 'Вопрос обязателен'
+                    error = true
+                }
+
+                for (const [index, value] of Object.entries(this.questions[0].variants)) {
+                    if (value.variant == '') {
+                        $('#variant-' + value.title).css('border', '1px solid red')
+                        error = true
+                    }
+                }
+
+                if (!error) {
+                    $('#add_new_test_button').hide();
+                    this.add_new_test = true
+                    $('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
+
+                    this.currentStep = 2
+                    this.$store.dispatch('nextStep')
+                }
             },
             saveTest() {
                 $('#add_new_test_button').hide();
-                //$('#add_new_test').show();
                 this.add_new_test = true
                 $('#add_new_test .articles_create__study-title').html($('#question_title').val());
 
@@ -1158,12 +1172,6 @@
   }
   .smaller-text__article {
       font-size: 0.8rem;
-  }
-  #add_new_test {
-      display: none;
-  }
-  #add_new_article {
-      display: none;
   }
 </style>
 

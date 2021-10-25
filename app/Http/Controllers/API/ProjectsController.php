@@ -14,10 +14,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Repository\ProjectRepository;
 use App\Models\Projects;
-
+use Illuminate\Support\Facades\Storage;
 
 class ProjectsController extends Controller
 {
+    const ATTACHMENT_TYPE_ARTICLES = 'App\Models\Articles';
+    const ATTACHMENT_TYPE_TEST_QUESTIONS = 'App\Models\TestQuestions';
 
     protected $helpers;
     protected $project;
@@ -130,13 +132,24 @@ class ProjectsController extends Controller
     /**
      * Set cover articles and license image
      */
-    public function setImage(){
+    public function setImage($type){
+
+        if ($type == 'articles') {
+            $attachment_type = self::ATTACHMENT_TYPE_ARTICLES;
+        } elseif ($type == 'test') {
+            $attachment_type = self::ATTACHMENT_TYPE_TEST_QUESTIONS;
+        }
+
         $file = new File;
         $file->data = \Illuminate\Support\Facades\Request::file('file');
         $file->is_public = true;
         $file->field = 'cover_image';
-        $file->attachment_type = 'App\Models\Articles';
+        $file->attachment_type = $attachment_type;
         $data = $file->beforeSave();
+
+        //Storage::disk('public')->put('/project/', 'Contents');
+        //$model_file = new File();
+        //$model_file->fromPost($file->data);
 
         //$apiUser = Auth::user();
 
