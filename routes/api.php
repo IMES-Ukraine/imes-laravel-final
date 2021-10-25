@@ -67,7 +67,7 @@ Route::group(
                 Route::post('/balance', [UsersController::class, 'balance']);
                 Route::get('/create-name/{name}', [UsersController::class, 'createName']);
                 Route::post('/', [UsersController::class, 'create']);
-                Route::post('/{id}', [ProjectsController::class, 'update']);
+                Route::post('/{id}', [UsersController::class, 'update']);
                 Route::get('/block/{id}', [UsersController::class, 'block']);
                 Route::get('/unblock/{id}', [UsersController::class, 'unblock']);
                 Route::get('/search/{query}', [UsersController::class, 'search']);

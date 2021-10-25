@@ -21,6 +21,20 @@
                 Отправить баллы
             </popup-button>
         </div>
+
+        <div class="input-group input-group mt-5 mb-4">
+            <input type="text" id="filterId" class="form-control input-is-small input-has-append"
+                   placeholder="пошук по № аккаунта"
+                   v-model="filterId"
+                   v-on:keyup.enter="findUser(filterId)"
+                   aria-label="пошук по № аккаунта" >
+            <div class="input-group-append">
+                <button class="button-group-input" aria-label="знайти"
+                        @click="findUser(filterId)">
+                    <span class="icon-is-search"></span>
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -29,7 +43,17 @@
     import PopupButton from "../fragmets/popup-button";
     export default {
         name: "withdrawal-form-sidebar",
-        components: {RouterButton, PopupButton}
+        components: {RouterButton, PopupButton},
+        data() {
+            return {
+                filterId: null
+            }
+        },
+        methods: {
+            findUser(id) {
+                this.$store.state.filterId = id;
+            }
+        }
     }
 </script>
 

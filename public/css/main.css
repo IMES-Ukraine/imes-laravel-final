@@ -2316,7 +2316,15 @@ select {
     padding: 44px 110px
 }
 
+.db-edit.card {
+    width: initial;
+}
+
+
+
 /* Временные стили */
 .btn-outline-primary.has-icon::before {
     display: none;
 }
+
+

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\JWT;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Carbon;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -21,8 +22,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property int $is_activated
  * @property string|null $activated_at
  * @property string|null $last_login
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $username
  * @property string|null $surname
  * @property string|null $deleted_at
@@ -110,6 +111,9 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'basic_information' => 'array',
+        'specialized_information' => 'array',
+        'financial_information' => 'array',
     ];
 
     /**

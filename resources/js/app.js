@@ -36,11 +36,13 @@ Vue.router = router;
 Vue.use(VueRouter);
 
 import VueLazyload from 'vue-lazyload'
-
 Vue.use(VueLazyload)
 
 import { extend, setInteractionMode, localize } from "vee-validate";
 import { dimensions } from "vee-validate/dist/rules";
+
+import { BootstrapVue } from 'bootstrap-vue';
+Vue.use(BootstrapVue)
 
 import ru from "vee-validate/dist/locale/ru.json";
 

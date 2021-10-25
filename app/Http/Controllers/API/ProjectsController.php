@@ -9,6 +9,7 @@ use App\Models\ImageHelper;
 use App\Models\ProjectItems;
 use App\Models\Tag;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Repository\ProjectRepository;
@@ -35,7 +36,7 @@ class ProjectsController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index() {
         $data = Projects::with('tags')->with('items')->get();
@@ -43,7 +44,7 @@ class ProjectsController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function tags() {
         $data = Tag::all();
@@ -53,7 +54,7 @@ class ProjectsController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update( Request $request ) {
 
@@ -78,7 +79,7 @@ class ProjectsController extends Controller
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show( $id) {
 
@@ -94,7 +95,7 @@ class ProjectsController extends Controller
     /**
      * Storing project from admin panel
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function create(Request $request) {
 

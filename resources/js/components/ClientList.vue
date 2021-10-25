@@ -24,7 +24,7 @@
 <script>
 import VContent from "./templates/Content";
 import SidebarUsers from "./templates/SidebarUsers";
-import ClientsTable from './templates/clients/table'
+import ClientsTable from './templates/clients/table-user'
 import { CLIENTS, CLIENTS_BLOCK_USER, CLIENTS_DELETE_USER, CLIENTS_UNBLOCK_USER } from "../api/endpoints"
 import VPreloader from "./fragmets/preloader"
 
@@ -40,9 +40,8 @@ export default {
     },
     methods: {
         async loadClients() {
-
             this.$get(CLIENTS).then( response => {
-                this.requests = response.data
+                this.requests = response.data;
             });
         },
         hasRequests() {

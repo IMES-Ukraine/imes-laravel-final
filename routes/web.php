@@ -37,6 +37,9 @@ Route::get('admin/api/v1/request',
 Route::get('admin/api/v1/clients',
     [UsersController::class, 'index']);
 
+Route::put('admin/api/v1/clients/{id}',
+    [UsersController::class, 'update']);
+
 Route::post('admin/api/v1/profile/verification/accept',
     [AdminController::class, 'acceptVerification']
 );

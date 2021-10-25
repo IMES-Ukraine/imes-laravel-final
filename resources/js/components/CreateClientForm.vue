@@ -99,7 +99,7 @@
 <script>
     import VContent from "./templates/Content"
     import SidebarUsers from "./templates/SidebarUsers"
-    import ClientsTable from './templates/clients/table'
+    import ClientsTable from './templates/clients/table-user'
     import { USER } from "../api/endpoints"
     import VPreloader from "./fragmets/preloader"
 

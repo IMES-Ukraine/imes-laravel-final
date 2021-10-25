@@ -10,6 +10,7 @@ use App\Models\Notifications;
 use App\Traits\NotificationsHelper;
 use App\Traits\UserSettings;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Auth;
@@ -38,7 +39,7 @@ class ProfileController extends Controller
 
     /**
      * Get User profile information
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(){
 
@@ -146,7 +147,7 @@ class ProfileController extends Controller
     /**
      * Do set User profile password
      * @param Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function setPassword(\Illuminate\Http\Request $request){
 
@@ -207,7 +208,7 @@ class ProfileController extends Controller
     /**
      * Set User messaging token
      * @param Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function token(\Illuminate\Http\Request $request){
 
@@ -222,7 +223,7 @@ class ProfileController extends Controller
 
     /**
      * Submit withdraw from User
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function withdraw(){
 

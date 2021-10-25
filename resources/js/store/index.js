@@ -143,7 +143,10 @@ export default new Vuex.Store({
             0: 'Разблокувати',
             1: 'Заблокувати'
         },
-        statusAddAnswer: true
+        statusAddAnswer: true,
+        modalData: {},
+        showUserModal: false,
+        filterId: null
     },
     getters: {
         currentStep: state => {

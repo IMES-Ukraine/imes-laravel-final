@@ -32,7 +32,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-12">
-                                <button type="button" class="btn btn-outline-primary" @click="changeBalance" data-toggle="modal" :data-target="'#db-add--' + id">
+                                <button type="button" class="btn btn-outline-primary" @click="changeBalance" data-toggle="modal" >
                                     Отправить
                                 </button>
                             </div>
