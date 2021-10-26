@@ -1,19 +1,15 @@
 <template>
-    <div class="row mb-3">
-        <div class="article-edit__text col-3">
-            {{title}}
-        </div>
-        <div class="col-9">
-            <label>
-                <v-textarea
-                    :rows="4"
-                    :text="text"
-                    v-on:update:text="getText"
-                />
-            </label>
-            <div class="errors" v-if="v.text.$error">
+    <div class="articles_create__item mb54">
+        <p class="articles_create__item-title">{{title}}</p>
+        <div class="articles_create__item-content">
+            <v-textarea
+                :rows="4"
+                :text="text"
+                v-on:update:text="getText"
+            />
+            <!--<div class="errors" v-if="v.text.$error">
                 {{error}}
-            </div>
+            </div>-->
         </div>
     </div>
 </template>

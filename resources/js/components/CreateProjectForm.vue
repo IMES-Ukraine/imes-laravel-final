@@ -332,194 +332,192 @@
                         </div>
 
                         <div v-show="getStep == 3">
-                            <project-close/>
-                            <h4>
-                                <center>Створення статтi</center>
-                            </h4>
-                            <br>
-                            <!-- article-title -->
-                            <!--<article-input-title
-                                v-bind:type.sync="type"
-                                :articleType="articleType"
-                                @update="articleTypeStore"
-                            />-->
-                            <div class="row mb-4">
-
-                                <div class="article-edit__text col-3">
-                                    Заголовок
-                                </div>
-
-                                <div class="col-9">
-                                    <div class="row">
-
-                                        <div class="col-12 mb-2">
-                                            <label>
+                            <p class="articles_create-title">Создание статьи</p>
+                            <div class="articles_create-box">
+                                <div class="articles_create-block">
+                                    <div class="articles_create__item mb37">
+                                        <p class="articles_create__item-title">Название</p>
+                                        <div class="articles_create__item-content direction-column">
+                                            <div class="articles_create__name-block">
+                                                <input type="text" name="name" v-model="articles.title">
+                                                <div v-if="errorArticleTitle" class="errors">{{ errorArticleTitle }}</div>
+                                            </div>
+                                            <div class="articles_create__radio_circle">
+                                                <div class="articles_create__radio_circle-block">
+                                                    <input type="radio" id="typePublication_1"
+                                                           name="typePublication"
+                                                           :value="1"
+                                                           :checked="(articleType==1)?true:false"
+                                                           v-on:update:value="getType">
+                                                    <i></i>
+                                                    <p>Новости</p>
+                                                </div>
+                                                <div class="articles_create__radio_circle-block">
+                                                    <input type="radio" id="typePublication_2"
+                                                           name="typePublication"
+                                                           :value="2"
+                                                           :checked="(articleType==2)?true:false"
+                                                           v-on:update:value="getType">
+                                                    <i></i>
+                                                    <p>Информация</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="articles_create__item half">
+                                        <p class="articles_create__item-title">Обложка</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__item-file width-auto buttonAddFile">
                                                 <input
-                                                    class="form-control"
-                                                    type="text"
-                                                    name="title"
-                                                    id="article_title"
-                                                    v-model="articles.title"
+                                                    type="file"
+                                                    id="articleCover"
+                                                    name="addCover"
+                                                    class="input-file-hidden"
+                                                    v-on:change="handleUploadArticle"
+                                                    role="button"
                                                 >
-                                            </label>
-                                            <div v-if="errorArticleTitle" class="errors">{{ errorArticleTitle }}</div>
+                                                <input type="file" name="name">
+                                                <p><span data-placeholder="Загрузить">Загрузить</span></p>
+                                                <button class="delete_file deleteFile"></button>
+                                            </div>
                                         </div>
-
-                                        <div class="col-12">
-                                            <v-radio
-                                                id="typePublication_1"
-                                                name="typePublication"
-                                                :value="1"
-                                                :checked="(articleType==1)?true:false"
-                                                v-on:update:value="getType"
-                                            >
-                                                Новини
-                                            </v-radio>
-                                            <v-radio
-                                                id="typePublication_2"
-                                                name="typePublication"
-                                                :value="2"
-                                                :checked="(articleType==2)?true:false"
-                                                v-on:update:value="getType"
-                                            >
-                                                Iнформацiя
-                                            </v-radio>
+                                    </div>
+                                    <div class="articles_create__item half">
+                                        <p class="articles_create__item-title">Галерея</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__media">
+                                                <SimpleTestMedia :media="articles.multiples"></SimpleTestMedia>
+                                                <div class="articles_create__media-add">
+                                                    <input type="file" name="file" @change="addMedia($event)">
+                                                </div>
+                                            </div>
                                         </div>
-
+                                    </div>
+                                    <article-input-text
+                                        :title="'Текст'"
+                                        :error="'Контент заповнити обов\'язково'"
+                                    />
+                                    <!--<div class="articles_create__item">
+                                        <p class="articles_create__item-title">Категории</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__addition">
+                                                <div class="articles_create__addition-block">
+                                                    <div class="articles_create__addition-select">
+                                                        <select class="my-ui-select articles_create-select">
+                                                            <option value="1">Значение 1</option>
+                                                            <option value="2">Значение 2</option>
+                                                            <option value="3">Значение 3</option>
+                                                            <option value="4">Значение 4</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__addition-block">
+                                                    <div class="articles_create__addition-field">
+                                                        <input type="text" name="text" class="">
+                                                    </div>
+                                                    <button class="articles_create__addition-button">Добавить категорию</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                    <!--<div class="articles_create__item">
+                                        <p class="articles_create__item-title">Рубрики</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__addition">
+                                                <div class="articles_create__addition-block">
+                                                    <div class="articles_create__addition-select">
+                                                        <select class="my-ui-select articles_create-select">
+                                                            <option value="1">Значение 1</option>
+                                                            <option value="2">Значение 2</option>
+                                                            <option value="3">Значение 3</option>
+                                                            <option value="4">Значение 4</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__addition-block">
+                                                    <div class="articles_create__addition-field">
+                                                        <input type="text" name="text" class="">
+                                                    </div>
+                                                    <button class="articles_create__addition-button">Добавить рубрику</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                    <div class="articles_create__item">
+                                        <p class="articles_create__item-title">Автор</p>
+                                        <div class="articles_create__item-content">
+                                            <div class="articles_create__addition">
+                                                <div class="articles_create__addition-block">
+                                                    <div class="">
+                                                        <multiselect
+                                                            v-model="user_id"
+                                                            tag-placeholder="Обрати автора"
+                                                            placeholder="Обрати автора"
+                                                            label="name"
+                                                            track-by="id"
+                                                            :searchable="false"
+                                                            :close-on-select="false"
+                                                            :show-labels="false"
+                                                            :options="authors"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="articles_create__addition-block">
+                                                    <div class="articles_create__addition-field">
+                                                        <input type="text" id="new_user" v-model="new_user" />
+                                                    </div>
+                                                    <button class="articles_create__addition-button" type="button" @click="AddNewUser">Добавить автора</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <article-form-insert
+                                        v-bind:insert.sync="insert"
+                                        v-bind:textInsert.sync="textInsert"
+                                        @insert="insertStore"
+                                    />
+                                    <article-form-button
+                                        :label="'Статья-ссылка'"
+                                        :id="'is-article-button'"
+                                        :name="'is-article-button'"
+                                        :text_button="text_button"
+                                        @update="buttonStore"
+                                    />
+                                    <article-form-button
+                                        :label="'Кнопка “Читати ще”'"
+                                        :id="'is-article-more'"
+                                        :name="'is-article-more'"
+                                        :text_button="text_button"
+                                        @update="buttonStore"
+                                    />
+                                    <article-form-button
+                                        :label="'Кнопка “Розпочати дослiдження”'"
+                                        :id="'is-article-info'"
+                                        :name="'is-article-info'"
+                                        :text_button="text_button"
+                                        @update="buttonStore"
+                                    />
+                                    <div class="articles_create__item">
+                                        <p class="articles_create__item-title">Реком. статьи</p>
+                                        <div class="articles_create__item-content">
+                                            <multiselect
+                                                v-model="chosenRecommended"
+                                                tag-placeholder="Додати статтю"
+                                                placeholder="Вибрати статтю"
+                                                label="title"
+                                                track-by="id"
+                                                :options="recommended"
+                                                :multiple="true"
+                                                :taggable="true"
+                                                :show-labels="false"
+                                                :close-on-select="false"
+                                                @tag="addTag"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
-                            <!-- end-article-title -->
-
-                            <!-- article-cover -->
-                            <!--<article-input-cover
-                                v-bind:file.sync="images"
-                                :file-key="'article'"
-                                @update="articleFile"
-                            />-->
-                            <label class="btn btn-outline-second btn-centered-content upload-cover is-small" role="button">
-
-                                <span class="input-file-label" role="button">
-                                    <span class="d-flex align-items-center" role="button">
-                                        <span class="icon-is-left icon-is-load-grey"></span>
-                                        Завантажити
-                                    </span>
-                                </span>
-
-                                <input
-                                    type="file"
-                                    id="articleCover"
-                                    name="addCover"
-                                    class="input-file-hidden"
-                                    v-on:change="handleUploadArticle"
-                                    role="button"
-                                >
-
-                            </label>
-                            <!-- end-article-cover -->
-
-                            <!-- article-cover -->
-                            <article-multiple
-                                v-bind:files.sync="multiples"
-                                :title="'Галерея'"
-                                :images="multiples"
-                                @update="multiplesStore"
-                            />
-
-                            <!-- article-content -->
-                            <article-input-text
-                                :title="'Текст статтi'"
-                                :error="'Контент заповнити обов\'язково'"
-                            />
-                            <!-- end-article-content -->
-
-                            <!-- article-form-author -->
-                            <fragment-form-text :title="'Автор'">
-                                <multiselect
-                                    v-model="user_id"
-                                    tag-placeholder="Обрати автора"
-                                    placeholder="Обрати автора"
-                                    label="name"
-                                    track-by="id"
-                                    :options="authors"
-                                />
-                                <input type="text" id="new_user" v-model="new_user" />
-                                <button type="button" class="btn btn-outline-primary" @click="AddNewUser">Добавить автора</button>
-                            </fragment-form-text>
-                            <!-- end-article-form-author -->
-
-                            <!-- article-insert -->
-                            <article-form-insert
-                                v-bind:insert.sync="insert"
-                                v-bind:textInsert.sync="textInsert"
-                                @insert="insertStore"
-                            />
-                            <!-- end-article-insert -->
-
-                            <!-- article-select-category -->
-                            <!--<article-form-select
-                                :name="'categories'"
-                                :label="'Категориi'"
-                                v-bind:value.sync="category"
-                            />-->
-                            <!-- end-article-select-category -->
-
-                            <!-- article-select-headings -->
-                            <!--<article-form-select
-                                :name="'headings'"
-                                :label="'Рубрики'"
-                                v-bind:value.sync="headings"
-                            />-->
-                            <!-- end-article-select-headings -->
-
-                            <!-- article-select-authors -->
-                            <!--<article-form-select
-                                :name="'authors'"
-                                :label="'Автор'"
-                                v-bind:value.sync="author"
-                            />-->
-                            <!-- end-article-select-authors -->
-
-                            <!-- article-form-button -->
-                            <article-form-button
-                                :label="'Кнопка'"
-                                :id="'is-article-button'"
-                                :name="'is-article-button'"
-                                :text_button="text_button"
-                                @update="buttonStore"
-                            />
-                            <!-- end-article-form-button -->
-
-                            <!-- article-form-direct-link -->
-                            <article-form-button
-                                :label="'Пряма ссилка'"
-                                :id="'is-article-link'"
-                                :name="'is-article-link'"
-                                :text_button="link"
-                                @update="linkStore"
-                            />
-                            <!-- end-article-form-direct-link -->
-
-                            <!-- article-form-recommend-article -->
-                            <fragment-form-text :title="'Рекомендованi статтi'">
-                                <multiselect
-                                    v-model="chosenRecommended"
-                                    tag-placeholder="Додати статтю"
-                                    placeholder="Вибрати статтю"
-                                    label="title"
-                                    track-by="id"
-                                    :options="recommended"
-                                    :multiple="true"
-                                    :taggable="true"
-                                    @tag="addTag"
-                                />
-                            </fragment-form-text>
-                            <!-- end-article-form-recommend-article -->
-
-                            <!-- publish button -->
-                            <v-button @click="saveArticle"/>
-                            <!-- end publish button -->
+                            <button class="articles_create-submit button-gradient" type="button" @click="saveArticle">опубликовать</button>
                         </div>
 
                         <div v-show="getStep == 4">
@@ -596,14 +594,8 @@
                                                     :variants="item.variants"
                                                     :answer="item.answer"></TestComplex>
                                     </div>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-12 text-center">
-                                            <button type="button" class="btn btn-outline-primary" @click="saveTest">
-                                                Зберегти
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <div class="mb20"></div>
+                                    <button class="articles_create-submit button-gradient" type="button" @click="saveTest">сохранить</button>
                                 </div>
                             </div>
 
@@ -617,7 +609,6 @@
                                 </div>
                                 <div class="mb20"></div>
                                 <button class="articles_create-submit button-gradient" type="button" @click="saveTestSurvey">сохранить</button>
-
                             </div>
                         </div>
 
@@ -688,6 +679,7 @@
     import TestSurvey from './fragmets/TestSurvey.vue'
     import TestComplex from './fragmets/TestComplex.vue'
     import VRadio from "./templates/inputs/radio"
+    import SimpleTestMedia from "./fragmets/SimpleTestMedia"
 
     export default {
         name: 'CreateProjectForm',
@@ -712,7 +704,8 @@
             TestComplex,
             Question,
             TestSurvey,
-            VRadio
+            VRadio,
+            SimpleTestMedia
         },
         data() {
             return {
@@ -1145,6 +1138,27 @@
                     this.is_points = true
                     $('.articles_create-note p').html(parseInt(this.content.points) + parseInt(this.test.points))
                 }
+            },
+            addMedia(event) {
+                let imageForm = new FormData()
+                imageForm.append('file', event.target.files[0])
+
+                axios.post(
+                    ARTICLE_COVER + '/articles',
+                    imageForm,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        },
+                        params: {
+                            access_token: TOKEN
+                        },
+                    }
+                ).then((file) => {
+                    this.name = event.target.files[0].name
+                    this.articles.imeges = file.data
+                    this.articles[0]['images'] = file.data.data.id
+                })
             }
         },
         mounted() {

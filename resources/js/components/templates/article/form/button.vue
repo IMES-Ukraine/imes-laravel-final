@@ -1,36 +1,34 @@
 <template>
-    <div class="row mb-4">
-        <div class="article-edit__text col-3">
-                <v-checkbox
-                    name="button"
-                    :id="id"
-                    :checked="isChecked"
-                    v-bind:value.sync="isChecked"
-                    v-on:update:value="getText('')"
-                />
-            {{label}}
+    <div class="articles_create__item">
+        <div class="articles_create__item-title has_radio">
+            <v-checkbox
+                name="button"
+                :id="id"
+                :checked="isChecked"
+                v-bind:value.sync="isChecked"
+                v-on:update:value="getText('')"
+            />
+            <i></i>
+            <p>{{label}}</p>
         </div>
-        <div class="col-9">
-            <div class="row">
-                <div class="col-12 mb-2">
-                    <div class="input-group input-group">
-                        <v-input-text
-                            :isDisabled="!isChecked"
-                            name="text_button"
-                            v-model="text_button"
-                            :classes="'input-is-form is-text'"
-                            :aria-label="'теги'"
-                            v-on:update:value="getText"
-                        />
-                    </div>
-                </div>
+        <div class="articles_create__item-content">
+            <div class="articles_create__name-block">
+                <v-input-text
+                    :isDisabled="!isChecked"
+                    name="text_button"
+                    v-model="text_button"
+                    :classes="'input-is-form is-text'"
+                    :aria-label="'теги'"
+                    placeholder="http//"
+                    v-on:update:value="getText"
+                />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import VCheckbox from "../../inputs/checkbox";
+import VCheckbox from "./checkbox";
 import VInputText from "../../inputs/text";
 export default {
     name: "article-form-button",

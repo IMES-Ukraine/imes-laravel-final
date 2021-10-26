@@ -943,7 +943,6 @@ class File extends EloquentModel
     {
         if ($this->isPublic()) {
             return '/storage/';
-            //return 'http://imes-laravel.local/uploads/public/';
         }
 
         return 'http://localhost/uploads/protected/';
