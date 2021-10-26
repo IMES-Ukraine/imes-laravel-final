@@ -1,13 +1,11 @@
 <template>
-    <label>
-        <textarea
-            class="form-control"
-            :rows="rows"
-            v-model="value"
-            @change="update"
-        >
-        </textarea>
-    </label>
+    <textarea
+        class="form-control"
+        :rows="rows"
+        v-model="value"
+        @change="update"
+    >
+    </textarea>
 </template>
 
 <script>

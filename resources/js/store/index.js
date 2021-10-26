@@ -69,7 +69,7 @@ export default new Vuex.Store({
                 user_id: [],
                 chosenRecommended: [],
                 images: null,
-                multiples: null,
+                multiples: [],
                 insert: [
                     {
                         type: 'insert',

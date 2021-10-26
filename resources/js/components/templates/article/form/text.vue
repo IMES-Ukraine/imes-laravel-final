@@ -6,10 +6,11 @@
                 :rows="4"
                 :text="text"
                 v-on:update:text="getText"
+                v-model="articles[0].text"
             />
-            <!--<div class="errors" v-if="v.text.$error">
-                {{error}}
-            </div>-->
+        </div>
+        <div class="errors" v-if="error">
+            {{error}}
         </div>
     </div>
 </template>
