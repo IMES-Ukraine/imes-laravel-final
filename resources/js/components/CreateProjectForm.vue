@@ -387,9 +387,9 @@
                                         <p class="articles_create__item-title">Галерея</p>
                                         <div class="articles_create__item-content">
                                             <div class="articles_create__media">
-                                                <SimpleTestMedia :media="articles.multiples"></SimpleTestMedia>
+                                                <SimpleTestMedia :media="articles[0].multiples"></SimpleTestMedia>
                                                 <div class="articles_create__media-add">
-                                                    <input type="file" name="file" @change="addMedia($event)">
+                                                    <input type="file" name="file" id="article_multiples" @change="addMedia($event)">
                                                 </div>
                                             </div>
                                         </div>
@@ -681,6 +681,7 @@
     import TestComplex from './fragmets/TestComplex.vue'
     import VRadio from "./templates/inputs/radio"
     import SimpleTestMedia from "./fragmets/SimpleTestMedia"
+    import { getRandomId } from './../utils'
 
     export default {
         name: 'CreateProjectForm',
@@ -1180,9 +1181,18 @@
                         },
                     }
                 ).then((file) => {
-                    this.name = event.target.files[0].name
+                    /*this.name = event.target.files[0].name
                     this.articles[0].multiples = file.data.data
-                    this.articles[0]['multiples'] = file.data.data.id
+                    this.articles[0]['multiples'] = file.data.data.id*/
+                    let obj = {
+                        itemId: getRandomId(),
+                        file: file.data.data.id,
+                        name: event.target.files[0].name,
+                        data: file.data,
+                        path: file.data.data.path
+                    };
+                    this.articles[0].multiples.push(obj)
+                    $('#article_multiples').val(null);
                 })
             }
         },
