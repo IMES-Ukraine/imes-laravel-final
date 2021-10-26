@@ -32,7 +32,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="articles_create-submit button-border" type="button" @click="changeBalance" :data-target="'#db-add--' + id">отправить</button>
+                    <button class="articles_create-submit button-border" type="button" @click="changeBalance" >отправить</button>
                 </div>
             </div>
         </div>
@@ -43,12 +43,14 @@
 <script>
     import ItemTemplate from '../templates/project/form/ItemTemplate.vue'
     import { SEARCH_USER, CLIENT_CHANGE_BALANCE } from "../../api/endpoints"
+    import ModalMixin from "../../ModalMixin";
 
     export default {
         name: "popup-button",
         components: {
             ItemTemplate
         },
+        mixins: [ModalMixin],
         data () {
             return {
                 item: {},
@@ -96,7 +98,9 @@
                 if (!error) {
                     this.$post(CLIENT_CHANGE_BALANCE, {id: user_id, count: count}).then(
                         response => {
+                            this.loadClients();
                             $('#db-balance').modal('hide');
+                            this.showMsgBox('Бали нараховано');
                         }
                     )
                 }

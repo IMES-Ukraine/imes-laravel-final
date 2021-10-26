@@ -42,21 +42,21 @@
 <script>
 import Item from './item';
 import ModalUser from "../ModalUser";
+import ModalMixin from "../../../ModalMixin";
 
 export default {
     name: "table-user",
     components: {Item, ModalUser},
-    props: {
-        requests: {
-            type: Array,
-        }
-    },
+    mixins: [ModalMixin],
     data() {
         return {
             modalData: {}
         }
     },
     computed: {
+        requests() {
+            return  this.$store.state.clients;
+        },
         currentRequest() {
             return this.$store.state.modalData;
         },
@@ -72,10 +72,9 @@ export default {
             if (this.filteredId != '') {
                 let user = this.requests.filter(item => item.id == this.filteredId);
                 if (undefined !== user[0]) {
-                    this.$store.state.modalData = user[0];
-                    this.$store.state.showUserModal = true;
+                    this.showModal(user[0])
                 } else {
-                    alert("Немає такого користувача: " + this.filteredId);
+                    this.showMsgBox("Немає такого користувача: " + this.filteredId);
                 }
             }
         }

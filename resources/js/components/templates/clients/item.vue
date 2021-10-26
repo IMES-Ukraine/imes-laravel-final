@@ -15,7 +15,7 @@
         </td>
         <td class="db__td">
             <button type="button" class="db__button"
-                    @click="showModal()"
+                    @click="showModal(request)"
                     aria-label="переглянути реєстраційні дані"
                     title="переглянути реєстраційні дані" >
                 <span class="icon-is-doc"></span>
@@ -67,10 +67,11 @@
 </template>
 
 <script>
-import {CLIENTS} from "../../../api/endpoints";
+import  ModalMixin from "../../../ModalMixin";
 
     export default {
         name: "item",
+        mixins: [ModalMixin],
 
         props: {
             index: {
@@ -85,12 +86,8 @@ import {CLIENTS} from "../../../api/endpoints";
         methods: {
             activeTextBlockUser (status) {
                 return this.$store.state.checkbox[status];
-            },
-            showModal() {
-                this.$store.state.modalData = this.request;
-                this.$store.state.showUserModal = true;
-            }
 
+            },
         }
     }
 </script>

@@ -9,7 +9,6 @@
                 <div class="db-edit card">
                     <div class="card-body">
                         <clients-table
-                            v-bind:requests="requests"
                             v-on:onBlockUser="onBlockUser"
                             v-on:onDeleteUser="onDeleteUser"
                             v-on:onUnBlockUser="onUnBlockUser"
@@ -27,23 +26,21 @@ import SidebarUsers from "./templates/SidebarUsers";
 import ClientsTable from './templates/clients/table-user'
 import { CLIENTS, CLIENTS_BLOCK_USER, CLIENTS_DELETE_USER, CLIENTS_UNBLOCK_USER } from "../api/endpoints"
 import VPreloader from "./fragmets/preloader"
+import ModalMixin from "../ModalMixin";
 
 export default {
     name: "Clients",
     components: {
         VContent,SidebarUsers,ClientsTable,VPreloader
     },
-    data() {
-        return {
-            requests: []
+    mixins: [ModalMixin],
+    computed: {
+        requests() {
+         return this.$store.state.clients;
         }
     },
     methods: {
-        async loadClients() {
-            this.$get(CLIENTS).then( response => {
-                this.requests = response.data;
-            });
-        },
+
         hasRequests() {
             return !!Object.keys(this.requests).length
         },

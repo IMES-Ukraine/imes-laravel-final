@@ -41,9 +41,12 @@
 <script>
     import RouterButton from "../fragmets/router-button";
     import PopupButton from "../fragmets/popup-button";
+    import ModalMixin from "../../ModalMixin";
+
     export default {
         name: "withdrawal-form-sidebar",
         components: {RouterButton, PopupButton},
+        mixins: [ModalMixin],
         data() {
             return {
                 filterId: null

@@ -1,5 +1,6 @@
 <template>
-    <b-modal v-model="is_show" class="db-modal"  >
+    <b-modal v-model="is_show"
+             class="db-modal"  >
         <template #modal-header-close>
             <!-- Emulate built in modal header close button action -->
             <b-button size="sm" variant="outline-danger" @click="closeModal()" class="articles_create-close"></b-button>
@@ -8,6 +9,7 @@
         <template #modal-title>
             <button class="articles_save" @click="saveData()" >Зберегти</button>
         </template>
+        <template #modal-footer><p></p></template>
                 <div class="modal-body p-0">
                     <div class="form-row">
                         <div class="form-group col-12">
@@ -92,9 +94,11 @@
 
 <script>
 import {CLIENTS} from "../../api/endpoints";
+import ModalMixin from "../../ModalMixin";
 
 export default {
     name: "modal-user",
+    mixins: [ModalMixin],
     props: {
         request: {
             type: Object,
@@ -124,12 +128,10 @@ export default {
                 data: this.data
             }).then( (res) => {
                 this.closeModal();
-                alert(res.data.message)
+                this.showMsgBox(res.data.message)
             });
         },
-        closeModal() {
-            this.$store.state.showUserModal = false;
-        }
+
     }
 }
 </script>
