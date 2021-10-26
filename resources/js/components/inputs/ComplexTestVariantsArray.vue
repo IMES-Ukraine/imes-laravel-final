@@ -1,6 +1,53 @@
 <template>
     <div>
-        <div v-for="(variant, index) in complex" v-bind:key="variant.itemId">
+        <div class="articles_create-block" v-for="(variant, index) in variants" v-bind:key="variant.itemId" :id="'block-'+variant.itemId">
+            <div class="articles_create-line"></div>
+            <div class="articles_create__item">
+                <div class="articles_create__item-title has_radio">
+                    <input type="checkbox" v-model="variant.answer.type" :id="'type-'+variant.itemId" :checked="variant.answer.type" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <i></i>
+                    <p>Готовый <br>ответ</p>
+                </div>
+                <div class="articles_create__item-content">
+                    <div class="articles_create__ready_answer">
+                        <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
+                        <input type="text" name="text">
+                        <div class="articles_create-checkbox">
+                            <input type="checkbox" :id="'right_answer_' + variant.itemId" v-model="variant.answer.right">
+                            <i></i>
+                            <p>Правильный ответ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="articles_create__item">
+                <div class="articles_create__item-title has_radio">
+                    <input type="checkbox" v-bind:name="'answer_'+variant.itemId" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <i></i>
+                    <p>Поле ввода ответа</p>
+                </div>
+                <div class="articles_create__item-content">
+                    <textarea v-model.lazy="variant.variant"></textarea>
+                </div>
+            </div>
+            <div class="articles_create__item">
+                <div class="articles_create__item-title has_radio">
+                    <input type="checkbox" v-bind:name="'media_'+variant.itemId" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <i></i>
+                    <p>Медиа</p>
+                </div>
+                <div class="articles_create__item-content">
+                    <div class="articles_create__media">
+                        <SimpleTestMedia :media="variant.answer.media"></SimpleTestMedia>
+                        <div class="articles_create__media-add">
+                            <input type="file" name="file" :id="'file-'+variant.itemId" @change="addMedia(index, variant.itemId, $event)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div v-for="(variant, index) in complex" v-bind:key="variant.itemId">
             <div class="row mb-3">
                 <div class="article-edit__text col-3">
                     <div class="article-edit__btn-pos custom-checkbox">
@@ -79,7 +126,7 @@
                     <input class="form-control" rows="4" v-model.lazy="variant.variant" />
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 </template>
 
@@ -90,7 +137,7 @@
     export default {
         name: 'ComplexTestVariantsArray',
 
-        props: ['complex'],
+        props: ['complex', 'variants'],
 
         methods: {
 

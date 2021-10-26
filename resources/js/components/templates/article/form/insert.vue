@@ -1,70 +1,46 @@
 <template>
 
-    <div>
-    <div class="row mb-4" v-if="textLocale">
-
-        <div class="article-edit__text col-3">
-            Заголовок
+    <div class="articles_create__item mb54">
+        <div class="articles_create__item-title has_radio width-full">
+            <input
+                type="checkbox"
+                name="article-has-insert"
+                id="article-has-insert"
+                v-model="textLocale"
+                :checked="textLocale"
+                @onclick="getTextInsert"
+            >
+            <i></i>
+            <p>Вставка в тексте</p>
         </div>
-
-        <div class="col-9">
-            <div class="row">
-                <div class="col-12">
-
-                    <v-input-text
-                        :name="'title'"
-                        v-on:update:value="updateInsert(0, 'title', $event)"
-                        :value="this.insert[0].title"
-                    />
-
-                    <div class="error" v-if="v.title.$error">
-                        Заголовок обов'язковий
-                    </div>
-                </div>
+        <div class="articles_create__item-content" v-if="textLocale">
+            <div class="articles_create__name-block">
+                <v-textarea
+                    :rows="4"
+                    v-on:update:text="updateInsert(0, 'content', $event)"
+                    :text="this.insert[0].content"
+                />
+            </div>
+        </div>
+        <div class="articles_create__item-content" v-if="textLocale">
+            <div class="articles_create__name-block">
+                <v-input-text
+                    :name="'title'"
+                    v-on:update:value="updateInsert(0, 'title', $event)"
+                    :value="this.insert[0].title"
+                    placeholder="Заголовок"
+                />
             </div>
         </div>
 
-    </div>
-
-    <div class="row mb-4">
-
-        <div class="article-edit__text col-3">
-            <div class="article-edit__btn-pos custom-checkbox">
-                <input
-                    class="custom-checkbox__input"
-                    type="checkbox"
-                    name="article-has-insert"
-                    id="article-has-insert"
-                    v-model="textLocale"
-                    :checked="textLocale"
-                    @onclick="getTextInsert"
-                >
-                <label for="article-has-insert" class="custom-checkbox__label"></label>
-            </div>
-            Вставка в текстi
-        </div>
-
-        <div class="col-9" v-if="textLocale">
-            <v-textarea
-                :rows="4"
-                v-on:update:text="updateInsert(0, 'content', $event)"
-                :text="this.insert[0].content"
-            />
-            <div class="error" v-if="v.text.$error">
-                Текст вставки обов'язковий
-            </div>
-        </div>
-
-    </div>
-
-    <article-input-text
-        v-if="textLocale"
-        :v="v"
-        :title="'Продовження статтi'"
-        :error="'Контент обов\'язковий'"
-        :text="this.insert[1].content"
-        v-on:update:text="updateInsert(1, 'content', $event)"
-    />
+        <article-input-text
+            v-if="textLocale"
+            :v="v"
+            :title="'Продовження статтi'"
+            :error="'Контент обов\'язковий'"
+            :text="this.insert[1].content"
+            v-on:update:text="updateInsert(1, 'content', $event)"
+        />
     </div>
 
 </template>

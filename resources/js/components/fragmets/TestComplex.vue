@@ -1,6 +1,60 @@
 <template>
     <div>
-        <div class="card-body">
+        <div class="articles_create-box">
+            <div class="articles_create-block">
+                <div class="articles_create__item">
+                    <p class="articles_create__item-title">Название</p>
+                    <div class="articles_create__item-content">
+                        <div class="articles_create__name-block">
+                            <input type="text" name="title" id="question_title" v-model="question.title">
+                        </div>
+                    </div>
+                </div>
+                <div class="articles_create__item">
+                    <p class="articles_create__item-title">Категория</p>
+                    <div class="articles_create__item-content">
+                        <select class="my-ui-select articles_create-select">
+                            <option value="1">Категория 1</option>
+                            <option value="2">Категория 2</option>
+                            <option value="3">Категория 3</option>
+                            <option value="4">Категория 4</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="articles_create__item half">
+                    <p class="articles_create__item-title">Обложка</p>
+                    <div class="articles_create__item-content">
+                        <div class="articles_create__item-file width-auto buttonAddFile">
+                            <input type="file" name="name" v-on:change="handleUpload">
+                            <p><span data-placeholder="Загрузить"></span></p>
+                            <button class="delete_file deleteFile"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="articles_create-block">
+                <div class="articles_create__item">
+                    <p class="articles_create__item-title">Описание</p>
+                    <div class="articles_create__item-content">
+                        <textarea v-model="question.text"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="articles_create-block">
+                <div class="articles_create__item">
+                    <div class="articles_create__item-title has_radio">
+                        <input type="radio" name="title_radio">
+                        <i></i>
+                        <p>Изучить</p>
+                    </div>
+                    <div class="articles_create__item-content">
+                        <div class="articles_create__name-block">
+                            <input type="text" name="name" placeholder="http//">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--<div class="card-body">
 
             <fragment-form-text>
                 <input class="form-control" type="text" name="title" id="question_title" v-model="question.title">
@@ -57,16 +111,10 @@
                 </div>
 
             </div>
-        </div>
+        </div>-->
 
-        <ComplexTestVariants @file_сhange="fileChange" :complex="complex"></ComplexTestVariants>
-
-        <div class="row">
-            <div class="col-12 text-center">
-                <button type="button" class="btn btn-outline-primary" @click="addComplex">
-                    <div>Добавить блок</div>
-                </button>
-            </div>
+            <ComplexTestVariants @file_сhange="fileChange" :complex="complex" v-bind:answer="answer" v-bind:variants="variants"></ComplexTestVariants>
+            <button class="articles_create-submit button-border" type="button" @click="addComplex">Добавить блок</button>
         </div>
     </div>
 </template>
@@ -139,13 +187,27 @@
             },*/
             addComplex() {
                 //let length = this.complex.length
-                let obj = {
+                /*let obj = {
                     itemId: getRandomId(),
                     title: '',
                     variant: '',
                     isCorrect: false,
                 };
-                this.complex.push(obj)
+                this.complex.push(obj)*/
+                const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+                let length = this.variants.length
+                let obj = {
+                    itemId: getRandomId(),
+                    title: alphabet[length],
+                    variant: '',
+                    isCorrect: false,
+                    answer: {
+                        type: true,
+                        right: false,
+                        media: []
+                    }
+                };
+                this.variants.push(obj)
             },
             /**
              * Handle changing of file input (cover, video, variants)
