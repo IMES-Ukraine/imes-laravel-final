@@ -339,7 +339,7 @@
                                         <p class="articles_create__item-title">Название</p>
                                         <div class="articles_create__item-content direction-column">
                                             <div class="articles_create__name-block">
-                                                <input type="text" name="name" v-model="articles.title">
+                                                <input type="text" name="name" v-model="articles[0].title">
                                                 <div v-if="errorArticleTitle" class="errors">{{ errorArticleTitle }}</div>
                                             </div>
                                             <div class="articles_create__radio_circle">
@@ -1239,9 +1239,9 @@
     }
 
     .multiselect--active .multiselect__tags:after {
-        -webkit-transform: translate(0, -50%) rotate(-180deg);
-        -ms-transform: translate(0, -50%) rotate(-180deg);
-        transform: translate(0, -50%) rotate(-180deg);
+        -webkit-transform: rotate(-180deg);
+        -ms-transform: rotate(-180deg);
+        transform: rotate(-180deg);
     }
 
     .multiselect--active .multiselect__placeholder {
@@ -1250,9 +1250,13 @@
         display: flex;
     }
 
+    .multiselect--above .multiselect__tags {
+        border-radius: 0 0 5px 5px;
+    }
+
     .multiselect--above .multiselect__content-wrapper {
-        border: 1px solid #F2F2F2;
-        border-radius: 5px;
+        border: 1px solid #D9D9D9;
+        border-radius: 5px 5px 0 0;
         top: auto;
         bottom: 100%;
     }
@@ -1265,6 +1269,10 @@
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
@@ -1292,28 +1300,92 @@
         background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='9' height='6' viewBox='0 0 9 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' clip-rule='evenodd' d='M9 0.951882L4.5 6L-2.2066e-07 0.951882L0.848528 -1.20525e-07L4.5 4.09624L8.15147 -4.39747e-07L9 0.951882Z' fill='%2300B7FF'/%3e%3c/svg%3e ");
         background-size: contain;
         position: absolute;
-        top: 50%;
+        top: 14px;
         right: 14px;
-        -webkit-transform: translate(0, -50%);
-        -ms-transform: translate(0, -50%);
-        transform: translate(0, -50%);
+        z-index: 0;
+        -webkit-transition: .3s;
+        -o-transition: .3s;
+        transition: .3s;
+    }
+
+    .multiselect__tags-wrap {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 5px;
+        padding: 5px;
+        padding-right: 30px;
+    }
+
+    .multiselect__tag {
+        background: #00B7FF;
+        padding: 5px 25px 5px 10px;
+        margin: 0;
+    }
+
+    .multiselect__tag-icon:hover {
+        background: #FF608D;
+    }
+
+    .multiselect__tag-icon:after {
+        font-size: 16px;
+        color: #fff;
+    }
+
+    .multiselect__input {
+        border: none;
+        border-top: 1px solid #D9D9D9;
+        padding: 0 14px;
+    }
+
+    .multiselect__input:focus {
+        border-color: #D9D9D9;
     }
 
     .multiselect__placeholder {
-        display: block;
-        min-height: auto;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 35px;
         padding: 0 14px;
         padding-right: 30px;
         margin: 0;
-        white-space: pre;
+        white-space: nowrap;
         overflow: hidden;
         -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
+        position: relative;
+        z-index: 1;
     }
 
     .multiselect__single {
-        display: block;
-        min-height: auto;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 35px;
         font-size: 11px;
         line-height: 1.2;
         padding: 0 14px;
@@ -1323,6 +1395,8 @@
         overflow: hidden;
         -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
+        position: relative;
+        z-index: 1;
     }
 
     .multiselect__content {
@@ -1330,7 +1404,7 @@
     }
 
     .multiselect__content-wrapper {
-        border: 1px solid #F2F2F2;
+        border: 1px solid #D9D9D9;
         border-top: none;
         border-radius: 0 0 5px 5px;
         padding-top: 11px;
