@@ -1,16 +1,14 @@
 <template>
-    <label>
-        <input
-            class="form-control"
-            type="text"
-            :class="classes"
-            :name="name"
-            :disabled="isDisabled"
-            :placeholder="placeholder"
-            :value="value"
-            @change="update"
-        >
-    </label>
+    <input
+        class="form-control"
+        type="text"
+        :class="classes"
+        :name="name"
+        :disabled="isDisabled"
+        :placeholder="placeholder"
+        :value="value"
+        @change="update"
+    >
 </template>
 
 <script>

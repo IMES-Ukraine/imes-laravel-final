@@ -1,38 +1,34 @@
 <template>
-
-    <div class="articles_create__item mb54">
-        <div class="articles_create__item-title has_radio width-full">
-            <input
-                type="checkbox"
-                name="article-has-insert"
-                id="article-has-insert"
-                v-model="textLocale"
-                :checked="textLocale"
-                @onclick="getTextInsert"
-            >
-            <i></i>
-            <p>Вставка в тексте</p>
-        </div>
-        <div class="articles_create__item-content" v-if="textLocale">
-            <div class="articles_create__name-block">
-                <v-textarea
-                    :rows="4"
-                    v-on:update:text="updateInsert(0, 'content', $event)"
-                    :text="this.insert[0].content"
-                />
+    <div class="articles_create-block">
+        <div class="articles_create__item">
+            <div class="articles_create__item-title has_radio">
+                <input
+                    type="checkbox"
+                    name="article-has-insert"
+                    id="article-has-insert"
+                    v-model="textLocale"
+                    :checked="textLocale"
+                    @onclick="getTextInsert"
+                >
+                <i></i>
+                <p>Вставка в тексте</p>
             </div>
-        </div>
-        <div class="articles_create__item-content" v-if="textLocale">
-            <div class="articles_create__name-block">
+            <div class="articles_create__item-content direction-column" v-if="textLocale">
                 <v-input-text
                     :name="'title'"
                     v-on:update:value="updateInsert(0, 'title', $event)"
                     :value="this.insert[0].title"
                     placeholder="Заголовок"
+                    :classes="'mb20'"
+                />
+                <v-textarea
+                    :rows="4"
+                    v-on:update:text="updateInsert(0, 'content', $event)"
+                    :text="this.insert[0].content"
+                    placeholder="Текст"
                 />
             </div>
         </div>
-
         <article-input-text
             v-if="textLocale"
             :v="v"

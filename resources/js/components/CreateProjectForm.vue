@@ -380,6 +380,7 @@
                                                 <p><span data-placeholder="Загрузить">Загрузить</span></p>
                                                 <button class="delete_file deleteFile"></button>
                                             </div>
+                                            <div v-if="errorArticleCover" class="errors">{{ errorArticleCover }}</div>
                                         </div>
                                     </div>
                                     <div class="articles_create__item half">
@@ -395,7 +396,7 @@
                                     </div>
                                     <article-input-text
                                         :title="'Текст'"
-                                        :error="'Контент заповнити обов\'язково'"
+                                        :error="errorArticleText"
                                     />
                                     <!--<div class="articles_create__item">
                                         <p class="articles_create__item-title">Категории</p>
@@ -447,8 +448,8 @@
                                         <p class="articles_create__item-title">Автор</p>
                                         <div class="articles_create__item-content">
                                             <div class="articles_create__addition">
-                                                <div class="articles_create__addition-block">
-                                                    <div class="">
+                                                <div class="articles_create__addition-block width-194">
+                                                    <div class="articles_create-multiselect">
                                                         <multiselect
                                                             v-model="user_id"
                                                             tag-placeholder="Обрати автора"
@@ -456,7 +457,7 @@
                                                             label="name"
                                                             track-by="id"
                                                             :searchable="false"
-                                                            :close-on-select="false"
+                                                            :close-on-select="true"
                                                             :show-labels="false"
                                                             :options="authors"
                                                         />
@@ -720,6 +721,8 @@
                 errorFile: '',
                 errorTitle: '',
                 errorArticleTitle: '',
+                errorArticleCover: '',
+                errorArticleText: '',
                 errorNewTest: '',
                 errorNewArticle: '',
                 errorTestSurveyTitle: '',
@@ -1081,12 +1084,34 @@
                 this.$store.dispatch('nextStep')
             },
             saveArticle() {
-                $('#add_new_article_button').hide();
-                $('#add_new_article').show();
-                $('#add_new_article .articles_create__study-title').html($('#article_title').val());
+                this.errorArticleTitle = '';
+                this.errorArticleCover = '';
+                this.errorArticleText = '';
+                let error = false;
 
-                this.currentStep = 2
-                this.$store.dispatch('nextStep')
+                if (this.articles.title == '') {
+                    this.errorArticleTitle = 'Поле обязательно'
+                    error = true;
+                }
+
+                if (this.articles.text == '') {
+                    this.errorArticleText = 'Поле обязательно'
+                    error = true;
+                }
+
+                if (this.articles.images == null) {
+                    this.errorArticleCover = 'Поле обязательно'
+                    error = true;
+                }
+
+                if (!error) {
+                    $('#add_new_article_button').hide();
+                    $('#add_new_article').show();
+                    $('#add_new_article .articles_create__study-title').html($('#article_title').val());
+
+                    this.currentStep = 2
+                    this.$store.dispatch('nextStep')
+                }
             },
             reloadBlockSurveyTest() {
                 for (const [index, value] of Object.entries(this.questions)) {
@@ -1191,7 +1216,117 @@
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
-    .multiselect__tag, .multiselect__option--highlight {
-        background: #05b7ff;
+    .multiselect {
+        min-height: 35px;
+    }
+
+    .multiselect__select {
+        display: none;
+    }
+
+    .multiselect__tags {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        min-height: 35px;
+        font-weight: 500;
+        font-size: 11px;
+        line-height: 1.2;
+        letter-spacing: -0.0024em;
+        border: 1px solid #D9D9D9;
+        border-radius: 5px;
+        padding: 0 14px;
+        position: relative;
+        z-index: 51;
+    }
+
+    .multiselect__tags:after {
+        content: "";
+        display: block;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        width: 9px;
+        height: 6px;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='9' height='6' viewBox='0 0 9 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' clip-rule='evenodd' d='M9 0.951882L4.5 6L-2.2066e-07 0.951882L0.848528 -1.20525e-07L4.5 4.09624L8.15147 -4.39747e-07L9 0.951882Z' fill='%2300B7FF'/%3e%3c/svg%3e ");
+        background-size: contain;
+        margin-left: 10px;
+    }
+
+    .multiselect__placeholder {
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+
+    .multiselect__single {
+        display: block;
+        font-size: 11px;
+        line-height: 1.2;
+        padding: 0;
+        margin: 0;
+    }
+
+    .multiselect__content {
+        overflow: hidden;
+    }
+
+    .multiselect__content-wrapper {
+        border: 1px solid #D9D9D9;
+        border-radius: 5px;
+        padding-top: 45px;
+        padding-bottom: 14px;
+        margin: 0;
+        top: 0;
+    }
+
+    .multiselect__content-wrapper::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+        background-color: #F2F2F2;
+    }
+
+    .multiselect__content-wrapper::-webkit-scrollbar-thumb {
+        background-color: #D9D9D9;
+    }
+
+    .multiselect__element {
+        margin-bottom: 8px;
+    }
+
+    .multiselect__element:last-child {
+        margin-bottom: 0;
+    }
+
+    .multiselect__option {
+        min-height: auto;
+        font-size: 12px;
+        line-height: 1.2;
+        color: #4F4F4F;
+        white-space: normal;
+        padding: 0 14px;
+    }
+
+    .multiselect__option--selected {
+        font-weight: bold;
+        color: #4F4F4F;
+        background: transparent;
+    }
+
+    .multiselect__option--selected.multiselect__option--highlight {
+        font-weight: bold;
+        color: #4F4F4F;
+        background: transparent;
+    }
+
+    .multiselect__option--highlight {
+        font-weight: bold;
+        color: #4F4F4F;
+        background: transparent;
     }
 </style>
