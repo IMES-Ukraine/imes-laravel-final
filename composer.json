@@ -19,12 +19,15 @@
         "laravel/ui": "^3.2",
         "lcobucci/jwt": "3.4.1",
         "league/csv": "^9.7",
-        "tymon/jwt-auth": "^1.0"
+        "tymon/jwt-auth": "^1.0",
+      "ext-json": "*"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.6",
         "barryvdh/laravel-ide-helper": "^2.10",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
+        "googee/entity": "^2.3",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",

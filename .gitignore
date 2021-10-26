@@ -1,3 +1,4 @@
+/.idea/
 /.env
 /bootstrap/cache
 /vendor/
@@ -6,3 +7,4 @@
 /public/storage
 /public/images/vendor
 /public/adminer.php
+/code-generator/

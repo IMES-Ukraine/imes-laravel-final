@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Article;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\ProfileController;
@@ -16,42 +17,9 @@ use App\Http\Controllers\API\UsersController;
 |
 */
 
-Route::post('admin/api/v1/notification/all',
-    [AdminController::class, 'NotificationSendAll']
-);
-
-Route::post('admin/api/v1/notification/to',
-    [AdminController::class, 'notificationSendTo']
-);
-
-Route::get('admin/api/v1/withdraw',
-    [ProfileController::class, 'withdraws']);
-
-Route::get('admin/api/v1/profile/verification',
-    [AdminController::class, 'verificationsList']
-);
-
-Route::get('admin/api/v1/request',
-    [ProfileController::class, 'requests']);
-
-Route::get('admin/api/v1/clients',
-    [UsersController::class, 'index']);
-
-Route::put('admin/api/v1/clients/{id}',
-    [UsersController::class, 'update']);
-
-Route::post('admin/api/v1/profile/verification/accept',
-    [AdminController::class, 'acceptVerification']
-);
-
-Route::post('admin/api/v1/profile/verification/decline',
-    [AdminController::class, 'declineVerification']
-);
-
-
 Route::get('/share/{id}', function ($id) {
 
-    $model = \App\Models\Article::find($id);
+    $model = Article::find($id);
     $content = json_decode($model->content);
 
     return view('share',[
@@ -59,6 +27,9 @@ Route::get('/share/{id}', function ($id) {
         'content' => $content
     ]);
 })->where('id', '.*');
+
+
+
 /**
  * Redirect all request to index
  */
