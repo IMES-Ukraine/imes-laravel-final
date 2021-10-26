@@ -1,5 +1,7 @@
 <template>
     <b-modal v-model="is_show"
+             :noCloseOnBackdrop = true
+             :noCloseOnEsc = true
              class="db-modal"  >
         <template #modal-header-close>
             <!-- Emulate built in modal header close button action -->
@@ -99,18 +101,13 @@ import ModalMixin from "../../ModalMixin";
 export default {
     name: "modal-user",
     mixins: [ModalMixin],
-    props: {
-        request: {
-            type: Object,
-            require: true
-        },
-        is_show: {
-            type: Boolean,
-            required: true
-        },
-        message: ''
-    },
     computed: {
+        request() {
+            return this.$store.state.modalData;
+        },
+        is_show() {
+            return this.$store.state.showUserModal;
+        },
         data() {
             return {
                 phone: this.request.phone,

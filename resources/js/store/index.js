@@ -144,10 +144,13 @@ export default new Vuex.Store({
             1: 'Заблокувати'
         },
         statusAddAnswer: true,
-        clients: {},
+
         modalData: {},
         showUserModal: false,
-        filterId: null
+        filterId: null,
+
+        clients: {},
+        cards:{},
     },
     getters: {
         currentStep: state => {

@@ -96,11 +96,7 @@ export default new Router({
             name: "testById",
             component: () => import("../components/TestForm.vue")
         },
-        {
-            path: '/clients',
-            name: 'clients',
-            component: () => import("../components/ClientList.vue")
-        },
+
         {
             path: '/exchange',
             name: 'exchange',
@@ -115,6 +111,16 @@ export default new Router({
             path: "/client/new",
             name: "createClient",
             component: () => import("../components/CreateClientForm.vue")
+        },
+        {
+            path: '/clients',
+            name: 'clients',
+            component: () => import("../components/ClientList.vue")
+        },
+        {
+            path: '/cards',
+            name: 'cards',
+            component: () => import("../components/CardList.vue")
         },
 
     ]

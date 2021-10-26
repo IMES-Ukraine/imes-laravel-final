@@ -28,8 +28,6 @@ Route::get('/share/{id}', function ($id) {
     ]);
 })->where('id', '.*');
 
-
-
 /**
  * Redirect all request to index
  */

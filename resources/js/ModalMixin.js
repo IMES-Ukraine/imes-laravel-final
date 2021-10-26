@@ -1,4 +1,4 @@
-import {CLIENTS} from "./api/endpoints";
+import {CARDS, CLIENTS} from "./api/endpoints";
 
 export default {
     methods: {
@@ -22,6 +22,11 @@ export default {
         async loadClients() {
             this.$get(CLIENTS).then( response => {
                 this.$store.state.clients = response.data;
+            });
+        },
+        async loadCards() {
+            this.$get(CARDS).then( response => {
+                this.$store.state.cards = response.page.data;
             });
         },
     }

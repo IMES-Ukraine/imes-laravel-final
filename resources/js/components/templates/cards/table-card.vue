@@ -1,14 +1,15 @@
 <template>
     <div>
+        <button @click="addCard()">Додати карту</button>
         <table class="db__table">
             <!-- line header -->
             <tr class="db__row is-th">
                 <th class="db__th">№ зп</th>
-                <th class="db__th">№ аккаунта</th>
-                <th class="db__th">ПІБ</th>
-                <th class="db__th">Реєстраційні дані</th>
-                <th class="db__th">Бали</th>
-                <th class="db__th">Веріфікований?</th>
+                <th class="db__th">Код</th>
+                <th class="db__th">Назва</th>
+                <th class="db__th">Вартість</th>
+                <th class="db__th">Опис</th>
+                <th class="db__th">Переглянути</th>
                 <th class="db__th">Управлiння</th>
             </tr>
 
@@ -30,7 +31,7 @@
 
         </table>
         <!-- modal -->
-        <modal-user></modal-user>
+        <modal-card></modal-card>
         <!-- modal -->
 
     </div>
@@ -38,12 +39,12 @@
 
 <script>
 import Item from './item';
-import ModalUser from "../ModalUser";
+import ModalCard from "../ModalCard";
 import ModalMixin from "../../../ModalMixin";
 
 export default {
-    name: "table-user",
-    components: {Item, ModalUser},
+    name: "table-card",
+    components: {Item, ModalCard},
     mixins: [ModalMixin],
     data() {
         return {
@@ -52,7 +53,10 @@ export default {
     },
     computed: {
         requests() {
-            return  this.$store.state.clients;
+            return  this.$store.state.cards;
+        },
+        currentRequest() {
+            return this.$store.state.modalData;
         },
         filteredId() {
             return this.$store.state.filterId;
@@ -61,19 +65,20 @@ export default {
     watch: {
         filteredId() {
             if (this.filteredId != '') {
-                let user = this.requests.filter(item => item.id == this.filteredId);
-                if (undefined !== user[0]) {
-                    this.showModal(user[0])
+                let card = this.requests.filter(item => item.id == this.filteredId);
+                if (undefined !== card[0]) {
+                    this.showModal(card[0])
                 } else {
-                    this.showMsgBox("Немає такого користувача: " + this.filteredId);
+                    this.showMsgBox("Немає такої карти: " + this.filteredId);
                 }
             }
         }
     },
     methods: {
-        hasRequests() {
-            return this.requests.length > 0
-        },
+        addCard() {
+            this.showModal({})
+        }
+
 
     }
 }

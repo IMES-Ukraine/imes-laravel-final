@@ -30,8 +30,8 @@ class CardsController extends Controller
     {
         $item = new Cards;
         $item->fill($request->validated());
-        $item->save();
-        return response()->json(compact('item'));
+        $status = $item->save();
+        return response()->json(compact('item', 'status'));
     }
 
     /**
@@ -56,8 +56,9 @@ class CardsController extends Controller
     public function update(int $id, StoreCardsRequest $request): JsonResponse
     {
         $item = Cards::query()->findOrFail($id);
-        $item->update($request->validated());
-        return response()->json(compact('item'));
+        $status = $item->update($request->validated());
+
+        return response()->json(compact('item', 'status') );
     }
 
     /**

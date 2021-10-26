@@ -59,21 +59,13 @@ class Cards extends Model
      * @var array
      */
     protected $fillable = [
-
         'name',
-
         'cost',
-
         'short_description',
-
         'description',
-
         'cover',
-
         'category_id',
-
         'is_active',
-
     ];
 
     /**
