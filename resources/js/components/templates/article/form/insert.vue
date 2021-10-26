@@ -33,7 +33,6 @@
             v-if="textLocale"
             :v="v"
             :title="'Продовження статтi'"
-            :error="'Контент обов\'язковий'"
             :text="this.insert[1].content"
             v-on:update:text="updateInsert(1, 'content', $event)"
         />

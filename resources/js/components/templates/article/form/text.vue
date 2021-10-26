@@ -7,9 +7,9 @@
                 :text="text"
                 v-on:update:text="getText"
             />
-            <div class="errors" v-if="error">
-                {{error}}
-            </div>
+        </div>
+        <div class="errors" v-if="error">
+            {{error}}
         </div>
     </div>
 </template>
