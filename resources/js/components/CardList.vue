@@ -1,9 +1,31 @@
 <template>
     <v-content>
         <template v-slot:sidebar>
-            <SidebarUsers></SidebarUsers>
+            <div>
+                <div class="sidebar-content__block">
+                    <!-- активная в данный момент ссылка с классом is-active -->
+                    <button type="button" class="btn btn-outline-primary btn-block is-active">
+                        Картки
+                    </button>
+                    <button type="button" class="btn btn-outline-primary btn-block is-active"  @click="addCard()">
+                        Додати карту
+                    </button>
+                    <div class="input-group input-group mt-5 mb-4">
+                        <input type="text" id="filterId" class="form-control input-is-small input-has-append"
+                               placeholder="пошук по № картки"
+                               v-model="filterId"
+                               v-on:keyup.enter="findCard(filterId)"
+                               aria-label="пошук по № картки">
+                        <div class="input-group-append">
+                            <button class="button-group-input" aria-label="знайти" @click="findCard(filterId)">
+                                <span class="icon-is-search"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </template>
-        <button @click="addCard()">Додати карту</button>
+
         <div class="main-db">
             <div class="db__block">
                 <div class="db-edit card">
@@ -22,29 +44,35 @@
 
 <script>
 import VContent from "./templates/Content";
-import SidebarUsers from "./templates/SidebarUsers";
 import CardsTable from './templates/cards/table-card'
-import { CARDS, CARD_ENABLE, CARD_DISABLE} from "../api/endpoints"
+import {CARDS, CARD_ENABLE, CARD_DISABLE} from "../api/endpoints"
 import VPreloader from "./fragmets/preloader"
 import ModalMixin from "../ModalMixin";
 
 export default {
     name: "Cards",
     components: {
-        VContent,SidebarUsers,CardsTable,VPreloader
+        VContent, CardsTable, VPreloader
     },
     mixins: [ModalMixin],
+    data() {
+        return {
+            filterId: null
+        }
+    },
     computed: {
         requests() {
-         return this.$store.state.cards;
+            return this.$store.state.cards;
         }
     },
     methods: {
+        findCard(id) {
+            this.$store.state.filterId = id;
+        },
         addCard() {
             this.showModal({})
         },
         async onDisableCardHandler(id) {
-console.log('Disable!');
             this.$get(CARD_DISABLE + '/' + id).then()
 
             for (const [index, value] of Object.entries(this.requests)) {
@@ -66,9 +94,7 @@ console.log('Disable!');
             }
         },
         async onDeleteCardHandler(id) {
-
             this.$delete(CARDS + '/' + id).then()
-            $('#db-remove--' + id + ' .is-close').click();
 
             for (const [index, value] of Object.entries(this.requests)) {
                 if (value.id === id) {

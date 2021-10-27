@@ -36,6 +36,7 @@
                     //{ name: 'Повідомлення', path: '/notices' },
                     { name: 'Верифiкацiя', path: '/verification' },
                     { name: 'Перекази', path: '/withdrawal' },
+                    { name: 'Картки', path: '/cards' },
                     //{ name: 'Користувачi', path: '/user' },
                     { name: 'Модерувати вiдповiдь', path: '/moderation' },
                     //{ name: 'Підтримка', path: '/support' },
