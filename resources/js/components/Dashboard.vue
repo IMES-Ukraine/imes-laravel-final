@@ -281,4 +281,39 @@
         name: "Dashboard",
         components: {ProjectListSidebar, VContent},
     }
+
+    $(document).ready(function() {
+        let canvas = document.getElementById("dashboardCircle");
+
+        if (canvas) {
+            let ctx = canvas.getContext("2d");
+            let lastend = 0;
+            let data = [60, 30, 10];
+            let myTotal = 0;
+            let myColor = ['#00B7FF', '#4CF99E', '#FF608D'];
+
+            for (let e = 0; e < data.length; e++) {
+                myTotal += data[e];
+            }
+            let off = 0
+            let w = (canvas.width - off) / 2
+            let h = (canvas.height - off) / 2
+            for (let i = 0; i < data.length; i++) {
+                ctx.fillStyle = myColor[i];
+                ctx.beginPath();
+                ctx.moveTo(w, h);
+                let len = (data[i] / myTotal) * 2 * Math.PI
+                let r = h - off / 2
+                ctx.arc(w, h, r, lastend, lastend + len, false);
+                ctx.fill();
+                ctx.fillStyle = 'white';
+                ctx.font = "bold 14px Montserrat";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                let mid = lastend + len / 2
+                ctx.fillText(data[i] + "%", w + Math.cos(mid) * (r / 2), h + Math.sin(mid) * (r / 2));
+                lastend += Math.PI * 2 * (data[i] / myTotal);
+            }
+        }
+    });
 </script>
