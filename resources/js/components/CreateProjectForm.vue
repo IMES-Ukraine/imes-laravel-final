@@ -540,13 +540,13 @@
                                         <div class="articles_create__grid width-half column-gap-50">
                                             <div class="articles_create__grid-block">
                                                 <div class="articles_create__sorting">
-                                                    <input type="radio" name="radio" id="one" value="test" v-model="picked" checked="">
+                                                    <input type="radio" name="radio" id="one" value="test" v-model="picked" @change="onChangePicked($event, index_test)" checked="">
                                                     <p><span class="icon-plus">Теста</span></p>
                                                 </div>
                                             </div>
                                             <div class="articles_create__grid-block">
                                                 <div class="articles_create__sorting">
-                                                    <input type="radio" name="radio" id="two" value="survey" v-model="picked">
+                                                    <input type="radio" name="radio" id="two" value="survey" @change="onChangePicked($event, index_test)" v-model="picked">
                                                     <p><span class="icon-plus">Опроса</span></p>
                                                 </div>
                                             </div>
@@ -752,7 +752,8 @@
                 is_points: false,
                 add_new_test: false,
                 add_new_article: false,
-                index_article: 0
+                index_article: 0,
+                index_test: 0
             }
         },
         computed: {
@@ -1225,6 +1226,14 @@
                     this.articles[this.index_article].multiples.push(obj)
                     $('#article_multiples').val(null);
                 })
+            },
+            onChangePicked(event, key) {
+                for (const [index, value] of Object.entries(this.tests[key].variants)) {
+                    if (index >= 2) {
+                        this.tests[key].variants.splice(index, 1)
+                        return
+                    }
+                }
             }
         },
         mounted() {
