@@ -200,12 +200,14 @@
                                         <div class="articles_create__item-content">
                                             <div class="articles_create__grid width-main-1">
                                                 <div class="articles_create__grid-block">
-                                                    <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(3)" id="add_new_article_button"><span class="icon-right">Создать</span></button>
-                                                    <div class="articles_create__study" id="add_new_article" v-show="add_new_article">
-                                                        <p class="articles_create__study-title">Статья 1.1. Заголовок статьи</p>
-                                                        <div class="articles_create__study-controls">
-                                                            <button class="articles_create__study-button articles_create__study-button--edit" @click.prevent="setStep(3)" type="button"></button>
-                                                            <button class="articles_create__study-button articles_create__study-button--delete" @click.prevent="reloadBlockArticle"></button>
+                                                    <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(3)"><span class="icon-right">Создать</span></button>
+                                                    <div id="add_new_article" v-show="add_new_article">
+                                                        <div class="articles_create__study" v-for="article in articles" v-if="article.title">
+                                                            <p class="articles_create__study-title">{{ article.title }}</p>
+                                                            <div class="articles_create__study-controls">
+                                                                <button class="articles_create__study-button articles_create__study-button--edit" @click.prevent="setStep(3)" type="button"></button>
+                                                                <button class="articles_create__study-button articles_create__study-button--delete" @click.prevent="reloadBlockArticle" type="button"></button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div v-if="errorNewArticle" class="errors">{{ errorNewArticle }}</div>
@@ -267,7 +269,7 @@
                                         <div class="articles_create__item-content">
                                             <div class="articles_create__grid width-main-1">
                                                 <div class="articles_create__grid-block">
-                                                    <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(4)" id="add_new_test_button"><span class="icon-right">Создать</span></button>
+                                                    <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(4)"><span class="icon-right">Создать</span></button>
                                                     <div class="articles_create__study" id="add_new_test" v-show="add_new_test">
                                                         <p class="articles_create__study-title">Статья 1.1. Заголовок статьи</p>
                                                         <div class="articles_create__study-controls">
@@ -339,7 +341,7 @@
                                         <p class="articles_create__item-title">Название</p>
                                         <div class="articles_create__item-content direction-column">
                                             <div class="articles_create__name-block">
-                                                <input type="text" name="name" v-model="articles[0].title">
+                                                <input type="text" name="name" v-model="articles[index_article].title">
                                                 <div v-if="errorArticleTitle" class="errors">{{ errorArticleTitle }}</div>
                                             </div>
                                             <div class="articles_create__radio_circle">
@@ -376,9 +378,8 @@
                                                     v-on:change="handleUploadArticle"
                                                     role="button"
                                                 >
-                                                <input type="file" name="name">
                                                 <p><span data-placeholder="Загрузить">Загрузить</span></p>
-                                                <button class="delete_file deleteFile"></button>
+                                                <button class="delete_file deleteFile" id="deleteFileArticle" type="button"></button>
                                             </div>
                                             <div v-if="errorArticleCover" class="errors">{{ errorArticleCover }}</div>
                                         </div>
@@ -387,17 +388,24 @@
                                         <p class="articles_create__item-title">Галерея</p>
                                         <div class="articles_create__item-content">
                                             <div class="articles_create__media">
-                                                <SimpleTestMedia :media="articles[0].multiples"></SimpleTestMedia>
+                                                <SimpleTestMedia :media="articles[index_article].multiples"></SimpleTestMedia>
                                                 <div class="articles_create__media-add">
                                                     <input type="file" name="file" id="article_multiples" @change="addMedia($event)">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <article-input-text
-                                        :title="'Текст'"
-                                        :error="errorArticleText"
-                                    />
+                                    <div class="articles_create__item mb54">
+                                        <p class="articles_create__item-title">Текст</p>
+                                        <div class="articles_create__item-content">
+                                            <textarea
+                                                class="form-control"
+                                                rows="4"
+                                                v-model="articles[index_article].text"
+                                            ></textarea>
+                                        </div>
+                                        <div class="errors" v-if="errorArticleText">{{errorArticleText}}</div>
+                                    </div>
                                     <!--<div class="articles_create__item">
                                         <p class="articles_create__item-title">Категории</p>
                                         <div class="articles_create__item-content">
@@ -658,7 +666,7 @@
 </template>
 <script>
     //import {required/*,minLength*/} from 'vuelidate/lib/validators'
-    import {ARTICLE, USER, USER_CREATE_NAME, PROJECT, ARTICLE_COVER, TOKEN} from "../api/endpoints";
+    import {ARTICLE, USER, USER_CREATE_NAME, PROJECT, ARTICLE_COVER, TOKEN, PROJECT_IMAGE} from "../api/endpoints";
     import { ValidationProvider, ValidationObserver } from 'vee-validate'
     import PlusButton from './controls/PlusButton'
     import VContent from "./templates/Content"
@@ -682,6 +690,7 @@
     import VRadio from "./templates/inputs/radio"
     import SimpleTestMedia from "./fragmets/SimpleTestMedia"
     import { getRandomId } from './../utils'
+    import VTextarea from "./templates/inputs/textarea"
 
     export default {
         name: 'CreateProjectForm',
@@ -707,7 +716,8 @@
             Question,
             TestSurvey,
             VRadio,
-            SimpleTestMedia
+            SimpleTestMedia,
+            VTextarea
         },
         data() {
             return {
@@ -741,7 +751,8 @@
                 block_content: false,
                 is_points: false,
                 add_new_test: false,
-                add_new_article: false
+                add_new_article: false,
+                index_article: 0
             }
         },
         computed: {
@@ -850,7 +861,7 @@
                 imageForm.append('file', event.target.files[0])
 
                 axios.post(
-                    ARTICLE_COVER,
+                    ARTICLE_COVER + '/articles',
                     imageForm,
                     {
                         headers: {
@@ -862,8 +873,8 @@
                     }
                 ).then((file) => {
                     this.name = event.target.files[0].name
-                    this.articles.imeges = file.data
-                    this.articles[0]['images'] = file.data.data.id
+                    //this.articles[0].imeges.push(file.data)
+                    this.articles[this.index_article].images = file.data.data.id
                 })
             },
             storeProject() {
@@ -1068,7 +1079,6 @@
                 }
 
                 if (!error) {
-                    $('#add_new_test_button').hide();
                     this.add_new_test = true
                     $('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
 
@@ -1077,7 +1087,6 @@
                 }
             },
             saveTest() {
-                $('#add_new_test_button').hide();
                 this.add_new_test = true
                 $('#add_new_test .articles_create__study-title').html($('#question_title').val());
 
@@ -1090,28 +1099,53 @@
                 this.errorArticleText = '';
                 let error = false;
 
-                if (this.articles[0].title == null) {
+                if (this.articles[this.index_article].title == null) {
                     this.errorArticleTitle = 'Поле обязательно'
                     error = true;
                 }
 
-                if (this.articles[0].text == null) {
+                if (this.articles[this.index_article].text == null) {
                     this.errorArticleText = 'Поле обязательно'
                     error = true;
                 }
 
-                if (this.articles[0].images == null) {
+                if (this.articles[this.index_article].images == null) {
                     this.errorArticleCover = 'Поле обязательно'
                     error = true;
                 }
 
                 if (!error) {
-                    $('#add_new_article_button').hide();
                     $('#add_new_article').show();
-                    $('#add_new_article .articles_create__study-title').html($('#article_title').val());
+                    //$('#add_new_article .articles_create__study-title').html($('#article_title').val());
 
                     this.currentStep = 2
+                    //this.index_article += 1
                     this.$store.dispatch('nextStep')
+
+                    let obj = {
+                        title: null,
+                        articleType: 1,
+                        type: null,
+                        text: null,
+                        tags: [],
+                        category: 1,
+                        headings: 1,
+                        author: 1,
+                        button: null,
+                        text_button: null,
+                        recommended: [],
+                        authors: [],
+                        user_id: [],
+                        chosenRecommended: [],
+                        images: null,
+                        multiples: []
+                    }
+
+                    this.articles.push(obj)
+
+                    this.index_article += 1
+
+                    $('#deleteFileArticle').click()
                 }
             },
             reloadBlockSurveyTest() {
@@ -1122,7 +1156,6 @@
 
                 this.addQuestion()
 
-                $('#add_new_test_button').show();
                 //$('#add_new_test').hide();
                 this.add_new_test = false
 
@@ -1137,7 +1170,6 @@
 
                 this.addQuestion()
 
-                $('#add_new_test_button').show();
                 //$('#add_new_test').hide();
                 this.add_new_test = false
 
@@ -1150,8 +1182,7 @@
                     //return
                 }
 
-                $('#add_new_article_button').show();
-                $('#add_new_article').hide();
+                //$('#add_new_article').hide();
             },
             getType (value) {
                 this.$emit('update', value);
@@ -1191,7 +1222,7 @@
                         data: file.data,
                         path: file.data.data.path
                     };
-                    this.articles[0].multiples.push(obj)
+                    this.articles[this.index_article].multiples.push(obj)
                     $('#article_multiples').val(null);
                 })
             }
@@ -1250,13 +1281,17 @@
         display: flex;
     }
 
-    .multiselect--above .multiselect__tags {
+    .multiselect--active.multiselect--above {
         border-radius: 0 0 5px 5px;
+    }
+
+    .multiselect--active.multiselect--above .multiselect__content-wrapper {
+        border-bottom: none;
+        border-radius: 5px 5px 0 0;
     }
 
     .multiselect--above .multiselect__content-wrapper {
         border: 1px solid #D9D9D9;
-        border-radius: 5px 5px 0 0;
         top: auto;
         bottom: 100%;
     }
@@ -1326,6 +1361,15 @@
         padding-right: 30px;
     }
 
+    .multiselect__tags input {
+        border: none;
+        padding: 0 14px;
+    }
+
+    .multiselect__tags input:focus {
+        border-color: #D9D9D9;
+    }
+
     .multiselect__tag {
         background: #00B7FF;
         padding: 5px 25px 5px 10px;
@@ -1339,16 +1383,6 @@
     .multiselect__tag-icon:after {
         font-size: 16px;
         color: #fff;
-    }
-
-    .multiselect__input {
-        border: none;
-        border-top: 1px solid #D9D9D9;
-        padding: 0 14px;
-    }
-
-    .multiselect__input:focus {
-        border-color: #D9D9D9;
     }
 
     .multiselect__placeholder {
