@@ -53,8 +53,9 @@ export default new Router({
         },
         {
             path: '/project/view/:projectId',
-            name: "viewProject",
-            component: () => import("../components/ProjectForm.vue")
+            name: "dashboard",
+            component: () => import("../components/Dashboard.vue")
+            //component: () => import("../components/ProjectForm.vue")
         },
         {
             path: '/project/content',

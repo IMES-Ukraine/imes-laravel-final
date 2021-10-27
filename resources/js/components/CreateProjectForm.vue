@@ -270,11 +270,13 @@
                                             <div class="articles_create__grid width-main-1">
                                                 <div class="articles_create__grid-block">
                                                     <button class="articles_create-add_btn height-47" type="button" @click.prevent="setStep(4)"><span class="icon-right">Создать</span></button>
-                                                    <div class="articles_create__study" id="add_new_test" v-show="add_new_test">
-                                                        <p class="articles_create__study-title">Статья 1.1. Заголовок статьи</p>
-                                                        <div class="articles_create__study-controls">
-                                                            <button class="articles_create__study-button articles_create__study-button--edit" type="button" @click.prevent="setStep(4)"></button>
-                                                            <button class="articles_create__study-button articles_create__study-button--delete" type="button" @click.prevent="reloadBlockSurveyTest"></button>
+                                                    <div id="add_new_test" v-show="add_new_test">
+                                                        <div class="articles_create__study" v-for="test in tests" v-if="test.question">
+                                                            <p class="articles_create__study-title">{{ test.question.title }}</p>
+                                                            <div class="articles_create__study-controls">
+                                                                <button class="articles_create__study-button articles_create__study-button--edit" type="button" @click.prevent="setStep(4)"></button>
+                                                                <button class="articles_create__study-button articles_create__study-button--delete" type="button" @click.prevent="reloadBlockSurveyTest"></button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div v-if="errorNewTest" class="errors">{{ errorNewTest }}</div>
@@ -554,13 +556,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!--<div class="col-12">
-                                <input type="radio" name="radio" id="one" value="test" v-model="picked">
-                                <label for="one">Теста</label>
-                                <input type="radio" name="radio" id="two" value="survey" v-model="picked">
-                                <label for="two">Опроса</label>
-                                <br>
-                            </div>-->
 
                             <div v-if="picked === 'test'">
                                 <div class="articles_create-block">
@@ -609,7 +604,7 @@
                             </div>
 
                             <div v-if="picked === 'survey'">
-                                <div v-for="item in questions" v-bind:key="item.title">
+                                <div v-for="item in questions[index_test]" v-bind:key="item.title">
                                     <TestSurvey :question="item.question"
                                                 :variants="item.variants"
                                                 :errorTestSurveyTitle="errorTestSurveyTitle"
@@ -757,9 +752,6 @@
             }
         },
         computed: {
-            /*getStep() {
-                return this.$store.getters.currentStep
-            },*/
             getStep() {
                 return this.currentStep
             },
@@ -800,10 +792,6 @@
                         }
                     )
             },
-            /*showStep(step) {
-                this.currentStep++
-                this.$store.dispatch('nextStep')
-            },*/
             submitForm() {
                 this.$refs.form.validate().then( success => {
                     if(!success) {
@@ -844,16 +832,6 @@
                         }).finally(() => {
                             console.log('success or error')
                         });
-
-                    /*if ( this.isFinalStep ) {
-                        this.$store.dispatch('createEntity', this.getPayload )
-                    } else {
-                        //this.currentStep++
-                        this.$store.dispatch(
-                            'storeProject', this.options
-                        )
-                        this.nextStep()
-                    }*/
                 })
 
             },
@@ -880,7 +858,6 @@
             },
             storeProject() {
                 this.$store.dispatch('storeProject', this.options )
-                //this.$store.dispatch('storeProject', this.project.options)
             },
             handleUpload(fileName) {
                 //if ( typeof this.files[fileName] !== 'undefined' ) {
@@ -894,7 +871,6 @@
                 //}
             },
             showTargeting() {
-                //$('#block_targeting').show()
                 this.targeting = true
             },
             validate() {
@@ -997,10 +973,6 @@
             multiplesStore(value) {
                 this.multiples = value
             },
-            submitComplex() {
-                //this.isComplex = true;
-                //this.addComplexQuestion()
-            },
             addComplexQuestion() {
                 this.questions.push({
                     question: {
@@ -1081,15 +1053,19 @@
 
                 if (!error) {
                     this.add_new_test = true
-                    $('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
+                    //$('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
 
                     this.currentStep = 2
                     this.$store.dispatch('nextStep')
+
+                    this.tests.push([])
+
+                    this.index_test += 1
                 }
             },
             saveTest() {
                 this.add_new_test = true
-                $('#add_new_test .articles_create__study-title').html($('#question_title').val());
+                //$('#add_new_test .articles_create__study-title').html($('#question_title').val());
 
                 this.currentStep = 2
                 this.$store.dispatch('nextStep')
@@ -1117,10 +1093,8 @@
 
                 if (!error) {
                     $('#add_new_article').show();
-                    //$('#add_new_article .articles_create__study-title').html($('#article_title').val());
 
                     this.currentStep = 2
-                    //this.index_article += 1
                     this.$store.dispatch('nextStep')
 
                     let obj = {
@@ -1152,38 +1126,23 @@
             reloadBlockSurveyTest() {
                 for (const [index, value] of Object.entries(this.questions)) {
                     this.questions.splice(index, 1)
-                    //return
                 }
 
                 this.addQuestion()
-
-                //$('#add_new_test').hide();
                 this.add_new_test = false
-
-                //this.currentStep = 4
-                //this.$store.dispatch('nextStep')
             },
             reloadBlockTest() {
                 for (const [index, value] of Object.entries(this.questions)) {
                     this.questions.splice(index, 1)
-                    //return
                 }
 
                 this.addQuestion()
-
-                //$('#add_new_test').hide();
                 this.add_new_test = false
-
-                //this.currentStep = 4
-                //this.$store.dispatch('nextStep')
             },
             reloadBlockArticle() {
                 for (const [index, value] of Object.entries(this.articles)) {
                     this.articles.splice(index, 1)
-                    //return
                 }
-
-                //$('#add_new_article').hide();
             },
             getType (value) {
                 this.$emit('update', value);
@@ -1213,9 +1172,6 @@
                         },
                     }
                 ).then((file) => {
-                    /*this.name = event.target.files[0].name
-                    this.articles[0].multiples = file.data.data
-                    this.articles[0]['multiples'] = file.data.data.id*/
                     let obj = {
                         itemId: getRandomId(),
                         file: file.data.data.id,

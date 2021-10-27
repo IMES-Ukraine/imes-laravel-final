@@ -5,7 +5,7 @@
     >-->
         <div class="articles_list__block" v-if="(this.$route.hash && this.$route.hash == tag) || (!this.$route.hash)">
             <router-link
-                :to="{name: routeName, params: {projectId: id}}"
+                :to="'project/view/' + id"
                 class="articles_list__block-link"
             ></router-link>
             <div class="articles_list__block-content">

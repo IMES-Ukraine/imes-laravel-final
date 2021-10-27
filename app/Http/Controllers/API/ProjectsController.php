@@ -83,9 +83,9 @@ class ProjectsController extends Controller
      * @param $id
      * @return JsonResponse
      */
-    public function show( $id) {
+    public function show($id) {
 
-        $project = $this->projectRepository->find( $id);
+        $project = $this->projectRepository->find($id);
 
         if (isset($project->data)) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $project->data);
