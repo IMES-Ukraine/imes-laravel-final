@@ -1,6 +1,5 @@
 <template>
     <div>
-        <button @click="addCard()">Додати карту</button>
         <table class="db__table">
             <!-- line header -->
             <tr class="db__row is-th">
@@ -74,13 +73,6 @@ export default {
             }
         }
     },
-    methods: {
-        addCard() {
-            this.showModal({})
-        }
-
-
-    }
 }
 </script>
 

@@ -62,6 +62,36 @@ class CardsController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param int $id
+     * @param StoreCardsRequest $request
+     * @return JsonResponse
+     */
+    public function enable(int $id, StoreCardsRequest $request): JsonResponse
+    {
+        $item = Cards::query()->findOrFail($id);
+        $status = $item->update(['is_active' => true]);
+
+        return response()->json(compact('item', 'status') );
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param int $id
+     * @param StoreCardsRequest $request
+     * @return JsonResponse
+     */
+    public function disable(int $id, StoreCardsRequest $request): JsonResponse
+    {
+        $item = Cards::query()->findOrFail($id);
+        $status = $item->update(['is_active' => false]);
+
+        return response()->json(compact('item', 'status') );
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param int $id
@@ -75,4 +105,5 @@ class CardsController extends Controller
         }
         return response()->json('Resource already deleted!', 410);
     }
+
 }

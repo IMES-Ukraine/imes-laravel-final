@@ -70,12 +70,6 @@ export default {
             }
         }
     },
-    methods: {
-        hasRequests() {
-            return this.requests.length > 0
-        },
-
-    }
 }
 </script>
 

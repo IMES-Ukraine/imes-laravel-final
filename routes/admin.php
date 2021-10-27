@@ -54,8 +54,8 @@ Route::group(
         ],
             function () {
                 Route::get('/', [CardsController::class, 'index']);
-                Route::post('/disable', [CardsController::class, 'disable']);
-                Route::post('/enable', [CardsController::class, 'enable']);
+                Route::get('/disable/{id}', [CardsController::class, 'disable']);
+                Route::get('/enable/{id}', [CardsController::class, 'enable']);
                 Route::post('/', [CardsController::class, 'store']);
                 Route::put('/{id}', [CardsController::class, 'update']);
                 Route::delete('/{id}', [CardsController::class, 'destroy']);

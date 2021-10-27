@@ -9,9 +9,9 @@
                 <div class="db-edit card">
                     <div class="card-body">
                         <clients-table
-                            v-on:onBlockUser="onBlockUser"
-                            v-on:onDeleteUser="onDeleteUser"
-                            v-on:onUnBlockUser="onUnBlockUser"
+                            v-on:onBlockUser="onBlockUserHandler"
+                            v-on:onDeleteUser="onDeleteUserHandler"
+                            v-on:onUnBlockUser="onUnBlockUserHandler"
                         ></clients-table>
                     </div>
                 </div>
@@ -41,10 +41,7 @@ export default {
     },
     methods: {
 
-        hasRequests() {
-            return !!Object.keys(this.requests).length
-        },
-        async onBlockUser(id) {
+        async onBlockUserHandler(id) {
 
             this.$get(CLIENTS_BLOCK_USER + '/' + id).then()
 
@@ -55,7 +52,7 @@ export default {
                 }
             }
         },
-        async onUnBlockUser(id) {
+        async onUnBlockUserHandler(id) {
 
             this.$get(CLIENTS_UNBLOCK_USER + '/' + id).then()
 
@@ -66,7 +63,7 @@ export default {
                 }
             }
         },
-        async onDeleteUser(id) {
+        async onDeleteUserHandler(id) {
 
             this.$delete(CLIENTS_DELETE_USER + '/' + id).then()
             $('#db-remove--' + id + ' .is-close').click();

@@ -30,15 +30,13 @@
 
         </td>
         <td class="db__td is-action">
-            <div class="db__check" :data-request-data="request.id">
+            <div class="db__check"@click="(request.is_active) ? $emit('onDisableCard', request.id) : $emit('onEnableCard', request.id)" >
                 <div class="db__check-info" >{{ activeTextBlockCard(request.is_active) }}</div>
                 <input class="custom__checkbox"
                        type="checkbox"
-                       @click="(request.is_enabled) ? $emit('onDisableCard', request.id) : $emit('onEnableCard', request.id)"
-                       :checked="request.is_active"
-                >
-                <!-- checked -- активный аккаунт -->
-                <label class="custom__label is-block"  aria-label="Деактивувати картку" title="Деактивувати картку"></label>
+                       :checked="request.is_active" >
+                <!-- checked -- активная карта -->
+                <label class="custom__label is-block"  :aria-label="activeTextBlockCard(request.is_active) + ' картку' " :title="activeTextBlockCard(request.is_active) + ' картку' "></label>
             </div>
 
             <div class="db__check" >
@@ -52,7 +50,7 @@
                     <div class="modal-dialog modal-dialog-centered db-modal__dialog" role="document">
                         <div class="db-modal__content modal-content">
                             <div class="modal-header db-modal__header">
-                                <h5 class="modal-title db-modal__title">Видалити користувача?</h5>
+                                <h5 class="modal-title db-modal__title">Видалити картку?</h5>
                             </div>
                             <div class="modal-body db-modal__body is-remove">
                                 <button type="button" class="db-modal__button is-close" data-dismiss="modal" aria-label="Close">Ні</button>
@@ -87,8 +85,10 @@ import  ModalMixin from "../../../ModalMixin";
         methods: {
             activeTextBlockCard (status) {
                 return this.$store.state.checkbox[status];
-
             },
+            disableCard(id){
+                console.log('disabled: ', id);
+            }
         }
     }
 </script>

@@ -3,15 +3,15 @@
         <template v-slot:sidebar>
             <SidebarUsers></SidebarUsers>
         </template>
-
+        <button @click="addCard()">Додати карту</button>
         <div class="main-db">
             <div class="db__block">
                 <div class="db-edit card">
                     <div class="card-body">
                         <cards-table
-                            v-on:onDisableCard="onDisableCard"
-                            v-on:onEnableCard="onEnableCard"
-                            v-on:onDeleteCard="onDeleteCard"
+                            v-on:onDisableCard="onDisableCardHandler"
+                            v-on:onEnableCard="onEnableCardHandler"
+                            v-on:onDeleteCard="onDeleteCardHandler"
                         ></cards-table>
                     </div>
                 </div>
@@ -40,33 +40,32 @@ export default {
         }
     },
     methods: {
-
-        hasRequests() {
-            return !!Object.keys(this.requests).length
+        addCard() {
+            this.showModal({})
         },
-        async onDisableCard(id) {
-
+        async onDisableCardHandler(id) {
+console.log('Disable!');
             this.$get(CARD_DISABLE + '/' + id).then()
 
             for (const [index, value] of Object.entries(this.requests)) {
                 if (value.id === id) {
-                    value.is_activated = 0
+                    value.is_active = 0
                     return
                 }
             }
         },
-        async onEnableCard(id) {
+        async onEnableCardHandler(id) {
 
             this.$get(CARD_ENABLE + '/' + id).then()
 
             for (const [index, value] of Object.entries(this.requests)) {
                 if (value.id === id) {
-                    value.is_activated = 1
+                    value.is_active = 1
                     return
                 }
             }
         },
-        async onDeleteCard(id) {
+        async onDeleteCardHandler(id) {
 
             this.$delete(CARDS + '/' + id).then()
             $('#db-remove--' + id + ' .is-close').click();

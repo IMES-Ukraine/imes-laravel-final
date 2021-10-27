@@ -35,13 +35,13 @@
                        type="checkbox"
                        :name="'db-block--' + request.id"
                        :id="'db-block--' + request.id"
-                       @click="(request.is_activated)?$emit('onBlockUser', request.id):$emit('onUnBlockUser', request.id)"
+                       @click="(request.is_activated) ? $emit('onBlockUser', request.id) : $emit('onUnBlockUser', request.id)"
                        :checked="request.is_activated"
                 >
                 <!-- checked -- активный аккаунт -->
-                <label class="custom__label is-block" :for="'db-block--' + request.id" aria-label="Заблокувати аккаунт" title="Заблокувати аккаунт"></label>
+                <label class="custom__label is-block" :for="'db-block--' + request.id" :aria-label="activeTextBlockUser(request.is_activated) + ' аккаунт' " :title="activeTextBlockUser(request.is_activated) + ' аккаунт' "></label>
             </div>
-            <div class="db__check" :data-request-data="request.id" data-request="accountRequest::onBlockUser" data-request-flash="">
+            <div class="db__check" >
                 <div class="db__check-info">Видалити</div>
                 <button type="button" class="btn btn-outline-second is-sq-small" aria-label="видалити" title="видалити" data-toggle="modal" :data-target="'#db-remove--' +request.id">
                     <span class="icon-is-x"></span>

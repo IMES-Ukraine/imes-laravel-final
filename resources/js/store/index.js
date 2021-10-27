@@ -140,7 +140,7 @@ export default new Vuex.Store({
         isEdit: false,
         inEdit: false,
         checkbox: {
-            0: 'Разблокувати',
+            0: 'Розблокувати',
             1: 'Заблокувати'
         },
         statusAddAnswer: true,
