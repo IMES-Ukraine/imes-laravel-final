@@ -21,7 +21,7 @@
         </template>
 
 
-        <div class="main-content__container" style="height: calc(100vh - 100px); ">
+        <div class="main-content__container" style="height: calc(100vh - 133px); ">
             <!-- main 4 -->
             <div class="main-chat">
                 <div class="chat__block" id="chatBlock">
@@ -98,6 +98,147 @@
 .chat__header {
     font-size: 15px;
     font-weight: bold;
+}
+
+.main-content__container {
+    height: calc(100vh - 133px);
+}
+
+.chat__block {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+
+.chat__contacts {
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    width: 204px;
+}
+
+.chat-contacts__item {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    min-height: 42px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.25;
+    letter-spacing: -0.0017em;
+    color: #4F4F4F;
+    border-bottom: 1px solid #EDEDED;
+    padding: 10px 21px;
+    padding-right: 45px;
+}
+
+.chat-contacts__item:last-child {
+    border-bottom: none;
+}
+
+.chat-contacts__item.current {
+    border-color: #EDEDED;
+    border-width: 1px;
+    background: #D5F8E0;
+}
+
+.chat-contacts__item.unread {
+    background: transparent;
+}
+
+.chat__messages {
+    width: 100%;
+}
+
+.chat__header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    font-weight: normal;
+    font-size: 9px;
+    line-height: 1.22;
+    letter-spacing: -0.0017em;
+    text-transform: lowercase;
+    padding: 0 13px;
+}
+
+.chat__outer {
+    width: 100%;
+    padding: 30px;
+}
+
+.chat__body {
+    width: 100%;
+    min-height: 100%;
+    padding: 0;
+}
+
+.chat__item {
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.chat__item:last-child {
+    margin-bottom: 0;
+}
+
+.chat-message {
+    margin: 0;
+}
+
+.chat-sender__button {
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+}
+
+#current-user__id {
+    display: none;
+}
+
+.unread_count {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    font-weight: bold;
+    font-size: 8px;
+    line-height: 1;
+    letter-spacing: -0.0017em;
+    color: #fff;
+    float: right;
+    text-align: center;
+    border-radius: 50%;
+    background: #10DE50;
+    position: absolute;
+    top: 50%;
+    right: 9px;
+    -webkit-transform: translate(0, -50%);
+    -ms-transform: translate(0, -50%);
+    transform: translate(0, -50%);
 }
 
 </style>
