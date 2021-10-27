@@ -15,21 +15,21 @@
                 <div class="modal-body p-0">
                     <div class="form-row">
                         <div class="form-group col-12">
-                            <label class="form-control__label">Назва</label>
+                            <label class="form-control__label">* Назва</label>
                             <input class="form-control db-edit-modal__input" type="text"
                                    v-model="data.name">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-12">
-                            <label class="form-control__label">Вартість</label>
+                            <label class="form-control__label">* Вартість</label>
                             <input class="form-control db-edit-modal__input" type="text"
                                    v-model="data.cost">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-12">
-                            <label class="form-control__label">Короткий опис</label>
+                            <label class="form-control__label">* Короткий опис</label>
                             <input class="form-control db-edit-modal__input" type="text"
                                    v-model="data.short_description">
                         </div>

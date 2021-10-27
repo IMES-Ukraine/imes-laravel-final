@@ -54,7 +54,7 @@ export default {
         },
         async onUnBlockUserHandler(id) {
 
-            this.$get(CLIENTS_UNBLOCK_USER + '/' + id).then()
+            this.$get(CLIENTS_UNBLOCK_USER + '/' + id).then();
 
             for (const [index, value] of Object.entries(this.requests)) {
                 if (value.id === id) {
@@ -65,7 +65,7 @@ export default {
         },
         async onDeleteUserHandler(id) {
 
-            this.$delete(CLIENTS_DELETE_USER + '/' + id).then()
+            this.$delete(CLIENTS_DELETE_USER + '/' + id).then();
             $('#db-remove--' + id + ' .is-close').click();
 
             for (const [index, value] of Object.entries(this.requests)) {
