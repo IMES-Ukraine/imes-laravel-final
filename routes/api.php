@@ -14,6 +14,7 @@ use App\Http\Controllers\API\WithdrawController;
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\AnalyticsController;
 use App\Http\Controllers\API\TestsController;
+use App\Http\Controllers\API\BannersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -231,6 +232,15 @@ Route::group(
                 Route::get('/{id}', [TestsController::class, 'showAgreement'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
                 Route::post('/{id}', [TestsController::class, 'acceptAgreement'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
 
+            }
+        );
+
+        Route::group(
+            [
+                'prefix' => 'banners'
+            ],
+            function () {
+                Route::get('/{type}', [BannersController::class, 'show']);
             }
         );
 
