@@ -19,4 +19,10 @@ class UsersService
         return false;
     }
 
+    public static function reduceBalance($user_id, $balance) {
+        $user = User::find($user_id);
+        $user->balance = ($balance < 0)?0:$balance;
+        $user->save();
+    }
+
 }

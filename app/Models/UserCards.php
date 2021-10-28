@@ -14,11 +14,13 @@ use Illuminate\Notifications\Notifiable;
  * @property integer $user_id
  * @property integer $card_id
  * @property integer $is_active
+ * @property integer $cost
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  */
 class UserCards extends Model
 {
+    const USER_CARDS_IS_ACTIVE = 1;
 
     /**
      * The table associated with the model.
@@ -59,6 +61,8 @@ class UserCards extends Model
 
         'is_active',
 
+        'cost'
+
     ];
 
     /**
@@ -84,6 +88,8 @@ class UserCards extends Model
         'card_id' => [],
 
         'is_active' => [],
+
+        'cost' => []
 
     ];
 

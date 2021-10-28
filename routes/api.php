@@ -15,6 +15,7 @@ use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\AnalyticsController;
 use App\Http\Controllers\API\TestsController;
 use App\Http\Controllers\API\BannersController;
+use App\Http\Controllers\API\CardsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -241,6 +242,15 @@ Route::group(
             ],
             function () {
                 Route::get('/{type}', [BannersController::class, 'show']);
+            }
+        );
+
+        Route::group(
+            [
+                'prefix' => 'cards'
+            ],
+            function () {
+                Route::get('/{id}', [CardsController::class, 'index']);
             }
         );
 
