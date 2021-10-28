@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\UsersController;
+use App\Http\Controllers\BannersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +61,14 @@ Route::group(
                 Route::put('/{id}', [CardsController::class, 'update']);
                 Route::delete('/{id}', [CardsController::class, 'destroy']);
 
+            });
+
+        Route::group([
+            'prefix' => 'banners'
+        ],
+            function () {
+                Route::get('/{type}', [BannersController::class, 'show']);
+                Route::post('/', [BannersController::class, 'store']);
             });
 
         Route::get('/request', [ProfileController::class, 'requests']);

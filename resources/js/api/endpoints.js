@@ -50,3 +50,5 @@ export const CARDS = V1_ADMIN + 'cards'
 export const CARD_DISABLE = CARDS + '/disable'
 export const CARD_ENABLE = CARDS + '/enable'
 
+export const BANNERS = V1_ADMIN + 'banners'
+

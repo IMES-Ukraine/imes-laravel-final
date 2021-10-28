@@ -123,6 +123,11 @@ export default new Router({
             name: 'cards',
             component: () => import("../components/CardList.vue")
         },
+        {
+            path: '/banner/new',
+            name: 'BannerForm',
+            component: () => import("../components/BannerForm.vue")
+        },
 
     ]
 
