@@ -1,5 +1,5 @@
 <template>
-    <img :src="'../storage/'+image" class="img-fluid" :alt="title" :title="title">
+    <img :src="'/storage/'+image" class="img-fluid" :alt="title" :title="title">
 </template>
 
 <script>

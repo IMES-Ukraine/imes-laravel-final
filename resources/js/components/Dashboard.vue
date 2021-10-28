@@ -1,18 +1,18 @@
 <template>
     <v-content>
         <template v-slot:sidebar>
-            <project-list-sidebar/>
+            <project-list-sidebar :id="project.item.id" />
         </template>
 
-        <div class="dashboard">
+        <div class="dashboard" v-if="project">
             <div class="dashboard-head">
                 <div class="dashboard__title">
-                    <img src="img/articles-logo-1.png" class="dashboard__title-logo" alt="">
-                    <p class="dashboard__title-text">Исследование №1</p>
+                    <cover :image="project.options.files.cover" :title="project.options.title" class="dashboard__title-logo"/>
+                    <p class="dashboard__title-text">{{ project.options.title }}</p>
                 </div>
                 <div class="dashboard__info">
                     <p class="dashboard__info-title">Дата запуска проекта:</p>
-                    <p class="dashboard__info-data">11.11.2020</p>
+                    <p class="dashboard__info-data">{{ project.item.created_at.substr(0, 10) }}</p>
                 </div>
             </div>
             <div class="dashboard_main">
@@ -274,12 +274,34 @@
     </v-content>
 </template>
 <script>
-    import VContent from "./templates/Content";
-    import ProjectListSidebar from "./templates/project/list/dashboard";
+    import VContent from "./templates/Content"
+    import ProjectListSidebar from "./templates/project/list/dashboard"
+    import {PROJECT} from "../api/endpoints"
+    import Cover from "./fragmets/cover-project"
 
     export default {
         name: "Dashboard",
-        components: {ProjectListSidebar, VContent},
+        components: {ProjectListSidebar, VContent, Cover},
+        data() {
+            return {
+                project: {},
+            }
+        },
+        methods: {
+            async loadProject() {
+                let projectId = this.$route.params.projectId
+
+                this.$get(PROJECT + '/' + projectId).then(response => {
+
+                    if (response.data) {
+                        this.project = response.data
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.loadProject()
+        }
     }
 
     $(document).ready(function() {

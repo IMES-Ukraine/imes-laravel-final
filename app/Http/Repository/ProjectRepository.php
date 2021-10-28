@@ -246,7 +246,8 @@ class ProjectRepository
             'tests'    => $questionsState,
             'current'  => [
                 'projectId' => $project->id
-            ]
+            ],
+            'item' => $project
         ];
 
         return (object) [
