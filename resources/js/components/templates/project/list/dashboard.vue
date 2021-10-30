@@ -5,23 +5,34 @@
             <a class="sidebar_nav-button"><span class="icon-download">Скачать отчёт</span></a>
         </div>
         <div class="sidebar_nav gap-10">
-            <a class="sidebar_nav-button"><span>Остановить</span></a>
-            <a class="sidebar_nav-button red" :href="'/project/remove/' + id"><span class="icon-delete">Удалить проект</span></a>
+            <template v-if="(options.status && options.status == 'inactive')">
+                <project-start/>
+            </template>
+            <project-stop v-else/>
+            <project-remove/>
         </div>
     </div>
 </template>
 
 <script>
-    import RouterButton from "../../../fragmets/router-button";
+    import RouterButton from "../../../fragmets/router-button"
+    import ProjectRemove from "../../../templates/dashboard/Remove"
+    import ProjectStop from "../../../templates/dashboard/Stop"
+    import ProjectStart from "../../../templates/dashboard/Start"
 
     export default {
         name: "project-list-sidebar",
-        props: {
-            id: {
-                type: Number,
-                require: true
-            },
+        components: {
+            RouterButton,
+            ProjectRemove,
+            ProjectStop,
+            ProjectStart
         },
-        components: {RouterButton},
+        props: {
+            options: {
+                type: Object,
+                default: {}
+            }
+        }
     }
 </script>

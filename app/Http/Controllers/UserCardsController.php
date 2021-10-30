@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers;
 use App\Models\UserCards;
 use App\Http\Requests\StoreUserCardsRequest;
 
@@ -10,6 +11,13 @@ class UserCardsController extends Controller
     protected $routePath = 'user_cards';
     protected $viewPath = 'user_cards';
 
+    protected $helpers;
+
+    public function __construct(Helpers $helpers)
+    {
+        $this->helpers = $helpers;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,8 +25,17 @@ class UserCardsController extends Controller
      */
     public function index()
     {
-        $page = UserCards::query()->paginate();
-        return view("$this->viewPath.index", compact('page'));
+        $withdraws = UserCards::with('user')
+            ->with('card')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return $this->helpers->apiArrayResponseBuilder(
+            200,
+            'success',
+            $withdraws);
+        /*$page = UserCards::query()->paginate();
+        return view("$this->viewPath.index", compact('page'));*/
     }
 
     /**

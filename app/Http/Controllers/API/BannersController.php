@@ -22,7 +22,7 @@ class BannersController extends Controller
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
         }
 
-        $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid type']);
+        return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid type']);
 
     }
 }

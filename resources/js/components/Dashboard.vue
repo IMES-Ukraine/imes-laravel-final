@@ -1,16 +1,16 @@
 <template>
-    <v-content>
+    <v-content v-if="project">
         <template v-slot:sidebar>
-            <project-list-sidebar :id="project.item.id" />
+            <project-list-sidebar :options="project.options"/>
         </template>
 
-        <div class="dashboard" v-if="project">
+        <div class="dashboard">
             <div class="dashboard-head">
-                <div class="dashboard__title">
+                <div class="dashboard__title" v-if="project.options">
                     <cover :image="project.options.files.cover" :title="project.options.title" class="dashboard__title-logo"/>
                     <p class="dashboard__title-text">{{ project.options.title }}</p>
                 </div>
-                <div class="dashboard__info">
+                <div class="dashboard__info" v-if="project.item">
                     <p class="dashboard__info-title">Дата запуска проекта:</p>
                     <p class="dashboard__info-data">{{ project.item.created_at.substr(0, 10) }}</p>
                 </div>
@@ -42,21 +42,21 @@
                                 <p class="dashboard_main__item-status dashboard_main__item-status--green"><span>Выполнили активности</span></p>
                                 <p class="dashboard_main__item-quantity">210</p>
                             </div>
-                            <button class="dashboard_main__item-button">Смотреть</button>
+                            <users-popup :title="'Выполнили активности'"/>
                         </div>
                         <div class="dashboard_main__item">
                             <div class="dashboard_main__item-wrap">
                                 <p class="dashboard_main__item-status dashboard_main__item-status--red"><span>Не выполнили активности</span></p>
                                 <p class="dashboard_main__item-quantity">70</p>
                             </div>
-                            <button class="dashboard_main__item-button">Смотреть</button>
+                            <button class="dashboard_main__item-button" type="button">Смотреть</button>
                         </div>
                         <div class="dashboard_main__item">
                             <div class="dashboard_main__item-wrap">
                                 <p class="dashboard_main__item-status dashboard_main__item-status--blue"><span>Не участвовали</span></p>
                                 <p class="dashboard_main__item-quantity">420</p>
                             </div>
-                            <button class="dashboard_main__item-button">Смотреть</button>
+                            <button class="dashboard_main__item-button" type="button">Смотреть</button>
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                     <div class="dashboard_study__head">
                         <p class="dashboard_study-title">Исследование 1.1</p>
                         <div class="dashboard_study__head-list">
-                            <p>Статус активностей</p>
+                            <p class="status">Статус активностей</p>
                             <p>Выполнили активности</p>
                             <p>Не выполнили активности</p>
                             <p>Не участвовали</p>
@@ -101,8 +101,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="dashboard_study__block">
-                        <div class="dashboard_study__block-head">
+                    <div class="dashboard_study__block width-full">
+                        <div class="dashboard_study__block-head space-between">
                             <p class="dashboard_study__block-title">Статьи</p>
                             <button class="dashboard_study__block-download"><span>Скачать отчёт пакета</span></button>
                         </div>
@@ -135,7 +135,7 @@
                     <div class="dashboard_study__head">
                         <p class="dashboard_study-title">Исследование 1.2</p>
                         <div class="dashboard_study__head-list">
-                            <p>Статус активностей</p>
+                            <p class="status">Статус активностей</p>
                             <p>Выполнили активности</p>
                             <p>Не выполнили активности</p>
                             <p>Не участвовали</p>
@@ -170,8 +170,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="dashboard_study__block">
-                        <div class="dashboard_study__block-head">
+                    <div class="dashboard_study__block width-full">
+                        <div class="dashboard_study__block-head space-between">
                             <p class="dashboard_study__block-title">Статьи</p>
                             <button class="dashboard_study__block-download"><span>Скачать отчёт пакета</span></button>
                         </div>
@@ -204,7 +204,7 @@
                     <div class="dashboard_study__head">
                         <p class="dashboard_study-title">Исследование 1.3</p>
                         <div class="dashboard_study__head-list">
-                            <p>Статус активностей</p>
+                            <p class="status">Статус активностей</p>
                             <p>Выполнили активности</p>
                             <p>Не выполнили активности</p>
                             <p>Не участвовали</p>
@@ -239,8 +239,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="dashboard_study__block">
-                        <div class="dashboard_study__block-head">
+                    <div class="dashboard_study__block width-full">
+                        <div class="dashboard_study__block-head space-between">
                             <p class="dashboard_study__block-title">Статьи</p>
                             <button class="dashboard_study__block-download"><span>Скачать отчёт пакета</span></button>
                         </div>
@@ -278,10 +278,16 @@
     import ProjectListSidebar from "./templates/project/list/dashboard"
     import {PROJECT} from "../api/endpoints"
     import Cover from "./fragmets/cover-project"
+    import UsersPopup from "./templates/dashboard/UsersPopup"
 
     export default {
         name: "Dashboard",
-        components: {ProjectListSidebar, VContent, Cover},
+        components: {
+            ProjectListSidebar,
+            VContent,
+            Cover,
+            UsersPopup
+        },
         data() {
             return {
                 project: {},

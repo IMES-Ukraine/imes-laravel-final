@@ -2314,7 +2314,8 @@ select {
 }
 
 .main_content {
-    padding: 44px 110px
+    padding: 44px 110px;
+    background: #fff;
 }
 
 .db-edit.card {

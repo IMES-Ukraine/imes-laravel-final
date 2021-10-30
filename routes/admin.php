@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\CardsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\UsersController;
 use App\Http\Controllers\BannersController;
+use App\Http\Controllers\UserCardsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,5 +75,14 @@ Route::group(
 
         Route::get('/request', [ProfileController::class, 'requests']);
 
-        Route::get('/withdraw', [ProfileController::class, 'withdraws']);
+        Route::get('/withdraw', [UserCardsController::class, 'index']);
+
+        Route::group(
+            [
+                'prefix' => 'project'
+            ],
+            function () {
+                Route::delete('/destroy/{id}', [ProjectsController::class, 'destroy']);
+            }
+        );
     });

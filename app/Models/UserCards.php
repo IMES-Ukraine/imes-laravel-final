@@ -93,5 +93,13 @@ class UserCards extends Model
 
     ];
 
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function card() {
+        return $this->belongsTo(Cards::class, 'card_id', 'id');
+    }
+
 
 }

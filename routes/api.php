@@ -73,6 +73,7 @@ Route::group(
                 Route::get('/block/{id}', [UsersController::class, 'block']);
                 Route::get('/unblock/{id}', [UsersController::class, 'unblock']);
                 Route::get('/search/{query}', [UsersController::class, 'search']);
+                Route::get('/cards/{user_id}', [UsersController::class, 'cards']);
             }
         );
 

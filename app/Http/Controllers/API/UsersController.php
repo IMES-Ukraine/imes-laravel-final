@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccountVerificationRequests;
+use App\Models\UserCards;
 use App\Services\UsersService;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
@@ -193,6 +194,18 @@ class UsersController extends Controller
     function balance(Request $request)
     {
         UsersService::setBalance($request->post('id'), $request->post('count'));
+    }
+
+    public function cards($user_id)
+    {
+        $data = UserCards::where('user_id', $user_id)->get()->toArray();
+
+        if (count($data) > 0) {
+            return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+        }
+
+        return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'Empty cards']);
+
     }
 
 }

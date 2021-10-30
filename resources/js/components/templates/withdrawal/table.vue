@@ -4,10 +4,10 @@
         <tr class="db__row is-th">
             <th class="db__th is-pd">№ п</th>
             <th class="db__th is-pd">№ аккаунта</th>
-            <th class="db__th is-pd">сумма</th>
-            <th class="db__th is-pd">коментарий</th>
-            <th class="report__th">Принять</th>
-            <th class="report__th">Отклонить</th>
+            <th class="db__th is-pd">Сумма перевода</th>
+            <th class="db__th is-pd">Карточка</th>
+            <th class="report__th">Статус</th>
+            <!--<th class="report__th">Отклонить</th>-->
         </tr>
         <tbody class="search-results">
         <!-- line header -->
@@ -17,10 +17,11 @@
                 v-for="(request) in requests"
                 v-bind:key="request.id"
                 :id="request.id"
-                :total="request.total"
+                :total="Math.trunc(request.cost)"
                 :user="(request.user)?request.user:{}"
+                :card="(request.card)?request.card:{}"
                 :comment="request.comment"
-                :status="request.status"
+                :status="request.is_active"
                 v-on="$listeners"
             ></item>
 

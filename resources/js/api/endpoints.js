@@ -52,3 +52,5 @@ export const CARD_ENABLE = CARDS + '/enable'
 
 export const BANNERS = V1_ADMIN + 'banners'
 
+export const PROJECT_DESTROY = V1_ADMIN + 'project/destroy/'
+
