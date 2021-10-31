@@ -595,7 +595,7 @@
                                 <div v-if="type === 'complex'">
                                     <div v-for="item in questions" v-bind:key="item.title">
                                         <TestComplex :question="item.question"
-                                                    :variants="item.variants"
+                                                     :complex_question="item.complex_question"
                                                     :answer="item.answer"></TestComplex>
                                     </div>
                                     <div class="mb20"></div>
@@ -604,7 +604,7 @@
                             </div>
 
                             <div v-if="picked === 'survey'">
-                                <div v-for="item in questions[index_test]" v-bind:key="item.title">
+                                <div v-for="item in questions" v-bind:key="item.title">
                                     <TestSurvey :question="item.question"
                                                 :variants="item.variants"
                                                 :errorTestSurveyTitle="errorTestSurveyTitle"
@@ -1005,6 +1005,7 @@
                         isComplex: this.isComplex,
                         agreement: null
                     },
+                    complex_question: [],
                     variants: [
                         {
                             itemId: 'variant-' + Math.random().toString(36).substr(2, 9),

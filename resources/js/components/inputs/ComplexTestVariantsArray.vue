@@ -132,13 +132,15 @@
 
 <script>
     import {required} from 'vuelidate/lib/validators'
-    import {PROJECT_IMAGE} from "../../api/endpoints";
+    import {PROJECT_IMAGE} from "../../api/endpoints"
+    import SimpleTestMedia from "../fragmets/SimpleTestMedia"
 
     export default {
         name: 'ComplexTestVariantsArray',
-
+        components: {
+            SimpleTestMedia
+        },
         props: ['complex', 'variants'],
-
         methods: {
 
             /**

@@ -113,15 +113,19 @@
             </div>
         </div>-->
 
-            <ComplexTestVariants @file_сhange="fileChange" :complex="complex" v-bind:answer="answer" v-bind:variants="variants"></ComplexTestVariants>
-            <button class="articles_create-submit button-border" type="button" @click="addComplex">Добавить блок</button>
+            <!--<ComplexTestVariants @file_сhange="fileChange" :complex="complex" v-bind:answer="answer" v-bind:variants="variants"></ComplexTestVariants>-->
+            <div class="mb20"></div>
+            <ComplexTestQuestion :complex="complex" v-bind:answer="answer" v-bind:complex_question="complex_question"></ComplexTestQuestion>
+            <div class="mb20"></div>
+            <button class="articles_create-submit button-border" type="button" @click="addBlockComplex">Добавить блок</button>
         </div>
     </div>
 </template>
 <script>
     import {required} from 'vuelidate/lib/validators'
     //import SimpleTestVariant from './../components/inputs/SimpleTestVariant.vue';
-    import ComplexTestVariants from './../inputs/ComplexTestVariantsArray.vue';
+    import ComplexTestVariants from './../inputs/ComplexTestVariantsArray.vue'
+    import ComplexTestQuestion from './../inputs/ComplexTestQuestionArray.vue'
     import VContent from "../templates/Content"
     import { getRandomId } from '../../utils'
     import FragmentFormText from "./text";
@@ -130,11 +134,12 @@
     //import { mapActions, mapState } from 'vuex'
     export default {
         name: 'TestComplex',
-        props: ['title', 'text', 'link', 'button', 'variants', 'answer', 'question'],
+        props: ['title', 'text', 'link', 'button', 'variants', 'answer', 'question', 'complex_question'],
         components: {
             FragmentFormText,
             //SimpleTestVariant,
             ComplexTestVariants,
+            ComplexTestQuestion,
             VContent
         },
 
@@ -185,29 +190,37 @@
                 };
                 this.variants.push(obj)
             },*/
-            addComplex() {
-                //let length = this.complex.length
-                /*let obj = {
-                    itemId: getRandomId(),
-                    title: '',
-                    variant: '',
-                    isCorrect: false,
-                };
-                this.complex.push(obj)*/
-                const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-                let length = this.variants.length
+            addBlockComplex() {
                 let obj = {
                     itemId: getRandomId(),
-                    title: alphabet[length],
-                    variant: '',
-                    isCorrect: false,
-                    answer: {
-                        type: true,
-                        right: false,
-                        media: []
-                    }
+                    title: '',
+                    text: '',
+                    variants: [
+                        {
+                            itemId: getRandomId(),
+                            title: 'A',
+                            variant: '',
+                            isCorrect: false,
+                            answer: {
+                                type: true,
+                                right: false,
+                                media: []
+                            }
+                        },
+                        {
+                            itemId: getRandomId(),
+                            title: 'B',
+                            variant: '',
+                            isCorrect: false,
+                            answer: {
+                                type: true,
+                                right: false,
+                                media: []
+                            }
+                        }
+                    ]
                 };
-                this.variants.push(obj)
+                this.complex_question.push(obj)
             },
             /**
              * Handle changing of file input (cover, video, variants)

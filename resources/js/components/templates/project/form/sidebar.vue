@@ -28,9 +28,9 @@ name: "project-form-sidebar",
     },
     props: {
         tag: {
-            type: Array,
+            type: String,
             require: false,
-            default: ''
+            default: null
         },
     },
     mounted() {
