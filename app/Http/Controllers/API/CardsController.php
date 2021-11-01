@@ -30,10 +30,6 @@ class CardsController extends Controller
         $card = Cards::findOrFail($id);
         $error = 'Not enough points';
 
-        if (!$card->isEmpty()) {
-            $error = 'Invalid card';
-        }
-
         $user = User::find($apiUser->id);
 
         if ($user->balance == 0) {
