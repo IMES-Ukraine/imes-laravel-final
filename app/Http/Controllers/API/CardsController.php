@@ -20,16 +20,18 @@ class CardsController extends Controller
 
     public function index($id)
     {
-        $apiUser = Auth::user();
-        $card = Cards::find($id)->first();
-        $error = 'Not enough points';
+        $isAuthenticated = Auth::check();
 
-        if (!$card) {
-            $error = 'Invalid card';
+        if (!$isAuthenticated) {
+            return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'Invalid user']);
         }
 
-        if (!$apiUser) {
-            return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'Invalid user']);
+        $apiUser = Auth::user();
+        $card = Cards::findOrFail($id);
+        $error = 'Not enough points';
+
+        if (!$card->isEmpty()) {
+            $error = 'Invalid card';
         }
 
         $user = User::find($apiUser->id);
