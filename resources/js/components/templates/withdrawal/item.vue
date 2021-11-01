@@ -9,7 +9,7 @@
         <div class="card__table-item">
             <div class="card__table-sum">
                 <!--<button class="card__table-info"></button>-->
-                <button type="button" class="db__button" aria-label="переглянути реєстраційні дані" title="переглянути реєстраційні дані" data-toggle="modal" :data-target="'#db-modal--' + id"> <!-- --224 -->
+                <button type="button" class="card__table-info" aria-label="переглянути реєстраційні дані" title="переглянути реєстраційні дані" data-toggle="modal" :data-target="'#db-modal--' + id"> <!-- --224 -->
                     <span class="icon-is-doc"></span>
                 </button>
                 <p>{{ total }}</p>
