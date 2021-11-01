@@ -13,9 +13,9 @@
             <div class="card__table-item">
                 <p class="card__table-title">Карточка</p>
             </div>
-            <div class="card__table-item">
+            <!--<div class="card__table-item">
                 <p class="card__table-title">Статус</p>
-            </div>
+            </div>-->
         </div>
         <item
             v-for="(request) in requests"

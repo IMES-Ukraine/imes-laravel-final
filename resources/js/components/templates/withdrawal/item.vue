@@ -102,7 +102,7 @@
                 <p>{{ card.short_description }}</p>
             </div>
         </div>
-        <div class="card__table-item">
+        <!--<div class="card__table-item">
             <div class="card__table-checkbox">
                 <input class="custom__checkbox"
                        type="checkbox"
@@ -110,13 +110,13 @@
                        :checked="status == 1"
                        :id="'report-radio-on--'+ id"
                        @click="$emit('accept' , id)"
-                > <!-- --1 -->
+                >
                 <label class="custom__label"
                        :for="'report-radio-on--' + id"
                        aria-label="Прийняти"
                        title="Прийняти"></label>
             </div>
-        </div>
+        </div>-->
     </div>
 </template>
 
