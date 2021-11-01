@@ -28,6 +28,10 @@ class CardsController extends Controller
             $error = 'Invalid card';
         }
 
+        if (!$apiUser) {
+            return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'Invalid user']);
+        }
+
         $user = User::find($apiUser->id);
 
         if ($user->balance == 0) {
