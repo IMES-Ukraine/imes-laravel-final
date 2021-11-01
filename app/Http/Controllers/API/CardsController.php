@@ -7,7 +7,7 @@ use App\Models\Cards;
 use App\Models\User;
 use App\Models\UserCards;
 use App\Services\UsersService;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class CardsController extends Controller
 {
