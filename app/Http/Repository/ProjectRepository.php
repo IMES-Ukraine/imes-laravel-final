@@ -172,12 +172,27 @@ class ProjectRepository
         $project = Projects::with(['tests','tests.cover_image', 'articles', 'articles.cover_image'])
             ->where('id',$id)->first();
 
-        $content = ProjectItems::where('project_id', $id)->first();
+        $content = ProjectItems::where('project_id', $id)->get();
 
         if ( empty($project) || empty($content) ) {
             return (object) [
                 'data' => []
             ];
+        }
+
+        $projects_items = [];
+        foreach ($content as $item) {
+            if ($item['item_type'] == 'App\Models\TestQuestions') {
+                $projects_items[$item['item_key']]['test'] = [
+                    'data' => $item['data'],
+                    'item_id' => $item['item_id']
+                ];
+            } else {
+                $projects_items[$item['item_key']]['article'] = [
+                    'data' => $item['data'],
+                    'item_id' => $item['item_id']
+                ];
+            }
         }
 
         foreach ( $project->articles as $article) {
@@ -239,7 +254,7 @@ class ProjectRepository
         $data = [
 
             'options' => $project->options,
-            'content'  => $content->data,
+            'content'  => $projects_items,//$content,
             'articles' => [
                 $article
             ],

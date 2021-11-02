@@ -61,10 +61,10 @@
                     </div>
                 </div>
             </div>
-            <div class="dashboard_study">
-                <div class="dashboard_study-box">
+            <div class="dashboard_study" v-if="project.content">
+                <div class="dashboard_study-box" v-for="content in project.content">
                     <div class="dashboard_study__head">
-                        <p class="dashboard_study-title">Исследование 1.1</p>
+                        <p class="dashboard_study-title">{{ content.article.data.title }}</p>
                         <div class="dashboard_study__head-list">
                             <p class="status">Статус активностей</p>
                             <p>Выполнили активности</p>
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="dashboard_study-box">
+                <!--<div class="dashboard_study-box">
                     <div class="dashboard_study__head">
                         <p class="dashboard_study-title">Исследование 1.2</p>
                         <div class="dashboard_study__head-list">
@@ -268,7 +268,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
     </v-content>
@@ -303,7 +303,7 @@
                         this.project = response.data
                     }
                 })
-            }
+            },
         },
         mounted() {
             this.loadProject()
