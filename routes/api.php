@@ -43,8 +43,8 @@ Route::group([
 });
 Route::group(
     [
-//        'middleware' => 'api',
-        'middleware' => 'auth:api',
+        'middleware' => 'api',
+
         'prefix' => 'v1'
     ],
     function () {
@@ -258,8 +258,11 @@ Route::group(
             }
         );
 
+
+       /**  Запросы от внешних источников */
         Route::group(
             [
+                'middleware' => 'auth:api',
                 'prefix' => 'cards'
             ],
             function () {
