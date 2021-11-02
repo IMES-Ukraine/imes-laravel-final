@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CardsController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\API\ProjectsController;
 use App\Http\Controllers\API\BlogController;
@@ -16,7 +17,7 @@ use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\AnalyticsController;
 use App\Http\Controllers\API\TestsController;
 use App\Http\Controllers\API\BannersController;
-use App\Http\Controllers\API\CardsController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -262,7 +263,8 @@ Route::group(
                 'prefix' => 'cards'
             ],
             function () {
-                Route::get('/{id}', [CardsController::class, 'index']);
+                Route::get('/{id?}', [CardsController::class, 'index']);
+                Route::get('/buy/{id}', [CardsController::class, 'buy']);
             }
         );
 

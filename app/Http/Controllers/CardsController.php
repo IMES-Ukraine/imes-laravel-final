@@ -2,23 +2,67 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Responses\BasicResponse;
 use App\Models\Cards;
 use App\Http\Requests\StoreCardsRequest;
+use App\Models\User;
+use App\Models\UserCards;
+use App\Services\UsersService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class CardsController extends Controller
 {
 
+
     /**
      * Display a listing of the resource.
      *
+     * @param null $id
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index($id = null): JsonResponse
     {
-        $page = Cards::query()->paginate();
-        return response()->json(compact('page'));
+        if (!$id) {
+            $page = Cards::query()->paginate();
+            return response()->json(compact('page'));
+        }
+
+        $card = Cards::find($id)->first();
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $card);
+
     }
+
+    public function buy($id)
+    {
+
+        $user = Auth::user();
+
+        $card = Cards::find($id)->first();
+        if (!$card) {
+            return $this->helpers->apiArrayResponseBuilder(404, 'Немає такої карти', $id);
+        }
+
+
+        if ($user->balance < $card->cost) {
+            return $this->helpers->apiArrayResponseBuilder(402, 'Не вистачає балів', $id);
+        }
+
+        $balance = $user->balance - $card->cost;
+
+        $model = new UserCards();
+        $model->user_id = $user->id;
+        $model->card_id = $id;
+        $model->is_active = UserCards::USER_CARDS_IS_ACTIVE;
+        $model->cost = $card->cost;
+        $model->save();
+
+        UsersService::reduceBalance($user->id, $balance);
+
+        return UserCards::where('user_id', $user->id)->paginate();
+
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -58,7 +102,7 @@ class CardsController extends Controller
         $item = Cards::query()->findOrFail($id);
         $status = $item->update($request->validated());
 
-        return response()->json(compact('item', 'status') );
+        return response()->json(compact('item', 'status'));
     }
 
     /**
@@ -73,7 +117,7 @@ class CardsController extends Controller
         $item = Cards::query()->findOrFail($id);
         $status = $item->update(['is_active' => true]);
 
-        return response()->json(compact('item', 'status') );
+        return response()->json(compact('item', 'status'));
     }
 
     /**
@@ -88,7 +132,7 @@ class CardsController extends Controller
         $item = Cards::query()->findOrFail($id);
         $status = $item->update(['is_active' => false]);
 
-        return response()->json(compact('item', 'status') );
+        return response()->json(compact('item', 'status'));
     }
 
     /**
