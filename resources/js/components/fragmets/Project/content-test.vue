@@ -105,7 +105,11 @@ export default {
     components: {Question, TestSurvey, TestComplex},
     data() {
       return {
-          test: {}
+          test: {
+              questions: {},
+              picked: 'test',
+              type: 'easy'
+          }
       }
     },
     methods: {

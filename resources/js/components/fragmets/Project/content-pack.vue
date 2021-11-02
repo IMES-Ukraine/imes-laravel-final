@@ -209,6 +209,28 @@ export default {
     methods: {
         reloadBlockArticle() {
         },
+        showFirstContent() {
+            this.errorNewTest = '';
+            this.errorNewArticle = '';
+
+            if (!this.add_new_test) {
+                this.errorNewTest = 'Тест обовʼязковий';
+            }
+
+            if (!this.add_new_article) {
+                this.errorNewArticle = 'Статья обовʼязкова';
+            }
+
+            this.$refs.form.validate().then(success => {
+                if (!success) {
+                    return;
+                } else {
+                    if (this.add_new_test && this.add_new_article) {
+                        this.setStep(1)
+                    }
+                }
+            });
+        },
     },
     mounted() {
         this.test_data = this.$store.state.content.test_data;

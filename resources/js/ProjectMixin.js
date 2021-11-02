@@ -62,28 +62,7 @@ export default {
             }
             sessionStorage.options = JSON.stringify(this.options);
         },
-        showFirstContent() {
-            this.errorNewTest = '';
-            this.errorNewArticle = '';
 
-            if (!this.add_new_test) {
-                this.errorNewTest = 'Тест обовʼязковий';
-            }
-
-            if (!this.add_new_article) {
-                this.errorNewArticle = 'Статья обовʼязкова';
-            }
-
-            this.$refs.form.validate().then(success => {
-                if (!success) {
-                    return;
-                } else {
-                    if (this.add_new_test && this.add_new_article) {
-                        this.setStep(1)
-                    }
-                }
-            });
-        },
 
         addContent() {
             this.$store.dispatch('addContent')

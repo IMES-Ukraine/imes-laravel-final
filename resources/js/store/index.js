@@ -264,9 +264,9 @@ export default new Vuex.Store({
             console.log(content)
 
             state.content = content
-            state.articles[0].points = content.article.points
+            state.articles.points = content.article.points
             //state.questions[0].question.points = content.test.points
-            state.questions[0].points = content.test.points
+            state.questions.points = content.test.points
         },
         storeTestContent() {
             state.questions[0].points = content
