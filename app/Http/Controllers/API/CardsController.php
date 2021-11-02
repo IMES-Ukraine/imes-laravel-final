@@ -7,7 +7,8 @@ use App\Models\Cards;
 use App\Models\User;
 use App\Models\UserCards;
 use App\Services\UsersService;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+
 
 class CardsController extends Controller
 {
@@ -20,13 +21,9 @@ class CardsController extends Controller
 
     public function index($id)
     {
-        $isAuthenticated = Auth::check();print_r(Auth::user());
-
-        if (!$isAuthenticated) {
-            return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'Invalid user']);
-        }
 
         $apiUser = Auth::user();
+
         $card = Cards::findOrFail($id);
         $error = 'Not enough points';
 

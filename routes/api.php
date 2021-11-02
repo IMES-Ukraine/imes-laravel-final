@@ -37,12 +37,13 @@ Route::group([
     Route::post('login', [AuthController::class, 'login']);
 //    Route::post('registration', [AuthController::class,'registration']);
 //    Route::post('logout', 'AuthController@logout');
-//    Route::post('refresh', 'AuthController@refresh');
-//    Route::post('me', 'AuthController@me');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', [AuthController::class, 'me']);
 });
 Route::group(
     [
-        'middleware' => 'api',
+//        'middleware' => 'api',
+        'middleware' => 'auth:api',
         'prefix' => 'v1'
     ],
     function () {
