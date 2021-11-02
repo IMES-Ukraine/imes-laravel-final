@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\API\ProjectsController;
 use App\Http\Controllers\API\BlogController;
@@ -30,6 +31,15 @@ use App\Http\Controllers\API\CardsController;
 
 /**/
 
+Route::group([
+    'prefix' => 'auth',
+], function () {
+    Route::post('login', [AuthController::class, 'login']);
+//    Route::post('registration', [AuthController::class,'registration']);
+//    Route::post('logout', 'AuthController@logout');
+//    Route::post('refresh', 'AuthController@refresh');
+//    Route::post('me', 'AuthController@me');
+});
 Route::group(
     [
         'middleware' => 'api',
