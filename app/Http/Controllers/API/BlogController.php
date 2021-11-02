@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -35,21 +36,21 @@ class BlogController extends Controller
 
         $apiUser = Auth::getUser();*/
 
-        $isAuthenticated = Auth::check();
+        //$isAuthenticated = Auth::check();
 
-        $apiUser = Auth::user();
+        //$apiUser = Auth::user();
 
         $countOnPage = 15;//get('count', 15);
 
         $type = Articles::ARTICLE;//get('type', Articles::ARTICLE);
 
-        $relations = ['user'/*, 'featured_images','content_images'*/, 'cover_image','recommended.post', 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); } ];
-        if (!isset($apiUser->id)) unset($relations['is_opened']);
+        $relations = ['user'/*, 'featured_images','content_images'*/, 'cover_image','recommended.post'/*, 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/ ];
+        //if (!isset($apiUser->id)) unset($relations['is_opened']);
 
         if ( $type == Articles::ARTICLE) {
             $data = Articles::with($relations)
-                ->where( 'published_at', '<=', Carbon::now()
-                    ->toDateTimeString())
+                //->where( 'published_at', '<=', Carbon::now()
+                    //->toDateTimeString())
                 ->isArticle()
                 ->orderBy('id', 'desc')
                 ->limit($countOnPage)
@@ -58,8 +59,8 @@ class BlogController extends Controller
                 //->paginate($countOnPage);
         } else {
             $data = Articles::with($relations)
-                ->where( 'published_at', '<=', Carbon::now()
-                    ->toDateTimeString())
+                //->where( 'published_at', '<=', Carbon::now()
+                    //->toDateTimeString())
                 ->isInformation()
                 ->orderBy('id', 'desc')
                 ->limit($countOnPage)
@@ -68,8 +69,7 @@ class BlogController extends Controller
                 //->paginate($countOnPage);
         }
 
-        $data->makeHidden(['content']);
-
+        //$data->makeHidden(['content']);
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 

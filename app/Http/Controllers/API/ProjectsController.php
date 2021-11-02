@@ -11,6 +11,7 @@ use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Repository\ProjectRepository;
 use App\Models\Projects;
@@ -41,7 +42,7 @@ class ProjectsController extends Controller
      * @return JsonResponse
      */
     public function index() {
-        $data = Projects::with('tags')->with('items')->get();
+        $data = Projects::with('tags')->whereNull('deleted_at')->with('items')->get();
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 
@@ -167,6 +168,51 @@ class ProjectsController extends Controller
         ];
         return response()->json($arr, 200);
         //return $this->helpers->apiArrayResponseBuilder(200, 'success', [$file]);
+    }
+
+    /**
+     * Start the specified resource from storage.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function start(Request $request)
+    {
+        /*$model = Projects::findOrFail($request->id);
+        $options = $model->options;*/
+
+        /*if (isset($model->options->status)) {
+            $model->options->status = Projects::STATUS_ACTIVE;
+        } else {
+            $model->options->status = Projects::STATUS_ACTIVE;
+        }*/
+        //$model->options->status = Projects::STATUS_ACTIVE;
+        /*$model->forceFill([
+            'options->status' => 'dd'
+        ])->save();*/
+        //print_r($model->options->status);
+        //$result = $model->save();
+
+        DB::table('ulogic_projects_settings')
+            ->where('id', 8)
+            ->update([
+                'options->status' => Projects::STATUS_ACTIVE
+            ]);
+
+        return $this->helpers->apiArrayResponseBuilder(200, ['status' => Projects::STATUS_ACTIVE]);
+    }
+
+    /**
+     * Stop the specified resource from storage.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function stop(Request $request)
+    {
+        $model = Projects::findOrFail($request->id);
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success');
     }
 
 }

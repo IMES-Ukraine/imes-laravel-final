@@ -53,4 +53,6 @@ export const CARD_ENABLE = CARDS + '/enable'
 export const BANNERS = V1_ADMIN + 'banners'
 
 export const PROJECT_DESTROY = V1_ADMIN + 'project/destroy/'
+export const PROJECT_START = V1 + 'project/start'
+export const PROJECT_STOP = V1 + 'project/stop'
 

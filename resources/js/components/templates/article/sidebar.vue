@@ -1,5 +1,6 @@
 <template>
     <route-buttons-sidebar :routes="sidebarButtons"/>
+
 </template>
 
 <script>
@@ -12,9 +13,9 @@ export default {
         return {
             articleList: this.$store.state.articles,
             sidebarButtons: [
-                { name: '< Проекти', path: '/' },
-                /*{ name: 'Створити запис', path: '/article/new' },
-                { name: 'Контент план', path: '/content-plan/new' },*/
+                //{ name: '< Проекти', path: '/' },
+                { name: 'Створити запис', path: '/article/new' },
+                { name: 'Контент план', path: '/content-plan/new' },
             ],
         }
     },

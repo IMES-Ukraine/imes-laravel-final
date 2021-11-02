@@ -17,15 +17,15 @@
             </div>
             <div class="dashboard_main">
                 <div class="dashboard_main-head">
-                    <p class="dashboard_main-total">Активностей <b>700</b></p>
+                    <p class="dashboard_main-total">Активностей <b>{{ project.total }}</b></p>
                     <div class="dashboard_main__status">
                         <p class="dashboard_main__status-title">Статус активностей</p>
                         <div class="dashboard_main__status-content">
-                            <p class="dashboard_main__status-description">30% выполненых</p>
+                            <p class="dashboard_main__status-description">{{ percentActive(project.status_active, project.total) }}% выполненых</p>
                             <div class="dashboard_main__status-line">
-                                <span style="width:30%;"></span>
+                                <span :style="'width:'+percentActive(project.status_active, project.total)+'%;'"></span>
                             </div>
-                            <p class="dashboard_main__status-description">210 активностей</p>
+                            <p class="dashboard_main__status-description">{{ project.status_active }} активностей</p>
                         </div>
                     </div>
                 </div>
@@ -40,21 +40,21 @@
                         <div class="dashboard_main__item">
                             <div class="dashboard_main__item-wrap">
                                 <p class="dashboard_main__item-status dashboard_main__item-status--green"><span>Выполнили активности</span></p>
-                                <p class="dashboard_main__item-quantity">210</p>
+                                <p class="dashboard_main__item-quantity">{{ project.status_active }}</p>
                             </div>
                             <users-popup :title="'Выполнили активности'"/>
                         </div>
                         <div class="dashboard_main__item">
                             <div class="dashboard_main__item-wrap">
                                 <p class="dashboard_main__item-status dashboard_main__item-status--red"><span>Не выполнили активности</span></p>
-                                <p class="dashboard_main__item-quantity">70</p>
+                                <p class="dashboard_main__item-quantity">{{ project.status_not_active }}</p>
                             </div>
                             <button class="dashboard_main__item-button" type="button">Смотреть</button>
                         </div>
                         <div class="dashboard_main__item">
                             <div class="dashboard_main__item-wrap">
                                 <p class="dashboard_main__item-status dashboard_main__item-status--blue"><span>Не участвовали</span></p>
-                                <p class="dashboard_main__item-quantity">420</p>
+                                <p class="dashboard_main__item-quantity">{{ project.status_not_participate }}</p>
                             </div>
                             <button class="dashboard_main__item-button" type="button">Смотреть</button>
                         </div>
@@ -304,6 +304,9 @@
                     }
                 })
             },
+            percentActive(status, total) {
+                return status * 100 / total
+            }
         },
         mounted() {
             this.loadProject()
