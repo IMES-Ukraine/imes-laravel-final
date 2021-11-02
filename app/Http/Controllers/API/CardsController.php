@@ -20,7 +20,7 @@ class CardsController extends Controller
 
     public function index($id)
     {
-        $isAuthenticated = Auth::check();
+        $isAuthenticated = Auth::check();print_r(Auth::user());
 
         if (!$isAuthenticated) {
             return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'Invalid user']);
