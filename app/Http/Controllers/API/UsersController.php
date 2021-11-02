@@ -28,9 +28,8 @@ class UsersController extends Controller
     public function index()
     {
 
-        $data = $this->User->all();
+        return $this->User->paginate();
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
     public function create(Request $request)
