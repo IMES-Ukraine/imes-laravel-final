@@ -20,7 +20,7 @@
     export default {
         name: 'SimpleTestVariantsArray',
 
-        props: ['variants', 'answer'],
+        props: ['variants'],
 
         methods: {
             removeVariant(id) {

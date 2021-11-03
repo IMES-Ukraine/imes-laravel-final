@@ -7,6 +7,7 @@
                     <div class="articles_create__item-content">
                         <div class="articles_create__name-block">
                             <input type="text" name="title" id="question_title" v-model="question.title">
+                            <div v-if="errors.title" class="errors">{{ errors.title }}</div>
                         </div>
                     </div>
                 </div>
@@ -26,11 +27,13 @@
                     <p class="articles_create__item-title">Вопрос</p>
                     <div class="articles_create__item-content">
                         <textarea v-model="question.text"></textarea>
+                        <div v-if="errors.text" class="errors">{{ errors.text }}</div>
                     </div>
                 </div>
+
                 <div class="articles_create__item half">
                     <div class="articles_create__item-title has_radio">
-                        <input type="checkbox" name="checkbox_file" @change="checkboxChange">
+                        <input type="checkbox" name="checkbox_file" v-model="isCheckedFile">
                         <i></i>
                         <p>Изображения</p>
                     </div>
@@ -45,7 +48,7 @@
                 <div class="articles_create__item half"></div>
                 <div class="articles_create__item half">
                     <div class="articles_create__item-title has_radio">
-                        <input type="checkbox" name="checkbox_video" @change="checkboxChangeVideo">
+                        <input type="checkbox" name="checkbox_video" v-model="isCheckedVideo" >
                         <i></i>
                         <p>Видео</p>
                     </div>
@@ -58,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <SimpleTestVariants v-bind:answer="answer" v-bind:variants="variants"></SimpleTestVariants>
+            <SimpleTestVariants v-bind:variants="variants"></SimpleTestVariants>
 
             <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest">добавить ответ</button>
             <div class="articles_create-line"></div>
@@ -153,7 +156,7 @@
                 <div class="col-4">
                     <label class="btn btn-outline-second btn-centered-content is-small">
                         <select class="form-control" v-model="category">
-                            <option v-for="item in categoryList" :value="item.id" :key="item.id">
+                            <option v-for="item in lists.categories" :value="item.id" :key="item.id">
                                 {{ item.name }}
                             </option>
                         </select>
@@ -197,17 +200,18 @@
 </template>
 <script>
 import {required} from 'vuelidate/lib/validators'
-//import SimpleTestVariant from './../components/inputs/SimpleTestVariant.vue';
+
 import SimpleTestVariants from './../inputs/SimpleTestVariantsArray.vue';
 import VContent from "../templates/Content"
-import { getRandomId } from '../../utils'
+import { getRandomId, alphabet } from '../../utils'
 import FragmentFormText from "./text";
 import {PROJECT_IMAGE} from "../../api/endpoints";
-//import CreateProjectForm from "./CreateProjectForm";
-//import { mapActions, mapState } from 'vuex'
+import ProjectMixin from "../../ProjectMixin";
+
 export default {
     name: 'TestQuestion',
-    props: ['title', 'text', 'link', 'button', 'variants', 'answer', 'question'],
+    props: ['title', 'text', 'link', 'button', 'variants', 'question', 'errors'],
+    mixins: [ProjectMixin],
     components: {
         FragmentFormText,
         //SimpleTestVariant,
@@ -217,17 +221,10 @@ export default {
 
     data() {
         return {
-            //tests: this.$store.state.tests,
-            coverRandomId: getRandomId(),
             files: {},
             cover: null,
             video: null,
-            categoryList: [
-                {name: 'ВСЕ', id: 1},
-                {name: 'Дерматология', id: 2},
-                {name: 'Кардиология', id: 3},
-                {name: 'Гастроэнтерология', id: 4},
-            ],
+
             isCheckedFile: false,
             isCheckedVideo: false
         }
@@ -244,29 +241,15 @@ export default {
         },
     },
     computed: {
-        hasDescription: function() {
-            return false;
-        }
     },
     methods: {
         /**
          * Adding one more answer variant to question
          */
         addAnswerTest() {
-            const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-            let length = this.variants.length
-            let obj = {
-                itemId: getRandomId(),
-                title: alphabet[length],
-                variant: '',
-                isCorrect: false,
-                answer: {
-                    type: true,
-                    right: false,
-                    media: []
-                }
-            };
-            this.variants.push(obj)
+            let title = alphabet[this.variants.length];
+            let newItem = {... this.getNewVariant(title) };
+            this.variants.push(newItem);
         },
         /**
          * Handle changing of file input (cover, video, variants)
@@ -308,9 +291,10 @@ export default {
         }
     },
     mounted() {
-        if (this.$store.state.statusAddAnswer) {
-            this.addAnswerTest()
-            this.$store.state.statusAddAnswer = false
+        console.log('variants: ' , this.variants.length);
+        if (! this.variants.length) {
+            this.addAnswerTest();
+            this.addAnswerTest();
         }
     }
 }

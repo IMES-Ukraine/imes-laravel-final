@@ -2577,3 +2577,7 @@ select {
     color: #4F4F4F;
     background: transparent;
 }
+
+.custom-radio .custom-control-input:checked ~ .custom-control-label::after {
+    background-image: none;
+}

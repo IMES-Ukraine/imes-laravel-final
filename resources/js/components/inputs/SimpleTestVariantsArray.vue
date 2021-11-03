@@ -1,38 +1,41 @@
 <template>
     <div>
-        <div class="articles_create-block" v-for="(variant, index) in variants" v-bind:key="variant.itemId" :id="'block-'+variant.itemId">
+        <div class="articles_create-block" v-for="(variant, index) in variants" :key="variant.itemId"
+             :id="'block-'+variant.itemId">
             <div class="articles_create-line"></div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="checkbox" v-model="variant.answer.type" :id="'type-'+variant.itemId" :checked="variant.answer.type" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <input  type="radio" v-model="type[index]" :name="'answer_'+variant.itemId" value="1"/>
                     <i></i>
                     <p>Готовый <br>ответ</p>
                 </div>
                 <div class="articles_create__item-content">
                     <div class="articles_create__ready_answer">
                         <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
-                        <input type="text" name="text">
+                        <input :id="'text-'+variant.itemId" type="text"  v-model="variant.text">
                         <div class="articles_create-checkbox">
-                            <input type="checkbox" :id="'right_answer_' + variant.itemId" v-model="variant.answer.right">
+                            <input type="checkbox" v-model="right[index]"  :value="variant.answer.right">
                             <i></i>
                             <p>Правильный ответ</p>
                         </div>
                     </div>
                 </div>
             </div>
+                        <div class="articles_create__item">
+                            <div class="articles_create__item-title has_radio">
+                                <input type="radio" :name="'answer_'+variant.itemId"
+                                       :value="2"
+                                       v-model="type[index]" />
+                                <i></i>
+                                <p>Поле ввода ответа</p>
+                            </div>
+                            <div class="articles_create__item-content">
+                                <textarea v-model.lazy="variant.variant"></textarea>
+                            </div>
+                        </div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="checkbox" v-bind:name="'answer_'+variant.itemId" @change="hasActiveCheckbox(variant.itemId, index)">
-                    <i></i>
-                    <p>Поле ввода ответа</p>
-                </div>
-                <div class="articles_create__item-content">
-                    <textarea v-model.lazy="variant.variant"></textarea>
-                </div>
-            </div>
-            <div class="articles_create__item">
-                <div class="articles_create__item-title has_radio">
-                    <input type="checkbox" v-bind:name="'media_'+variant.itemId" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <input type="checkbox" v-model="media[index]" :name="'media'+variant.itemId"/>
                     <i></i>
                     <p>Медиа</p>
                 </div>
@@ -40,7 +43,9 @@
                     <div class="articles_create__media">
                         <SimpleTestMedia :media="variant.answer.media"></SimpleTestMedia>
                         <div class="articles_create__media-add">
-                            <input type="file" name="file" :id="'file-'+variant.itemId" @change="addMedia(index, variant.itemId, $event)">
+                            <input type="file" name="file" :id="'file-'+variant.itemId"
+                                   :disabled=" ! media[index]"
+                                   @change="addMedia(index, variant.itemId, $event)">
                         </div>
                     </div>
                 </div>
@@ -120,14 +125,24 @@
 import {required} from 'vuelidate/lib/validators'
 import {PROJECT_IMAGE, TOKEN, ARTICLE_COVER} from "../../api/endpoints";
 import SimpleTestMedia from "../fragmets/SimpleTestMedia"
-import { getRandomId } from '../../utils'
+import {getRandomId} from '../../utils'
 
 export default {
     name: 'SimpleTestVariantsArray',
     components: {
         SimpleTestMedia
     },
-    props: ['variants', 'answer'],
+    props: {
+        variants: Array
+    },
+    data() {
+        return {
+            localVariants: [],
+            right: [],
+            type: [],
+            media: []
+        }
+    },
 
     methods: {
 
@@ -156,8 +171,10 @@ export default {
             })
         },
         hasActiveCheckbox(id, index) {
+            return;
+
             var sList = [];
-            $('#block-'+id+' input[type=checkbox]').each(function () {
+            $('#block-' + id + ' input[type=checkbox]').each(function () {
                 if (this.id != 'right_answer_' + id) {
                     var sThisVal = (this.checked ? 1 : 0);
                     sList.push(sThisVal)
@@ -186,9 +203,7 @@ export default {
                     },
                 }
             ).then((file) => {
-                /*this.name = event.target.files[0].name
-                this.articles.imeges = file.data
-                this.articles[0]['images'] = file.data.data.id*/
+
                 let obj = {
                     itemId: getRandomId(),
                     file: file.data.data.id,
@@ -202,21 +217,15 @@ export default {
         }
     },
     validations: {
-        text: {
-            required
-        }
+        text: {}
     },
     mounted() {
-        //if (this.$store.state.statusAddAnswer) {
-            //this.addMedia()
-            //this.$store.state.statusAddAnswer = false
-        //}
     }
 }
 </script>
 
 <style>
-    .custom-checkbox__input {
-        margin-right: 10px;
-    }
+.custom-checkbox__input {
+    margin-right: 10px;
+}
 </style>

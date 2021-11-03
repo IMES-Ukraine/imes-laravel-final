@@ -16,8 +16,6 @@ export default new Vuex.Store({
         project: {
             options: {
                 title: '',
-                category: null,
-                region: null,
                 selected: {
                     category: 1,
                     region: 1
@@ -29,166 +27,19 @@ export default new Vuex.Store({
                     article_gallery: []
                 }
             },
-            researches: {}
+            tag: '',
+            content: {}
 
         },
-        project1: {
-            options: {
-                title: '',
-                category: [
-                    {name: 'ВСЕ', id: 1},
-                    {name: 'Дерматология', id: 2},
-                    {name: 'Кардиология', id: 3},
-                    {name: 'Гастроэнтерология', id: 4},
-                ],
-                region: [
-                    {name: 'ВСЯ УКРАИНА', id: 1},
-                    {name: 'Одесская', id: 2},
-                    {name: 'Киевская', id: 3},
-                    {name: 'Черниговская', id: 4},
-                    {name: 'Житомирская', id: 5},
-                ],
-                selected: {
-                    category: 1,
-                    region: 1
-                },
-                files: {
-                    cover: null,
-                    audience: null
-                }
-            }
-        },
-        content: {
-            title: null,
-            article_data: {
-                count: null,
-                points: null,
-                frequency: null,
-            },
-            article: {
-                title: null,
-                articleType: 1,
-                type: 1,
-                text: null,
-                tags: [],
-                category: 1,
-                headings: 1,
-                author: null,
-                button: null,
-                text_button: null,
-                recommended: [],
-                user_id: [],
-                chosenRecommended: [],
-                cover: null,
-                multiples: [],
-                insert: [
-                    {
-                        type: 'insert',
-                        icon: 'alert',
-                        title: null,
-                        content: null,
-                    },
-                    {
-                        type: 'text',
-                        icon: 'alert',
-                        title: null,
-                        content: null,
-                    }
-                ],
-                link: '',
-                count: null,
-                points: null,
-                frequency: null,
-                textInsert: false,
-            },
-            test_data: {
-                count: null,
-                points: null,
-                canRetake: null,
-            },
-            test: {
-                questions: {},
-                picked: 'test',
-                type: 'easy'
-            }
-        },
-        // article: {
-        //     title: null,
-        //     articleType: 1,
-        //     type: 1,
-        //     text: null,
-        //     tags: [],
-        //     category: 1,
-        //     headings: 1,
-        //     author: null,
-        //     button: null,
-        //     text_button: null,
-        //     recommended: [],
-        //     authors: [],
-        //     user_id: [],
-        //     chosenRecommended: [],
-        //     images: null,
-        //     multiples: [],
-        //     insert: [
-        //         {
-        //             type: 'insert',
-        //             icon: 'alert',
-        //             title: null,
-        //             content: null,
-        //         },
-        //         {
-        //             type: 'text',
-        //             icon: 'alert',
-        //             title: null,
-        //             content: null,
-        //         }
-        //     ],
-        //     link: '',
-        //     count: null,
-        //     points: null,
-        //     frequency: null,
-        //     textInsert: false,
-        // },
-        categoryList: [
-            {name: 'ВСЕ', id: 1},
-            {name: 'Дерматология', id: 2},
-            {name: 'Кардиология', id: 3},
-            {name: 'Гастроэнтерология', id: 4},
-        ],
-        headingsList: [
-            {name: 'ВСЕ', id: 1},
-            {name: 'Дерматология', id: 2},
-            {name: 'Кардиология', id: 3},
-            {name: 'Гастроэнтерология', id: 4},
-        ],
-
-        questions: [],
+        contentList: {},
         test: {},
         projects: [],
-        lists: {
-            categories: [
-                {name: 'ВСЕ', id: 1},
-                {name: 'Дерматология', id: 2},
-                {name: 'Кардиология', id: 3},
-                {name: 'Гастроэнтерология', id: 4},
-            ],
-            headings: [
-                {name: 'ВСЕ', id: 1},
-                {name: 'Дерматология', id: 2},
-                {name: 'Кардиология', id: 3},
-                {name: 'Гастроэнтерология', id: 4},
-            ],
-            authors: [
-                {name: 'ВСЕ', id: 1},
-                {name: 'Дерматология', id: 2},
-                {name: 'Кардиология', id: 3},
-                {name: 'Гастроэнтерология', id: 4},
-            ],
-        },
+
         current: {
             projectId: null
         },
         currentStep: 1,
+        currentContent: '',
         isEdit: false,
         inEdit: false,
         checkbox: {
@@ -219,6 +70,13 @@ export default new Vuex.Store({
         nextStep(state) {
             state.currentStep++
         },
+        setContent(state, title) {
+         state.currentContent = title;
+        },
+
+
+
+
         submitArticle(state, form) {
             state.articles[0] = form
         },
@@ -240,7 +98,6 @@ export default new Vuex.Store({
             state.current.projectId = id
         },
         saveProject(state, project) {
-
             state.project.options = project.options
             state.tests = project.tests
             state.questions = project.tests
@@ -339,9 +196,7 @@ export default new Vuex.Store({
             context.commit('selectProject', id)
         },
         createEntity({state}, data) {
-
             axios.post(PROJECT, {...data, content: state.content}).then((resp) => {
-                resp
                 //commit('saveEntity', data.entity, {...data, ...state.content})
             })
         },
@@ -351,7 +206,7 @@ export default new Vuex.Store({
                 content: state.content,
                 current: state.current
             }).then((resp) => {
-                resp
+
                 //context.commit('saveEntity', 's', data)
             })
         },
@@ -395,6 +250,10 @@ export default new Vuex.Store({
                 context.commit('saveProject', project)
             })
         },
+        editContent(context, title){
+            context.commit('setContent', title);
+            context.commit('setStep', 2);
+        }
     },
     modules: {}
 })

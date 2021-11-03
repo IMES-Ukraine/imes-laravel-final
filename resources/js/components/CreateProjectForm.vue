@@ -13,7 +13,7 @@
                 <project-alert-test/>
                 <ValidationObserver ref="form" v-slot="{ handleSubmit }">
                     <form class="articles_create-box">
-                        <div v-show="currentStep == 1">
+                        <div v-if="currentStep == 1 || currentStep == 5">
                             <div class="articles_create-block">
                                 <div class="articles_create__item">
                                     <p class="articles_create__item-title">Обложка</p>
@@ -31,7 +31,7 @@
                                     <div class="articles_create__item-content">
                                         <div class="articles_create__name">
                                             <div class="articles_create__name-block">
-                                                <input type="text" name="name" v-model="options.title">
+                                                <input type="text" name="name" v-model="project.options.title">
                                                 <p class="articles_create__name-note">50 символов</p>
                                                 <div v-if="errorTitle" class="errors">{{ errorTitle }}</div>
                                             </div>
@@ -50,7 +50,10 @@
                                         <div class="articles_create__grid width-half column-gap-50">
                                             <div class="articles_create__grid-block">
                                                 <button class="articles_create-add_btn" @click="showTargeting"
-                                                        type="button"><span class="icon-left">Добавить</span></button>
+                                                        type="button">
+                                                    <span class="icon-left" v-if="project.options.selected.category">Показать</span>
+                                                    <span class="icon-left" v-else>Добавить</span>
+                                                </button>
                                             </div>
                                             <div class="articles_create__grid-block">
                                                 <div class="articles_create__item-file buttonAddFile">
@@ -72,24 +75,31 @@
                                     <div class="articles_create__item-content">
                                         <div class="articles_create__grid width-half column-gap-50">
                                             <div class="articles_create__grid-block">
-                                                <select class="articles_create-select"
-                                                        v-model="options.selected.category">
-                                                    <option v-for="item in options.category" :value="item.id"
-                                                            :key="item.id">
-                                                        {{ item.name }}
-                                                    </option>
-                                                </select>
+                                                <b-form-select class="articles_create-select"
+                                                               v-model="project.options.selected.category"
+                                                               :options="lists.categories"></b-form-select>
+
+                                                <!--                                                <select class="articles_create-select"-->
+                                                <!--                                                        v-model="project.options.selected.category">-->
+                                                <!--                                                    <option v-for="item in lists.categories" :value="item.id"-->
+                                                <!--                                                            :key="item.id">-->
+                                                <!--                                                        {{ item.name }}-->
+                                                <!--                                                    </option>-->
+                                                <!--                                                </select>-->
                                             </div>
                                             <div class="articles_create__grid-block">
                                                 <div class="articles_create__several">
                                                     <div class="articles_create__several-block">
-                                                        <select class="articles_create-select"
-                                                                v-model="options.selected.region">
-                                                            <option v-for="item in options.region" :value="item.id"
-                                                                    :key="item.id">
-                                                                {{ item.name }}
-                                                            </option>
-                                                        </select>
+                                                        <b-form-select class="articles_create-select"
+                                                                       v-model="project.options.selected.region"
+                                                                       :options="lists.regions"></b-form-select>
+                                                        <!--                                                        <select class="articles_create-select"-->
+                                                        <!--                                                                v-model="project.options.selected.region">-->
+                                                        <!--                                                            <option v-for="item in lists.region" :value="item.id"-->
+                                                        <!--                                                                    :key="item.id">-->
+                                                        <!--                                                                {{ item.name }}-->
+                                                        <!--                                                            </option>-->
+                                                        <!--                                                        </select>-->
                                                     </div>
                                                     <!--<div class="articles_create__several-block">
                                                         <select class="articles_create-select">
@@ -105,7 +115,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="articles_create-block" v-show="block_content">
+                            <div class="articles_create-block">
                                 <div class="articles_create__item">
                                     <p class="articles_create__item-title height-47">Контент</p>
                                     <div class="articles_create__item-content">
@@ -113,33 +123,26 @@
                                             <div class="articles_create__grid-block">
                                                 <button class="articles_create-add_btn height-47" type="button"
                                                         @click.prevent="setStep(2)"><span
-                                                    class="icon-right">Создать</span></button>
+                                                    class="icon-right">Создать</span>
+                                                </button>
                                             </div>
-
-                                            <div class="articles_create__grid-block">
-                                                <div class="articles_create__study">
-                                                    <p class="articles_create__study-title">Исследование 1.1</p>
-                                                    <div class="articles_create__study-controls">
-                                                        <button
-                                                            class="articles_create__study-button articles_create__study-button--edit"
-                                                            @click="editItem()"></button>
-                                                        <button
-                                                            class="articles_create__study-button articles_create__study-button--delete"></button>
+                                            <span v-for="content in contentList">
+                                                    <div class="articles_create__grid-block">
+                                                        <div class="articles_create__study">
+                                                            <p class="articles_create__study-title">{{
+                                                                    content.title
+                                                                }}</p>
+                                                            <div class="articles_create__study-controls">
+                                                                <button type="button"
+                                                                        class="articles_create__study-button articles_create__study-button--edit"
+                                                                        @click="editItem(content.title)"></button>
+                                                                <button type="button"
+                                                                        class="articles_create__study-button articles_create__study-button--delete"
+                                                                        @click="deleteItem(content.title)"></button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div class="articles_create__grid-block">
-                                                <div class="articles_create__study">
-                                                    <p class="articles_create__study-title">Исследование 1.2</p>
-                                                    <div class="articles_create__study-controls">
-                                                        <button
-                                                            class="articles_create__study-button articles_create__study-button--edit"></button>
-                                                        <button
-                                                            class="articles_create__study-button articles_create__study-button--delete"></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -163,24 +166,24 @@
                             </div>-->
 
                             <button class="articles_create-submit button-border" type="button" @click="showContent">
-                                <template v-if="finishProject">Сохранить</template>
+                                <template v-if="packsPresent">Сохранить</template>
                                 <template v-else>Далее</template>
                             </button>
                         </div>
 
-                        <div v-show="currentStep == 2">
+                        <div v-if="currentStep == 2">
                             <project-close/>
-                            <p class="articles_create-title">Создание пакета контента</p>
-                            <content-pack />
+                            <p class="articles_create-title">Створення пакета контента</p>
+                            <content-pack/>
 
                         </div>
 
-                        <div v-show="currentStep == 3">
+                        <div v-if="currentStep == 3">
                             <p class="articles_create-title">Створення статті</p>
                             <content-article/>
                         </div>
 
-                        <div v-show="currentStep == 4">
+                        <div v-if="currentStep == 4">
                             <p class="articles_create-title">Создание теста</p>
                             <project-close/>
                             <content-test/>
@@ -231,7 +234,7 @@
 </template>
 <script>
 //import {required/*,minLength*/} from 'vuelidate/lib/validators'
-import { ARTICLE_COVER, TOKEN} from "../api/endpoints";
+import {ARTICLE_COVER, TOKEN} from "../api/endpoints";
 import {ValidationObserver} from 'vee-validate'
 import PlusButton from './controls/PlusButton'
 import VContent from "./templates/Content"
@@ -291,13 +294,6 @@ export default {
     },
     data() {
         return {
-            options: {
-                ...this.$store.state.project.options
-            },
-            // tests: this.$store.state.questions,
-            questions: this.$store.state.questions,
-            project: {},
-
             isComplex: false,
             picked: 'test',
             type: 'easy',
@@ -307,21 +303,46 @@ export default {
         }
     },
     computed: {
-        getPayload() {
-            return {
-                options: this.options,
-                article: this.article,
-                test: this.questions,
-                entity: this.entity,
-            }
+        contentList() {
+            return this.$store.state.project.content;
         },
-    },
-    props: {
-        msg: {
-            type: String
+        packsPresent() {
+            return Object.keys(this.contentList).length;
         }
     },
     methods: {
+        editItem(title) {
+            this.$store.dispatch('editContent', title);
+        },
+        deleteItem(title) {
+            this.$store.dispatch('deleteContent', title);
+        },
+        saveCurrentProject() {
+            this.$store.state.project = this.project;
+            sessionStorage.project = JSON.stringify(this.project);
+            this.setStep(5);
+        },
+        showContent() {
+            this.errorFile = '';
+            this.errorTitle = '';
+
+            if (this.project.options.files.cover == null) {
+                this.errorFile = 'Поле обязательно'
+            }
+
+            if (this.project.options.title === '') {
+                this.errorTitle = 'Требуется указать название'
+            }
+
+            if (this.project.options.title.length > 50) {
+                this.errorTitle = 'Требуется указать название не больше 50 символов'
+            }
+
+            if (this.errorTitle === '' && this.errorFile === '') {
+                this.block_content = true;
+            }
+            this.saveCurrentProject();
+        },
 
         sendForm() {
             axios.get(`http://jsonplaceholder.typicode.com/posts`).then(
@@ -341,46 +362,46 @@ export default {
             )
         },
         submitForm() {
-/*            this.$refs.form.validate().then(success => {
-                if (!success) {
-                    if (this.options.files.cover == null) {
-                        this.errorFile = 'Поле обязательно';
-                    } else {
-                        this.errorFile = '';
-                    }
+            /*            this.$refs.form.validate().then(success => {
+                            if (!success) {
+                                if (this.options.files.cover == null) {
+                                    this.errorFile = 'Поле обязательно';
+                                } else {
+                                    this.errorFile = '';
+                                }
 
-                    return;
-                }
+                                return;
+                            }
 
-                let content = {
-                    "title": this.content.title,
-                    "article": {
-                        "count": this.article.count,
-                        "points": this.article.points,
-                        "frequency": this.article.frequency
-                    },
-                    "test": {
-                        "count": this.test.count,
-                        "points": this.test.points,
-                        "canRetake": this.test.canRetake
-                    }
-                }
+                            let content = {
+                                "title": this.content.title,
+                                "article": {
+                                    "count": this.article.count,
+                                    "points": this.article.points,
+                                    "frequency": this.article.frequency
+                                },
+                                "test": {
+                                    "count": this.test.count,
+                                    "points": this.test.points,
+                                    "canRetake": this.test.canRetake
+                                }
+                            }
 
-                this.$post(PROJECT, {
-                    options: this.options,
-                    article: this.article,
-                    tests: this.questions,
-                    content: content
-                })
-                    .then((res) => {
-                        this.$router.push({name: 'projectList'});
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                    }).finally(() => {
-                    console.log('success or error')
-                });
-            })*/
+                            this.$post(PROJECT, {
+                                options: this.options,
+                                article: this.article,
+                                tests: this.questions,
+                                content: content
+                            })
+                                .then((res) => {
+                                    this.$router.push({name: 'projectList'});
+                                })
+                                .catch((error) => {
+                                    console.log(error)
+                                }).finally(() => {
+                                console.log('success or error')
+                            });
+                        })*/
 
         },
         handleUploadArticle(event) {
@@ -404,9 +425,7 @@ export default {
                 this.article.images = file.data.data.id
             })
         },
-        storeProject() {
-            this.$store.dispatch('storeProject', this.options)
-        },
+
 
         showTargeting() {
             this.targeting = true
@@ -414,7 +433,7 @@ export default {
         validate() {
             this.$refs.form.validate().then(success => {
                 if (!success) {
-                    if (this.options.files.cover == null) {
+                    if (this.project.options.files.cover == null) {
                         this.errorFile = 'Поле обязательно';
                     } else {
                         this.errorFile = '';
@@ -425,77 +444,15 @@ export default {
             });
         },
 
-        addComplexQuestion() {
-            this.questions.push({
-                question: {
-                    complex: {
-                        title: '',
-                        text: '',
-                        points: null,
-                        media: {
-                            cover: null,
-                            video: null,
-                        },
-                    }
-                },
-            })
-        },
-        addQuestion() {
-            this.questions.push({
-                question: {
-                    title: '',
-                    text: '',
-                    description: '',
-                    link: '',
-                    button: null,
-                    count: null,
-                    points: null,
-                    media: {
-                        cover: null,
-                        video: null,
-                    },
-                    isComplex: this.isComplex,
-                    agreement: null
-                },
-                complex_question: [],
-                variants: [
-                    {
-                        itemId: 'variant-' + Math.random().toString(36).substr(2, 9),
-                        title: 'A',
-                        variant: '',
-                        isCorrect: false,
-                        answer: {
-                            type: true,
-                            right: true,
-                            media: []
-                        }
-                    }
-                ],
-                answer: {
-                    correct: [],
-                    type: 'text' //answer type (variants | text field)
-                },
-            })
-        },
-        update(value) {
-            this.check = value
-        },
         getType(value) {
             this.$emit('update', value);
         },
 
-        onChangePicked(event, key) {
-            for (const [index, value] of Object.entries(this.tests[key].variants)) {
-                if (index >= 2) {
-                    this.tests[key].variants.splice(index, 1)
-                    return
-                }
-            }
-        },
+
         handleUpload(fileName) {
             if (event.target.files[0].size <= 1024 * 1024 * 1024) {
                 //this.files[fileName] = event.target.files[0].name;
-                this.options.files.cover = event.target.files[0].name
+                this.project.options.files.cover = event.target.files[0].name
             } else {
                 //this.$set(this.errorFile, 'cover', 'Изображение слишком большое')
                 this.errorFile = 'Изображение слишком большое';
@@ -504,13 +461,11 @@ export default {
         },
     },
     mounted() {
-        if (sessionStorage.options) {
-            this.options = JSON.parse(sessionStorage.options);
+        if (sessionStorage.project) {
+            this.$store.state.project = JSON.parse(sessionStorage.project);
         }
-        if (sessionStorage.article) {
-            this.article = JSON.parse(sessionStorage.article);
-        }
-        this.addQuestion()
+        this.project = this.$store.state.project;
+
 
     },
     /*validations: {

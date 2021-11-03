@@ -8,7 +8,7 @@
                         <div class="articles_create__grid-block">
                             <div class="articles_create__sorting">
                                 <input type="radio" name="radio" id="one" value="test"
-                                       v-model="test.picked" @change="onChangePicked($event, index_test)"
+                                       v-model="test.picked"
                                        checked="">
                                 <p><span class="icon-plus">Теста</span></p>
                             </div>
@@ -16,7 +16,6 @@
                         <div class="articles_create__grid-block">
                             <div class="articles_create__sorting">
                                 <input type="radio" name="radio" id="two" value="survey"
-                                       @change="onChangePicked($event, index_test)"
                                        v-model="test.picked">
                                 <p><span class="icon-plus">Опроса</span></p>
                             </div>
@@ -26,7 +25,7 @@
             </div>
         </div>
 
-        <div v-if="picked === 'test'">
+        <div v-if="test.picked === 'test'">
             <div class="articles_create-block">
                 <div class="articles_create__item">
                     <p class="articles_create__item-title">Формат теста</p>
@@ -51,13 +50,12 @@
                 </div>
             </div>
 
-            <div v-if="type === 'easy'">
-                <div v-for="item in test.questions" v-bind:key="item.title">
-
+            <div v-if="test.type === 'easy'">
+                <div>
                     <Question
-                        :question="item.question"
-                        :variants="item.variants"
-                        :answer="item.answer"></Question>
+                        :question="test.question"
+                        :variants="test.variants"
+                        :errors="testErrors"/>
                 </div>
                 <div class="mb20"></div>
                 <button class="articles_create-submit button-gradient" type="button"
@@ -65,11 +63,12 @@
                 </button>
             </div>
 
-            <div v-if="type === 'complex'">
-                <div v-for="item in test.questions" v-bind:key="item.title">
-                    <TestComplex :question="item.question"
-                                 :complex_question="item.complex_question"
-                                 :answer="item.answer"></TestComplex>
+            <div v-if="test.type === 'complex'">
+                <div>
+                    <TestComplex :question="test.question"
+                                 :complex_question="test.complex_question"
+                                 :variants="test.variants"
+                                 :errors="testErrors"/>
                 </div>
                 <div class="mb20"></div>
                 <button class="articles_create-submit button-gradient" type="button"
@@ -78,13 +77,12 @@
             </div>
         </div>
 
-        <div v-if="picked === 'survey'">
-            <div v-for="item in test.questions" v-bind:key="item.title">
-                <TestSurvey :question="item.question"
-                            :variants="item.variants"
+        <div v-if="test.picked === 'survey'">
+            <div>
+                <TestSurvey :question="test.question"
+                            :variants="test.variants"
                             :errorTestSurveyTitle="errorTestSurveyTitle"
-                            :errorTestSurveyText="errorTestSurveyText"
-                            :answer="item.answer"></TestSurvey>
+                            :errorTestSurveyText="errorTestSurveyText"/>
             </div>
             <div class="mb20"></div>
             <button class="articles_create-submit button-gradient" type="button"
@@ -99,20 +97,51 @@ import Question from '../TestQuestion.vue';
 import TestSurvey from '../TestSurvey.vue';
 import TestComplex from '../TestComplex.vue'
 import ProjectMixin from "../../../ProjectMixin";
+
 export default {
     name: "content-test",
     mixins: [ProjectMixin],
     components: {Question, TestSurvey, TestComplex},
     data() {
-      return {
-          test: {
-              questions: {},
-              picked: 'test',
-              type: 'easy'
-          }
-      }
+        return {
+            testErrors: {},
+            test: {}
+        }
+    },
+    computed: {
+        currentContent() {
+            return this.$store.state.currentContent;
+        },
+    },
+    watch: {
+        currentContent() {
+            this.test = this.$store.state.project.content[this.currentContent].test;
+        }
     },
     methods: {
+        onChangePicked(event, key) {
+            for (const [index, value] of Object.entries(this.tests[key].variants)) {
+                if (index >= 2) {
+                    this.tests[key].variants.splice(index, 1)
+                    return
+                }
+            }
+        },
+        addComplexQuestion() {
+            this.questions.push({
+                question: {
+                    complex: {
+                        title: '',
+                        text: '',
+                        points: null,
+                        media: {
+                            cover: null,
+                            video: null,
+                        },
+                    }
+                },
+            })
+        },
         saveTestSurvey() {
             this.errorTestSurveyTitle = ''
             this.errorTestSurveyText = ''
@@ -120,44 +149,47 @@ export default {
 
             $('#survey-test input').css('border', '1px solid #D9D9D9')
 
-            if (this.test.questions[0].question.title == '') {
+            if (this.test.question.title == '') {
                 this.errorTestSurveyTitle = 'Название обязательно'
                 error = true
             }
 
-            if (this.test.questions[0].question.text == '') {
+            if (this.test.question.text == '') {
                 this.errorTestSurveyText = 'Вопрос обязателен'
                 error = true
             }
 
-            for (const [index, value] of Object.entries(this.test.questions[0].variants)) {
+            for (const [index, value] of Object.entries(this.test.question.variants)) {
                 if (value.variant == '') {
                     $('#variant-' + value.title).css('border', '1px solid red')
                     error = true
                 }
             }
-
             if (!error) {
-                this.add_new_test = true
-                //$('#add_new_test .articles_create__study-title').html($('#survey_question_title').val());
-
+                this.$store.state.project.content[this.currentContent].test = this.test;
                 this.setStep(2);
-                this.$store.dispatch('nextStep')
-
-                this.tests.push([])
-
-                this.index_test += 1
             }
         },
         saveTest() {
-            this.add_new_test = true
-            //$('#add_new_test .articles_create__study-title').html($('#question_title').val());
-            this.$store.state.content.test = this.test;
-            this.setStep(2);
+            this.testErrors = {};
+
+            if (this.test.question.title == '') {
+                this.testErrors.title = 'Название обязательно'
+            }
+
+            if (this.test.question.text == '') {
+                this.testErrors.text = 'Вопрос обязателен'
+            }
+            if (!Object.keys(this.testErrors).length) {
+                this.$store.state.project.content[this.currentContent].test = this.test;
+                sessionStorage.project = JSON.stringify(this.$store.state.project);
+                this.setStep(2);
+            }
         },
+
     },
     mounted() {
-        this.test = this.$store.state.content.test
+        this.test = this.currentContent ? this.$store.state.project.content[this.currentContent].test : this.contentTemplate.test;
     }
 }
 </script>

@@ -15,6 +15,7 @@
 
                     <b-form-group v-slot="{ ariaDescribedby }">
                         <b-form-radio-group v-model="article.type" :aria-describedby="ariaDescribedby"
+                                            class="articles_create__radio_circle-bloc"
                                             :options="articleTypes">
                         </b-form-radio-group>
                     </b-form-group>
@@ -215,7 +216,6 @@ export default {
     components: {ValidationProvider, VCheckbox, SimpleTestMedia, Multiselect, ArticleFormInsert, ArticleFormButton, ArticleMultiple},
     data() {
         return {
-            article: {},
             recommended: [],
             authors: [],
             new_user: null,
@@ -227,6 +227,14 @@ export default {
                 2: "Інформація"
             },
             requiredErrorText: "Поле обовʼязкове"
+        }
+    },
+    computed: {
+        currentContent() {
+            return this.$store.state.currentContent;
+        },
+        article() {
+            return this.currentContent ? this.$store.state.project.content[this.currentContent].article : this.contentTemplate.article;
         }
     },
     methods: {
@@ -272,16 +280,10 @@ export default {
             }
 
             if (!error) {
-                $('#add_new_article').show();
-
-
-                this.add_new_article = true;
-                this.$store.state.content.article = this.article;
-                this.$store.state.project.content = this.$store.state.content;
-                sessionStorage.project = JSON.stringify(this.project);
-
+                this.$store.state.project.content[this.currentContent].article = this.article;
+                sessionStorage.contentList = JSON.stringify(this.$store.state.project);
                 this.setStep(2);
-                // $('#deleteFileArticle').click()
+
             }
         },
         addMedia(event) {
@@ -325,7 +327,8 @@ export default {
         axios.get(ARTICLE, {params: {count: 12, type: 1}}).then(response => {
             this.recommended = response.data.data;
         });
-        this.article =  this.$store.state.content.article;
+
+        this.$store.state.con
     }
 }
 </script>
