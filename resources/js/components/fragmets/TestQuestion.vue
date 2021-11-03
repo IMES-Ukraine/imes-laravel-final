@@ -205,6 +205,7 @@ import FragmentFormText from "./text";
 import {PROJECT_IMAGE} from "../../api/endpoints";
 //import CreateProjectForm from "./CreateProjectForm";
 //import { mapActions, mapState } from 'vuex'
+
 export default {
     name: 'TestQuestion',
     props: ['title', 'text', 'link', 'button', 'variants', 'answer', 'question'],
@@ -305,7 +306,7 @@ export default {
             } else {
                 this.isCheckedVideo = true
             }
-        }
+        },
     },
     mounted() {
         if (this.$store.state.statusAddAnswer) {

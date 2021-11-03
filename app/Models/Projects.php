@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Articles;
 use App\Models\TestQuestions as Test;
 
@@ -10,6 +11,11 @@ use App\Models\TestQuestions as Test;
  */
 class Projects extends Model
 {
+    use SoftDeletes;
+
+    const STATUS_INACTIVE = 'inactive';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_COMPLETE = 'complete';
 
     protected $dates = ['deleted_at'];
     //protected $jsonable = ['options'];
@@ -32,6 +38,11 @@ class Projects extends Model
     public function getOptionsAttribute($value)
     {
         return json_decode($value);
+    }
+
+    public function setOptionsAttribute($value)
+    {
+        return json_encode($value);
     }
 
 

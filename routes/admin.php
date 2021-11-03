@@ -8,6 +8,7 @@ use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\UsersController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\UserCardsController;
+use App\Http\Controllers\API\ProjectsController as ProjectsApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +84,7 @@ Route::group(
             ],
             function () {
                 Route::delete('/destroy/{id}', [ProjectsController::class, 'destroy']);
+                Route::get('/', [ProjectsController::class, 'index']);
             }
         );
     });
