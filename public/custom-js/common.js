@@ -1,5 +1,45 @@
 $(document).ready(function () {
     window.addEventListener("load", function(event) {
+        $(document).on('click', '.articleStatisticsBtn', function () {
+            let btn = $(this);
+            let block = btn.parents(".articles_list2__block");
+            let overlay = block.find(".articles_list2__block-overlay");
+            let content = block.find(".articles_list2__block-content--statistics");
+            if (btn.hasClass("active")) {
+                btn.removeClass("active");
+                overlay.fadeOut(300);
+                content.removeClass("show");
+            } else {
+                btn.addClass("active");
+                overlay.fadeIn(300);
+                content.addClass("show");
+            }
+        });
+        $(document).on('click', '.articleDeleteBtn', function () {
+            let btn = $(this);
+            let block = btn.parents(".articles_list2__block");
+            let overlay = block.find(".articles_list2__block-overlay");
+            let content = block.find(".articles_list2__block-content--delete");
+            if (btn.hasClass("active")) {
+                btn.removeClass("active");
+                overlay.fadeOut(300);
+                content.removeClass("show");
+            } else {
+                btn.addClass("active");
+                overlay.fadeIn(300);
+                content.addClass("show");
+            }
+        });
+        $(document).on('click', '.articleOverlay', function () {
+            let overlay = $(this);
+            let block = overlay.parents(".articles_list2__block");
+            let buttons = block.find(".articles_list2__block-button");
+            let contents = block.find(".articles_list2__block-content");
+            overlay.fadeOut(300);
+            buttons.removeClass("active");
+            contents.removeClass("show");
+        });
+
         buttonAddPlaceholder($(".buttonAddFile"));
 
         $(document).on('change', '.buttonAddFile input', function(e) {
