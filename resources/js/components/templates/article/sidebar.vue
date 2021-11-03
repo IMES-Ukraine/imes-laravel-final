@@ -1,6 +1,5 @@
 <template>
     <route-buttons-sidebar :routes="sidebarButtons"/>
-
 </template>
 
 <script>

@@ -56,3 +56,5 @@ export const PROJECT_DESTROY = V1_ADMIN + 'project/destroy/'
 export const PROJECT_START = V1 + 'project/start'
 export const PROJECT_STOP = V1 + 'project/stop'
 
+export const ARTICLE_DESTROY = ARTICLE + '/destroy/'
+

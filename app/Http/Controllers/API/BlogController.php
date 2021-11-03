@@ -53,20 +53,14 @@ class BlogController extends Controller
                     //->toDateTimeString())
                 ->isArticle()
                 ->orderBy('id', 'desc')
-                ->limit($countOnPage)
-                ->offset(0)
-                ->get();
-                //->paginate($countOnPage);
+                ->paginate();
         } else {
             $data = Articles::with($relations)
                 //->where( 'published_at', '<=', Carbon::now()
                     //->toDateTimeString())
                 ->isInformation()
                 ->orderBy('id', 'desc')
-                ->limit($countOnPage)
-                ->offset(0)
-                ->get();
-                //->paginate($countOnPage);
+                ->paginate();
         }
 
         //$data->makeHidden(['content']);
@@ -185,12 +179,18 @@ class BlogController extends Controller
 
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $model = Post::findOrFail($id);
+        $model->delete();
 
-    public static function getAfterFilters() {return [];}
-    public static function getBeforeFilters() {return [];}
-    //public static function getMiddleware() {return [];}
-    /*public function callAction($method, $parameters=false) {
-        return call_user_func_array(array($this, $method), $parameters);
-    }*/
+        return $this->helpers->apiArrayResponseBuilder(200, 'success');
+    }
 
 }

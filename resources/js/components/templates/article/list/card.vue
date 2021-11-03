@@ -22,18 +22,19 @@
         <div class="articles_list2__block-content articles_list2__block-content--delete">
             <p>Удалить опубликованную статью?</p>
             <div>
-                <button class="yes" type="button"></button>
-                <button class="no" type="button"></button>
+                <button class="yes" type="button" @click="removeArticle"></button>
+                <button class="no articleCloseBtn" type="button"></button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import Cover from "../../../fragmets/cover-project";
+    import { ARTICLE_DESTROY } from "../../../../api/endpoints"
+
     export default {
         name: "article-list-card",
-        components: {Cover},
+        components: {ARTICLE_DESTROY},
         data () {
             return {
                 routeName: 'viewArticle'
@@ -47,6 +48,17 @@
             title: {
                 type: String,
                 require: true
+            }
+        },
+        methods: {
+            removeArticle() {
+                this.$delete(ARTICLE_DESTROY + this.id).then()
+
+                for (const [index, value] of Object.entries(this.$store.state.articles)) {
+                    if (value.id == this.id) {
+                        this.$store.state.articles.splice(index, 1)
+                    }
+                }
             }
         }
     }

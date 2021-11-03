@@ -122,6 +122,8 @@ Route::group(
 
                 Route::post('/filter/export',
                     [Filter::class, 'onExport'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+
+                Route::delete('/destroy/{id}', [BlogController::class, 'destroy']);
             }
         );
 
