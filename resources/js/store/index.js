@@ -67,24 +67,15 @@ export default new Vuex.Store({
         setStep(state, step) {
             state.currentStep = step;
         },
-        nextStep(state) {
-            state.currentStep++
-        },
+
         setContent(state, title) {
-         state.currentContent = title;
+            state.currentContent = title;
         },
         resetContent(state, title) {
-         state.currentContent = null;
-
-         // state.project.content.remove(title);
-         // delete state.project.content[title];
+            state.currentContent = null;
             Vue.delete(state.project.content, title);
-
-         sessionStorage.project = JSON.stringify(state.project);
-
+            sessionStorage.project = JSON.stringify(state.project);
         },
-
-
 
 
         submitArticle(state, form) {
@@ -193,15 +184,7 @@ export default new Vuex.Store({
 
 
         },
-        addContent(context) {
-            context.commit('changeForm', CreateContentForm.name)
-        },
-        projectForm(context) {
-            context.commit('changeForm', CreateProjectForm.name)
-        },
-        projectList(context) {
-            context.commit('changeForm', ProjectList.name)
-        },
+
         selectProject(context, id) {
             context.commit('selectProject', id)
         },
@@ -260,11 +243,11 @@ export default new Vuex.Store({
                 context.commit('saveProject', project)
             })
         },
-        editContent(context, title){
+        editContent(context, title) {
             context.commit('setContent', title);
             context.commit('setStep', 2);
         },
-        deleteContent(context, title){
+        deleteContent(context, title) {
             context.commit('resetContent', title);
             context.commit('setStep', 1);
         }

@@ -48,7 +48,7 @@
                     <p class="preview__block-note">1 пользователь = 3 теста + 3 статьи = 150 баллов </p>
                 </div>
             </div>
-            <button class="articles_create-submit button-gradient">запуск</button>
+            <button class="articles_create-submit button-gradient" type="button" @click="finalStoreProject">запуск</button>
         </div>
     </div>
 </template>

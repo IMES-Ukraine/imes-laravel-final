@@ -165,30 +165,27 @@
 
                             </div>-->
 
-                            <button class="articles_create-submit button-border" type="button" @click="showContent">
+                            <button class="articles_create-submit button-border" type="button" @click.prevent="showContent">
                                 <template v-if="packsPresent">Сохранить</template>
                                 <template v-else>Далее</template>
                             </button>
                         </div>
 
                         <div v-if="currentStep == 2">
-                            <project-close/>
+                            <!--                            <project-close/>-->
                             <p class="articles_create-title">Створення пакета контента</p>
                             <content-pack/>
 
                         </div>
-
                         <div v-if="currentStep == 3">
                             <p class="articles_create-title">Створення статті</p>
                             <content-article/>
                         </div>
-
                         <div v-if="currentStep == 4">
                             <p class="articles_create-title">Создание теста</p>
-                            <project-close/>
+                            <!--                            <project-close/>-->
                             <content-test/>
                         </div>
-
                         <div v-if="currentStep == 5">
                             <div class="row mb-4">
                                 <div class="article-edit__text col-3">
@@ -237,7 +234,7 @@
 </template>
 <script>
 //import {required/*,minLength*/} from 'vuelidate/lib/validators'
-import {ARTICLE_COVER, TOKEN} from "../api/endpoints";
+import {ARTICLE_COVER, PROJECT, TOKEN} from "../api/endpoints";
 import {ValidationObserver} from 'vee-validate'
 import PlusButton from './controls/PlusButton'
 import VContent from "./templates/Content"
@@ -326,7 +323,7 @@ export default {
         },
         deleteItem(title) {
             this.$bvModal.msgBoxConfirm("Ви впевнені, що бажаєте видали дослідження " + title + " ?").then(value => {
-                if(value){
+                if (value) {
                     this.$store.dispatch('deleteContent', title);
                     this.project = this.$store.state.project;
                 }
@@ -353,7 +350,7 @@ export default {
                 this.errorTitle = 'Требуется указать название не больше 50 символов'
             }
 
-            if (! Object.keys(this.project.content).length ) {
+            if (!Object.keys(this.project.content).length) {
                 this.errorContent = 'Потрібно створити контент';
             }
 
@@ -364,34 +361,19 @@ export default {
             this.saveCurrentProject();
 
             if (this.block_content) {
-
-                if (this.currentStep == 5) {
-                    this.setStep(6);
-                } else {
-                    this.setStep(5);
+                switch (this.currentStep) {
+                    case 5:
+                        this.setStep(6);
+                        break;
+                    case 6:
+                       this.finalStoreProject();
+                        break;
+                    default:
+                        this.setStep(5);
                 }
             }
-
-
         },
 
-        sendForm() {
-            axios.get(`http://jsonplaceholder.typicode.com/posts`).then(
-                response => {
-                    this.title = response.data
-                }
-            )
-
-            let formData = new FormData();
-            formData.append('coverImage', this.files.cover)
-            formData.append('audienceDatabase', this.files.audience)
-
-            axios.post(`http://jsonplaceholder.typicode.com/posts`, formData).then(
-                response => {
-                    this.title = response.data.id
-                }
-            )
-        },
         submitForm() {
             /*            this.$refs.form.validate().then(success => {
                             if (!success) {
