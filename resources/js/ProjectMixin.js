@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {getRandomId, makeId} from "./utils";
+import {PROJECT} from "./api/endpoints";
 
 export default {
     data() {
@@ -126,17 +127,27 @@ export default {
         currentStep() {
             return this.$store.state.currentStep;
         },
-        finishProject() {
-            return this.currentStep > 4
-        },
     },
     mounted() {
-        this.$store.state.contentList = sessionStorage.contentList ? JSON.parse(sessionStorage.contentList) : {};
+        if (sessionStorage.project) {
+            this.$store.state.project = JSON.parse(sessionStorage.project);
+            this.project =  {... this.$store.state.project};
+        }
+
     },
 
     methods: {
+        finalStoreProject() {
+            axios.post(PROJECT, {
+                options: this.project.options,
+                articles: [this.project.content.article],
+                tests: [this.project.test],
+                content: this.project.content
+            }).then((resp) => {
+                console.log(resp.data);
+            });
+        },
         findByValue(array, id) {
-
             let res = array.filter(row => row.value == id);
             if (res.length) {
                 return res[0].text;
@@ -154,22 +165,9 @@ export default {
             complex.itemId = 'variant-' + Math.random().toString(36).substr(2, 9);
             return complex;
         },
-        multiplesStore(value) {
-            this.multiples = value
-        },
+
         setStep(step) {
             this.$store.state.currentStep = step;
-        },
-        nextStep() {
-            this.$store.state.currentStep++;
-        },
-
-
-        addContent() {
-            this.$store.dispatch('addContent')
-        },
-        back() {
-            this.$store.dispatch('projectList')
         },
         addTag(newTag) {
             const tag = {
@@ -179,18 +177,8 @@ export default {
             this.recommended.push(tag)
             this.chosenRecommended.push(tag)
         },
-
-
         reloadBlockSurveyTest() {
             this.$store.state.contentList[this.$store.state.currentContent].test = {};
-        },
-        reloadBlockTest() {
-            // for (const [index, value] of Object.entries(this.questions)) {
-            //     this.questions.splice(index, 1)
-            // }
-            //
-            // this.addQuestion()
-            // this.add_new_test = false
         },
         onChange() {
             // let content_points = parseInt(this.content.points)
