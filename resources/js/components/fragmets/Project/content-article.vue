@@ -32,8 +32,7 @@
                         @change="coverField"
                         name="cover"
                         class="input-file-hidden"
-                        role="button"
-                    >
+                        role="button" />
                     <p><span data-placeholder="Загрузить">Загрузить</span></p>
                     <button class="delete_file deleteFile" id="deleteFileArticle"
                             type="button">
@@ -62,8 +61,7 @@
                                             <textarea
                                                 class="form-control"
                                                 rows="4"
-                                                v-model="article.text"
-                                            ></textarea>
+                                                v-model="article.text"></textarea>
             </div>
             <div class="errors" v-if="errorArticleText">{{ errorArticleText }}</div>
         </div>
@@ -201,7 +199,7 @@ import ProjectMixin from "../../../ProjectMixin";
 
 import {ValidationProvider} from "vee-validate";
 import VCheckbox from "../../templates/inputs/checkbox"
-import {ARTICLE, ARTICLE_COVER, TOKEN, USER, USER_CREATE_NAME, USER_LIST} from "../../../api/endpoints";
+import {ARTICLE, ARTICLE_COVER, ARTICLE_LIST, TOKEN, USER, USER_CREATE_NAME, USER_LIST} from "../../../api/endpoints";
 import SimpleTestMedia from "../SimpleTestMedia";
 import Multiselect from "vue-multiselect";
 import ArticleFormInsert from "../../templates/article/form/insert";
@@ -324,11 +322,10 @@ export default {
         axios.get(USER_LIST, {params: {count: 12}}).then(response => {
                 this.authors = response.data.data;
         });
-        axios.get(ARTICLE, {params: {count: 12, type: 1}}).then(response => {
+        axios.get(ARTICLE_LIST, {params: {count: 12, type: 1}}).then(response => {
             this.recommended = response.data.data;
         });
 
-        this.$store.state.con
     }
 }
 </script>

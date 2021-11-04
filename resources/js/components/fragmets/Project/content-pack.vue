@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <div class="articles_create-block">
+        <div v-if="loaded" class="articles_create-block">
             <div class="articles_create__item">
                 <p class="articles_create__item-title">Название</p>
                 <div class="articles_create__item-content">
@@ -201,13 +201,14 @@ export default {
     data() {
         return {
             contentTitle: this.$store.state.currentContent,
-            content: {}
+            content: {},
+            loaded: false
         }
     },
 
     mounted() {
         this.content = this.contentTitle ? this.$store.state.project.content[this.contentTitle] : this.contentTemplate;
-        console.log(this.contentTitle, this.content);
+        this.loaded = true;
     },
     computed: {
         is_points() {

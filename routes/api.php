@@ -114,6 +114,7 @@ Route::group(
             function () {
 
                 Route::get('/', [BlogController::class, 'index'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                Route::get('/list', [BlogController::class, 'list']);
 
                 Route::post('/', [BlogController::class, 'store']);
 
