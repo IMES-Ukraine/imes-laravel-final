@@ -29,13 +29,13 @@
                 />
             </div>
         </div>
-        <article-input-text
+        <!--<article-input-text
             v-if="textLocale"
             :v="v"
             :title="'Продовження статтi'"
             :text="this.insert[1].content"
             v-on:update:text="updateInsert(1, 'content', $event)"
-        />
+        />-->
     </div>
 
 </template>

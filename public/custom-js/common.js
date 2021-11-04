@@ -30,6 +30,16 @@ $(document).ready(function () {
                 content.addClass("show");
             }
         });
+        $(document).on('click', '.articleCloseBtn', function () {
+            let btn = $(this);
+            let block = btn.parents(".articles_list2__block");
+            let buttons = block.find(".articles_list2__block-button");
+            let contents = block.find(".articles_list2__block-content");
+            let overlay = block.find(".articles_list2__block-overlay");
+            overlay.fadeOut(300);
+            buttons.removeClass("active");
+            contents.removeClass("show");
+        });
         $(document).on('click', '.articleOverlay', function () {
             let overlay = $(this);
             let block = overlay.parents(".articles_list2__block");

@@ -34,7 +34,7 @@ name: "project-form-sidebar",
         },
     },
     mounted() {
-        this.$get(TAGS).then( response => { console.log(response.data);
+        this.$get(TAGS).then( response => {
             this.tags = response.data
         })
     }

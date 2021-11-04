@@ -44,8 +44,9 @@ export default {
         async loadArticles () {
             this.$get(ARTICLE).then( response => {
 
-                if (response.data && response.data.length > 0) {
-                    this.articleList = response.data
+                if (response.data && response.data.data.length > 0) {
+                    this.articleList = response.data.data
+                    this.$store.state.articles = response.data.data
                 }
             })
         },

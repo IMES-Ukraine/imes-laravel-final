@@ -3,7 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PostTag extends Model
+class PostGallery extends Model
 {
     /*
      * Disable timestamps by default.
@@ -16,5 +16,5 @@ class PostTag extends Model
      *
      * @var string
      */
-    public $table = 'bedard_blogtags_post_tag';
+    public $table = 'rainlab_blog_posts_gallery';
 }

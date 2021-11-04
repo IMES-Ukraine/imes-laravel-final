@@ -3,8 +3,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\File;
+use App\Models\PostGallery;
+use App\Models\PostTag;
+use App\Models\Recommended;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
 use Illuminate\Support\Facades\Validator;
@@ -53,20 +58,14 @@ class BlogController extends Controller
                     //->toDateTimeString())
                 ->isArticle()
                 ->orderBy('id', 'desc')
-                ->limit($countOnPage)
-                ->offset(0)
-                ->get();
-                //->paginate($countOnPage);
+                ->paginate();
         } else {
             $data = Articles::with($relations)
                 //->where( 'published_at', '<=', Carbon::now()
                     //->toDateTimeString())
                 ->isInformation()
                 ->orderBy('id', 'desc')
-                ->limit($countOnPage)
-                ->offset(0)
-                ->get();
-                //->paginate($countOnPage);
+                ->paginate();
         }
 
         //$data->makeHidden(['content']);
@@ -154,6 +153,77 @@ class BlogController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $model = new Post();
+        $model->title = $request->title;
+        $model->slug = uniqid();
+        $model->published = true;
+        $model->content_html = $request->text;
+        $model->type = $request->articleType;
+        $model->learning_bonus = 0;
+        $model->is_popular = rand(0,1);
+
+        $model->action = !empty($request->action) ? $request->action : '';
+        $model->button = !empty($request->button) ? $request->button : '';
+
+        if ($request->user) {
+            $model->user_id = $request->user['id'];
+        }
+
+        $content = [];
+        foreach ( $request->insert as $insert) {
+            if ( !empty( $insert['content'])) {
+                $content[] = [
+                    'type' => 'text',
+                    'title' => $insert['title'],
+                    'content' => $insert['content']
+                ];
+            }
+
+        }
+        $model->content = json_encode($content);
+        $file = File::find($request->cover_image_id);
+        $model->cover_image = $file;
+
+        $model->published_at = time();
+        $saveStatus = $model->save();
+
+        if ( !$saveStatus)
+            $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
+
+        if ( $saveStatus ){
+            foreach ( $request->gallery as $value){
+                $model_gallery = new PostGallery();
+                $model_gallery->post_id = $model->id;
+                $model_gallery->cover_image = $value['path'];
+                $model_gallery->save();
+            }
+
+            foreach ( $request->tags as $tag){
+                $model_tags = new PostTag();
+                $model_tags->post_id = $model->id;
+                $model_tags->tag_id = $tag['id'];
+                $model_tags->save();
+            }
+
+            foreach ( $request->recommended as $rec){
+                Recommended::create([
+                    'parent_id' => $model->id,
+                    'recommended_id' => $rec['id']
+                ]);
+            }
+        }
+
+        return response()->json(compact('saveStatus'));
+    }
+
+    /**
      * Shows post by id
      * @param $id
      * @return \Illuminate\Http\JsonResponse
@@ -185,12 +255,18 @@ class BlogController extends Controller
 
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $model = Post::findOrFail($id);
+        $model->delete();
 
-    public static function getAfterFilters() {return [];}
-    public static function getBeforeFilters() {return [];}
-    //public static function getMiddleware() {return [];}
-    /*public function callAction($method, $parameters=false) {
-        return call_user_func_array(array($this, $method), $parameters);
-    }*/
+        return $this->helpers->apiArrayResponseBuilder(200, 'success');
+    }
 
 }

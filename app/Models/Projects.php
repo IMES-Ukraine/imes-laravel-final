@@ -76,7 +76,7 @@ class Projects extends Model
      */
     public function tags()
     {
-        return $this->hasOne('App\Models\PostTag', 'post_id', 'id')->with('project_tags');
+        return $this->hasOne('App\Models\ProjectTags', 'project_id', 'id')->with('project_tags');
     }
 
     /**

@@ -1,54 +1,41 @@
 <template>
-
-    <div class="row mb-4">
-
-        <div class="article-edit__text col-3">
-            Заголовок
-        </div>
-
-        <div class="col-9">
-            <div class="row">
-
-                <div class="col-12 mb-2">
-                    <label>
-                        <input
-                            class="form-control"
-                            type="text"
-                            name="title"
-                            v-model="v.title.$model"
-                        >
-                    </label>
-                    <div class="errors" v-if="v.title.$error">
-                        Заголовок обов'язковий
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <v-radio
-                        :id="this.name+'_1'"
-                        :name="this.name"
-                        :value="1"
-                        :checked="(articleType==1)?true:false"
-                        v-on:update:value="getType"
-                    >
-                        Новини
-                    </v-radio>
-                    <v-radio
-                        :id="this.name+'_2'"
-                        :name="this.name"
-                        :value="2"
-                        :checked="(articleType==2)?true:false"
-                        v-on:update:value="getType"
-                    >
-                        Iнформацiя
-                    </v-radio>
-                </div>
-
+    <div class="articles_create__item-content direction-column">
+        <div class="articles_create__name-block">
+            <input
+                class="form-control"
+                type="text"
+                name="title"
+                v-model="v.title.$model"
+            >
+            <div class="errors" v-if="v.title.$error">
+                Заголовок обов'язковий
             </div>
         </div>
-
+        <div class="articles_create__radio_circle">
+            <div class="articles_create__radio_circle-block">
+                <v-radio
+                    :id="this.name+'_1'"
+                    :name="this.name"
+                    :value="1"
+                    :checked="(articleType==1)?true:false"
+                    v-on:update:value="getType"
+                >Новости</v-radio>
+                <!--<i></i>
+                <p>Новости</p>-->
+            </div>
+            <div class="articles_create__radio_circle-block">
+                <v-radio
+                    :id="this.name+'_2'"
+                    :name="this.name"
+                    :value="2"
+                    :checked="(articleType==2)?true:false"
+                    v-on:update:value="getType"
+                >Информация</v-radio>
+                <!--<i></i>
+                <p>Информация</p>-->
+            </div>
+        </div>
     </div>
-
 </template>
 
 <script>
@@ -71,7 +58,7 @@ export default {
             require: true
         },
         articleType: {
-            type: Boolean,
+            type: Number,
             default: 1
         }
     },
