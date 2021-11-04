@@ -212,7 +212,7 @@ import ArticleFormSelect from "./templates/article/form/select"
 import VButton from "./templates/inputs/button"
 import ArticleFormButton from "./templates/article/form/button"
 import Multiselect from "vue-multiselect";
-import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, TAGS} from "../api/endpoints";
+import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS} from "../api/endpoints";
 import FragmentFormText from "./fragmets/text";
 import ArticleSidebar from "./templates/article/sidebar";
 import ArticleMultiple from "./templates/article/form/multiple"
@@ -389,7 +389,7 @@ export default {
         this.$get(USER + '?count=12').then( response => {
             this.authors = response.data
         })
-        this.$get(TAGS).then( response => {
+        this.$get(ARTICLE_TAGS).then( response => {
             this.tags = response.data
         })
     }
