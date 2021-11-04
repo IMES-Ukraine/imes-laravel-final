@@ -122,11 +122,11 @@
                                         <div class="articles_create__grid width-third column-gap-25">
                                             <div class="articles_create__grid-block">
                                                 <button class="articles_create-add_btn height-47" type="button"
-                                                        @click.prevent="setStep(2)"><span
+                                                        @click.prevent="newContent()"><span
                                                     class="icon-right">Создать</span>
                                                 </button>
                                             </div>
-                                            <span v-for="content in contentList">
+                                            <span v-for="content in contentList" :key="content.title">
                                                     <div class="articles_create__grid-block">
                                                         <div class="articles_create__study">
                                                             <p class="articles_create__study-title">{{
@@ -266,10 +266,11 @@ import ContentTest from "./fragmets/Project/content-test";
 import ProjectPreview from "./fragmets/Project/project-preview";
 
 import ProjectMixin from "../ProjectMixin";
+import ModalMixin from "../ModalMixin";
 
 export default {
     name: 'CreateProjectForm',
-    mixins: [ProjectMixin],
+    mixins: [ProjectMixin, ModalMixin],
     components: {
         ContentArticle,
         ContentTest,
@@ -304,6 +305,7 @@ export default {
             new_user: '',
             targeting: false,
             block_content: false,
+            errorContent: ''
         }
     },
     computed: {
@@ -315,11 +317,20 @@ export default {
         }
     },
     methods: {
+        newContent() {
+            this.$store.state.currentContent = null;
+            this.setStep(2);
+        },
         editItem(title) {
             this.$store.dispatch('editContent', title);
         },
         deleteItem(title) {
-            this.$store.dispatch('deleteContent', title);
+            this.$bvModal.msgBoxConfirm("Ви впевнені, що бажаєте видали дослідження " + title + " ?").then(value => {
+                if(value){
+                    this.$store.dispatch('deleteContent', title);
+                    this.project = this.$store.state.project;
+                }
+            });
         },
         saveCurrentProject() {
             this.$store.state.project = this.project;
@@ -328,6 +339,7 @@ export default {
         showContent() {
             this.errorFile = '';
             this.errorTitle = '';
+            this.errorContent = '';
 
             if (this.project.options.files.cover == null) {
                 this.errorFile = 'Поле обязательно'
@@ -341,20 +353,25 @@ export default {
                 this.errorTitle = 'Требуется указать название не больше 50 символов'
             }
 
-            if (this.errorTitle === '' && this.errorFile === '') {
+            if (! Object.keys(this.project.content).length ) {
+                this.errorContent = 'Потрібно створити контент';
+            }
+
+            if (this.errorTitle === '' && this.errorFile === '' && this.errorContent == '') {
                 this.block_content = true;
             }
-console.log(Object.keys(this.project.content).length);
+
             this.saveCurrentProject();
-            if (this.currentStep == 5) {
-                this.setStep(6);
-            }
-            else {
-                if (Object.keys(this.project.content).length ) {
+
+            if (this.block_content) {
+
+                if (this.currentStep == 5) {
+                    this.setStep(6);
+                } else {
                     this.setStep(5);
                 }
             }
-        //    this.setStep(1);
+
 
         },
 
