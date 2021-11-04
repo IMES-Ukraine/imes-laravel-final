@@ -114,6 +114,8 @@ Route::group(
 
                 Route::get('/', [BlogController::class, 'index'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
 
+                Route::post('/', [BlogController::class, 'store']);
+
                 Route::get('/{id}', [BlogController::class, 'show'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
 
                 Route::get('/{id}/callback', [BlogController::class, 'callback'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');

@@ -1,21 +1,23 @@
 <template>
-    <route-buttons-sidebar :routes="sidebarButtons"/>
+    <div>
+        <router-button :icon="'has-icon-plus'" :isActive="(this.$route.path === '/article/new')?true:false" :url="'/article/new'">
+            Створити запис
+        </router-button>
+        <router-button :icon="'has-icon-plus'" :isActive="(this.$route.path === '/content-plan/new')?true:false" :url="'/content-plan/new'">
+            Контент план
+        </router-button>
+    </div>
 </template>
 
 <script>
-import RouterButton from "../../fragmets/router-button";
-import RouteButtonsSidebar from "../../fragmets/ul-buttons-sidebar";
+import RouterButton from "../../fragmets/router-button"
+
 export default {
     name: "article-sidebar",
-    components: {RouteButtonsSidebar, RouterButton},
+    components: {RouterButton},
     data() {
         return {
-            articleList: this.$store.state.articles,
-            sidebarButtons: [
-                //{ name: '< Проекти', path: '/' },
-                { name: 'Створити запис', path: '/article/new' },
-                { name: 'Контент план', path: '/content-plan/new' },
-            ],
+            articleList: this.$store.state.articles
         }
     },
 }

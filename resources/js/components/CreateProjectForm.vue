@@ -711,7 +711,8 @@
             Question,
             TestSurvey,
             VRadio,
-            SimpleTestMedia,
+
+
             VTextarea
         },
         data() {

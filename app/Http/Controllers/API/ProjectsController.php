@@ -7,7 +7,7 @@ use App\Http\Helpers;
 use App\Models\File;
 use App\Models\ImageHelper;
 use App\Models\ProjectItems;
-use App\Models\Tag;
+use App\Models\Tags;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -50,7 +50,7 @@ class ProjectsController extends Controller
      * @return JsonResponse
      */
     public function tags() {
-        $data = Tag::all();
+        $data = Tags::all();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
@@ -178,14 +178,12 @@ class ProjectsController extends Controller
      */
     public function start(Request $request)
     {
-        /*$model = Projects::findOrFail($request->id);
-        $options = $model->options;*/
 
-        /*if (isset($model->options->status)) {
-            $model->options->status = Projects::STATUS_ACTIVE;
-        } else {
-            $model->options->status = Projects::STATUS_ACTIVE;
-        }*/
+        $model = Projects::findOrFail($request->id);
+        $model->options->status = Projects::STATUS_ACTIVE;
+        $model->save();
+
+        /*$model->options->status = Projects::STATUS_ACTIVE;*/
         //$model->options->status = Projects::STATUS_ACTIVE;
         /*$model->forceFill([
             'options->status' => 'dd'
@@ -193,11 +191,11 @@ class ProjectsController extends Controller
         //print_r($model->options->status);
         //$result = $model->save();
 
-        DB::table('ulogic_projects_settings')
-            ->where('id', 8)
+        /*DB::table('ulogic_projects_settings')
+            ->where('id', $request->id)
             ->update([
                 'options->status' => Projects::STATUS_ACTIVE
-            ]);
+            ]);*/
 
         return $this->helpers->apiArrayResponseBuilder(200, ['status' => Projects::STATUS_ACTIVE]);
     }
