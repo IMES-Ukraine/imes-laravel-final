@@ -21,12 +21,12 @@ import Vuelidate from 'vuelidate'
 import './utils/vee-validate'
 import store from './store'
 import Autocomplete from 'v-autocomplete'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+
+Vue.use(VueAwesomeSwiper)
 
 // You need a specific loader for CSS files like https://github.com/webpack/css-loader
 //import 'v-autocomplete/dist/v-autocomplete.css'
-
-
-
 
 
 Vue.use(Autocomplete)
