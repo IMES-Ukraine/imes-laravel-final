@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\PostGallery;
 use App\Models\PostTag;
 use App\Models\Recommended;
+use App\Models\Tag;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -73,6 +74,15 @@ class BlogController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
         //if ($apiUser && $apiUser->hasAccess('news.access_news'))
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function tags() {
+        $data = Tag::all();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 
     /**
