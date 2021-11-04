@@ -53,12 +53,12 @@
                     </div>
                     <div class="row mb-4" id="my-strictly-unique-vue-upload-multiple-image" style="text-align: center;">
 
-                        <vue-upload-multiple-image
+<!--                        <vue-upload-multiple-image
                             @upload-success="uploadImageSuccess"
                             @before-remove="beforeRemove"
                             @edit-image="editImage"
                             @data-change="dataChange"
-                        ></vue-upload-multiple-image>
+                        ></vue-upload-multiple-image>-->
                     </div>
                     <div class="row mb-3">
                         <div class="article-edit__text col-3">
@@ -249,6 +249,7 @@ import Multiselect from 'vue-multiselect'
 import VContent from "./templates/Content"
 import axios from 'axios'
 import VueUploadMultipleImage from 'vue-upload-multiple-image'
+import {ARTICLE, V1} from "../api/endpoints";
 
 export default {
     name: 'CreateArticleForm',
@@ -280,6 +281,7 @@ export default {
                 {name: 'Гастроэнтерология', id: 4},
             ],
             articleCover : '',
+            recommended: []
         }
     },
     computed: {
@@ -322,11 +324,11 @@ export default {
         }
     },
     mounted() {
-        axios.get(process.env.VUE_APP_API_URI + `/blog?count=12&type=1`).then(
+        axios.get(ARTICLE, {count:12, type: 1}).then(
             response => {
                 this.recommended = response.data.data.data
             })
-        axios.get(process.env.VUE_APP_API_URI + `/users?count=12`).then(
+        axios.get(USER, {count: 12}).then(
             response => {
                 this.authors = response.data.data
             })

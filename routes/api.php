@@ -76,6 +76,7 @@ Route::group(
             ],
             function () {
                 Route::get ('/',  [UsersController::class, 'index']);
+                Route::get ('/list',  [UsersController::class, 'list']);
                 //Route::get('/{id}', [UsersController::class, 'show']);
                 Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
                 Route::post('/balance', [UsersController::class, 'balance']);

@@ -1,7 +1,7 @@
 <template>
     <div>
         <router-button :href="'/'">
-            < проекти
+            Проекти
         </router-button>
         <div class="sidebar__tags">
             <div class="sidebar__tags-item" v-for="field in tags">
@@ -30,7 +30,7 @@ name: "project-form-sidebar",
         tag: {
             type: String,
             require: false,
-            default: null
+            default: ''
         },
     },
     mounted() {

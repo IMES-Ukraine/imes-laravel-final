@@ -88,9 +88,9 @@ export default {
         }
     },
     beforeMount() {
-        if (this.insert[1].content || this.insert[0].content) {
-            this.$set(this, 'textLocale', true)
-        }
+        // if (this.insert[1].content || this.insert[0].content) {
+        //     this.$set(this, 'textLocale', true)
+        // }
     }
 }
 </script>

@@ -9,7 +9,6 @@ use App\Models\UserCards;
 use App\Services\UsersService;
 use Illuminate\Support\Facades\Auth;
 
-
 class CardsController extends Controller
 {
     protected $helpers;

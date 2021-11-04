@@ -18,7 +18,7 @@
                 </div>
             </div>
 
-            <SurveyTestVariants v-bind:answer="answer" v-bind:variants="variants"></SurveyTestVariants>
+            <SurveyTestVariants v-bind:variants="variants"></SurveyTestVariants>
             <div class="mb20"></div>
 
             <button class="articles_create-submit button-border" type="button" @click="addSurvey">добавить ответ</button>
@@ -39,7 +39,7 @@
     //import { mapActions, mapState } from 'vuex'
     export default {
         name: 'TestQuestion',
-        props: ['title', 'text', 'link', 'button', 'variants', 'answer', 'question', 'errorTestSurveyTitle', 'errorTestSurveyText'],
+        props: ['title', 'text', 'link', 'button', 'variants', 'question', 'errorTestSurveyTitle', 'errorTestSurveyText'],
         components: {
             FragmentFormText,
             //SimpleTestVariant,
