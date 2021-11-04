@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UserAuthController extends Controller
 {
@@ -31,7 +32,7 @@ class UserAuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        if (!$token = auth()->attempt($request->validated())) {
+        if (!$token = Auth::attempt($request->validated())) {
 
             return response()->json(
                 [

@@ -32,6 +32,14 @@ class UsersController extends Controller
 
     }
 
+    public function list()
+    {
+
+        $data = $this->User->select('id', 'name')->get();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
     public function create(Request $request)
     {
         $phone = substr(filter_var($request->post('phone'), FILTER_SANITIZE_NUMBER_INT), 3);
@@ -95,8 +103,7 @@ class UsersController extends Controller
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
         }
 
-        $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
-
+        return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
     }
 
     public function store(Request $request)

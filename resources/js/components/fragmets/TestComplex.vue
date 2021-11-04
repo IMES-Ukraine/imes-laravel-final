@@ -7,6 +7,7 @@
                     <div class="articles_create__item-content">
                         <div class="articles_create__name-block">
                             <input type="text" name="title" id="question_title" v-model="question.title">
+                            <div v-if="errors.text" class="errors">{{ errors.text }}</div>
                         </div>
                     </div>
                 </div>
@@ -37,6 +38,7 @@
                     <p class="articles_create__item-title">Описание</p>
                     <div class="articles_create__item-content">
                         <textarea v-model="question.text"></textarea>
+                        <div v-if="errors.text" class="errors">{{ errors.text }}</div>
                     </div>
                 </div>
             </div>
@@ -115,7 +117,7 @@
 
             <!--<ComplexTestVariants @file_сhange="fileChange" :complex="complex" v-bind:answer="answer" v-bind:variants="variants"></ComplexTestVariants>-->
             <div class="mb20"></div>
-            <ComplexTestQuestion :complex="complex" v-bind:answer="answer" v-bind:complex_question="complex_question"></ComplexTestQuestion>
+            <ComplexTestQuestion :complex="complex" :variants="variants" v-bind:complex_question="complex_question"></ComplexTestQuestion>
             <div class="mb20"></div>
             <button class="articles_create-submit button-border" type="button" @click="addBlockComplex">Добавить блок</button>
         </div>
@@ -123,18 +125,15 @@
 </template>
 <script>
     import {required} from 'vuelidate/lib/validators'
-    //import SimpleTestVariant from './../components/inputs/SimpleTestVariant.vue';
     import ComplexTestVariants from './../inputs/ComplexTestVariantsArray.vue'
     import ComplexTestQuestion from './../inputs/ComplexTestQuestionArray.vue'
     import VContent from "../templates/Content"
     import { getRandomId } from '../../utils'
     import FragmentFormText from "./text";
     import {PROJECT_IMAGE} from "../../api/endpoints";
-    //import CreateProjectForm from "./CreateProjectForm";
-    //import { mapActions, mapState } from 'vuex'
     export default {
         name: 'TestComplex',
-        props: ['title', 'text', 'link', 'button', 'variants', 'answer', 'question', 'complex_question'],
+        props: ['title', 'text', 'link', 'button', 'variants', 'question', 'complex_question', 'errors'],
         components: {
             FragmentFormText,
             //SimpleTestVariant,

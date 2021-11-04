@@ -324,13 +324,13 @@ export default {
                 $(".chat__outer").scrollTop($(".chat__outer")[0].scrollHeight);
             });
 // Сбрасываем счётчик просмотров
-            if (this.currentChat.unreadCount) {
+       //     if (this.currentChat.unreadCount) {
                 await setDoc(doc(store, 'sessions', documentId), {
-                    unreadCount: 0,
+                    unreadCount: 3,
                 }).then(() => {
                     this.getList();
                 });
-            }
+         //   }
         },
 
         findChat() {
