@@ -73,6 +73,16 @@ export default new Vuex.Store({
         setContent(state, title) {
          state.currentContent = title;
         },
+        resetContent(state, title) {
+         state.currentContent = null;
+
+         // state.project.content.remove(title);
+         // delete state.project.content[title];
+            Vue.delete(state.project.content, title);
+
+         sessionStorage.project = JSON.stringify(state.project);
+
+        },
 
 
 
@@ -253,6 +263,10 @@ export default new Vuex.Store({
         editContent(context, title){
             context.commit('setContent', title);
             context.commit('setStep', 2);
+        },
+        deleteContent(context, title){
+            context.commit('resetContent', title);
+            context.commit('setStep', 1);
         }
     },
     modules: {}
