@@ -226,6 +226,9 @@
                                 </div>
                             </div>
                         </div>
+                        <div v-if="currentStep == 6">
+                            <project-preview/>
+                        </div>
                     </form>
                 </ValidationObserver>
             </div>
@@ -260,7 +263,7 @@ import CreateArticleForm from "./CreateArticleForm";
 import ContentPack from "./fragmets/Project/content-pack";
 import ContentArticle from "./fragmets/Project/content-article";
 import ContentTest from "./fragmets/Project/content-test";
-
+import ProjectPreview from "./fragmets/Project/project-preview";
 
 import ProjectMixin from "../ProjectMixin";
 
@@ -288,6 +291,7 @@ export default {
         ArticleMultiple,
         ArticleInputCover: Cover,
         ArticleInputTitle,
+        ProjectPreview,
 
         VRadio,
         VTextarea
@@ -320,7 +324,6 @@ export default {
         saveCurrentProject() {
             this.$store.state.project = this.project;
             sessionStorage.project = JSON.stringify(this.project);
-            this.setStep(5);
         },
         showContent() {
             this.errorFile = '';
@@ -341,7 +344,18 @@ export default {
             if (this.errorTitle === '' && this.errorFile === '') {
                 this.block_content = true;
             }
+console.log(Object.keys(this.project.content).length);
             this.saveCurrentProject();
+            if (this.currentStep == 5) {
+                this.setStep(6);
+            }
+            else {
+                if (Object.keys(this.project.content).length ) {
+                    this.setStep(5);
+                }
+            }
+        //    this.setStep(1);
+
         },
 
         sendForm() {
@@ -421,7 +435,6 @@ export default {
                 }
             ).then((file) => {
                 this.name = event.target.files[0].name
-                //this.articles[0].imeges.push(file.data)
                 this.article.images = file.data.data.id
             })
         },

@@ -36,11 +36,7 @@ export default {
     methods: {
         resetStorage() {
             this.$store.state.currentStep = 1;
-            sessionStorage.options = '';
-            sessionStorage.article = '';
-            sessionStorage.test = '';
-            sessionStore.project = '';
-
+            sessionStorage.project = '';
         }
     }
 }

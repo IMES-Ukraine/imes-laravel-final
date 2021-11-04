@@ -135,7 +135,14 @@ export default {
     },
 
     methods: {
+        findByValue(array, id) {
 
+            let res = array.filter(row => row.value == id);
+            if (res.length) {
+                return res[0].text;
+            }
+            return '';
+        },
         getNewVariant(title) {
             let variant = this.variantTemplate;
             variant.itemId = getRandomId();
