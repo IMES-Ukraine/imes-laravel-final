@@ -1,5 +1,9 @@
 $(document).ready(function () {
     window.addEventListener("load", function(event) {
+        $(document).on('click', '.articlesTabsNav .articles_tabs-item', function () {
+            $(".articlesTabsContent > div").hide().eq($(this).index()).show();
+            console.log('wewe');
+        });
         $(document).on('click', '.articleStatisticsBtn', function () {
             let btn = $(this);
             let block = btn.parents(".articles_list2__block");
