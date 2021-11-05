@@ -2,10 +2,13 @@
 
     <tr class="db__row">
         <td class="db__td is-id">
+            {{ index }}
+        </td>
+        <td class="db__td is-id">
             {{ record.user.id }}
         </td>
         <td class="db__td is-account">
-            {{ record.user.email }}
+            {{ record.user.name }}
         </td>
         <td class="db__td">
             <button type="button" class="db__button" aria-label="переглянути реєстраційні дані"
@@ -184,6 +187,7 @@ export default {
     name: "item",
     components: {jsonField},
     props: {
+        index: Number,
         user_id: {
             type: Number,
             require: true,

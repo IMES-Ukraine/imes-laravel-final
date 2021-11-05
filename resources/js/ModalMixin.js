@@ -13,11 +13,12 @@ export default {
                 })
         },
         showModal(data) {
-            this.$store.state.modalData = data;
-            this.$store.state.showUserModal = true;
+            this.$store.dispatch('setModalData', data);
+            this.$store.dispatch('setShowUserModal', true);
         },
         closeModal() {
-            this.$store.state.showUserModal = false;
+            this.$store.dispatch('setFilter',  '');
+            this.$store.dispatch('setShowUserModal', false);
         },
         async loadClients() {
             this.$get(CLIENTS).then( response => {

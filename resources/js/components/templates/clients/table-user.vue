@@ -45,11 +45,7 @@ export default {
     name: "table-user",
     components: {Item, ModalUser},
     mixins: [ModalMixin],
-    data() {
-        return {
-            modalData: {}
-        }
-    },
+
     computed: {
         requests() {
             return  this.$store.state.clients;
