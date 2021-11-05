@@ -59,7 +59,7 @@
                 </div>
                 <div class="mb20"></div>
                 <button class="articles_create-submit button-gradient" type="button"
-                        @click="saveTest">сохранить
+                        @click="storeTest">сохранить
                 </button>
             </div>
 
@@ -72,7 +72,7 @@
                 </div>
                 <div class="mb20"></div>
                 <button class="articles_create-submit button-gradient" type="button"
-                        @click="saveTest">сохранить
+                        @click="storeTest">сохранить
                 </button>
             </div>
         </div>
@@ -105,28 +105,15 @@ export default {
     data() {
         return {
             testErrors: {},
-            test: {}
         }
     },
     computed: {
-        currentContent() {
-            return this.$store.state.currentContent;
-        },
-    },
-    watch: {
-        currentContent() {
-            this.test = this.$store.state.project.content[this.currentContent].test;
+        test() {
+            return this.$store.state.content.test || this.contentTemplate.test;
         }
     },
+
     methods: {
-        onChangePicked(event, key) {
-            for (const [index, value] of Object.entries(this.tests[key].variants)) {
-                if (index >= 2) {
-                    this.tests[key].variants.splice(index, 1)
-                    return
-                }
-            }
-        },
         addComplexQuestion() {
             this.questions.push({
                 question: {
@@ -170,7 +157,7 @@ export default {
                 this.setStep(2);
             }
         },
-        saveTest() {
+        storeTest() {
             this.testErrors = {};
 
             if (this.test.question.title == '') {
@@ -180,17 +167,16 @@ export default {
             if (this.test.question.text == '') {
                 this.testErrors.text = 'Вопрос обязателен'
             }
+
+
             if (!Object.keys(this.testErrors).length) {
-                this.$store.state.project.content[this.currentContent].test = this.test;
-                sessionStorage.project = JSON.stringify(this.$store.state.project);
+                this.$store.commit('storeTest', this.test);
                 this.setStep(2);
             }
         },
 
     },
-    mounted() {
-        this.test = this.currentContent ? this.$store.state.project.content[this.currentContent].test : this.contentTemplate.test;
-    }
+
 }
 </script>
 

@@ -171,7 +171,7 @@
             <p class="articles_create__item-title">Реком. статьи</p>
             <div class="articles_create__item-content">
                 <multiselect
-                    v-model="chosenRecommended"
+                    v-model="article.recommended"
                     tag-placeholder="Додати статтю"
                     placeholder="Вибрати статтю"
                     label="title"
@@ -188,7 +188,7 @@
     </div>
     <button class="articles_create-submit button-gradient"
             type="button"
-            @click="saveArticle">
+            @click="storeArticle">
         Публікувати
     </button>
     </span>
@@ -227,12 +227,18 @@ export default {
             requiredErrorText: "Поле обовʼязкове"
         }
     },
+    mounted() {
+        axios.get(USER_LIST, {params: {count: 12}}).then(response => {
+            this.authors = response.data.data;
+        });
+        axios.get(ARTICLE_LIST, {params: {count: 12, type: 1}}).then(response => {
+            this.recommended = response.data.data;
+        });
+
+    },
     computed: {
-        currentContent() {
-            return this.$store.state.currentContent;
-        },
         article() {
-            return this.currentContent ? this.$store.state.project.content[this.currentContent].article : this.contentTemplate.article;
+            return this.$store.state.content.article || this.contentTemplate.article;
         }
     },
     methods: {
@@ -258,7 +264,7 @@ export default {
         },
 
 
-        saveArticle() {
+        storeArticle() {
             this.errorArticleTitle = '';
             this.errorArticleCover = '';
             this.errorArticleText = '';
@@ -280,7 +286,7 @@ export default {
             }
 
             if (!error) {
-                this.$store.dispatch('storeArticle', this.article);
+                this.$store.commit('storeArticle', this.article);
                 this.setStep(2);
             }
         },
@@ -318,15 +324,7 @@ export default {
         },
 
     },
-    mounted() {
-        axios.get(USER_LIST, {params: {count: 12}}).then(response => {
-                this.authors = response.data.data;
-        });
-        axios.get(ARTICLE_LIST, {params: {count: 12, type: 1}}).then(response => {
-            this.recommended = response.data.data;
-        });
 
-    }
 }
 </script>
 
