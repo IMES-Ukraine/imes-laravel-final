@@ -54,7 +54,7 @@
         },
         methods: {
             findUser(id) {
-                this.$store.state.filterId = id;
+                this.$store.dispatch('setFilter',  id);
             }
         }
     }

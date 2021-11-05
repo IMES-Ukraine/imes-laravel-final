@@ -64,6 +64,16 @@ export default new Vuex.Store({
         }
     },
     mutations: {
+        setFilter(state, data) {
+          state.filterId = data;
+        },
+        setModalData(state, data) {
+          state.modalData = data  ;
+        },
+        setShowUserModal(state, data) {
+          state.showUserModal = data  ;
+        },
+
         setContent(state, data) {
             state.content = data;
         },
@@ -159,6 +169,18 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        setFilter(context, data) {
+            context.commit('setFilter', data);
+        },
+
+        setModalData(context, data){
+          context.commit('setModalData', data);
+        },
+        setShowUserModal(context, data){
+            context.commit('setShowUserModal', data)
+        },
+
+
         setContent(context, data){
             context.commit('setContent', data);
         },
