@@ -69,7 +69,7 @@ class ProjectRepository
             $items->item_type = $item['type'];
             $items->project_id = $project->id;
             $items->item_id = $item['id'];
-            $items->data = json_encode($request->post('content', []));
+            $items->data = json_encode($projectTotal['content']);
             $isProjectItemsSaved = $items->save();
         }
 
