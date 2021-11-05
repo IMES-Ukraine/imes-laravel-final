@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="preview__block">
-                    <p class="preview__block-note">1 пользователь = 3 теста + 3 статьи = 150 баллов </p>
+                    <p class="preview__block-note">1 пользователь =  {{contentCount}} теста + {{contentCount}} статьи = {{projectPoints}} баллов </p>
                 </div>
             </div>
             <button class="articles_create-submit button-gradient" type="button" @click="finalStoreProject">запуск</button>
@@ -64,10 +64,22 @@ export default {
     },
     computed: {
         category() {
-            return this.findByValue(this.lists.categories, this.project.options.selected.category);
+            return this.findByValue(this.lists.categories, this.project);
         },
         region() {
-            return this.findByValue(this.lists.regions, this.project.options.selected.region);
+            return this.findByValue(this.lists.regions, this.project);
+        },
+        contentCount() {
+          return Object.keys(this.project.content).length;
+        },
+        projectPoints() {
+            let sum = 0;
+            for (let index in this.project.content) {
+                sum = sum + parseInt(this.project.content[index].article.points ? this.project.content[index].article.points : 0)
+                    + parseInt(this.project.content[index].test.points ?this.project.content[index].article.points : 0);
+                console.log(index, sum, this.project.content[index]);
+            }
+            return sum;
         }
     }
 }
