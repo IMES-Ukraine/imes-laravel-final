@@ -332,7 +332,7 @@ export default {
     methods: {
         newContent() {
             this.errorContent = '';
-            this.$store.dispatch('setCurrentContent', null);
+            this.$store.dispatch('setContent', this.contentTemplate);
             this.setStep(2);
         },
         editItem(title) {
@@ -350,6 +350,7 @@ export default {
         async createProject() {
             this.errorContent = '';
             this.errorCover = '';
+            this.project = this.$store.state.project;
             if (!Object.keys(this.project.content).length) {
                 this.errorContent = 'Потрібно створити контент';
             }

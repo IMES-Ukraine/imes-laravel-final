@@ -101,14 +101,11 @@ class ProjectsController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function create(Request $request) {
+    public function create(Request $request): JsonResponse
+    {
 
         $rules = [
-            'options' => 'required',
-            'options.title' => 'required',
-            'articles' => 'required',
-            'articles.*.images.cover.id' => 'required',
-            'tests'    => 'required',
+            'project' => 'required',
         ];
         $validation = Validator::make($request->all(), $rules);
 

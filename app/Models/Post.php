@@ -73,13 +73,13 @@ class Post extends Model
         'user' => BackendUser::class
     ];
 
-    public $belongsToMany = [
-        'categories' => [
-            Category::class,
-            'table' => 'rainlab_blog_posts_categories',
-            'order' => 'name'
-        ]
-    ];
+//    public $belongsToMany = [
+//        'categories' => [
+//            Category::class,
+//            'table' => 'rainlab_blog_posts_categories',
+//            'order' => 'name'
+//        ]
+//    ];
 
     public $attachMany = [
         'featured_images' => [\App\Models\File::class, 'order' => 'sort_order'],

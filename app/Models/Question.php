@@ -40,6 +40,7 @@ class Question
         $this->description = $question['question']['description'];
         $this->correctAnswer = $question['answer']['correct'];
         $this->agreement = $question['question']['agreement'];
+        $this->test_type = $question['type'];
 
         if ($question['answer']['type'] == self::BUTTONS_CARD) $this->buttonsType = self::BUTTONS_CARD;
 
@@ -65,7 +66,7 @@ class Question
 
         foreach ( $question['variants'] as $variant) {
             $fields = [
-                'variant' => $variant['variant'],
+                'variant' => $variant['text'],
                 'title' => $variant['title'],
             ];
             $mediaFields = [];

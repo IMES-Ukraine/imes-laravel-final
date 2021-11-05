@@ -16,7 +16,7 @@
                     <div class="preview__block-wrap">
                         <div class="preview__block-item">
                             <p class="preview__block-file"><span>{{ category }} : {{ region }}</span></p>
-                            <button class="preview__block-more">Подробнее</button>
+                            <button class="preview__block-more" type="button">Подробнее</button>
                         </div>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                                     <p class="preview__study-item">100 статей</p>
                                 </div>
                             </div>
-                            <button class="preview__block-more">Подробнее</button>
+                            <button class="preview__block-more" type="button">Подробнее</button>
                         </div>
 
                     </div>
@@ -64,10 +64,10 @@ export default {
     },
     computed: {
         category() {
-            return this.findByValue(this.lists.categories, this.project);
+            return this.findByValue(this.lists.categories, this.project.options.selected.category);
         },
         region() {
-            return this.findByValue(this.lists.regions, this.project);
+            return this.findByValue(this.lists.regions, this.project.options.selected.region);
         },
         contentCount() {
           return Object.keys(this.project.content).length;

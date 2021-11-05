@@ -61,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <SimpleTestVariants v-bind:variants="variants"></SimpleTestVariants>
+            <SimpleTestVariants :variants="variants"></SimpleTestVariants>
 
             <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest">добавить ответ</button>
             <div class="articles_create-line"></div>
@@ -291,7 +291,6 @@ export default {
         }
     },
     mounted() {
-        console.log('variants: ' , this.variants.length);
         if (! this.variants.length) {
             this.addAnswerTest();
             this.addAnswerTest();

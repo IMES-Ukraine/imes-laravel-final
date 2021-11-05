@@ -5,7 +5,7 @@ import {PROJECT} from "./api/endpoints";
 export default {
     data() {
         return {
-            project: {... this.$store.state.project},
+            project: {...this.$store.state.project},
             contentTemplate: {
                 title: null,
                 article: {
@@ -45,28 +45,32 @@ export default {
                     textInsert: false,
                 },
                 test: {
-                        question: {
-                            title: '',
-                            text: '',
-                            description: '',
-                            link: '',
-                            button: null,
-                            count: null,
-                            points: null,
-                            media: {
-                                cover: null,
-                                video: null,
-                            },
-                            isComplex: this.isComplex,
-                            agreement: null
+                    question: {
+                        title: '',
+                        text: '',
+                        description: '',
+                        link: '',
+                        button: null,
+                        count: null,
+                        points: null,
+                        media: {
+                            cover: null,
+                            video: null,
                         },
-                        complex_question: [],
-                        variants: [],
+                        isComplex: this.isComplex,
+                        agreement: null
+                    },
+                    complex_question: [],
+                    variants: [],
                     picked: 'test',
                     type: 'easy',
                     count: null,
                     points: null,
                     canRetake: null,
+                    answer: {
+                        type: 'variants',
+                        correct: []
+                    }
                 },
 
             },
@@ -82,11 +86,9 @@ export default {
                 text: '',
                 variant: '',
                 isCorrect: false,
-                answer: {
-                    type: true,
-                    right: false,
-                    media: []
-                }
+                type: 1,
+                right: false,
+                media: []
             },
             lists: {
                 categories: [
@@ -132,17 +134,14 @@ export default {
         if (sessionStorage.project) {
             this.$store.state.project = JSON.parse(sessionStorage.project);
         }
-        this.project =  {... this.$store.state.project};
+        this.project = {...this.$store.state.project};
 
     },
 
     methods: {
         finalStoreProject() {
             axios.post(PROJECT, {
-                options: this.project.options,
-                articles: [this.project.content.article],
-                tests: [this.project.test],
-                content: this.project.content
+                project: this.project
             }).then((resp) => {
                 console.log(resp.data);
             });
@@ -167,7 +166,7 @@ export default {
         },
 
         setStep(step) {
-            this.$store.dispatch('setStep',  step);
+            this.$store.dispatch('setStep', step);
         },
         addTag(newTag) {
             const tag = {

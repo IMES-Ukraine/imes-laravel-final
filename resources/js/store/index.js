@@ -41,7 +41,6 @@ export default new Vuex.Store({
         },
         currentStep: 1,
         currentContent: '',
-        setCurrentArticle: '',
         setCurrentTest: '',
         isEdit: false,
         inEdit: false,
@@ -59,9 +58,6 @@ export default new Vuex.Store({
         cards: {},
     },
     getters: {
-        contentPack(state, title) {
-            return state.project.content[title];
-        }
     },
     mutations: {
         setFilter(state, data) {
@@ -84,8 +80,18 @@ export default new Vuex.Store({
         },
 
 
+
         setStep(state, step) {
             state.currentStep = step;
+        },
+
+        addCorrect(state, data) {
+            state.test.answer.correct.push(data);
+        },
+        removeCorrect(state, data) {
+            state.test.answer.correct = state.test.answer.correct.filter( (item)=> {
+                return item !== data;
+            });
         },
 
         submitArticle(state, form) {
@@ -99,7 +105,6 @@ export default new Vuex.Store({
             state.questions.push(item)
         },
         submitTest(state, questions) {
-
             state.questions = questions
         },
         addTestId(state, id) {
@@ -134,11 +139,11 @@ export default new Vuex.Store({
            state.currentContent = title;
            state.content = state.project.content[title];
         },
-        setCurrentArticle(state, title) {
-           state.setCurrentArticle = title;
+        setCurrentArticle(state, data) {
+           state.article = data;
         },
-        setCurrentTest(state, test) {
-            state.setCurrentTest = test;
+        setCurrentTest(state, data) {
+            state.test = data;
         },
 
 
@@ -180,6 +185,13 @@ export default new Vuex.Store({
             context.commit('setShowUserModal', data)
         },
 
+
+        addCorrect(context, data){
+            context.commit('addCorrect', data)
+        },
+        removeCorrect(context, data){
+            context.commit('removeCorrect', data)
+        },
 
         setContent(context, data){
             context.commit('setContent', data);
@@ -285,14 +297,14 @@ export default new Vuex.Store({
         },
 
 
-        setCurrentContent(context, title) {``
+        setCurrentContent(context, title) {
             context.commit('setCurrentContent', title);
         },
-        setCurrentArticle(context, title) {
-            context.commit('setCurrentArticle', title);
+        setCurrentArticle(context, data) {
+            context.commit('setCurrentArticle', data);
         },
-        setCurrentTest(context, title) {
-            context.commit('setCurrentTest', title);
+        setCurrentTest(context, data) {
+            context.commit('setCurrentTest', data);
         },
 
 

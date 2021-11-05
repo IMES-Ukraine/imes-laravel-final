@@ -108,11 +108,10 @@ export default {
         }
     },
     computed: {
-        test() {
-            return this.$store.state.content.test || this.contentTemplate.test;
-        }
+                test() {
+                    return this.$store.state.content.test;
+                }
     },
-
     methods: {
         addComplexQuestion() {
             this.questions.push({
@@ -153,7 +152,7 @@ export default {
                 }
             }
             if (!error) {
-                this.$store.state.project.content[this.currentContent].test = this.test;
+                this.$store.dispatch('setCurrentTest', this.test);
                 this.setStep(2);
             }
         },
@@ -169,7 +168,9 @@ export default {
             }
 
 
+
             if (!Object.keys(this.testErrors).length) {
+                this.test.answer.correct = this.$store.state.test.answer.correct;
                 this.$store.commit('storeTest', this.test);
                 this.setStep(2);
             }

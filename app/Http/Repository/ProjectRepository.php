@@ -1,10 +1,16 @@
 <?php
+
 namespace App\Http\Repository;
 
 
 use App\Http\Helpers;
+use App\Models\Article;
+use App\Models\Articles;
 use App\Models\Passing;
+use App\Models\Question;
+use App\Models\QuestionModeration;
 use App\Models\Test;
+use App\Models\TestQuestions;
 use App\Services\PassingService;
 use Illuminate\Http\Request;
 use App\Models\ProjectItems;
@@ -13,94 +19,63 @@ use App\Services\ArticleService;
 use App\Services\TestService;
 
 
-
 class ProjectRepository
 {
 
     protected $testService;
     protected $articleService;
 
-    public function __construct(TestService $testService, ArticleService $articleService, Helpers $helpers) {
-        $this->testService    = $testService;
+    public function __construct(TestService $testService, ArticleService $articleService, Helpers $helpers)
+    {
+        $this->testService = $testService;
         $this->articleService = $articleService;
-        $this->helpers        = $helpers;
+        $this->helpers = $helpers;
     }
+
     /**
      * @param Request $request
      * @return object
      */
-    public function create(Request $request) {
-
+    public function create(Request $request)
+    {
+        $projectTotal = $request->input('project');
         $projectItems = [];
 
-        $test = new Test( $request->post('tests', []));
+        foreach ($projectTotal['content'] as $content) {
+            $questionModel = TestQuestions::create((array)new Question($content['test']));
+            $questionModel->save();
 
-        foreach ( $test as $question) {
-
-
-            if ( $test->isComplex && !$test->hasParent()) {
-
-                $question->setType($test->getTestType());
-                $parentQuestionModel = $this->testService->addQuestion( $question);
-                $test->parentId = $parentQuestionModel->id;
-
-            }
+            $projectItems[] = [
+                'type' => get_class($questionModel),
+                'id' => $questionModel->id
+            ];
 
 
-            /*$questionArray = (array) $question;
-            $model = new TestModel();
-            $model->fill( $questionArray);*/
+            $article = $content['article'];
+            $articleModel = $this->articleService->addArticle($article);
 
-            if ( $test->parentId) {
-                $question->setParentId($test->parentId);
-            }
-
-            $question->setType($test->getTestType());
-
-            $questionModel = $this->testService->addQuestion( $question);
-            $test->isSaved = $questionModel;
-            $test->setEntityId($questionModel);
-        }
-
-        $projectItems[] = [
-            'type' => get_class($questionModel),
-            'id'    => $test->entityId
-        ];
-
-        foreach ( $request->post('articles') as $article) {
-
-            $articleData = $request->input('content.article.points');
-            //$request->post('content.article.points')
-            $articleEntity = $article + [
-                    'points' => $request->post('content.article.points'),
-                    //''
-                ];
-
-            $articleModel = $this->articleService->addArticle( $articleEntity);
-        }
 
         $projectItems[] = [
             'type' => get_class($articleModel),
-            'id'    => $articleModel->id
+            'id' => $articleModel->id
         ];
-
-
+        }
         $project = new Projects;
-        $project->options = $request->input('options');
+        $project->options = $projectTotal['options'];
         $isProjectSaved = $project->save();
 
-        foreach ( $projectItems as $item) {
+        foreach ($projectItems as $item) {
             $items = new ProjectItems;
             $items->item_type = $item['type'];
             $items->project_id = $project->id;
-            $items->item_id    = $item['id'];
-            $items->data    = json_encode($request->post('content', []));
+            $items->item_id = $item['id'];
+            $items->data = json_encode($request->post('content', []));
             $isProjectItemsSaved = $items->save();
         }
 
 
-        return (object) [
-            'saved' => !$test->isSaved || !$articleModel || !$isProjectSaved || !$isProjectItemsSaved,
+        return (object)[
+            'saved' => !$questionModel || !$articleModel || !$isProjectSaved || !$isProjectItemsSaved,
             'data' => $project
         ];
 
@@ -110,38 +85,40 @@ class ProjectRepository
      * @param $request
      * @return object
      */
-    public function update( $request) {
+    public
+    function update($request)
+    {
 
-        $test = new Test( $request->post('tests', []));
+        $test = new Test($request->post('tests', []));
 
-        foreach ( $test as $question) {
+        foreach ($test as $question) {
 
 
-            if ( $test->isComplex && !$test->hasParent()) {
+            if ($test->isComplex && !$test->hasParent()) {
 
                 $question->setType($test->getTestType());
-                $parentQuestionModel = $this->testService->addQuestion( $question);
+                $parentQuestionModel = $this->testService->addQuestion($question);
                 $test->parentId = $parentQuestionModel->id;
 
             }
 
-            if ( $test->parentId) {
+            if ($test->parentId) {
                 $question->setParentId($test->parentId);
             }
 
             $question->setType($test->getTestType());
 
-            $questionModel = $this->testService->addQuestion( $question);
+            $questionModel = $this->testService->addQuestion($question);
             $test->isSaved = $questionModel;
             $test->setEntityId($questionModel);
         }
 
         $projectItems[] = [
             'type' => get_class($questionModel),
-            'id'    => $test->entityId
+            'id' => $test->entityId
         ];
 
-        foreach ( $request->post('articles') as $article) {
+        foreach ($request->post('articles') as $article) {
 
             $articleData = $request->input('content.article.points');
             //$request->post('content.article.points')
@@ -150,17 +127,16 @@ class ProjectRepository
                     //''
                 ];
 
-            $articleModel = $this->articleService->addArticle( $articleEntity);
+            $articleModel = $this->articleService->addArticle($articleEntity);
         }
 
         $projectItems[] = [
             'type' => get_class($articleModel),
-            'id'    => $articleModel->id
+            'id' => $articleModel->id
         ];
 
 
-
-        return (object) [
+        return (object)[
             'data' => []
         ];
     }
@@ -169,15 +145,17 @@ class ProjectRepository
      * @param $id
      * @return object
      */
-    public function find( $id) {
+    public
+    function find($id)
+    {
 
-        $project = Projects::with(['tests','tests.cover_image', 'articles', 'articles.cover_image'])
-            ->where('id',$id)->first();
+        $project = Projects::with(['tests', 'tests.cover_image', 'articles', 'articles.cover_image'])
+            ->where('id', $id)->first();
 
         $content = ProjectItems::where('project_id', $id)->get();
 
-        if ( empty($project) || empty($content) ) {
-            return (object) [
+        if (empty($project) || empty($content)) {
+            return (object)[
                 'data' => []
             ];
         }
@@ -226,7 +204,7 @@ class ProjectRepository
         $total = $status_active + $status_not_active + $status_not_participate;
 
         $article = [];
-        foreach ( $project->articles as $value) {
+        foreach ($project->articles as $value) {
             //$contentArray = (array)$article['content']; print_r($article['content']); exit;
             //$text = array_shift($contentArray);
 
@@ -249,13 +227,15 @@ class ProjectRepository
 
         $questionsState = [];
 
-        foreach ( $project->tests as $question) {
+        foreach ($project->tests as $question) {
 
             $options = $question->options;
             $variants = $question->variants;
             $cover = $question->cover_image;
 
-            foreach ($options as $o) { $media[$o->type] = $o; }
+            foreach ($options as $o) {
+                $media[$o->type] = $o;
+            }
 
             $q = [
                 'question' => [
@@ -285,7 +265,7 @@ class ProjectRepository
         $data = [
 
             'options' => $project->options,
-            'content'  => $projects_items,//$content,
+            'content' => $projects_items,//$content,
             'status_active' => $status_active,
             'status_not_active' => $status_not_active,
             'status_not_participate' => $status_not_participate,
@@ -293,14 +273,14 @@ class ProjectRepository
             'articles' => [
                 $article
             ],
-            'tests'    => $questionsState,
-            'current'  => [
+            'tests' => $questionsState,
+            'current' => [
                 'projectId' => $project->id
             ],
             'item' => $project
         ];
 
-        return (object) [
+        return (object)[
             'data' => $data
         ];
     }

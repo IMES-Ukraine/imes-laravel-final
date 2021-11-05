@@ -35,15 +35,15 @@ class Projects extends Model
         'options' => 'array',
     ];
 
-    public function getOptionsAttribute($value)
-    {
-        return json_decode($value);
-    }
-
-    public function setOptionsAttribute($value)
-    {
-        return json_encode($value);
-    }
+//    public function getOptionsAttribute($value)
+//    {
+//        return json_decode($value);
+//    }
+//
+//    public function setOptionsAttribute($value)
+//    {
+//        return json_encode($value);
+//    }
 
 
     public function tests() {

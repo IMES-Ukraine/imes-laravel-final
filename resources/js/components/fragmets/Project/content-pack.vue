@@ -116,7 +116,7 @@
                         <div class="articles_create__grid width-main-1">
                             <div class="articles_create__grid-block">
                                 <button v-if="! content.test.question.title" class="articles_create-add_btn height-47"
-                                        type="button" @click.prevent="setStep(4)"><span
+                                        type="button" @click.prevent="newTest()"><span
                                     class="icon-right">Создать</span>
                                 </button>
                                 <div id="add_new_test" v-else>
@@ -244,8 +244,12 @@ export default {
 
     },
     methods: {
-        newArticle(){
-            this.$store.commit('saveContent', this.content);
+        newTest() {
+            this.$store.dispatch('setCurrentTest', this.contentTemplate.test);
+            this.setStep(4);
+        },
+        newArticle() {
+            this.$store.dispatch('setCurrentArticle', this.contentTemplate.article);
             this.setStep(3);
         },
         showContent() {
@@ -257,10 +261,7 @@ export default {
             });
         },
         loadContent() {
-                this.content = this.$store.state.content;
-                if (!this.content){
-                    this.content = this.contentTemplate;
-                }
+            this.content = this.$store.state.content;
             this.contentTitle = this.content.title;
         },
         showFirstStep() {
@@ -274,6 +275,7 @@ export default {
             if (!this.content.article.title) {
                 this.errorNewArticle = 'Статья обовʼязкова';
             }
+
             this.$store.dispatch('storeContent', this.content);
             this.setStep(1)
 

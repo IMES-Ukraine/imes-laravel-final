@@ -22,6 +22,7 @@ class ArticleService
         $model->learning_bonus = 12.0;//$article['points'];
         $model->is_popular = rand(0,1);
         $model->action = $action;
+        $model->button = $action;
         $model->user_id = 0;//$article['user_id']['id'];
 
         $content = [
@@ -45,10 +46,11 @@ class ArticleService
 
         //$file = File::find($article['cover_image']['id']);
 
-        $file = File::find($article['images']['cover']['id']);
+//        $file = File::find($article['images']['cover']['id']);
 
         // !!!
-        //$model->cover_image = $file;//plugins_path() . '/ulogic/news/updates/news-featured.png';
+        $model->cover_image = $article['cover'];
+        //plugins_path() . '/ulogic/news/updates/news-featured.png';
         //$model->featured_images = $file;
         // !!!
         $model->published_at = time();

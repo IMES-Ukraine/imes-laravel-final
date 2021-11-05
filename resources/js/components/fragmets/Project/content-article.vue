@@ -238,7 +238,7 @@ export default {
     },
     computed: {
         article() {
-            return this.$store.state.content.article || this.contentTemplate.article;
+            return this.$store.state.content.article ;
         }
     },
     methods: {
