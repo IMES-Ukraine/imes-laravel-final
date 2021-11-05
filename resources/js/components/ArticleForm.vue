@@ -122,8 +122,8 @@
                                     <div class="field_wrap_for_tags">
                                         <multiselect
                                             v-model="chosenTags"
-                                            tag-placeholder="Додати таг"
-                                            placeholder="Вибрати таг"
+                                            tag-placeholder="Добавить тег"
+                                            placeholder="Выбрать тег"
                                             label="name"
                                             track-by="id"
                                             :options="tags"
