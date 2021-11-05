@@ -143,7 +143,7 @@ export default {
             axios.post(PROJECT, {
                 project: this.project
             }).then((resp) => {
-                console.log(resp.data);
+                this.$router.push({name: 'projectList'});
             });
         },
         findByValue(array, id) {

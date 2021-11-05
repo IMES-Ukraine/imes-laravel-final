@@ -20,22 +20,22 @@ class ProjectItems extends Model
      */
     public $table = 'ulogic_projects_items';
 
+    protected $casts = [
+      'data' => 'array'
+    ];
+
     /**
      * @var array Validation rules
      */
     public $rules = [
     ];
 
-    public function getDataAttribute($value)
-    {
-        return json_decode($value);
-    }
 
     public function testsEntities() {
         return $this->hasOne(TestQuestions::class, 'item_id');
     }
 
     public function articlesEntities() {
-        return $this->hasOne(TestQuestions::class, 'item_id');
+        return $this->hasOne(Articles::class, 'item_id');
     }
 }

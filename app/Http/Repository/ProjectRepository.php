@@ -39,40 +39,34 @@ class ProjectRepository
     public function create(Request $request)
     {
         $projectTotal = $request->input('project');
-        $projectItems = [];
+
+        $project = new Projects;
+        $project->options = $projectTotal['options'];
+        $isProjectSaved = $project->save();
+        $isProjectItemsSaved = true;
 
         foreach ($projectTotal['content'] as $content) {
             $questionModel = TestQuestions::create((array)new Question($content['test']));
             $questionModel->save();
 
-            $projectItems[] = [
-                'type' => get_class($questionModel),
-                'id' => $questionModel->id
-            ];
+            $items = new ProjectItems;
+            $items->item_type = get_class($questionModel);
+            $items->item_id = $questionModel->id;
+            $items->project_id = $project->id;
+            $items->data = $content['test'];
+            $isProjectItemsSaved &= $items->save();
 
-
+//------------
             $article = $content['article'];
             $articleModel = $this->articleService->addArticle($article);
 
-
-        $projectItems[] = [
-            'type' => get_class($articleModel),
-            'id' => $articleModel->id
-        ];
-        }
-        $project = new Projects;
-        $project->options = $projectTotal['options'];
-        $isProjectSaved = $project->save();
-
-        foreach ($projectItems as $item) {
             $items = new ProjectItems;
-            $items->item_type = $item['type'];
+            $items->item_type = get_class($articleModel);
+            $items->item_id = $articleModel->id;
             $items->project_id = $project->id;
-            $items->item_id = $item['id'];
-            $items->data = json_encode($projectTotal['content']);
-            $isProjectItemsSaved = $items->save();
+            $items->data = $content['article'];
+            $isProjectItemsSaved &= $items->save();
         }
-
 
         return (object)[
             'saved' => !$questionModel || !$articleModel || !$isProjectSaved || !$isProjectItemsSaved,
