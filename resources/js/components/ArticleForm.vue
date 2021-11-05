@@ -11,14 +11,26 @@
                     <div class="articles_create-block">
                         <div class="articles_create__item">
                             <p class="articles_create__item-title">Заголовок</p>
-                            <!-- article-title -->
-                            <article-input-title
-                                v-bind:type.sync="type"
-                                :v="$v"
-                                :articleType="articleType"
-                                @update="articleTypeStore"
-                            />
-                            <!-- end-article-title -->
+                            <div class="articles_create__item-content direction-column">
+                                <div class="articles_create__name-block">
+                                    <input
+                                        class="form-control"
+                                        type="text"
+                                        v-model="title"
+                                    >
+                                    <div class="errors" v-if="title_error">
+                                        Заголовок обов'язковий
+                                    </div>
+                                </div>
+                                <!-- article-title -->
+                                <article-input-title
+                                    v-bind:type.sync="type"
+                                    :articleType="articleType"
+                                    :title_error="title_error"
+                                    @update="articleTypeStore"
+                                />
+                                <!-- end-article-title -->
+                            </div>
                         </div>
                         <div class="articles_create__item half">
                             <p class="articles_create__item-title">Обложка</p>
@@ -51,20 +63,58 @@
                         </div>
                         <div class="articles_create__item">
                             <p class="articles_create__item-title">Текст</p>
-                            <div class="articles_create__item-content">
+                            <div class="articles_create__item-content direction-column">
                                 <textarea
                                     class="form-control"
                                     rows="4"
-                                    v-model="$v.text.$model"
+                                    v-model="text"
                                 ></textarea>
+                                <div class="errors" v-if="text_error">Текст обов'язковий</div>
                             </div>
-                            <div class="errors" v-if="$v.text.$error">Текст обов'язковий</div>
                         </div>
-                        <article-form-insert
+                        <!--<article-form-insert
                             v-bind:insert.sync="insert"
                             v-bind:textInsert.sync="textInsert"
                             @insert="insertStore"
-                        />
+                        />-->
+                        <div class="articles_create-block">
+                            <div class="articles_create__item">
+                                <div class="articles_create__item-title has_radio">
+                                    <input
+                                        type="checkbox"
+                                        name="article-has-insert"
+                                        id="article-has-insert"
+                                        v-model="textLocale"
+                                        :checked="textLocale"
+                                        @onclick="getTextInsert"
+                                    >
+                                    <i></i>
+                                    <p>Вставка в тексте</p>
+                                </div>
+                                <div class="articles_create__item-content direction-column" v-if="textLocale">
+                                    <v-input-text
+                                        :name="'title'"
+                                        v-on:update:value="updateInsertTitle($event)"
+                                        placeholder="Заголовок"
+                                        :text="''"
+                                        :classes="'mb20'"
+                                    />
+                                    <v-textarea
+                                        :rows="4"
+                                        v-on:update:text="updateInsertContent($event)"
+                                        :text="''"
+                                        placeholder="Текст"
+                                    />
+                                </div>
+                            </div>
+                            <!--<article-input-text
+                                v-if="textLocale"
+                                :v="v"
+                                :title="'Продовження статтi'"
+                                :text="this.insert[1].content"
+                                v-on:update:text="updateInsert(1, 'content', $event)"
+                            />-->
+                        </div>
                         <div class="articles_create__item">
                             <p class="articles_create__item-title">Теги</p>
                             <div class="articles_create__item-content">
@@ -155,6 +205,7 @@
                                     <div class="articles_create__addition-block">
                                         <div class="articles_create__addition-field">
                                             <input type="text" id="new_user" v-model="new_user" />
+                                            <div class="errors" v-if="addUserError">{{ addUserError }}</div>
                                         </div>
                                         <button class="articles_create__addition-button" type="button" @click="AddNewUser">Добавить автора</button>
                                     </div>
@@ -218,6 +269,8 @@ import ArticleSidebar from "./templates/article/sidebar";
 import ArticleMultiple from "./templates/article/form/multiple"
 import SimpleTestMedia from "./fragmets/SimpleTestMedia"
 import { getRandomId } from './../utils'
+import VTextarea from "./templates/inputs/textarea"
+import VInputText from "./templates/inputs/text"
 
 export default {
     name: 'ArticleForm',
@@ -236,19 +289,32 @@ export default {
         VContent,
         Multiselect,
         ArticleMultiple,
-        SimpleTestMedia
+        SimpleTestMedia,
+        VTextarea,
+        VInputText
     },
     data() {
         return {
-            ...this.$store.state.articles[0],
+            //..this.$store.state.articles[0],
             new_user: '',
             errorArticleCover: '',
+            addUserError: '',
+            title_error: '',
+            text_error: '',
             recommended: [],
             authors: [],
             user_id: 0,
             chosenRecommended: [],
             chosenTags: [],
-            tags: []
+            tags: [],
+            link: '',
+            button: '',
+            textInsert: '',
+            insert: [],
+            multiples: [],
+            articleType: 1,
+            type: 1,
+            textLocale: 0
         }
     },
     computed: {
@@ -263,6 +329,9 @@ export default {
         }
     },
     methods: {
+        getTextInsert() {
+            this.textLocale = 1;
+        },
         addTag (newTag) {
             const tag = {
                 name: newTag,
@@ -276,6 +345,8 @@ export default {
         },
         submitForm() {
             this.errorArticleCover = '';
+            this.title_error = '';
+            this.text_error = '';
             let error = false
 
             if (this.image == null) {
@@ -283,10 +354,17 @@ export default {
                 error = true;
             }
 
-            this.$v.$touch()
-            if (this.$v.$invalid || error) {
-                //this.$store.dispatch('submitArticle', this.$data)
-            } else {
+            if (this.title == null) {
+                this.title_error = 'Название обязательно'
+                error = true;
+            }
+
+            if (this.text == null) {
+                this.text_error = 'Описание обязательно'
+                error = true;
+            }
+
+            if (!error) {
                 this.$post(ARTICLE, {
                     title: this.title,
                     articleType: this.articleType,
@@ -314,9 +392,20 @@ export default {
             }
         },
         AddNewUser() {
-            this.$get(USER_CREATE_NAME + '/' + this.new_user).then( response => {
-                this.authors = response.data
-            })
+            this.addUserError = '';
+
+            if (this.new_user == '') {
+                this.addUserError = 'Поле не должно быть пустое'
+            }
+
+            if (this.addUserError == '') {
+                this.$get(USER_CREATE_NAME + '/' + this.new_user).then(response => {
+                    this.authors = response.data
+                })
+            }
+        },
+        titleStore(value) {
+            this.title = value
         },
         buttonStore(value) {
             this.button = value
@@ -332,6 +421,12 @@ export default {
         },
         multiplesStore(value) {
             this.multiples = value
+        },
+        updateInsertTitle(value) {
+            this.insert.push({title:value})
+        },
+        updateInsertContent(value) {
+            this.insert.push({content:value})
         },
         handleUploadArticle(event) {
             let imageForm = new FormData()
