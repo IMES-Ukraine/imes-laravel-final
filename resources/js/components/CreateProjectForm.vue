@@ -182,7 +182,7 @@
                             <content-article/>
                         </div>
                         <div v-if="currentStep == 4">
-                            <p class="articles_create-title">Создание теста</p>
+                            <p class="articles_create-title">Створення теста</p>
                             <!--                            <project-close/>-->
                             <content-test/>
                         </div>
@@ -315,11 +315,12 @@ export default {
     },
     methods: {
         newContent() {
-            this.$store.state.currentContent = null;
+            this.$store.dispatch('setCurrentContent', null);
             this.setStep(2);
         },
         editItem(title) {
-            this.$store.dispatch('editContent', title);
+            this.$store.dispatch('setCurrentContent', title);
+            this.setStep(2);
         },
         deleteItem(title) {
             this.$bvModal.msgBoxConfirm("Ви впевнені, що бажаєте видали дослідження " + title + " ?").then(value => {

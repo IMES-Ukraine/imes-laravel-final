@@ -56,9 +56,9 @@ export default new Vuex.Store({
         cards: {},
     },
     getters: {
-        // currentStep: state => {
-        //     return state.currentStep
-        // }
+        contentPack(state, title) {
+            return state.project.content[title];
+        }
     },
     mutations: {
         startEdit(state) {
@@ -68,9 +68,6 @@ export default new Vuex.Store({
             state.currentStep = step;
         },
 
-        setContent(state, title) {
-            state.currentContent = title;
-        },
         resetContent(state, title) {
             state.currentContent = null;
             Vue.delete(state.project.content, title);
@@ -114,18 +111,27 @@ export default new Vuex.Store({
             state.content = project.content
             state.current = project.current
         },
+
         storeProject(state, project) {
             state.project.options = project
         },
-        storeContent(state, content) {
-            console.log('into storeContent')
-            console.log(content)
 
-            state.content = content
-            state.articles.points = content.article.points
-            //state.questions[0].question.points = content.test.points
-            state.questions.points = content.test.points
+        setCurrentContent(state, title) {
+           state.currentContent = title;
         },
+        storeArticle(state, article) {
+            state.project.content[state.currentContent].article = article;
+            sessionStorage.project = JSON.stringify(state.project);
+        },
+        storeContent(state, content) {
+            state.project.content[content.title] = content;
+            sessionStorage.project = JSON.stringify(state.project);
+        },
+        loadContent(state, title) {
+            state.currentContent = title;
+            state.project = JSON.parse(sessionStorage.project);
+        },
+
         storeTestContent() {
             state.questions[0].points = content
         },
@@ -204,31 +210,7 @@ export default new Vuex.Store({
             })
         },
 
-        storeProject(context, project) {
-            context.commit('storeProject', project)
-        },
 
-        storeContent(context, content) {
-
-            return new Promise((resolve, reject) => {
-
-                console.log('into promise')
-                context.commit('storeContent', content)
-
-                let redirect = {name: 'createProject'}
-                if (context.state.current.projectId) {
-                    redirect = {
-                        name: 'viewProject',
-                        params: {
-                            projectId: context.state.current.projectId
-                        }
-                    }
-                }
-                resolve(redirect)
-
-                //reject()
-            })
-        },
         saveProject(context, project) {
             //context.commit('saveProject', project)
             axios.post(PROJECT, {options: project}).then((resp) => {
@@ -243,8 +225,26 @@ export default new Vuex.Store({
                 context.commit('saveProject', project)
             })
         },
+
+
+
+        storeProject(context, project) {
+            context.commit('storeProject', project)
+        },
+        storeArticle(context, article) {
+            context.commit('storeArticle', article);
+        },
+        storeContent(context, content) {
+            context.commit('storeContent', content);
+        },
+        loadContent(context, title) {
+            context.commit('loadContent', title);
+        },
+        setCurrentContent(context, title) {
+            context.commit('setCurrentContent', title);
+        },
         editContent(context, title) {
-            context.commit('setContent', title);
+            context.commit('loadContent', title);
             context.commit('setStep', 2);
         },
         deleteContent(context, title) {

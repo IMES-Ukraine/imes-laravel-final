@@ -244,18 +244,20 @@ export default {
         insertStore(value) {
             this.article.insert = value
         },
-        textInsertStore(value) {
-            this.article.textInsert = value
-        },
-        linkStore(value) {
-            this.article.link = value
-        },
+        // textInsertStore(value) {
+        //     this.article.textInsert = value
+        // },
+        // linkStore(value) {
+        //     this.article.link = value
+        // },
+        // articleTypeStore(value) {
+        //     this.article.type = value
+        // },
         buttonStore(value) {
             this.article.text_button = value
         },
-        articleTypeStore(value) {
-            this.article.type = value
-        },
+
+
         saveArticle() {
             this.errorArticleTitle = '';
             this.errorArticleCover = '';
@@ -278,10 +280,8 @@ export default {
             }
 
             if (!error) {
-                this.$store.state.project.content[this.currentContent].article = this.article;
-                sessionStorage.contentList = JSON.stringify(this.$store.state.project);
+                this.$store.dispatch('storeArticle', this.article);
                 this.setStep(2);
-
             }
         },
         addMedia(event) {

@@ -27,6 +27,7 @@
                 <div class="articles_create__item-content">
                     <div class="articles_create__name-block">
                         <validation-provider
+                            ref="packName"
                             rules="required|max:35"
                             :custom-messages="{ max: 'Максимальное количество 35 символов' }"
                             v-slot="{ errors }">
@@ -34,7 +35,6 @@
                             <input
                                 class="form-control"
                                 type="text"
-                                @change="setTitle()"
                                 v-model="contentTitle">
                             <span class="errors">{{ errors[0] }}</span>
                         </validation-provider>
@@ -42,6 +42,7 @@
                     </div>
                 </div>
             </div>
+            <span v-if="showFull">
                 <div class="articles_create__item">
                     <p class="articles_create__item-title height-47">Статья</p>
                     <div class="articles_create__item-content">
@@ -125,63 +126,67 @@
                                             <button
                                                 class="articles_create__study-button articles_create__study-button--edit"
                                                 type="button" @click.prevent="setStep(4)"></button>
-                                            <button
-                                                class="articles_create__study-button articles_create__study-button--delete"
-                                                type="button" @click.prevent="reloadBlockSurveyTest"></button>
                                         </div>
                                     </div>
                                 </div>
                                 <div v-if="errorNewTest" class="errors">{{ errorNewTest }}</div>
                             </div>
-                            <div class="articles_create__grid-block">
-                                <div class="articles_create__field_with_label">
-                                    <p class="articles_create__field_with_label-label">Количество</p>
-                                    <validation-provider
-                                        rules="required"
-                                        v-slot="{ errors }">
+                                <div class="articles_create__grid-block">
+                                    <div class="articles_create__field_with_label">
+                                        <p class="articles_create__field_with_label-label">Количество</p>
+                                        <validation-provider
+                                            rules="required"
+                                            v-slot="{ errors }">
 
-                                        <input
-                                            class="form-control"
-                                            type="number"
-                                            name="name"
-                                            v-model="content.test.count">
-                                        <span class="errors">{{ errors[0] }}</span>
-                                    </validation-provider>
+                                            <input
+                                                class="form-control"
+                                                type="number"
+                                                name="name"
+                                                v-model="content.test.count">
+                                            <span class="errors">{{ errors[0] }}</span>
+                                        </validation-provider>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="articles_create__grid-block">
-                                <div class="articles_create__field_with_label">
-                                    <p class="articles_create__field_with_label-label">Баллы</p>
-                                    <validation-provider
-                                        rules="required"
-                                        v-slot="{ errors }">
+                                <div class="articles_create__grid-block">
+                                    <div class="articles_create__field_with_label">
+                                        <p class="articles_create__field_with_label-label">Баллы</p>
+                                        <validation-provider
+                                            rules="required"
+                                            v-slot="{ errors }">
 
-                                        <input
-                                            class="form-control"
-                                            type="number"
-                                            name="name"
-                                            @change="onChange"
-                                            v-model="content.test.points">
+                                            <input
+                                                class="form-control"
+                                                type="number"
+                                                name="name"
+                                                @change="onChange"
+                                                v-model="content.test.points">
 
-                                        <span class="errors">{{ errors[0] }}</span>
-                                    </validation-provider>
+                                            <span class="errors">{{ errors[0] }}</span>
+                                        </validation-provider>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="articles_create__grid-block">
-                                <div class="articles_create__field_with_label">
-                                    <v-checkbox
-                                        :id="'can-retake-button'"
-                                        :name="'can-retake-button'"
-                                        v-model="content.test.canRetake"
-                                    />
+                                <div class="articles_create__grid-block">
+                                    <div class="articles_create__field_with_label">
+                                        <v-checkbox
+                                            :id="'can-retake-button'"
+                                            :name="'can-retake-button'"
+                                            v-model="content.test.canRetake"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
                 </div>
+            </span>
+            <span v-else>
+                        <button class="articles_create-submit button-gradient" type="button"
+                                @click="showContent">
+            Далі
+        </button>
+            </span>
         </div>
         <div class="articles_create-line" v-show="is_points"></div>
-        <div class="articles_create-note" v-show="is_points">1 пользователь = 1 тест + 1 статья = <p>0</p> баллов</div>
+        <div class="articles_create-note" v-show="is_points">1 пользователь = 1 тест + 1 статья = <p>{{pointsSum}}</p> баллов</div>
         <button class="articles_create-submit button-gradient" type="button"
                 @click="showFirstContent" v-show="is_points">
             Зберегти
@@ -198,21 +203,38 @@ export default {
     name: "content-pack",
     mixins: [ProjectMixin],
     components: {ValidationProvider, VCheckbox},
+    props: {
+        name: {
+            type: String,
+            required: false
+        }
+    },
     data() {
         return {
             contentTitle: this.$store.state.currentContent,
             content: {},
-            loaded: false
+            loaded: false,
+            showFull: false
         }
     },
 
     mounted() {
-        this.content = this.contentTitle ? this.$store.state.project.content[this.contentTitle] : this.contentTemplate;
+        this.content.title = this.$store.state.currentContent;
+        this.loadContent(this.content.title);
+
         this.loaded = true;
+        if (this.content.title) {
+            this.showFull = true;
+        }
     },
     computed: {
+        pointsSum() {
+            if (this.content.article && this.content.test) {
+                return parseInt(this.content.article.points) + parseInt(this.content.test.points);
+            }
+        },
         is_points() {
-            if(this.contentTitle) {
+            if (this.contentTitle && this.content.article) {
                 return this.content.article.count && this.content.article.points && this.content.article.frequency
                     && this.content.test.count && this.content.test.points;
             }
@@ -221,11 +243,29 @@ export default {
 
     },
     methods: {
-        setTitle() {
-            this.$store.state.currentContent = this.contentTitle;
-            if (undefined === this.$store.state.project.content[this.contentTitle]) {
-                this.$store.state.project.content[this.contentTitle] = this.contentTemplate;
-                this.$store.state.project.content[this.contentTitle].title = this.contentTitle;
+        showContent() {
+            this.$refs['packName'].validate().then((res) => {
+                if (res.valid) {
+                    if (undefined === this.$store.state.project.content[this.contentTitle]) {
+                        this.content.title = this.contentTitle;
+                        this.storeContent();
+                    } else {
+                        this.loadContent();
+                    }
+                    this.showFull = true;
+                }
+            });
+        },
+        storeContent() {
+            this.$store.dispatch('storeContent', this.content);
+        },
+        loadContent() {
+            if (this.contentTitle) {
+                this.$store.commit('loadContent', this.contentTitle);
+                this.content = this.$store.state.project.content[this.contentTitle];
+                console.log('component' + this.content);
+            } else {
+                this.content = this.contentTemplate;
             }
         },
         showFirstContent() {
