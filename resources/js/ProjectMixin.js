@@ -131,8 +131,8 @@ export default {
     mounted() {
         if (sessionStorage.project) {
             this.$store.state.project = JSON.parse(sessionStorage.project);
-            this.project =  {... this.$store.state.project};
         }
+        this.project =  {... this.$store.state.project};
 
     },
 
@@ -167,7 +167,7 @@ export default {
         },
 
         setStep(step) {
-            this.$store.state.currentStep = step;
+            this.$store.dispatch('setStep',  step);
         },
         addTag(newTag) {
             const tag = {

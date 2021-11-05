@@ -31,7 +31,8 @@ export default new Vuex.Store({
             content: {}
 
         },
-        contentList: {},
+
+        content: {},
         test: {},
         projects: [],
 
@@ -40,6 +41,8 @@ export default new Vuex.Store({
         },
         currentStep: 1,
         currentContent: '',
+        setCurrentArticle: '',
+        setCurrentTest: '',
         isEdit: false,
         inEdit: false,
         checkbox: {
@@ -61,19 +64,19 @@ export default new Vuex.Store({
         }
     },
     mutations: {
-        startEdit(state) {
-            state.inEdit = true
+        setContent(state, data) {
+            state.content = data;
         },
-        setStep(state, step) {
-            state.currentStep = step;
-        },
-
         resetContent(state, title) {
             state.currentContent = null;
             Vue.delete(state.project.content, title);
             sessionStorage.project = JSON.stringify(state.project);
         },
 
+
+        setStep(state, step) {
+            state.currentStep = step;
+        },
 
         submitArticle(state, form) {
             state.articles[0] = form
@@ -113,23 +116,39 @@ export default new Vuex.Store({
         },
 
         storeProject(state, project) {
-            state.project.options = project
+            state.project = project;
+            sessionStorage.project = JSON.stringify(project);
         },
 
         setCurrentContent(state, title) {
            state.currentContent = title;
+           state.content = state.project.content[title];
         },
+        setCurrentArticle(state, title) {
+           state.setCurrentArticle = title;
+        },
+        setCurrentTest(state, test) {
+            state.setCurrentTest = test;
+        },
+
+
         storeArticle(state, article) {
-            state.project.content[state.currentContent].article = article;
-            sessionStorage.project = JSON.stringify(state.project);
+            state.content.article = article;
+            sessionStorage.content = JSON.stringify(state.content);
+        },
+        storeTest(state, test) {
+            state.content.test = test;
+            sessionStorage.content = JSON.stringify(state.content);
+        },
+        saveContent(state, content) {
+            state.content = content;
         },
         storeContent(state, content) {
             state.project.content[content.title] = content;
             sessionStorage.project = JSON.stringify(state.project);
         },
-        loadContent(state, title) {
-            state.currentContent = title;
-            state.project = JSON.parse(sessionStorage.project);
+        loadContent(state) {
+            state.content = JSON.parse(sessionStorage.content);
         },
 
         storeTestContent() {
@@ -140,18 +159,16 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        startEdit(context) {
-            context.commit('startEdit')
+        setContent(context, data){
+            context.commit('setContent', data);
         },
-        loadForm(context, data) {
-            context.commit('saveProject', data)
-        },
+
         loadProject(context, data) {
             context.commit('loadProject', data)
             context.commit('startEdit')
         },
-        submitProject(context) {
-            context.state.currentForm = 'NEXT_STEP'
+        setStep(context, step) {
+            context.commit('setStep', step)
         },
         nextStep(context) {
             context.commit('nextStep')
@@ -234,19 +251,43 @@ export default new Vuex.Store({
         storeArticle(context, article) {
             context.commit('storeArticle', article);
         },
+
+        saveContent(context, content) {
+            context.commit('saveContent', content);
+        },
         storeContent(context, content) {
             context.commit('storeContent', content);
         },
         loadContent(context, title) {
             context.commit('loadContent', title);
         },
-        setCurrentContent(context, title) {
+
+
+        setCurrentContent(context, title) {``
             context.commit('setCurrentContent', title);
         },
+        setCurrentArticle(context, title) {
+            context.commit('setCurrentArticle', title);
+        },
+        setCurrentTest(context, title) {
+            context.commit('setCurrentTest', title);
+        },
+
+
         editContent(context, title) {
             context.commit('loadContent', title);
             context.commit('setStep', 2);
         },
+        editArticle(context, title) {
+            context.commit('setCurrentArticle', title);
+            context.commit('setStep', 2);
+        },
+        editTest(context, title) {
+            context.commit('setCurrentTest', title);
+            context.commit('setStep', 3);
+        },
+
+
         deleteContent(context, title) {
             context.commit('resetContent', title);
             context.commit('setStep', 1);

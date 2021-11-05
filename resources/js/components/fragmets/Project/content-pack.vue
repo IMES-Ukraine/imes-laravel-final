@@ -49,7 +49,7 @@
                         <div class="articles_create__grid width-main-1">
                             <div class="articles_create__grid-block">
                                 <button v-if="! content.article.title" class="articles_create-add_btn height-47"
-                                        type="button" @click.prevent="setStep(3)"><span
+                                        type="button" @click.prevent="newArticle"><span
                                     class="icon-right">Создать</span></button>
                                 <div id="add_new_article" v-else>
                                     <div class="articles_create__study">
@@ -186,9 +186,11 @@
             </span>
         </div>
         <div class="articles_create-line" v-show="is_points"></div>
-        <div class="articles_create-note" v-show="is_points">1 пользователь = 1 тест + 1 статья = <p>{{pointsSum}}</p> баллов</div>
+        <div class="articles_create-note" v-show="is_points">1 пользователь = 1 тест + 1 статья = <p>{{ pointsSum }}</p>
+            баллов
+        </div>
         <button class="articles_create-submit button-gradient" type="button"
-                @click="showFirstContent" v-show="is_points">
+                @click="showFirstStep" v-show="is_points">
             Зберегти
         </button>
     </div>
@@ -219,8 +221,7 @@ export default {
     },
 
     mounted() {
-        this.content.title = this.$store.state.currentContent;
-        this.loadContent(this.content.title);
+        this.loadContent();
 
         this.loaded = true;
         if (this.content.title) {
@@ -243,32 +244,26 @@ export default {
 
     },
     methods: {
+        newArticle(){
+            this.$store.commit('saveContent', this.content);
+            this.setStep(3);
+        },
         showContent() {
             this.$refs['packName'].validate().then((res) => {
                 if (res.valid) {
-                    if (undefined === this.$store.state.project.content[this.contentTitle]) {
-                        this.content.title = this.contentTitle;
-                        this.storeContent();
-                    } else {
-                        this.loadContent();
-                    }
+                    this.content.title = this.contentTitle;
                     this.showFull = true;
                 }
             });
         },
-        storeContent() {
-            this.$store.dispatch('storeContent', this.content);
-        },
         loadContent() {
-            if (this.contentTitle) {
-                this.$store.commit('loadContent', this.contentTitle);
-                this.content = this.$store.state.project.content[this.contentTitle];
-                console.log('component' + this.content);
-            } else {
-                this.content = this.contentTemplate;
-            }
+                this.content = this.$store.state.content;
+                if (!this.content){
+                    this.content = this.contentTemplate;
+                }
+            this.contentTitle = this.content.title;
         },
-        showFirstContent() {
+        showFirstStep() {
             this.errorNewTest = '';
             this.errorNewArticle = '';
 
@@ -279,9 +274,7 @@ export default {
             if (!this.content.article.title) {
                 this.errorNewArticle = 'Статья обовʼязкова';
             }
-
-            this.$store.state.project.content[this.content.title] = this.content;
-            sessionStorage.project = JSON.stringify(this.$store.state.project);
+            this.$store.dispatch('storeContent', this.content);
             this.setStep(1)
 
         },
