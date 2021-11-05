@@ -205,6 +205,7 @@
                                     <div class="articles_create__addition-block">
                                         <div class="articles_create__addition-field">
                                             <input type="text" id="new_user" v-model="new_user" />
+                                            <div class="errors" v-if="addUserError">{{ addUserError }}</div>
                                         </div>
                                         <button class="articles_create__addition-button" type="button" @click="AddNewUser">Добавить автора</button>
                                     </div>
@@ -297,6 +298,7 @@ export default {
             //..this.$store.state.articles[0],
             new_user: '',
             errorArticleCover: '',
+            addUserError: '',
             title_error: '',
             text_error: '',
             recommended: [],
@@ -390,9 +392,17 @@ export default {
             }
         },
         AddNewUser() {
-            this.$get(USER_CREATE_NAME + '/' + this.new_user).then( response => {
-                this.authors = response.data
-            })
+            this.addUserError = '';
+
+            if (this.new_user == '') {
+                this.addUserError = 'Поле не должно быть пустое'
+            }
+
+            if (this.addUserError == '') {
+                this.$get(USER_CREATE_NAME + '/' + this.new_user).then(response => {
+                    this.authors = response.data
+                })
+            }
         },
         titleStore(value) {
             this.title = value
