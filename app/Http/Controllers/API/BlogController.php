@@ -194,16 +194,21 @@ class BlogController extends Controller
         }
 
         $content = [];
-        foreach ( $request->insert as $insert) {
-            if ( !empty( $insert['content'])) {
-                $content[] = [
-                    'type' => 'text',
-                    'title' => $insert['title'],
-                    'content' => $insert['content']
-                ];
-            }
+        $text = $title = '';
 
+        foreach ( $request->insert as $insert) {
+            if (isset($insert['content'])) $text = $insert['content'];
+            if (isset($insert['title'])) $title = $insert['title'];
         }
+
+        if ($title || $text) {
+            $content[] = [
+                'type' => 'text',
+                'title' => $title,
+                'content' => $text
+            ];
+        }
+
         $model->content = json_encode($content);
         $file = File::find($request->cover_image_id);
         $model->cover_image = $file;

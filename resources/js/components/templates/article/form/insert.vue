@@ -17,14 +17,14 @@
                 <v-input-text
                     :name="'title'"
                     v-on:update:value="updateInsert(0, 'title', $event)"
-                    :value="this.insert[0].title"
                     placeholder="Заголовок"
+                    :text="''"
                     :classes="'mb20'"
                 />
                 <v-textarea
                     :rows="4"
                     v-on:update:text="updateInsert(0, 'content', $event)"
-                    :text="this.insert[0].content"
+                    :text="''"
                     placeholder="Текст"
                 />
             </div>
@@ -49,7 +49,7 @@ export default {
     data () {
         return {
             textLocale: this.textInsert,
-            insertLocal: this.insert,
+            insertLocal: []//this.insert,
         }
     },
     components: {ArticleInputText, VInputText, VTextarea},
