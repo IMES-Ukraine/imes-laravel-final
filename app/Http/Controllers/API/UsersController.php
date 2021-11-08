@@ -204,7 +204,7 @@ class UsersController extends Controller
 
     public function cards($user_id)
     {
-        $data = UserCards::where('user_id', $user_id)->get()->toArray();
+        $data = UserCards::where('user_id', $user_id)->with('card')->get()->toArray();
 
         if (count($data) > 0) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
