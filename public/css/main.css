@@ -2479,10 +2479,11 @@ select {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: transparent;
+    background: #fff;
     position: absolute;
     top: 4px;
     right: 4px;
+    cursor: pointer;
 }
 
 .multiselect__tag-icon:after {
@@ -2490,7 +2491,7 @@ select {
     display: block;
     width: 7px;
     height: 6px;
-    background-color: #fff;
+    background-color: #00B7FF;
     -webkit-mask-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='7' height='6' viewBox='0 0 7 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0.780187 4.74631L0.466752 5.05974C0.293648 5.23285 0.293648 5.51351 0.466752 5.68661V5.68661C0.639857 5.85972 0.920517 5.85972 1.09362 5.68661L5.83992 0.940305C6.01303 0.7672 6.01303 0.486541 5.83992 0.313436V0.313436C5.66682 0.14033 5.38616 0.14033 5.21305 0.313436L0.780187 4.74631Z' fill='white'/%3e%3cpath d='M4.74631 5.37313L5.05974 5.68657C5.23285 5.85967 5.51351 5.85967 5.68661 5.68657V5.68657C5.85972 5.51346 5.85972 5.2328 5.68661 5.0597L0.940305 0.313397C0.7672 0.140292 0.486541 0.140292 0.313435 0.313397V0.313397C0.14033 0.486503 0.14033 0.767163 0.313435 0.940268L4.74631 5.37313Z' fill='white'/%3e%3c/svg%3e ");
     mask-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='7' height='6' viewBox='0 0 7 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0.780187 4.74631L0.466752 5.05974C0.293648 5.23285 0.293648 5.51351 0.466752 5.68661V5.68661C0.639857 5.85972 0.920517 5.85972 1.09362 5.68661L5.83992 0.940305C6.01303 0.7672 6.01303 0.486541 5.83992 0.313436V0.313436C5.66682 0.14033 5.38616 0.14033 5.21305 0.313436L0.780187 4.74631Z' fill='white'/%3e%3cpath d='M4.74631 5.37313L5.05974 5.68657C5.23285 5.85967 5.51351 5.85967 5.68661 5.68657V5.68657C5.85972 5.51346 5.85972 5.2328 5.68661 5.0597L0.940305 0.313397C0.7672 0.140292 0.486541 0.140292 0.313435 0.313397V0.313397C0.14033 0.486503 0.14033 0.767163 0.313435 0.940268L4.74631 5.37313Z' fill='white'/%3e%3c/svg%3e ");
 }
@@ -2518,6 +2519,7 @@ select {
     min-height: 35px;
     font-weight: normal;
     line-height: 1;
+    color: #A1A1A1;
     padding: 0 14px !important;
     padding-right: 30px !important;
     margin: 0 !important;
@@ -2543,6 +2545,7 @@ select {
     min-height: 35px;
     font-size: 11px;
     line-height: 1.2;
+    color: #4f4f4f;
     padding: 0 14px;
     padding-right: 30px;
     margin: 0;
@@ -2571,6 +2574,9 @@ select {
     top: 100%;
     overflow: auto;
     z-index: 99;
+    position: absolute;
+    top: 100%;
+    left: 0;
 }
 
 .multiselect__content-wrapper::-webkit-scrollbar {
