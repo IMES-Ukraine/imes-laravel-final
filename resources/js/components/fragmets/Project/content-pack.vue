@@ -248,12 +248,12 @@ export default {
     methods: {
         newTest() {
             this.$store.dispatch('setCurrentTest', this.contentTemplate.test);
-            this.$store.dispatch('storeContent', this.content);
+            // this.$store.dispatch('storeContent', this.content);
             this.setStep(4);
         },
         newArticle() {
             this.$store.dispatch('setCurrentArticle', this.contentTemplate.article);
-            this.$store.dispatch('storeContent', this.content);
+            // this.$store.dispatch('storeContent', this.content);
             this.setStep(3);
         },
         showContent() {
