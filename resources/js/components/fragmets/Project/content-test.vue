@@ -160,11 +160,14 @@ export default {
             this.testErrors = {};
 
             if (this.test.question.title == '') {
-                this.testErrors.title = 'Название обязательно'
+                this.testErrors.title = 'Назва обовʼязкова'
             }
 
             if (this.test.question.text == '') {
-                this.testErrors.text = 'Вопрос обязателен'
+                this.testErrors.text = 'Питання обовʼязкове'
+            }
+            if (! this.$store.state.test.answer.correct.length ){
+                this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
             }
 
 
