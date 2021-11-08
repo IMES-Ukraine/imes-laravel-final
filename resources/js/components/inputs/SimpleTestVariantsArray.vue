@@ -23,6 +23,7 @@
             </div>
           </div>
         </div>
+        <p class="errors">{{errors.correct}}</p>
       </div>
       <div class="articles_create__item">
         <div class="articles_create__item-title has_radio">
@@ -139,14 +140,19 @@ export default {
     SimpleTestMedia
   },
   props: {
-    variants: Array
+    variants: Array,
+    errors: Array
   },
   methods: {
     setCorrect(id, data) {
       if (!data) {
         this.$store.commit('addCorrect', id);
+        this.errors.correct = '';
       } else {
         this.$store.commit('removeCorrect', id);
+        if (! this.$store.state.test.answer.correct.length ){
+          this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
+        }
       }
     },
 
