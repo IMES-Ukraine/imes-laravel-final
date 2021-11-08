@@ -3,7 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PostTag extends Model
+class PostTimes extends Model
 {
     /*
      * Disable timestamps by default.
@@ -16,14 +16,5 @@ class PostTag extends Model
      *
      * @var string
      */
-    public $table = 'bedard_blogtags_post_tag';
-
-    /**
-     * Tag
-     * @return mixed
-     */
-    public function tag()
-    {
-        return $this->hasOne('App\Models\Tag', 'id', 'tag_id');
-    }
+    public $table = 'rainlab_blog_posts_times';
 }

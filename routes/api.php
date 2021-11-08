@@ -117,8 +117,11 @@ Route::group(
                 Route::get('/list', [BlogController::class, 'list']);
 
                 Route::post('/', [BlogController::class, 'store']);
+                Route::post('/update', [BlogController::class, 'update']);
 
                 Route::get('/tags', [BlogController::class, 'tags']);
+
+                Route::get('/times', [BlogController::class, 'times']);
 
                 Route::get('/{id}', [BlogController::class, 'show'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
 

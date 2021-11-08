@@ -1,15 +1,13 @@
 <template>
-    <div class="container-fluid main-content">
-        <div class="row h-100">
-            <v-sidebar>
-                <slot name="sidebar" />
-            </v-sidebar>
+    <div class="main-content">
+        <v-sidebar>
+            <slot name="sidebar" />
+        </v-sidebar>
 
-            <div class="col-10 main_content">
-                <slot>
-                    Content
-                </slot>
-            </div>
+        <div class="main_content">
+            <slot>
+                Content
+            </slot>
         </div>
 
     </div>

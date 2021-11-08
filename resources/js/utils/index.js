@@ -8,6 +8,13 @@ const getRandom = n => {
     }
     return res;
 };
+const currentDate = () => {
+    var d = new Date();
+    var curr_date = d.getDate();
+    var curr_month = d.getMonth() + 1;
+    var curr_year = d.getFullYear();
+    return curr_date + "-" + curr_month + "-" + curr_year;
+};
 const getRandomId = () => {
     return 'variant-' + Math.random().toString(36).substr(2, 9)
 }
@@ -40,5 +47,6 @@ export {
     getRandom,
     getRandomId,
     alphabet,
-    variantTemplate
+    variantTemplate,
+    currentDate
 };

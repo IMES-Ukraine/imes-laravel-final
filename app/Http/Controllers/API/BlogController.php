@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\File;
 use App\Models\PostGallery;
 use App\Models\PostTag;
+use App\Models\PostTimes;
 use App\Models\Recommended;
 use App\Models\Tag;
 use App\Models\User;
@@ -88,6 +89,34 @@ class BlogController extends Controller
      */
     public function tags() {
         $data = Tag::all();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function times() {
+        $data = Articles::select(
+            'rainlab_blog_posts.id',
+            'rainlab_blog_posts.user_id',
+            'rainlab_blog_posts.title',
+            'rainlab_blog_posts.content',
+            'rainlab_blog_posts.content_html',
+            'rainlab_blog_posts.cover_image',
+            'rainlab_blog_posts.action',
+            'rainlab_blog_posts.button',
+            'rainlab_blog_posts.type',
+            'rainlab_blog_posts_times.date',
+            'rainlab_blog_posts_times.time',
+        )
+            ->with('gallery')
+            ->with('tags')
+            ->with('user')
+            ->with('recommended')
+            ->leftJoin('rainlab_blog_posts_times', 'rainlab_blog_posts_times.post_id', '=', 'rainlab_blog_posts.id')
+            ->whereNotNull('rainlab_blog_posts_times.date')
+            ->get();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
@@ -239,6 +268,96 @@ class BlogController extends Controller
                     'parent_id' => $model->id,
                     'recommended_id' => $rec['id']
                 ]);
+            }
+
+            if (isset($request->date) && isset($request->time)) {
+                $model_times = new PostTimes();
+                $model_times->post_id = $model->id;
+                $model_times->date = date("Y-m-d", strtotime($request->date));
+                $model_times->time = date("H:m:s", strtotime($request->time));
+                $model_times->save();
+            }
+        }
+
+        return response()->json(compact('saveStatus'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function update(Request $request): JsonResponse
+    {
+        $model = Post::findOrFail($request->post_id);
+        $model->title = $request->title;
+        $model->published = true;
+        $model->content_html = $request->text;
+        $model->type = $request->articleType;
+
+        $model->action = !empty($request->action) ? $request->action : '';
+        $model->button = !empty($request->button) ? $request->button : '';
+
+        if ($request->user) {
+            $model->user_id = (isset($request->user['id']))?$request->user['id']:$request->active_user_id;
+        }
+
+        $content = [];
+        $text = $title = '';
+
+        foreach ( $request->insert as $insert) {
+            if (isset($insert['content'])) $text = $insert['content'];
+            if (isset($insert['title'])) $title = $insert['title'];
+        }
+
+        if ($title || $text) {
+            $content[] = [
+                'type' => 'text',
+                'title' => $title,
+                'content' => $text
+            ];
+        }
+
+        $model->content = json_encode($content);
+        $file = File::find($request->cover_image_id);
+        $model->cover_image = $file;
+
+        $saveStatus = $model->save();
+
+        if ( !$saveStatus)
+            $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
+
+        if ( $saveStatus ){
+            PostGallery::where('post_id', $model->id)->delete();
+            foreach ( $request->gallery as $value){
+                $model_gallery = new PostGallery();
+                $model_gallery->post_id = $model->id;
+                $model_gallery->cover_image = $value['path'];
+                $model_gallery->save();
+            }
+
+            PostTag::where('post_id', $model->id)->delete();
+            foreach ( $request->tags as $tag){
+                $model_tags = new PostTag();
+                $model_tags->post_id = $model->id;
+                $model_tags->tag_id = $tag['id'];
+                $model_tags->save();
+            }
+
+            Recommended::where('parent_id', $model->id)->delete();
+            foreach ( $request->recommended as $rec){
+                Recommended::create([
+                    'parent_id' => $model->id,
+                    'recommended_id' => $rec['id']
+                ]);
+            }
+
+            if (isset($request->date) && isset($request->time)) {
+                $model_times = PostTimes::where('post_id', $model->id);
+                $date = date("Y-m-d", strtotime($request->date));
+                $time = date("H:m:s", strtotime($request->time));
+                $model_times->update(['date' => $date, 'time' => $time]);
             }
         }
 
