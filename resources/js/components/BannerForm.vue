@@ -23,7 +23,7 @@
                                         <input type="file" name="image" @change="handleUploadBanner">
                                         <p><span data-placeholder="Загрузить изображение">Загрузить изображение</span></p>
                                         <button class="delete_file deleteFile" type="button" @change="removeImage"></button>
-                                        <p class="note">до 5 kb</p>
+                                        <!--<p class="note">до 5 kb</p>-->
                                     </div>
                                     <div class="errors">{{ errorFile }}</div>
                                 </div>
@@ -104,11 +104,12 @@
                 })
             },
             handleUploadBanner() {
-                if (event.target.files[0].size <= 5000) {
+                /*if (event.target.files[0].size <= 5000) {
                     this.image = event.target.files[0]
                 } else {
                     this.errorFile = 'Изображение слишком большое';
-                }
+                }*/
+                this.image = event.target.files[0]
             },
             removeImage() {
                 this.image = '';
