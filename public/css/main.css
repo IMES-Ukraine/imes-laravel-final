@@ -2341,15 +2341,15 @@ select {
 }
 
 .multiselect {
-  min-height: 35px;
+    min-height: 35px;
 }
 
 .multiselect--active:not(.multiselect--above) .multiselect__tags {
-    border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0 !important;
 }
 
 .multiselect--active .multiselect__tags {
-    border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px !important;
 }
 
 .multiselect--active .multiselect__tags:after {
@@ -2359,18 +2359,18 @@ select {
 }
 
 .multiselect--active .multiselect__placeholder {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
 }
 
 .multiselect--active.multiselect--above {
-    border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px !important;
 }
 
 .multiselect--active.multiselect--above .multiselect__content-wrapper {
-    border-bottom: none;
-    border-radius: 5px 5px 0 0;
+    border-bottom: none !important;
+    border-radius: 5px 5px 0 0 !important;
 }
 
 .multiselect--above .multiselect__content-wrapper {
@@ -2380,13 +2380,13 @@ select {
 }
 
 .multiselect__select {
-    display: none;
+    display: none !important;
 }
 
 .multiselect__tags {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
@@ -2397,14 +2397,14 @@ select {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    min-height: 35px;
+    min-height: 35px !important;
     font-weight: 500;
-    font-size: 11px;
+    font-size: 11px !important;
     line-height: 1.2;
     letter-spacing: -0.0024em;
-    border: 1px solid #D9D9D9;
-    border-radius: 5px;
-    padding: 0;
+    border: 1px solid #D9D9D9 !important;
+    border-radius: 5px !important;
+    padding: 0 !important;
     position: relative;
 }
 
@@ -2445,7 +2445,9 @@ select {
 }
 
 .multiselect__tags input {
-    border: none;
+    font-weight: normal;
+    line-height: 1;
+    border: none !important;
     padding: 0 14px;
 }
 
@@ -2469,9 +2471,9 @@ select {
 }
 
 .multiselect__placeholder {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
@@ -2480,9 +2482,11 @@ select {
     justify-content: flex-start;
     width: 100%;
     min-height: 35px;
-    padding: 0 14px;
-    padding-right: 30px;
-    margin: 0;
+    font-weight: normal;
+    line-height: 1;
+    padding: 0 14px !important;
+    padding-right: 30px !important;
+    margin: 0 !important;
     white-space: nowrap;
     overflow: hidden;
     -o-text-overflow: ellipsis;
@@ -2549,30 +2553,30 @@ select {
 }
 
 .multiselect__option {
-    min-height: auto;
-    font-size: 12px;
-    line-height: 1.2;
-    color: #4F4F4F;
-    white-space: normal;
-    padding: 0 14px;
+    min-height: auto !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    color: #4F4F4F !important;
+    white-space: normal !important;
+    padding: 0 14px !important;
 }
 
 .multiselect__option--selected {
-    font-weight: bold;
-    color: #4F4F4F;
-    background: transparent;
+    font-weight: bold !important;
+    color: #4F4F4F !important;
+    background: transparent !important;
 }
 
 .multiselect__option--selected.multiselect__option--highlight {
-    font-weight: bold;
-    color: #4F4F4F;
-    background: transparent;
+    font-weight: bold !important;
+    color: #4F4F4F !important;
+    background: transparent !important;
 }
 
 .multiselect__option--highlight {
-    font-weight: bold;
-    color: #4F4F4F;
-    background: transparent;
+    font-weight: bold !important;
+    color: #4F4F4F !important;
+    background: transparent !important;
 }
 
 .custom-radio .custom-control-input:checked ~ .custom-control-label::after {

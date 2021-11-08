@@ -227,6 +227,7 @@
                                                         :show-labels="false"
                                                         :options="authors"
                                                     />
+                                                    <input type="hidden" v-model="item.active_user_id" />
                                                 </div>
                                             </div>
                                             <div class="articles_create__addition-block">
@@ -274,7 +275,8 @@
                                 />
                             </div>
                         </div>
-                        <button class="articles_create-submit button-gradient" @click="submitForm(item.id)">Опубликовать</button>
+                        <input type="hidden" v-model="item.post_id" />
+                        <button class="articles_create-submit button-gradient" @click="submitForm(item.id)">{{ (item.post_id)?'Редактировать':'Опубликовать' }}</button>
                     </div>
                 </div>
             </div>
@@ -298,7 +300,7 @@ import ArticleFormSelect from "./templates/article/form/select"
 import VButton from "./templates/inputs/button"
 import ArticleFormButton from "./templates/article/form/button"
 import Multiselect from "vue-multiselect";
-import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS, ARTICLE_TIMES} from "../api/endpoints";
+import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS, ARTICLE_TIMES, ARTICLE_UPDATE} from "../api/endpoints";
 import FragmentFormText from "./fragmets/text"
 import ArticleMultiple from "./templates/article/form/multiple"
 import SimpleTestMedia from "./fragmets/SimpleTestMedia"
@@ -404,7 +406,11 @@ export default {
                         this.items[index].title_error = '';
                     }
 
-                    if (this.image == null) {
+                    let field = $('#inputFile'+item.id+' input');
+                    let block = field.parents(".buttonAddFile");
+                    let text = block.find("p span");
+
+                    if (this.image == null && text.text() == '') {
                         this.items[index].image_error = 'Обложка обязательна';
                         error = true;
                     } else {
@@ -419,7 +425,9 @@ export default {
                     }
 
                     if (!error) {
-                        this.$post(ARTICLE, {
+                        let URL = (item.post_id)?ARTICLE_UPDATE:ARTICLE;
+                        this.$post(URL, {
+                            post_id: item.post_id,
                             title: item.title,
                             articleType: item.type,
                             text: item.text,
@@ -427,6 +435,7 @@ export default {
                             action: item.action,
                             insert: this.insert,
                             user: item.user_id,
+                            active_user_id: item.active_user_id,
                             cover_image_id: this.image,
                             gallery: item.multiples,
                             tags: item.chosenTags,
@@ -435,7 +444,7 @@ export default {
                             date: item.date
                         })
                             .then((res) => {
-                                this.$router.push({ name: 'articleList' });
+                                this.$router.push({ name: 'createContentPlan' });
                             })
                             .catch((error) => {
                                 console.log(error)
@@ -528,9 +537,9 @@ export default {
         this.$get(ARTICLE_TIMES).then(response => {
             if (response.data.length > 0) {
                 for (const [index, item] of Object.entries(response.data)) {
-                    console.log(response.data);
+
                     setTimeout(() => {
-                        let field = $('.buttonAddFile input');
+                        let field = $('#inputFile'+item.id+' input');
                         let block = field.parents(".buttonAddFile");
                         let text = block.find("p span");
                         let fileName = item.cover_image.disk_name;
@@ -573,6 +582,7 @@ export default {
 
                     this.items.push({
                         id: item.id,
+                        post_id: item.id,
                         real: true,
                         active: false,
                         date: item.date,
@@ -584,11 +594,12 @@ export default {
                         text_error: '',
                         type: item.type,
                         text: item.content_html,
-                        content_title: (item.content)?item.content[0].title:'',
-                        content_text: (item.content)?item.content[0].content:'',
+                        content_title: (item.content[0])?item.content[0].title:'',
+                        content_text: (item.content[0])?item.content[0].content:'',
                         textLocale: (item.content)?1:0,
                         chosenTags: tags,
                         user_id: (item.user)?[{id: item.user.id, name: item.user.name}]:0,
+                        active_user_id: (item.user)?[{id: item.user.id, name: item.user.name}]:0,
                         chosenRecommended: recommended,
                         action: item.action,
                         multiples: gallery,
@@ -603,6 +614,7 @@ export default {
                     for (let i = 0; i < count; i++) {
                         this.items.push({
                             id: i,
+                            post_id: 0,
                             real: false,
                             active: false,
                             date: currentDate(),
@@ -619,6 +631,7 @@ export default {
                             textLocale: 0,
                             chosenTags: [],
                             user_id: 0,
+                            active_user_id: 0,
                             button: '',
                             chosenRecommended: [],
                             action: '',
@@ -630,6 +643,7 @@ export default {
                 for (let i = 0; i < 12; i++) {
                     this.items.push({
                         id: i,
+                        post_id: 0,
                         real: false,
                         active: true,
                         date: currentDate(),
@@ -646,6 +660,7 @@ export default {
                         textLocale: 0,
                         chosenTags: [],
                         user_id: 0,
+                        active_user_id: 0,
                         button: '',
                         chosenRecommended: [],
                         action: '',

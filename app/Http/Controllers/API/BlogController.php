@@ -283,6 +283,88 @@ class BlogController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function update(Request $request): JsonResponse
+    {
+        $model = Post::findOrFail($request->post_id);
+        $model->title = $request->title;
+        $model->published = true;
+        $model->content_html = $request->text;
+        $model->type = $request->articleType;
+
+        $model->action = !empty($request->action) ? $request->action : '';
+        $model->button = !empty($request->button) ? $request->button : '';
+
+        if ($request->user) {
+            $model->user_id = (isset($request->user['id']))?$request->user['id']:$request->active_user_id;
+        }
+
+        $content = [];
+        $text = $title = '';
+
+        foreach ( $request->insert as $insert) {
+            if (isset($insert['content'])) $text = $insert['content'];
+            if (isset($insert['title'])) $title = $insert['title'];
+        }
+
+        if ($title || $text) {
+            $content[] = [
+                'type' => 'text',
+                'title' => $title,
+                'content' => $text
+            ];
+        }
+
+        $model->content = json_encode($content);
+        $file = File::find($request->cover_image_id);
+        $model->cover_image = $file;
+
+        $saveStatus = $model->save();
+
+        if ( !$saveStatus)
+            $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
+
+        if ( $saveStatus ){
+            PostGallery::where('post_id', $model->id)->delete();
+            foreach ( $request->gallery as $value){
+                $model_gallery = new PostGallery();
+                $model_gallery->post_id = $model->id;
+                $model_gallery->cover_image = $value['path'];
+                $model_gallery->save();
+            }
+
+            PostTag::where('post_id', $model->id)->delete();
+            foreach ( $request->tags as $tag){
+                $model_tags = new PostTag();
+                $model_tags->post_id = $model->id;
+                $model_tags->tag_id = $tag['id'];
+                $model_tags->save();
+            }
+
+            Recommended::where('parent_id', $model->id)->delete();
+            foreach ( $request->recommended as $rec){
+                Recommended::create([
+                    'parent_id' => $model->id,
+                    'recommended_id' => $rec['id']
+                ]);
+            }
+
+            if (isset($request->date) && isset($request->time)) {
+                $model_times = PostTimes::where('post_id', $model->id);
+                $date = date("Y-m-d", strtotime($request->date));
+                $time = date("H:m:s", strtotime($request->time));
+                $model_times->update(['date' => $date, 'time' => $time]);
+            }
+        }
+
+        return response()->json(compact('saveStatus'));
+    }
+
+    /**
      * Shows post by id
      * @param $id
      * @return \Illuminate\Http\JsonResponse

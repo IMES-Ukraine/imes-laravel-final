@@ -117,6 +117,7 @@ Route::group(
                 Route::get('/list', [BlogController::class, 'list']);
 
                 Route::post('/', [BlogController::class, 'store']);
+                Route::post('/update', [BlogController::class, 'update']);
 
                 Route::get('/tags', [BlogController::class, 'tags']);
 
