@@ -53,9 +53,11 @@ export default new Vuex.Store({
         modalData: {},
         showUserModal: false,
         filterId: null,
-
         clients: {},
         cards: {},
+
+        numberTest: 0,
+        numberArticle: 0
     },
     getters: {
     },
@@ -79,7 +81,10 @@ export default new Vuex.Store({
             sessionStorage.project = JSON.stringify(state.project);
         },
 
-
+        setQuestionType(state, type) {
+            state.test.question.type = type;
+            console.log(state.test.question.type, type);
+        },
 
         setStep(state, step) {
             state.currentStep = step;
@@ -96,9 +101,6 @@ export default new Vuex.Store({
 
         submitArticle(state, form) {
             state.articles[0] = form
-        },
-        addArticleId(state, id) {
-            state.articleIds.push(id)
         },
         submitQuestion(state, item) {
 
@@ -149,10 +151,12 @@ export default new Vuex.Store({
 
         storeArticle(state, article) {
             state.content.article = article;
+            state.numberArticle = 1;
             sessionStorage.content = JSON.stringify(state.content);
         },
         storeTest(state, test) {
             state.content.test = test;
+            state.numberTest = 1;
             sessionStorage.content = JSON.stringify(state.content);
         },
         saveContent(state, content) {
@@ -229,17 +233,6 @@ export default new Vuex.Store({
 
                 reject()
             })
-        },
-        submitContent(context, form) {
-
-            context.commit('submitContent', form)
-        },
-        submitTest({commit/*, state*/}, questions) {
-
-            //questions.forEach((item) => commit('submitQuestion', item))
-            commit('submitTest', questions)
-
-
         },
 
         selectProject(context, id) {
@@ -325,6 +318,10 @@ export default new Vuex.Store({
         deleteContent(context, title) {
             context.commit('resetContent', title);
             context.commit('setStep', 1);
+        },
+
+        setQuestionType(context, type) {
+          context.commit('setQuestionType', type);
         }
     },
     modules: {}

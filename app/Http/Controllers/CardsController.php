@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Responses\BasicResponse;
 use App\Models\Cards;
 use App\Http\Requests\StoreCardsRequest;
-use App\Models\User;
 use App\Models\UserCards;
 use App\Services\UsersService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CardsController extends Controller
@@ -18,15 +17,25 @@ class CardsController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @param null $id
      * @return JsonResponse
      */
-    public function index($id = null): JsonResponse
+    //TODO доработать пагинацию при сортировке
+    public function index(Request $request, $id = null): JsonResponse
     {
         if (!$id) {
-            $page = Cards::query()->paginate();
+            if($sortby = $request->input('sortby') )
+            {
+                $order = $request->input('order', 'asc');
+                $page = Cards::orderBy($sortby, $order)->paginate();
+                $page->appends(['sortby' => $sortby, 'order' => $order])->links();
+            }else {
+                $page = Cards::query()->paginate();
+            }
             return response()->json(compact('page'));
         }
+
 
         $card = Cards::find($id)->first();
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $card);

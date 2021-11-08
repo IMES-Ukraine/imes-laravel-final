@@ -287,6 +287,7 @@ export default {
 
             if (!error) {
                 this.$store.commit('storeArticle', this.article);
+
                 this.setStep(2);
             }
         },

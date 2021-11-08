@@ -6,8 +6,9 @@
       <div class="articles_create__item">
         <div class="articles_create__item-title has_radio">
           <input type="radio"
-                 :name="'answer_'+variant.itemId" value="1"
-                 v-model="variant.type"/>
+                 :name="'answer_'+variant.itemId"
+                 :value="1"
+                 v-model="localType"/>
           <i></i>
           <p>Готовый <br>ответ</p>
         </div>
@@ -28,8 +29,8 @@
       <div class="articles_create__item">
         <div class="articles_create__item-title has_radio">
           <input type="radio" :name="'answer_'+variant.itemId"
-                 value="2"
-                 v-model="variant.type"
+                 :value="2"
+                 v-model="localType"
                 />
           <i></i>
           <p>Поле ввода ответа</p>
@@ -40,9 +41,10 @@
       </div>
       <div class="articles_create__item">
         <div class="articles_create__item-title has_radio">
-          <input type="checkbox"
-                 v-model="variant.media"
-                 :name="'media'+variant.itemId" />
+          <input type="radio"
+                 v-model="localType"
+                 :value="3"
+                 :name="'answer_'+variant.itemId" />
           <i></i>
           <p>Медиа</p>
         </div>
@@ -51,7 +53,7 @@
             <SimpleTestMedia :media="variant.media"></SimpleTestMedia>
             <div class="articles_create__media-add">
               <input type="file" name="file" :id="'file-'+variant.itemId"
-                     :disabled=" ! variant.media"
+                     :disabled=" localType != 3"
                      @change="addMedia(index, variant.itemId, $event)">
             </div>
           </div>
@@ -141,7 +143,21 @@ export default {
   },
   props: {
     variants: Array,
-    errors: Array
+    type: Number,
+    errors: Object
+  },
+  data() {
+    return  {
+      localType:Number
+    }
+  },
+  mounted() {
+    this.localType = this.type;
+  },
+  watch: {
+    localType() {
+      this.$store.commit('setQuestionType', this.localType);
+    }
   },
   methods: {
     setCorrect(id, data) {

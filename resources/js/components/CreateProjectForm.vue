@@ -20,9 +20,7 @@
                                         <div class="articles_create__item-file width-auto buttonAddFile">
                                             <input type="file" name="cover"
                                                    @change="handleUpload('cover')">
-                                            <p><span
-                                                data-placeholder="Загрузить">{{ projectCover }}</span>
-                                            </p>
+                                            <p><span data-placeholder="Загрузить">{{ project.options.files.cover }}</span></p>
                                             <button class="delete_file deleteFile" type="button"></button>
                                         </div>
                                         <span class="errors">{{ errorCover }}</span>
@@ -379,49 +377,6 @@ export default {
 
         },
 
-        submitForm() {
-            /*            this.$refs.form.validate().then(success => {
-                            if (!success) {
-                                if (this.options.files.cover == null) {
-                                    this.errorFile = 'Поле обязательно';
-                                } else {
-                                    this.errorFile = '';
-                                }
-
-                                return;
-                            }
-
-                            let content = {
-                                "title": this.content.title,
-                                "article": {
-                                    "count": this.article.count,
-                                    "points": this.article.points,
-                                    "frequency": this.article.frequency
-                                },
-                                "test": {
-                                    "count": this.test.count,
-                                    "points": this.test.points,
-                                    "canRetake": this.test.canRetake
-                                }
-                            }
-
-                            this.$post(PROJECT, {
-                                options: this.options,
-                                article: this.article,
-                                tests: this.questions,
-                                content: content
-                            })
-                                .then((res) => {
-                                    this.$router.push({name: 'projectList'});
-                                })
-                                .catch((error) => {
-                                    console.log(error)
-                                }).finally(() => {
-                                console.log('success or error')
-                            });
-                        })*/
-
-        },
         handleUploadArticle(event) {
             let imageForm = new FormData()
             imageForm.append('file', event.target.files[0])
@@ -454,6 +409,7 @@ export default {
         handleUpload(fileName) {
             if (event.target.files[0].size <= 1024 * 1024 * 1024) {
                 this.project.options.files.cover = event.target.files[0].name;
+                this.errorCover = '';
             } else {
                 //this.$set(this.errorFile, 'cover', 'Изображение слишком большое')
                 this.errorFile = 'Изображение слишком большое';

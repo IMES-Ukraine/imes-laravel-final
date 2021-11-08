@@ -61,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <SimpleTestVariants :variants="variants" :errors="errors"></SimpleTestVariants>
+            <SimpleTestVariants :type="question.type" :variants="variants" :errors="errors"></SimpleTestVariants>
 
             <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest">добавить ответ</button>
             <div class="articles_create-line"></div>

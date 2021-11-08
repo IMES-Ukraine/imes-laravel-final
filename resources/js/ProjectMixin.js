@@ -48,6 +48,7 @@ export default {
                     question: {
                         title: '',
                         text: '',
+                        type: 1,
                         description: '',
                         link: '',
                         button: null,
@@ -179,14 +180,6 @@ export default {
         reloadBlockSurveyTest() {
             this.$store.state.contentList[this.$store.state.currentContent].test = {};
         },
-        onChange() {
-            // let content_points = parseInt(this.content.points)
-            // let test_points = parseInt(this.test.points)
-            //
-            // if (content_points && test_points) {
-            //     this.is_points = true
-            //   //  $('.articles_create-note p').html(parseInt(this.content.points) + parseInt(this.test.points))
-            // }
-        },
+
     }
 }

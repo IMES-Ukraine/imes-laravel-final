@@ -166,14 +166,17 @@ export default {
             if (this.test.question.text == '') {
                 this.testErrors.text = 'Питання обовʼязкове'
             }
-            if (! this.$store.state.test.answer.correct.length ){
+            if (undefined === this.$store.state.test.answer.correct || (! this.$store.state.test.answer.correct.length) ){
                 this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
             }
 
 
 
             if (!Object.keys(this.testErrors).length) {
-                this.test.answer.correct = this.$store.state.test.answer.correct;
+                if (undefined !== this.$store.state.test.answer ){
+                    this.test.answer.correct = this.$store.state.test.answer.correct;
+                }
+                this.test.question.type = this.$store.state.test.question.type;
                 this.$store.commit('storeTest', this.test);
                 this.setStep(2);
             }

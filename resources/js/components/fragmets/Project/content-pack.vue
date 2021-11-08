@@ -86,7 +86,6 @@
                                             type="number"
                                             class="form-control"
                                             name="name"
-                                            @change="onChange"
                                             v-model="content.article.points">
                                         <span class="errors">{{ errors[0] }}</span>
                                     </validation-provider>
@@ -158,7 +157,6 @@
                                                 class="form-control"
                                                 type="number"
                                                 name="name"
-                                                @change="onChange"
                                                 v-model="content.test.points">
 
                                             <span class="errors">{{ errors[0] }}</span>
@@ -178,11 +176,10 @@
                     </div>
                 </div>
             </span>
-            <span v-else>
-                        <button class="articles_create-submit button-gradient" type="button"
-                                @click="showContent">
-            Далі
-        </button>
+            <span v-else class="w-100">
+            <button data-v-45a244f4="" type="button"
+                    class="articles_create-submit button-border"
+                    @click="showContent">Далее</button>
             </span>
         </div>
         <div class="articles_create-line" v-show="is_points"></div>
@@ -229,27 +226,34 @@ export default {
         }
     },
     computed: {
+        haveArticle() {
+            return this.content ? this.content.article ? (this.content.article.title !== '')  : false : false;
+        },
+        haveTest() {
+            return this.content ? this.content.test ? (this.content.test.question.title !== '')  : false : false;
+        },
         pointsSum() {
             if (this.content.article && this.content.test) {
                 return parseInt(this.content.article.points) + parseInt(this.content.test.points);
             }
         },
         is_points() {
-            if (this.contentTitle && this.content.article) {
-                return this.content.article.count && this.content.article.points && this.content.article.frequency
-                    && this.content.test.count && this.content.test.points;
-            }
-            return false;
+            return this.haveTest && this.content.test.count && this.content.test.points
+                && this.haveArticle && this.content.article.title && this.content.article.count
+                && this.content.article.points && this.content.article.frequency;
+
         }
 
     },
     methods: {
         newTest() {
             this.$store.dispatch('setCurrentTest', this.contentTemplate.test);
+            this.$store.dispatch('storeContent', this.content);
             this.setStep(4);
         },
         newArticle() {
             this.$store.dispatch('setCurrentArticle', this.contentTemplate.article);
+            this.$store.dispatch('storeContent', this.content);
             this.setStep(3);
         },
         showContent() {
@@ -271,6 +275,7 @@ export default {
             if (!this.content.test.title) {
                 this.errorNewTest = 'Тест обовʼязковий';
             }
+            ``
 
             if (!this.content.article.title) {
                 this.errorNewArticle = 'Статья обовʼязкова';
