@@ -86,6 +86,16 @@ class Post extends Model
         'content_images'  => \App\Models\File::class
     ];
 
+    public function getCoverImageAttribute($value)
+    {
+        return json_decode($value);
+    }
+
+    public function setCoverImageAttribute($value)
+    {
+        return json_encode($value);
+    }
+
     /**
      * File file
      * @return mixed

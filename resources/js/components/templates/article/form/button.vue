@@ -35,7 +35,7 @@ export default {
     components: {VInputText, VCheckbox},
     data() {
         return {
-            isChecked: false
+            isChecked: this.text_button?true:false
         }
     },
     props: {

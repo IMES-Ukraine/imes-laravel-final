@@ -1,8 +1,8 @@
 $(document).ready(function () {
     window.addEventListener("load", function(event) {
         $(document).on('click', '.articlesTabsNav .articles_tabs-item', function () {
+            $(".articlesTabsNav .articles_tabs-item").removeClass("active").eq($(this).index()).addClass("active");
             $(".articlesTabsContent > div").hide().eq($(this).index()).show();
-            console.log('wewe');
         });
         $(document).on('click', '.articleStatisticsBtn', function () {
             let btn = $(this);

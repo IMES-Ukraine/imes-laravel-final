@@ -47,7 +47,7 @@ class Articles extends Post {
      */
     public function recommended()
     {
-        return $this->hasMany('App\Models\Recommended', 'parent_id', 'id');
+        return $this->hasMany('App\Models\Recommended', 'parent_id', 'id')->with('post');
     }
 
     /**
@@ -67,6 +67,33 @@ class Articles extends Post {
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    /**
+     * Times articles
+     * @return mixed
+     */
+    public function times()
+    {
+        return $this->hasOne('App\Models\PostTimes', 'post_id', 'id');
+    }
+
+    /**
+     * Gallery articles
+     * @return mixed
+     */
+    public function gallery()
+    {
+        return $this->hasMany('App\Models\PostGallery', 'post_id', 'id');
+    }
+
+    /**
+     * Tags articles
+     * @return mixed
+     */
+    public function tags()
+    {
+        return $this->hasMany('App\Models\PostTag', 'post_id', 'id')->with('tag');
     }
 
 

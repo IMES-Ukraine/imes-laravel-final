@@ -60,4 +60,5 @@ export const PROJECT_STOP = V1 + 'project/stop'
 
 export const ARTICLE_DESTROY = ARTICLE + '/destroy/'
 export const ARTICLE_TAGS = ARTICLE + '/tags'
+export const ARTICLE_TIMES = ARTICLE + '/times'
 

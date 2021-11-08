@@ -2339,13 +2339,10 @@ select {
 .smaller-text__article {
     font-size: 0.8rem;
 }
-</style>
 
-  <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-                                                              <style>
-                                                              .multiselect {
-                                                                  min-height: 35px;
-                                                              }
+.multiselect {
+  min-height: 35px;
+}
 
 .multiselect--active:not(.multiselect--above) .multiselect__tags {
     border-radius: 5px 5px 0 0;

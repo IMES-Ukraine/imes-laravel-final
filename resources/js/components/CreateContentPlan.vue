@@ -8,15 +8,21 @@
         <div class="articles">
             <div class="articles_create">
                 <v-close :to="{name:'articleList'}"/>
-                <swiper class="swiper articles_tabs articlesTabsNav" ref="swiper" :options="swiperOption" style="width: 100%;">
-                    <swiper-slide class="articles_tabs-item" v-for="item in items" :key="'item_tabs_' + item">
-                        <div class="articles_tabs-item">
-                            <button class="articles_tabs-add"></button>
-                        </div>
-                    </swiper-slide>
+                <div class="articles_tabs">
+                    <swiper class="swiper articles_tabs-wrap articlesTabsNav" ref="swiper" :options="swiperOption" style="width: 100%;">
+                        <swiper-slide :class="(item.id == 0 && item.active)?'articles_tabs-item active':'articles_tabs-item'" v-for="item in items" :key="'item_tabs_' + item.id">
+                            <template v-if="item.real">
+                                <div class="articles_tabs-info">1</div>
+                                <button class="articles_tabs-delete"></button>
+                            </template>
+                            <template v-else>
+                                <button class="articles_tabs-add" :disabled="(item.id != 0)?true:false"></button>
+                            </template>
+                        </swiper-slide>
+                    </swiper>
                     <div class="swiper-button-prev" slot="button-prev"></div>
                     <div class="swiper-button-next" slot="button-next"></div>
-                </swiper>
+                </div>
                 <div class="articles_tabs__content articlesTabsContent">
                     <div class="articles_tabs__content-block" v-for="item in items">
                         <div class="articles_create-box">
@@ -24,13 +30,15 @@
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Время</p>
                                     <div class="articles_create__item-content">
-                                        <input type="text" class="date_time" value="12 : 00">
+                                        <input type="text" class="date_time" v-model="item.time">
+                                        <div class="errors" v-if="item.time_error">{{ item.time_error }}</div>
                                     </div>
                                 </div>
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Дата</p>
                                     <div class="articles_create__item-content">
-                                        <input type="text" class="date_time" value="11.04.19">
+                                        <input type="text" class="date_time" v-model="item.date">
+                                        <div class="errors" v-if="item.date_error">{{ item.date_error }}</div>
                                     </div>
                                 </div>
                                 <div class="articles_create__item">
@@ -40,28 +48,25 @@
                                             <input
                                                 class="form-control"
                                                 type="text"
-                                                v-model="title"
+                                                v-model="item.title"
                                             >
-                                            <div class="errors" v-if="title_error">
-                                                Заголовок обов'язковий
-                                            </div>
+                                            <div class="errors" v-if="item.title_error">{{ item.title_error }}</div>
                                         </div>
                                         <div class="articles_create__radio_circle">
                                             <div class="articles_create__radio_circle-block">
                                                 <v-radio
-                                                    :id="name+item+'_1'"
-                                                    :name="name"
+                                                    :id="name+item.id+'_1'"
+                                                    :name="name+item.id"
                                                     :value="1"
-                                                    :checked="true"
-                                                    v-on:update:value="getType"
+                                                    :checked="(item.type == 1)?true:false"
                                                 >Новости</v-radio>
                                             </div>
                                             <div class="articles_create__radio_circle-block">
                                                 <v-radio
-                                                    :id="name+item+'_2'"
-                                                    :name="name"
+                                                    :id="name+item.id+'_2'"
+                                                    :name="name+item.id"
                                                     :value="2"
-                                                    v-on:update:value="getType"
+                                                    :checked="(item.type == 2)?true:false"
                                                 >Информация</v-radio>
                                             </div>
                                         </div>
@@ -70,11 +75,9 @@
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Обложка</p>
                                     <div class="articles_create__item-content">
-                                        <div class="articles_create__item-file width-auto buttonAddFile">
+                                        <div class="articles_create__item-file width-auto buttonAddFile" :id="'inputFile'+item.id">
                                             <input
                                                 type="file"
-                                                id="articleCover"
-                                                name="addCover"
                                                 class="input-file-hidden"
                                                 v-on:change="handleUploadArticle"
                                                 role="button"
@@ -82,14 +85,14 @@
                                             <p><span data-placeholder="Загрузить">Загрузить</span></p>
                                             <button class="delete_file deleteFile"></button>
                                         </div>
-                                        <div v-if="errorArticleCover" class="errors">{{ errorArticleCover }}</div>
+                                        <div v-if="item.image_error" class="errors">{{ item.image_error }}</div>
                                     </div>
                                 </div>
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Галерея</p>
                                     <div class="articles_create__item-content">
                                         <div class="articles_create__media">
-                                            <SimpleTestMedia :media="multiples"></SimpleTestMedia>
+                                            <SimpleTestMedia :media="item.multiples"></SimpleTestMedia>
                                             <div class="articles_create__media-add">
                                                 <input type="file" name="file" id="article_multiples" @change="addMedia($event)">
                                             </div>
@@ -99,28 +102,53 @@
                                 <div class="articles_create__item">
                                     <p class="articles_create__item-title">Текст</p>
                                     <div class="articles_create__item-content">
-                        <textarea
-                            class="form-control"
-                            rows="4"
-                            v-model="$v.text.$model"
-                        ></textarea>
+                                        <textarea
+                                            class="form-control"
+                                            rows="4"
+                                            v-model="item.text"
+                                        ></textarea>
                                     </div>
-                                    <div class="errors" v-if="$v.text.$error">Текст обов'язковий</div>
+                                    <div class="errors" v-if="item.text_error">{{item.text_error}}</div>
                                 </div>
-                                <article-form-insert
-                                    v-bind:insert.sync="insert"
-                                    v-bind:textInsert.sync="textInsert"
-                                    @insert="insertStore"
-                                />
+                                <div class="articles_create-block">
+                                    <div class="articles_create__item">
+                                        <div class="articles_create__item-title has_radio">
+                                            <input
+                                                type="checkbox"
+                                                name="article-has-insert"
+                                                id="article-has-insert"
+                                                v-model="item.textLocale"
+                                                :checked="item.textLocale"
+                                                @onclick="getTextInsert"
+                                            >
+                                            <i></i>
+                                            <p>Вставка в тексте</p>
+                                        </div>
+                                        <div class="articles_create__item-content direction-column" v-if="item.textLocale">
+                                            <v-input-text
+                                                :name="'title'"
+                                                v-model="item.content_title"
+                                                placeholder="Заголовок"
+                                                :text="''"
+                                                :classes="'mb20'"
+                                            />
+                                            <v-textarea
+                                                :rows="4"
+                                                :text="item.content_text"
+                                                placeholder="Текст"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="articles_create__item">
                                     <p class="articles_create__item-title">Теги</p>
                                     <div class="articles_create__item-content">
                                         <div class="articles_create__name-block">
                                             <div class="field_wrap_for_tags">
                                                 <multiselect
-                                                    v-model="chosenTags"
-                                                    tag-placeholder="Додати таг"
-                                                    placeholder="Вибрати таг"
+                                                    v-model="item.chosenTags"
+                                                    tag-placeholder="Добавить тег"
+                                                    placeholder="Выбрать тег"
                                                     label="name"
                                                     track-by="id"
                                                     :options="tags"
@@ -128,6 +156,7 @@
                                                     :taggable="true"
                                                     :show-labels="false"
                                                     :close-on-select="false"
+                                                    :value="item.chosenTags"
                                                     @tag="addTag"
                                                 />
                                             </div>
@@ -187,7 +216,8 @@
                                             <div class="articles_create__addition-block width-194">
                                                 <div class="articles_create-multiselect">
                                                     <multiselect
-                                                        v-model="user_id"
+                                                        v-model="item.user_id"
+                                                        :value="item.user_id"
                                                         tag-placeholder="Обрати автора"
                                                         placeholder="Обрати автора"
                                                         label="name"
@@ -212,14 +242,16 @@
                                     :label="'Кнопка'"
                                     :id="'is-article-button'"
                                     :name="'is-article-button'"
-                                    :text_button="button"
+                                    v-model="item.button"
+                                    :text_button="item.button"
                                     @update="buttonStore"
                                 />
                                 <div class="articles_create__item">
                                     <p class="articles_create__item-title">Реком. статьи</p>
                                     <div class="articles_create__item-content">
                                         <multiselect
-                                            v-model="chosenRecommended"
+                                            v-model="item.chosenRecommended"
+                                            :value="item.chosenRecommended"
                                             tag-placeholder="Додати статтю"
                                             placeholder="Вибрати статтю"
                                             label="title"
@@ -236,12 +268,13 @@
                                     :label="'Пряма ссилка'"
                                     :id="'is-article-link'"
                                     :name="'is-article-link'"
-                                    :text_button="link"
+                                    v-model="item.action"
+                                    :text_button="item.action"
                                     @update="linkStore"
                                 />
                             </div>
                         </div>
-                        <button class="articles_create-submit button-gradient" @click="submitForm">Опубликовать</button>
+                        <button class="articles_create-submit button-gradient" @click="submitForm(item.id)">Опубликовать</button>
                     </div>
                 </div>
             </div>
@@ -265,12 +298,14 @@ import ArticleFormSelect from "./templates/article/form/select"
 import VButton from "./templates/inputs/button"
 import ArticleFormButton from "./templates/article/form/button"
 import Multiselect from "vue-multiselect";
-import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS} from "../api/endpoints";
+import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS, ARTICLE_TIMES} from "../api/endpoints";
 import FragmentFormText from "./fragmets/text"
 import ArticleMultiple from "./templates/article/form/multiple"
 import SimpleTestMedia from "./fragmets/SimpleTestMedia"
-import { getRandomId } from './../utils'
+import { getRandomId, currentDate } from './../utils'
 import VRadio from "./templates/inputs/radio"
+import VTextarea from "./templates/inputs/textarea"
+import VInputText from "./templates/inputs/text"
 
 export default {
     name: "CreateContentPlan",
@@ -292,12 +327,13 @@ export default {
         FragmentFormText,
         ArticleMultiple,
         SimpleTestMedia,
-        VRadio
+        VRadio,
+        VTextarea,
+        VInputText
     },
     data() {
         return {
-            //...this.$store.state.articles,
-            items: 11,
+            items: [],//12,
             swiperOption: {
                 spaceBetween: 22,
                 slidesPerView: 'auto',
@@ -309,7 +345,7 @@ export default {
             },
             new_user: '',
             name: 'typePublication',
-            errorArticleCover: '',
+            text_error: '',
             recommended: [],
             authors: [],
             user_id: 0,
@@ -323,7 +359,8 @@ export default {
             multiples: [],
             articleType: 1,
             type: 1,
-            textLocale: 0
+            textLocale: 0,
+            current_date: currentDate()
         }
     },
     validations: {
@@ -335,6 +372,15 @@ export default {
         }
     },
     methods: {
+        updateInsertTitle(value) {
+            this.insert.push({title:value})
+        },
+        updateInsertContent(value) {
+            this.insert.push({content:value})
+        },
+        getTextInsert() {
+            this.textLocale = 1;
+        },
         addTag (newTag) {
             const tag = {
                 name: newTag,
@@ -346,43 +392,58 @@ export default {
         selectAuthor (user_id) {
             this.user_id = [user_id]
         },
-        submitForm() {
-            this.errorArticleCover = '';
+        submitForm(id) {
             let error = false
 
-            if (this.image == null) {
-                this.errorArticleCover = 'Обложка обязательна'
-                error = true;
-            }
+            for (const [index, item] of Object.entries(this.items)) {
+                if (item.id === id) {
+                    if (item.title == '') {
+                        this.items[index].title_error = 'Название обязательно';
+                        error = true;
+                    } else {
+                        this.items[index].title_error = '';
+                    }
 
-            this.$v.$touch()
-            if (this.$v.$invalid || error) {
-                //this.$store.dispatch('submitArticle', this.$data)
-            } else {
-                this.$post(ARTICLE, {
-                    title: this.title,
-                    articleType: this.articleType,
-                    text: this.text,
-                    button: this.button,
-                    action: this.link,
-                    insert: this.insert,
-                    user: this.user_id,
-                    cover_image_id: this.image,
-                    gallery: this.multiples,
-                    tags: this.chosenTags,
-                    recommended: this.chosenRecommended
-                })
-                    .then((res) => {
-                        this.$router.push({ name: 'articleList' });
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                    }).finally(() => {
-                    console.log('success or error')
-                });
-                /*this.$store.dispatch('submitArticle', this.$data).then(() => {
-                    this.$router.push({name: 'createContent'})
-                })*/
+                    if (this.image == null) {
+                        this.items[index].image_error = 'Обложка обязательна';
+                        error = true;
+                    } else {
+                        this.items[index].image_error = '';
+                    }
+
+                    if (item.text == '') {
+                        this.items[index].text_error = 'Описание обязательно';
+                        error = true;
+                    } else {
+                        this.items[index].text_error = '';
+                    }
+
+                    if (!error) {
+                        this.$post(ARTICLE, {
+                            title: item.title,
+                            articleType: item.type,
+                            text: item.text,
+                            button: item.button,
+                            action: item.action,
+                            insert: this.insert,
+                            user: item.user_id,
+                            cover_image_id: this.image,
+                            gallery: item.multiples,
+                            tags: item.chosenTags,
+                            recommended: item.chosenRecommended,
+                            time: item.time,
+                            date: item.date
+                        })
+                            .then((res) => {
+                                this.$router.push({ name: 'articleList' });
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                            }).finally(() => {
+                            console.log('success or error')
+                        });
+                    }
+                }
             }
         },
         AddNewUser() {
@@ -464,6 +525,135 @@ export default {
         this.$get(ARTICLE_TAGS).then( response => {
             this.tags = response.data
         })
+        this.$get(ARTICLE_TIMES).then(response => {
+            if (response.data.length > 0) {
+                for (const [index, item] of Object.entries(response.data)) {
+                    console.log(response.data);
+                    setTimeout(() => {
+                        let field = $('.buttonAddFile input');
+                        let block = field.parents(".buttonAddFile");
+                        let text = block.find("p span");
+                        let fileName = item.cover_image.disk_name;
+                        block.addClass("has_file");
+                        text.text(fileName);
+                    }, 3000);
+
+                    let gallery = [];
+                    if (item.gallery) {
+                        for (const [indexG, itemG] of Object.entries(item.gallery)) {
+                            let obj = {
+                                itemId: getRandomId(),
+                                path: itemG.cover_image
+                            };
+                            gallery.push(obj)
+                        }
+                    }
+
+                    let tags = [];
+                    if (item.tags) {
+                        for (const [indexT, itemT] of Object.entries(item.tags)) {
+                            let obj = {
+                                id: itemT.tag.id,
+                                name: itemT.tag.name
+                            };
+                            tags.push(obj)
+                        }
+                    }
+
+                    let recommended = [];
+                    if (item.recommended) {
+                        for (const [indexR, itemR] of Object.entries(item.recommended)) {
+                            let obj = {
+                                id: itemR.recommended_id,
+                                title: itemR.post.title
+                            };
+                            recommended.push(obj)
+                        }
+                    }
+
+                    this.items.push({
+                        id: item.id,
+                        real: true,
+                        active: false,
+                        date: item.date,
+                        time: item.time,
+                        title: item.title,
+                        title_error: '',
+                        time_error: '',
+                        image_error: '',
+                        text_error: '',
+                        type: item.type,
+                        text: item.content_html,
+                        content_title: (item.content)?item.content[0].title:'',
+                        content_text: (item.content)?item.content[0].content:'',
+                        textLocale: (item.content)?1:0,
+                        chosenTags: tags,
+                        user_id: (item.user)?[{id: item.user.id, name: item.user.name}]:0,
+                        chosenRecommended: recommended,
+                        action: item.action,
+                        multiples: gallery,
+                        button: item.button,
+                    });
+                }
+
+                let length = response.data.length;
+                let count = 12 - length;
+
+                if (count > 0) {
+                    for (let i = 0; i < count; i++) {
+                        this.items.push({
+                            id: i,
+                            real: false,
+                            active: false,
+                            date: currentDate(),
+                            time: '12:00',
+                            title: '',
+                            title_error: '',
+                            time_error: '',
+                            image_error: '',
+                            text_error: '',
+                            type: 1,
+                            text: '',
+                            content_title: '',
+                            content_text: '',
+                            textLocale: 0,
+                            chosenTags: [],
+                            user_id: 0,
+                            button: '',
+                            chosenRecommended: [],
+                            action: '',
+                            multiples: []
+                        });
+                    }
+                }
+            } else {
+                for (let i = 0; i < 12; i++) {
+                    this.items.push({
+                        id: i,
+                        real: false,
+                        active: true,
+                        date: currentDate(),
+                        time: '12:00',
+                        title: '',
+                        title_error: '',
+                        time_error: '',
+                        image_error: '',
+                        text_error: '',
+                        type: 1,
+                        text: '',
+                        content_title: '',
+                        content_text: '',
+                        textLocale: 0,
+                        chosenTags: [],
+                        user_id: 0,
+                        button: '',
+                        chosenRecommended: [],
+                        action: '',
+                        multiples: ''
+                    });
+                }
+            }
+        })
     }
 }
 </script>
@@ -475,13 +665,8 @@ export default {
     }
 
     .swiper-container {
-        width: calc(100% + 44px);
-        padding: 5px 22px;
-        margin-left: -22px;
-    }
-
-    .swiper-wrapper {
-        gap: 0 22px;
+        width: 100%;
+        padding: 5px 0;
     }
 
     .swiper-button-prev,
@@ -516,7 +701,7 @@ export default {
     }
 
     .swiper-button-prev {
-        left: 0;
+        left: -20px;
     }
 
     .swiper-button-prev:after {
@@ -526,7 +711,7 @@ export default {
     }
 
     .swiper-button-next {
-        right: 0;
+        right: -20px;
     }
 
     .swiper-button-prev.swiper-button-disabled,

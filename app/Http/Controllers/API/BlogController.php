@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\File;
 use App\Models\PostGallery;
 use App\Models\PostTag;
+use App\Models\PostTimes;
 use App\Models\Recommended;
 use App\Models\Tag;
 use App\Models\User;
@@ -88,6 +89,34 @@ class BlogController extends Controller
      */
     public function tags() {
         $data = Tag::all();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function times() {
+        $data = Articles::select(
+            'rainlab_blog_posts.id',
+            'rainlab_blog_posts.user_id',
+            'rainlab_blog_posts.title',
+            'rainlab_blog_posts.content',
+            'rainlab_blog_posts.content_html',
+            'rainlab_blog_posts.cover_image',
+            'rainlab_blog_posts.action',
+            'rainlab_blog_posts.button',
+            'rainlab_blog_posts.type',
+            'rainlab_blog_posts_times.date',
+            'rainlab_blog_posts_times.time',
+        )
+            ->with('gallery')
+            ->with('tags')
+            ->with('user')
+            ->with('recommended')
+            ->leftJoin('rainlab_blog_posts_times', 'rainlab_blog_posts_times.post_id', '=', 'rainlab_blog_posts.id')
+            ->whereNotNull('rainlab_blog_posts_times.date')
+            ->get();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
@@ -239,6 +268,14 @@ class BlogController extends Controller
                     'parent_id' => $model->id,
                     'recommended_id' => $rec['id']
                 ]);
+            }
+
+            if (isset($request->date) && isset($request->time)) {
+                $model_times = new PostTimes();
+                $model_times->post_id = $model->id;
+                $model_times->date = date("Y-m-d", strtotime($request->date));
+                $model_times->time = date("H:m:s", strtotime($request->time));
+                $model_times->save();
             }
         }
 
