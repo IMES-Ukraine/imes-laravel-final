@@ -86,7 +86,6 @@ Route::group(
                 Route::get('/block/{id}', [UsersController::class, 'block']);
                 Route::get('/unblock/{id}', [UsersController::class, 'unblock']);
                 Route::get('/search/{query}', [UsersController::class, 'search']);
-                Route::get('/cards/{user_id}', [UsersController::class, 'cards']);
             }
         );
 
@@ -262,15 +261,6 @@ Route::group(
             }
         );
 
-        Route::group(
-            [
-                'prefix' => 'banners'
-            ],
-            function () {
-                Route::get('/{type}', [BannersController::class, 'show']);
-            }
-        );
-
 
        /**  Запросы от внешних источников */
         Route::group(
@@ -281,6 +271,26 @@ Route::group(
             function () {
                 Route::get('/{id?}', [CardsController::class, 'index']);
                 Route::get('/buy/{id}', [CardsController::class, 'buy']);
+            }
+        );
+
+        Route::group(
+            [
+                'middleware' => 'auth:api',
+                'prefix' => 'banners'
+            ],
+            function () {
+                Route::get('/{type}', [BannersController::class, 'show']);
+            }
+        );
+
+        Route::group(
+            [
+                'middleware' => 'auth:api',
+                'prefix' => 'users'
+            ],
+            function () {
+                Route::get('/cards/{user_id}', [UsersController::class, 'cards']);
             }
         );
 
