@@ -53,7 +53,7 @@
             <div v-if="test.type === 'easy'">
                 <div>
                     <Question
-                        :question="test.question"
+                        :question.sync="test.question"
                         :variants="test.variants"
                         :errors="testErrors"/>
                 </div>
@@ -65,10 +65,10 @@
 
             <div v-if="test.type === 'complex'">
                 <div>
-                    <TestComplex :question="test.question"
-                                 :complex_question="test.complex_question"
+                    <TestComplex :test.sync="test"
                                  :variants="test.variants"
-                                 :errors="testErrors"/>
+                                 :errors="testErrors"
+                                 :toValidate="toValidate"/>
                 </div>
                 <div class="mb20"></div>
                 <button class="articles_create-submit button-gradient" type="button"
@@ -105,12 +105,13 @@ export default {
     data() {
         return {
             testErrors: {},
+            toValidate: false
         }
     },
     computed: {
-                test() {
-                    return this.$store.state.content.test;
-                }
+        test() {
+            return this.$store.state.content.test;
+        }
     },
     methods: {
         addComplexQuestion() {
@@ -159,6 +160,10 @@ export default {
         storeTest() {
             this.testErrors = {};
 
+            //триггер для запуска валидации в дочерних компонентах
+            this.$store.commit('setTestError', false);
+            this.toValidate = !this.toValidate;
+
             if (this.test.question.title == '') {
                 this.testErrors.title = 'Назва обовʼязкова'
             }
@@ -166,17 +171,11 @@ export default {
             if (this.test.question.text == '') {
                 this.testErrors.text = 'Питання обовʼязкове'
             }
-            if (undefined === this.$store.state.test.answer.correct || (! this.$store.state.test.answer.correct.length) ){
+            if (!this.test.question.answer.correct.length) {
                 this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
             }
 
-
-
-            if (!Object.keys(this.testErrors).length) {
-                if (undefined !== this.$store.state.test.answer ){
-                    this.test.answer.correct = this.$store.state.test.answer.correct;
-                }
-                this.test.question.type = this.$store.state.test.question.type;
+            if (!Object.keys(this.testErrors).length && !this.$store.state.testErrors) {
                 this.$store.commit('storeTest', this.test);
                 this.setStep(2);
             }

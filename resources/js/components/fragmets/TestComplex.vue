@@ -6,7 +6,7 @@
                     <p class="articles_create__item-title">Название</p>
                     <div class="articles_create__item-content">
                         <div class="articles_create__name-block">
-                            <input type="text" name="title" id="question_title" v-model="question.title">
+                            <input type="text" name="title" id="question_title" v-model="test.title">
                             <div v-if="errors.text" class="errors">{{ errors.text }}</div>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                 <div class="articles_create__item">
                     <p class="articles_create__item-title">Описание</p>
                     <div class="articles_create__item-content">
-                        <textarea v-model="question.text"></textarea>
+                        <textarea v-model="test.text"></textarea>
                         <div v-if="errors.text" class="errors">{{ errors.text }}</div>
                     </div>
                 </div>
@@ -115,9 +115,8 @@
             </div>
         </div>-->
 
-            <!--<ComplexTestVariants @file_сhange="fileChange" :complex="complex" v-bind:answer="answer" v-bind:variants="variants"></ComplexTestVariants>-->
             <div class="mb20"></div>
-            <ComplexTestQuestion :complex="complex" :variants="variants" v-bind:complex_question="complex_question"></ComplexTestQuestion>
+            <ComplexTestQuestion :toValidate="toValidate" :complex_question.sync="test.complex_question"></ComplexTestQuestion>
             <div class="mb20"></div>
             <button class="articles_create-submit button-border" type="button" @click="addBlockComplex">Добавить блок</button>
         </div>
@@ -131,9 +130,11 @@
     import { getRandomId } from '../../utils'
     import FragmentFormText from "./text";
     import {PROJECT_IMAGE} from "../../api/endpoints";
+    import ProjectMixin from "../../ProjectMixin";
     export default {
         name: 'TestComplex',
-        props: ['title', 'text', 'link', 'button', 'variants', 'question', 'complex_question', 'errors'],
+        props: [ 'test', 'errors', 'toValidate'],
+        mixins: [ProjectMixin],
         components: {
             FragmentFormText,
             //SimpleTestVariant,
@@ -144,12 +145,10 @@
 
         data() {
             return {
-                //tests: this.$store.state.tests,
-                coverRandomId: getRandomId(),
+                complexQ: [...this.test.complex_question],
                 files: {},
                 cover: null,
                 video: null,
-                complex: [],
                 categoryList: [
                     {name: 'ВСЕ', id: 1},
                     {name: 'Дерматология', id: 2},
@@ -175,51 +174,18 @@
             }
         },
         methods: {
-            /**
-             * Adding one more answer variant to question
-             */
-            /*addAnswer() {
-                const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-                let length = this.variants.length
-                let obj = {
-                    itemId: getRandomId(),
-                    title: alphabet[length],
-                    variant: '',
-                    isCorrect: false,
-                };
-                this.variants.push(obj)
-            },*/
+
             addBlockComplex() {
-                let obj = {
-                    itemId: getRandomId(),
-                    title: '',
-                    text: '',
-                    variants: [
-                        {
-                            itemId: getRandomId(),
-                            title: 'A',
-                            variant: '',
-                            isCorrect: false,
-                            answer: {
-                                type: true,
-                                right: false,
-                                media: []
-                            }
-                        },
-                        {
-                            itemId: getRandomId(),
-                            title: 'B',
-                            variant: '',
-                            isCorrect: false,
-                            answer: {
-                                type: true,
-                                right: false,
-                                media: []
-                            }
-                        }
-                    ]
-                };
-                this.complex_question.push(obj)
+                 let newBlock = {...this.complex_questionTemplate};
+                 let id = getRandomId();
+                 newBlock.itemId = 'complex-' + id;
+                this.complexQ.push(newBlock);
+
+                this.test.complex_question = [...this.complexQ];
+                let index = this.test.complex_question.length;
+
+                this.addAnswerTest(0,index);
+                this.addAnswerTest(1,index);
             },
             /**
              * Handle changing of file input (cover, video, variants)
@@ -241,7 +207,7 @@
                     }
                 ).then((file) => {
                     //this[type] = file.data
-                    this.question.media[type] = file.data
+                    this.test.media[type] = file.data
                     //this.options.files[input.dataset.ref] = file.data
                 })
             },

@@ -10,6 +10,7 @@ class Question
 
     const ANSWER_VARIANTS = 'variants';
     const ANSWER_TEXT     = 'text';
+    const ANSWER_MEDIA     = 'media';
 
     public $title;
     public $question;
@@ -44,7 +45,7 @@ class Question
 
         if ($question['answer']['type'] == self::BUTTONS_CARD) $this->buttonsType = self::BUTTONS_CARD;
 
-        if ($question['answer']['type'] == 'text') $this->answer_type = self::ANSWER_TEXT;
+        $this->answer_type = $question['answer']['type'];
 
         $this->isTextAnswerType = (boolean) ($this->answer_type == self::ANSWER_TEXT);
 

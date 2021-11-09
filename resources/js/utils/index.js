@@ -1,13 +1,6 @@
 const chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
-const getRandom = n => {
-    let res = "";
-    for (let i = 0; i < n; i++) {
-        let id = Math.ceil(Math.random() * 35);
-        res += chars[id];
-    }
-    return res;
-};
+
 const currentDate = () => {
     var d = new Date();
     var curr_date = d.getDate();
@@ -16,7 +9,7 @@ const currentDate = () => {
     return curr_date + "-" + curr_month + "-" + curr_year;
 };
 const getRandomId = () => {
-    return 'variant-' + Math.random().toString(36).substr(2, 9)
+    return Math.random().toString(36).substr(2, 9)
 }
 const variantTemplate = {
     question: {
@@ -44,7 +37,6 @@ const variantTemplate = {
     },
 }
 export {
-    getRandom,
     getRandomId,
     alphabet,
     variantTemplate,

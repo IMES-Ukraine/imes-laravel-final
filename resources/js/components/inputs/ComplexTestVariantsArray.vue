@@ -1,10 +1,11 @@
 <template>
     <div>
-        <div class="articles_create-block" v-for="(variant, index) in variants" v-bind:key="variant.itemId" :id="'block-'+variant.itemId">
+        <div class="articles_create-block" v-for="(variant, index) in question.variants" v-bind:key="variant.itemId"
+             :id="'block-'+variant.itemId">
             <div class="articles_create-line"></div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="checkbox" v-model="variant.answer.type" :id="'type-'+variant.itemId" :checked="variant.answer.type" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="variants">
                     <i></i>
                     <p>Готовый <br>ответ</p>
                 </div>
@@ -13,16 +14,19 @@
                         <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
                         <input type="text" name="text">
                         <div class="articles_create-checkbox">
-                            <input type="checkbox" :id="'right_answer_' + variant.itemId" v-model="variant.answer.right">
+                            <input type="checkbox" :id="'right_answer_' + variant.itemId"
+                                   v-model="variant.right"
+                                   @click="setCorrect(variant.itemId, variant.right)">
                             <i></i>
                             <p>Правильный ответ</p>
                         </div>
                     </div>
                 </div>
+                <p :key="errKey" class="errors" >{{ errors.correct }}</p>
             </div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="checkbox" v-bind:name="'answer_'+variant.itemId" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="text">
                     <i></i>
                     <p>Поле ввода ответа</p>
                 </div>
@@ -32,15 +36,16 @@
             </div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="checkbox" v-bind:name="'media_'+variant.itemId" @change="hasActiveCheckbox(variant.itemId, index)">
+                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="media">
                     <i></i>
                     <p>Медиа</p>
                 </div>
                 <div class="articles_create__item-content">
                     <div class="articles_create__media">
-                        <SimpleTestMedia :media="variant.answer.media"></SimpleTestMedia>
+                        <SimpleTestMedia :media="variant.media"></SimpleTestMedia>
                         <div class="articles_create__media-add">
-                            <input type="file" name="file" :id="'file-'+variant.itemId" @change="addMedia(index, variant.itemId, $event)">
+                            <input type="file" name="file" :id="'file-'+variant.itemId"
+                                   @change="addMedia(index, variant.itemId, $event)">
                         </div>
                     </div>
                 </div>
@@ -131,53 +136,92 @@
 </template>
 
 <script>
-    import {required} from 'vuelidate/lib/validators'
-    import {PROJECT_IMAGE} from "../../api/endpoints"
-    import SimpleTestMedia from "../fragmets/SimpleTestMedia"
+import {required} from 'vuelidate/lib/validators'
+import {PROJECT_IMAGE} from "../../api/endpoints"
+import SimpleTestMedia from "../fragmets/SimpleTestMedia"
 
-    export default {
-        name: 'ComplexTestVariantsArray',
-        components: {
-            SimpleTestMedia
+export default {
+    name: 'ComplexTestVariantsArray',
+    components: {
+        SimpleTestMedia
+    },
+    props: ['question', 'toValidate'],
+    data() {
+        return {
+            localType: 'variants',
+            errKey: Math.random(),
+            errors: {}
+        }
+    },
+    mounted() {
+        this.localType = this.question.answer.type;
+    },
+    watch: {
+        localType() {
+            this.question.answer.type = this.localType;
         },
-        props: ['complex', 'variants'],
-        methods: {
-
-            /**
-             * Handle changing of file input (cover, video, variants)
-             * @param event
-             */
-            handleUpload(index, event) {
-
-                let imageForm = new FormData();
-                let input = event.target
-                let type = input.getAttribute('img_type')
-
-
-                imageForm.append('file', input.files[0]);
-
-                this.$post(PROJECT_IMAGE + type,
-                    imageForm,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }
-                ).then((file) => {
-                    this.variants[index].file = file.data
-                })
-            },
-        },
-        validations: {
-            text: {
-                required
+        toValidate() {
+            this.errors.correct = '';
+            console.log('answer correct: ', this.question.answer.correct, this.question.answer.correct.length);
+            if (!this.question.answer.correct.length) {
+                this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
+                this.$store.dispatch('setTestError', true);
             }
+            this.errKey = Math.random();
+        }
+    },
+    methods: {
+        setCorrect(id, data) {
+            console.log(id, data);
+            if (!data) {
+                this.question.answer.correct.push(id);
+                this.errors.correct = '';
+            } else {
+                this.question.answer.correct = this.question.answer.correct.filter((item) => {
+                    return item !== id;
+                });
+                if (!this.question.answer.correct.length) {
+                    this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
+                    this.$store.dispatch('setTestError', true);
+                }
+            }
+        },
+
+        /**
+         * Handle changing of file input (cover, video, variants)
+         * @param event
+         */
+        handleUpload(index, event) {
+
+            let imageForm = new FormData();
+            let input = event.target
+            let type = input.getAttribute('img_type')
+
+
+            imageForm.append('file', input.files[0]);
+
+            this.$post(PROJECT_IMAGE + type,
+                imageForm,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            ).then((file) => {
+                this.question.variants[index].file = file.data
+            })
+        },
+    },
+    validations: {
+        text: {
+            required
         }
     }
+}
 </script>
 
 <style>
-    .custom-checkbox__input {
-        margin-right: 10px;
-    }
+.custom-checkbox__input {
+    margin-right: 10px;
+}
 </style>

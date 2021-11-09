@@ -61,9 +61,9 @@
                     </div>
                 </div>
             </div>
-            <SimpleTestVariants :type="question.type" :variants="variants" :errors="errors"></SimpleTestVariants>
+            <SimpleTestVariants :question.sync="question" :variants="variants" :errors="errors"></SimpleTestVariants>
 
-            <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest">добавить ответ</button>
+            <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest(variants.length)">добавить ответ</button>
             <div class="articles_create-line"></div>
 
             <div class="articles_create-block">
@@ -244,14 +244,6 @@ export default {
     },
     methods: {
         /**
-         * Adding one more answer variant to question
-         */
-        addAnswerTest() {
-            let title = alphabet[this.variants.length];
-            let newItem = {... this.getNewVariant(title) };
-            this.variants.push(newItem);
-        },
-        /**
          * Handle changing of file input (cover, video, variants)
          * @param event
          */
@@ -275,25 +267,12 @@ export default {
                 //this.options.files[input.dataset.ref] = file.data
             })
         },
-        checkboxChange() {
-            if (this.isCheckedFile) {
-                this.isCheckedFile = false
-            } else {
-                this.isCheckedFile = true
-            }
-        },
-        checkboxChangeVideo() {
-            if (this.isCheckedVideo) {
-                this.isCheckedVideo = false
-            } else {
-                this.isCheckedVideo = true
-            }
-        }
+
     },
     mounted() {
         if (! this.variants.length) {
-            this.addAnswerTest();
-            this.addAnswerTest();
+            this.addAnswerTest(0);
+            this.addAnswerTest(1);
         }
     }
 }

@@ -71,7 +71,7 @@
                 const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
                 let length = this.variants.length
                 let obj = {
-                    itemId: getRandomId(),
+                    itemId: 'survey-' + getRandomId(),
                     title: alphabet[length],
                     variant: '',
                     isCorrect: false,

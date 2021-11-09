@@ -466,7 +466,7 @@ export default {
                 }
             ).then((file) => {
                 let obj = {
-                    itemId: getRandomId(),
+                    itemId: 'article-' + getRandomId(),
                     file: file.data.data.id,
                     name: event.target.files[0].name,
                     data: file.data,

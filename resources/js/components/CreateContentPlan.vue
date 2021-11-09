@@ -556,7 +556,7 @@ export default {
             ).then((file) => {
                 let obj = {
                     id: id,
-                    itemId: getRandomId(),
+                    itemId: 'plan-' + getRandomId(),
                     file: file.data.data.id,
                     name: event.target.files[0].name,
                     data: file.data,
@@ -601,7 +601,7 @@ export default {
                     if (item.gallery) {
                         for (const [indexG, itemG] of Object.entries(item.gallery)) {
                             let obj = {
-                                itemId: getRandomId(),
+                                itemId: 'gallery-' + getRandomId(),
                                 path: itemG.cover_image
                             };
                             gallery.push(obj)

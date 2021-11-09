@@ -57,7 +57,8 @@ export default new Vuex.Store({
         cards: {},
 
         numberTest: 0,
-        numberArticle: 0
+        numberArticle: 0,
+        testErrors: false
     },
     getters: {
     },
@@ -173,8 +174,9 @@ export default new Vuex.Store({
         storeTestContent() {
             state.questions[0].points = content
         },
-        saveEntity(state, entity, data) {
-            this.state[entity] = data
+
+        setTestError(state, error) {
+            this.state.testErrors = error;
         }
     },
     actions: {
@@ -322,6 +324,10 @@ export default new Vuex.Store({
 
         setQuestionType(context, type) {
           context.commit('setQuestionType', type);
+        },
+
+        setTestError(context, error) {
+          context.commit('setTestError', error);
         }
     },
     modules: {}

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {getRandomId, makeId} from "./utils";
+import {alphabet, getRandomId, makeId} from "./utils";
 import {PROJECT} from "./api/endpoints";
 
 export default {
@@ -48,7 +48,6 @@ export default {
                     question: {
                         title: '',
                         text: '',
-                        type: 1,
                         description: '',
                         link: '',
                         button: null,
@@ -58,9 +57,14 @@ export default {
                             cover: null,
                             video: null,
                         },
+                        answer: {
+                            type: 'variants',
+                            correct: []
+                        },
                         isComplex: this.isComplex,
                         agreement: null
                     },
+                    cover: '',
                     complex_question: [],
                     variants: [],
                     picked: 'test',
@@ -68,17 +72,19 @@ export default {
                     count: null,
                     points: null,
                     canRetake: null,
-                    answer: {
-                        type: 'variants',
-                        correct: []
-                    }
+
                 },
 
             },
             complex_questionTemplate: {
                 itemId: '',
-                title: 'A',
+                title: '',
                 text: '',
+                cover: '',
+                answer: {
+                    type: 'variants',
+                    correct: []
+                },
                 variants: [],
             },
             variantTemplate: {
@@ -87,7 +93,6 @@ export default {
                 text: '',
                 variant: '',
                 isCorrect: false,
-                type: 1,
                 right: false,
                 media: []
             },
@@ -156,13 +161,13 @@ export default {
         },
         getNewVariant(title) {
             let variant = this.variantTemplate;
-            variant.itemId = getRandomId();
+            variant.itemId = 'variant-' + getRandomId();
             variant.title = title;
             return variant;
         },
         getNewComplexQuestion() {
             let complex = this.complex_questionTemplate;
-            complex.itemId = 'variant-' + Math.random().toString(36).substr(2, 9);
+            complex.itemId = 'question-' + getRandomId;
             return complex;
         },
 
@@ -179,6 +184,30 @@ export default {
         },
         reloadBlockSurveyTest() {
             this.$store.state.contentList[this.$store.state.currentContent].test = {};
+        },
+
+        /**
+         * Adding one more answer variant to question
+         */
+        addAnswerTest(varIndex, questionIndex) {
+
+            let title = alphabet[varIndex];
+            let newItem = {... this.getNewVariant(title) };
+            if (!questionIndex) {
+                this.variants.push(newItem);
+            }
+            else {
+                questionIndex--;
+                let q;
+                console.log('index: ', questionIndex);
+                if (this.test.complex_question.length) {
+                    q = [...this.test.complex_question[questionIndex].variants];
+                }else{
+                    q = [];
+                }
+                q.push(newItem);
+                this.test.complex_question[questionIndex].variants = [...q];
+            }
         },
 
     }

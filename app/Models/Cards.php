@@ -84,9 +84,7 @@ class Cards extends Model
      *
      * @var array
      */
-    protected $casts = [
-'detailed' => 'boolean'
-    ];
+    protected $casts = [];
 
     const RuleList = [
 

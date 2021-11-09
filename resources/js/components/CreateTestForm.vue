@@ -126,7 +126,7 @@ export default {
     data() {
         return {
             //tests: this.$store.state.tests,
-            coverRandomId: getRandomId(),
+            coverRandomId: 'cover-' + getRandomId(),
             files: {},
         }
     },
