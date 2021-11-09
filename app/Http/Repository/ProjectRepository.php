@@ -45,12 +45,13 @@ class ProjectRepository
         $isProjectSaved = $project->save();
         $isProjectItemsSaved = true;
 
-        foreach ($projectTotal['content'] as $content) {
+        foreach ($projectTotal['content'] as $index => $content) {
             $questionModel = TestQuestions::create((array)new Question($content['test']));
             $questionModel->save();
 
             $items = new ProjectItems;
             $items->item_type = get_class($questionModel);
+            $items->item_key = $index;
             $items->item_id = $questionModel->id;
             $items->project_id = $project->id;
             $items->data = $content['test'];
@@ -62,6 +63,7 @@ class ProjectRepository
 
             $items = new ProjectItems;
             $items->item_type = get_class($articleModel);
+            $items->item_key = $index;
             $items->item_id = $articleModel->id;
             $items->project_id = $project->id;
             $items->data = $content['article'];
