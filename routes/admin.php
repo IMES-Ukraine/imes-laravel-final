@@ -29,7 +29,7 @@ Route::group(
             'prefix' => 'notification'
         ],
             function () {
-                Route::get('all', [AdminController::class, 'NotificationSendAll']);
+                Route::post('all', [AdminController::class, 'NotificationSendAll']);
 
                 Route::post('/to', [AdminController::class, 'notificationSendTo']);
             });
