@@ -20,7 +20,7 @@
                 v-if="requests.length"
                 v-for="(request, index) in requests"
                 v-bind:key="request.id"
-                :index="index"
+                :index="index + 1"
                 :request="request"
                 v-on="$listeners"
             >{{ index }}

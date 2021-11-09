@@ -66,6 +66,8 @@ class Cards extends Model
         'cover',
         'category_id',
         'is_active',
+        'detailed',
+        'has_category'
     ];
 
     /**
@@ -83,7 +85,7 @@ class Cards extends Model
      * @var array
      */
     protected $casts = [
-
+'detailed' => 'boolean'
     ];
 
     const RuleList = [
@@ -101,6 +103,8 @@ class Cards extends Model
         'category_id' => [],
 
         'is_active' => [],
+        'detailed' => [],
+        'has_category' => []
 
     ];
 
