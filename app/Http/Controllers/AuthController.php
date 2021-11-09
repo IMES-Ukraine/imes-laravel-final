@@ -30,7 +30,7 @@ class AuthController extends Controller
 //        $hash = Hash::make($pass);
 //        return response()->json([$pass, $hash] );
 
-        $credentials = request(['email', 'password']);
+        $credentials = request(['phone', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
