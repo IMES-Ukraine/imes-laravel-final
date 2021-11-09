@@ -80,7 +80,7 @@ export default new Router({
         {
             path: '/article/:articleId',
             name: "articleById",
-            component: () => import("../components/CreateArticleForm.vue")
+            component: () => import("../components/ArticleFormUpdate.vue")
         },
         {
             path: '/content-plan/new',

@@ -308,8 +308,8 @@ class BlogController extends Controller
         ];
 
         $model->content = json_encode($content);
-        $file = File::find($request->cover_image_id);
-        $model->cover_image = $file;
+        $file = File::findOrFail((integer)$request->cover_image_id);
+        $model->cover_image = $file->getAttributes();
 
         $saveStatus = $model->save();
 
@@ -366,7 +366,7 @@ class BlogController extends Controller
         if (!empty( $data)) {
 
             //$apiUser = Auth::getUser();
-            $apiUser = Auth::user();
+            /*$apiUser = Auth::user();
 
             $opened = new Opened();
             $opened->user_id = $apiUser->id;
@@ -374,7 +374,7 @@ class BlogController extends Controller
             $opened->save();
 
             $tracking = new TrackingProvider($apiUser);
-            $tracking->setBlockReaded($id);
+            $tracking->setBlockReaded($id);*/
 
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data );
         }

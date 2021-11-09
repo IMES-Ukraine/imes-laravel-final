@@ -3,7 +3,7 @@
         <div class="articles_list2__block-overlay articleOverlay"></div>
         <div class="articles_list2__block-controls">
             <button class="articles_list2__block-button articles_list2__block-button--statistics articleStatisticsBtn" type="button"></button>
-            <button class="articles_list2__block-button articles_list2__block-button--edit" type="button"></button>
+            <a class="articles_list2__block-button articles_list2__block-button--edit" :href="'article/' + id"></a>
             <button class="articles_list2__block-button articles_list2__block-button--delete articleDeleteBtn" type="button"></button>
         </div>
         <p class="articles_list2__block-title">{{ title }}</p>

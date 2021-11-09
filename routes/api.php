@@ -122,7 +122,7 @@ Route::group(
 
                 Route::get('/times', [BlogController::class, 'times']);
 
-                Route::get('/{id}', [BlogController::class, 'show'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                Route::get('/{id}', [BlogController::class, 'show']);//->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
 
                 Route::get('/{id}/callback', [BlogController::class, 'callback'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
 
