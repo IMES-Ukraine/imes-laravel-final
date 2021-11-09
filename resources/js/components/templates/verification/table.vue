@@ -21,7 +21,7 @@
                   :email = request.user.email
                   :basic_information = request.user.basic_information
                   :specialized_information = request.user.specialized_information
-                  :index="index"
+                  :index="index + 1"
                   v-on="$listeners"
             ></item>
         <!-- line -->
