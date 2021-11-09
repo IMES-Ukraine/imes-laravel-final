@@ -345,7 +345,7 @@
                 })
             },
             percentActive(status, total) {
-                return parseInt(status * 100 / total)
+                return status?parseInt(status * 100 / total):0
             }
         },
         mounted() {
