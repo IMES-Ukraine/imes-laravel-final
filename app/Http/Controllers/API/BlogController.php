@@ -223,23 +223,14 @@ class BlogController extends Controller
         }
 
         $content = [];
-        $text = $title = '';
-
-        foreach ( $request->insert as $insert) {
-            if (isset($insert['content'])) $text = $insert['content'];
-            if (isset($insert['title'])) $title = $insert['title'];
-        }
-
-        if ($title || $text) {
-            $content[] = [
-                'type' => 'text',
-                'title' => $title,
-                'content' => $text
-            ];
-        }
+        $content[] = [
+            'type' => 'text',
+            'title' => $request->content_title,
+            'content' => $request->content_text
+        ];
 
         $model->content = json_encode($content);
-        $file = File::find($request->cover_image_id);
+        $file = File::findOrFail((integer)$request->cover_image_id);
         $model->cover_image = $file->getAttributes();
 
         $model->published_at = time();
@@ -300,24 +291,21 @@ class BlogController extends Controller
         $model->button = !empty($request->button) ? $request->button : '';
 
         if ($request->user) {
-            $model->user_id = (isset($request->user['id']))?$request->user['id']:$request->active_user_id;
+            $user_id = null;
+            if (isset($request->user) && $request->user) {
+                $user_id = $request->user;
+            } else {
+                $user_id = $request->active_user_id;
+            }
+            $model->user_id = $user_id;
         }
 
         $content = [];
-        $text = $title = '';
-
-        foreach ( $request->insert as $insert) {
-            if (isset($insert['content'])) $text = $insert['content'];
-            if (isset($insert['title'])) $title = $insert['title'];
-        }
-
-        if ($title || $text) {
-            $content[] = [
-                'type' => 'text',
-                'title' => $title,
-                'content' => $text
-            ];
-        }
+        $content[] = [
+            'type' => 'text',
+            'title' => $request->content_title,
+            'content' => $request->content_text
+        ];
 
         $model->content = json_encode($content);
         $file = File::find($request->cover_image_id);
@@ -356,8 +344,7 @@ class BlogController extends Controller
             if (isset($request->date) && isset($request->time)) {
                 $model_times = PostTimes::where('post_id', $model->id);
                 $date = date("Y-m-d", strtotime($request->date));
-                $time = date("H:m:s", strtotime($request->time));
-                $model_times->update(['date' => $date, 'time' => $time]);
+                $model_times->update(['date' => $date, 'time' => $request->time]);
             }
         }
 
