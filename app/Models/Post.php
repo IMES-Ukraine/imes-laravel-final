@@ -44,6 +44,10 @@ class Post extends Model
      */
     protected $jsonable = ['metadata'];
 
+    protected $casts = [
+      'cover_image' => 'object'
+    ];
+
     /**
      * The attributes that should be mutated to dates.
      * @var array
@@ -86,15 +90,15 @@ class Post extends Model
         'content_images'  => \App\Models\File::class
     ];
 
-    public function getCoverImageAttribute($value)
-    {
-        return json_decode($value);
-    }
-
-    public function setCoverImageAttribute($value)
-    {
-        return json_encode($value);
-    }
+//    public function getCoverImageAttribute()
+//    {
+//        return json_decode($this->cover_image);
+//    }
+//
+//    public function setCoverImageAttribute($value)
+//    {
+//        return json_encode($value);
+//    }
 
     /**
      * File file

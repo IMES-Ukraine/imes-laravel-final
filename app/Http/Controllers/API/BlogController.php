@@ -240,7 +240,7 @@ class BlogController extends Controller
 
         $model->content = json_encode($content);
         $file = File::find($request->cover_image_id);
-        $model->cover_image = $file;
+        $model->cover_image = $file->getAttributes();
 
         $model->published_at = time();
         $saveStatus = $model->save();
