@@ -9,7 +9,7 @@
             <h5>Дані картки {{request.id}}</h5>
         </template>
         <template #modal-title>
-            <button class="articles_save" @click="saveData()" >Зберегти</button>
+            <button class="button-border" @click="saveData()" >Зберегти</button>
         </template>
         <template #modal-footer><p></p></template>
                 <div class="modal-body p-0">
