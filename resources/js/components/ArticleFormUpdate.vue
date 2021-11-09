@@ -25,7 +25,7 @@
                                 <!-- article-title -->
                                 <article-input-title
                                     v-bind:type.sync="article.type"
-                                    :articleType="articleType"
+                                    :articleType="article.type"
                                     :title_error="title_error"
                                     @update="articleTypeStore"
                                 />
@@ -313,7 +313,7 @@
                 insert: [],
                 multiples: [],
                 articleType: 1,
-                type: 1,
+                //type: 1,
                 textLocale: 0,
                 article: {
                     title: '',
@@ -497,6 +497,15 @@
             this.$get(ARTICLE + '/' + articleId).then(response => {
                 let data = response.data[0];
                 this.article = data;
+
+                setTimeout(() => {
+                    let field = $('.buttonAddFile input');
+                    let block = field.parents(".buttonAddFile");
+                    let text = block.find("p span");
+                    let fileName = data.cover_image.disk_name;
+                    block.addClass("has_file");
+                    text.text(fileName);
+                }, 3000);
             });
         }
     }
