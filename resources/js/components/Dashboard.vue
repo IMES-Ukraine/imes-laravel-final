@@ -1,5 +1,5 @@
 <template>
-    <v-content v-if="project">
+    <v-content v-if="project.options">
         <template v-slot:sidebar>
             <project-list-sidebar :options="project.options"/>
         </template>
@@ -41,22 +41,25 @@
                             <div class="dashboard_main__item-wrap">
                                 <p class="dashboard_main__item-status dashboard_main__item-status--green"><span>Выполнили активности</span></p>
                                 <p class="dashboard_main__item-quantity">{{ project.status_active }}</p>
+                                <input type="hidden" id="project_status_active" :value="(project.status_active)?project.status_active:0" />
                             </div>
-                            <users-popup :title="'Выполнили активности'"/>
+                            <users-popup :title="'Выполнили активности'" v-if="project.status_active"/>
                         </div>
                         <div class="dashboard_main__item">
                             <div class="dashboard_main__item-wrap">
                                 <p class="dashboard_main__item-status dashboard_main__item-status--red"><span>Не выполнили активности</span></p>
                                 <p class="dashboard_main__item-quantity">{{ project.status_not_active }}</p>
+                                <input type="hidden" id="project_status_not_active" :value="(project.status_not_active)?project.status_not_active:0" />
                             </div>
-                            <button class="dashboard_main__item-button" type="button">Смотреть</button>
+                            <users-popup :title="'Не выполнили активности'" v-if="project.status_not_active"/>
                         </div>
                         <div class="dashboard_main__item">
                             <div class="dashboard_main__item-wrap">
                                 <p class="dashboard_main__item-status dashboard_main__item-status--blue"><span>Не участвовали</span></p>
                                 <p class="dashboard_main__item-quantity">{{ project.status_not_participate }}</p>
+                                <input type="hidden" id="project_status_not_participate" :value="(project.status_not_participate)?project.status_not_participate:0" />
                             </div>
-                            <button class="dashboard_main__item-button" type="button">Смотреть</button>
+                            <users-popup :title="'Не участвовали'" v-if="project.status_not_participate"/>
                         </div>
                     </div>
                 </div>
@@ -75,7 +78,7 @@
                     <div class="dashboard_study__block">
                         <div class="dashboard_study__block-head">
                             <p class="dashboard_study__block-title">Тесты</p>
-                            <button class="dashboard_study__block-more">Подробней</button>
+                            <test-popup :id="content.test.item_id"/>
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
@@ -272,6 +275,7 @@
             </div>
         </div>
     </v-content>
+    <v-preloader v-else />
 </template>
 <script>
     import VContent from "./templates/Content"
@@ -279,6 +283,8 @@
     import {PROJECT} from "../api/endpoints"
     import Cover from "./fragmets/cover-project"
     import UsersPopup from "./templates/dashboard/UsersPopup"
+    import TestPopup from "./templates/dashboard/TestPopup"
+    import VPreloader from "./fragmets/preloader"
 
     export default {
         name: "Dashboard",
@@ -286,7 +292,9 @@
             ProjectListSidebar,
             VContent,
             Cover,
-            UsersPopup
+            UsersPopup,
+            VPreloader,
+            TestPopup
         },
         data() {
             return {
@@ -301,11 +309,43 @@
 
                     if (response.data) {
                         this.project = response.data
+
+                        let canvas = document.getElementById("dashboardCircle");
+                        if (canvas) {
+                            let ctx = canvas.getContext("2d");
+                            let lastend = 0;
+                            let data = [this.project.status_not_participate, this.project.status_active, this.project.status_not_active];
+                            let myTotal = 0;
+                            let myColor = ['#00B7FF', '#4CF99E', '#FF608D'];
+
+                            for (let e = 0; e < data.length; e++) {
+                                myTotal += data[e];
+                            }
+                            let off = 0
+                            let w = (canvas.width - off) / 2
+                            let h = (canvas.height - off) / 2
+                            for (let i = 0; i < data.length; i++) {
+                                ctx.fillStyle = myColor[i];
+                                ctx.beginPath();
+                                ctx.moveTo(w, h);
+                                let len = (data[i] / myTotal) * 2 * Math.PI
+                                let r = h - off / 2
+                                ctx.arc(w, h, r, lastend, lastend + len, false);
+                                ctx.fill();
+                                ctx.fillStyle = 'white';
+                                ctx.font = "bold 14px Montserrat";
+                                ctx.textAlign = "center";
+                                ctx.textBaseline = "middle";
+                                let mid = lastend + len / 2
+                                ctx.fillText(data[i] + "%", w + Math.cos(mid) * (r / 2), h + Math.sin(mid) * (r / 2));
+                                lastend += Math.PI * 2 * (data[i] / myTotal);
+                            }
+                        }
                     }
                 })
             },
             percentActive(status, total) {
-                return status * 100 / total
+                return parseInt(status * 100 / total)
             }
         },
         mounted() {
@@ -314,37 +354,8 @@
     }
 
     $(document).ready(function() {
-        let canvas = document.getElementById("dashboardCircle");
+        window.addEventListener("load", function(event) {
 
-        if (canvas) {
-            let ctx = canvas.getContext("2d");
-            let lastend = 0;
-            let data = [60, 30, 10];
-            let myTotal = 0;
-            let myColor = ['#00B7FF', '#4CF99E', '#FF608D'];
-
-            for (let e = 0; e < data.length; e++) {
-                myTotal += data[e];
-            }
-            let off = 0
-            let w = (canvas.width - off) / 2
-            let h = (canvas.height - off) / 2
-            for (let i = 0; i < data.length; i++) {
-                ctx.fillStyle = myColor[i];
-                ctx.beginPath();
-                ctx.moveTo(w, h);
-                let len = (data[i] / myTotal) * 2 * Math.PI
-                let r = h - off / 2
-                ctx.arc(w, h, r, lastend, lastend + len, false);
-                ctx.fill();
-                ctx.fillStyle = 'white';
-                ctx.font = "bold 14px Montserrat";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                let mid = lastend + len / 2
-                ctx.fillText(data[i] + "%", w + Math.cos(mid) * (r / 2), h + Math.sin(mid) * (r / 2));
-                lastend += Math.PI * 2 * (data[i] / myTotal);
-            }
-        }
+        });
     });
 </script>
