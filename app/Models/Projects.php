@@ -35,6 +35,11 @@ class Projects extends Model
         'options' => 'array',
     ];
 
+    public function getCreatedAtAttribute($value)
+    {
+        return date_format(date_create($value), 'd.m.Y');
+    }
+
 //    public function getOptionsAttribute($value)
 //    {
 //        return json_decode($value);
