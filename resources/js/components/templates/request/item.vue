@@ -1,6 +1,9 @@
 <template>
     <tr class="db__row">
         <td class="db__td is-id">
+            {{ index }}
+        </td>
+        <td class="db__td is-id">
             {{ id }}
         </td>
         <td class="db__td is-account text-left">
@@ -79,6 +82,7 @@
                 type: Number,
                 require: true
             },
+            index: Number,
             request: {
                 type: Array,
                 require: true
