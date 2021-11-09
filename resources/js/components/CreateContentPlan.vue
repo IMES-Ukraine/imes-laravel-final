@@ -10,10 +10,10 @@
                 <v-close :to="{name:'articleList'}"/>
                 <div class="articles_tabs">
                     <swiper class="swiper articles_tabs-wrap articlesTabsNav" ref="swiper" :options="swiperOption" style="width: 100%;">
-                        <swiper-slide :class="(item.id == 0 && item.active)?'articles_tabs-item active':'articles_tabs-item'" v-for="item in items" :key="'item_tabs_' + item.id">
+                        <swiper-slide :class="(item.id == 0 && item.active)?'articles_tabs-item active':'articles_tabs-item'" v-for="(item, key) in items" :key="'item_tabs_' + item.id">
                             <template v-if="item.real">
-                                <div class="articles_tabs-info">1</div>
-                                <button class="articles_tabs-delete"></button>
+                                <div class="articles_tabs-info">{{ key + 1 }}</div>
+                                <button class="articles_tabs-delete" type="button" data-toggle="modal" :data-target="'#db-modal--' + item.id"></button>
                             </template>
                             <template v-else>
                                 <button class="articles_tabs-add" :disabled="(item.id != 0)?true:false"></button>
@@ -24,7 +24,7 @@
                     <div class="swiper-button-next" slot="button-next"></div>
                 </div>
                 <div class="articles_tabs__content articlesTabsContent">
-                    <div class="articles_tabs__content-block" v-for="item in items">
+                    <div class="articles_tabs__content-block" v-for="(item, key) in items">
                         <div class="articles_create-box">
                             <div class="articles_create-block">
                                 <div class="articles_create__item half">
@@ -79,7 +79,7 @@
                                             <input
                                                 type="file"
                                                 class="input-file-hidden"
-                                                v-on:change="handleUploadArticle"
+                                                v-on:change="handleUploadArticle($event, item.id)"
                                                 role="button"
                                             >
                                             <p><span data-placeholder="Загрузить">Загрузить</span></p>
@@ -94,7 +94,7 @@
                                         <div class="articles_create__media">
                                             <SimpleTestMedia :media="item.multiples"></SimpleTestMedia>
                                             <div class="articles_create__media-add">
-                                                <input type="file" name="file" id="article_multiples" @change="addMedia($event)">
+                                                <input type="file" @change="addMedia($event, key)">
                                             </div>
                                         </div>
                                     </div>
@@ -125,18 +125,17 @@
                                             <p>Вставка в тексте</p>
                                         </div>
                                         <div class="articles_create__item-content direction-column" v-if="item.textLocale">
-                                            <v-input-text
-                                                :name="'title'"
+                                            <input
+                                                type="text"
                                                 v-model="item.content_title"
                                                 placeholder="Заголовок"
-                                                :text="''"
-                                                :classes="'mb20'"
-                                            />
-                                            <v-textarea
-                                                :rows="4"
-                                                :text="item.content_text"
+                                                class="mb20"
+                                            >
+                                            <textarea
+                                                rows="4"
+                                                v-model="item.content_text"
                                                 placeholder="Текст"
-                                            />
+                                            ></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -277,6 +276,29 @@
                         </div>
                         <input type="hidden" v-model="item.post_id" />
                         <button class="articles_create-submit button-gradient" @click="submitForm(item.id)">{{ (item.post_id)?'Редактировать':'Опубликовать' }}</button>
+                        <div class="modal db-modal fade" v-if="item.real" :id="'db-modal--' + item.id" tabindex="-1" role="dialog" aria-hidden="true"><!-- data -->
+                            <div class="modal-dialog modal-dialog-centered db-edit-modal__dialog" role="document">
+                                <div class="db-edit-modal__content modal-content">
+                                    <button class="articles_create-close" data-dismiss="modal"></button>
+                                    <div class="modal-body p-0">
+                                        <div class="form-row">
+                                            Вы уверены что хотите удалить статью "{{ item.title }}"?
+                                        </div>
+                                        <div class="mb20"></div>
+                                        <div class="form-row">
+                                            <div class="d-flex justify-content-center ml-auto mr-auto buttons mb-1">
+                                                <button class="btn btn-outline-primary mr-4" type="button" @click="removePost(item.id)">
+                                                    Да
+                                                </button>
+                                                <button class="btn btn-outline-primary" type="button" data-dismiss="modal">
+                                                    Нет
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -299,8 +321,18 @@ import ArticleFormInsert from "./templates/article/form/insert"
 import ArticleFormSelect from "./templates/article/form/select"
 import VButton from "./templates/inputs/button"
 import ArticleFormButton from "./templates/article/form/button"
-import Multiselect from "vue-multiselect";
-import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS, ARTICLE_TIMES, ARTICLE_UPDATE} from "../api/endpoints";
+import Multiselect from "vue-multiselect"
+import {
+    ARTICLE,
+    USER,
+    USER_CREATE_NAME,
+    ARTICLE_COVER,
+    TOKEN,
+    ARTICLE_TAGS,
+    ARTICLE_TIMES,
+    ARTICLE_UPDATE,
+    ARTICLE_DESTROY
+} from "../api/endpoints";
 import FragmentFormText from "./fragmets/text"
 import ArticleMultiple from "./templates/article/form/multiple"
 import SimpleTestMedia from "./fragmets/SimpleTestMedia"
@@ -362,7 +394,8 @@ export default {
             articleType: 1,
             type: 1,
             textLocale: 0,
-            current_date: currentDate()
+            current_date: currentDate(),
+            image: []
         }
     },
     validations: {
@@ -410,7 +443,14 @@ export default {
                     let block = field.parents(".buttonAddFile");
                     let text = block.find("p span");
 
-                    if (this.image == null && text.text() == '') {
+                    let image_id = null;
+                    for (const [indexIm, itemIm] of Object.entries(this.image)) {
+                        if (itemIm.id == id) {
+                            image_id = itemIm.image_id;
+                        }
+                    }
+
+                    if ((image_id == null && text.text() == '') || (image_id == null && text.text() == 'Загрузить')) {
                         this.items[index].image_error = 'Обложка обязательна';
                         error = true;
                     } else {
@@ -433,10 +473,11 @@ export default {
                             text: item.text,
                             button: item.button,
                             action: item.action,
-                            insert: this.insert,
-                            user: item.user_id,
+                            content_title: item.content_title,
+                            content_text: item.content_text,
+                            user: (item.user_id[0])?item.user_id[0]['id']:0,
                             active_user_id: item.active_user_id,
-                            cover_image_id: this.image,
+                            cover_image_id: image_id,
                             gallery: item.multiples,
                             tags: item.chosenTags,
                             recommended: item.chosenRecommended,
@@ -444,7 +485,7 @@ export default {
                             date: item.date
                         })
                             .then((res) => {
-                                this.$router.push({ name: 'createContentPlan' });
+                                document.location.reload();
                             })
                             .catch((error) => {
                                 console.log(error)
@@ -475,7 +516,7 @@ export default {
         multiplesStore(value) {
             this.multiples = value
         },
-        handleUploadArticle(event) {
+        handleUploadArticle(event, id) {
             let imageForm = new FormData()
             imageForm.append('file', event.target.files[0])
 
@@ -493,10 +534,11 @@ export default {
             ).then((file) => {
                 this.name = event.target.files[0].name
                 //this.articles[0].imeges.push(file.data)
-                this.image = file.data.data.id
+                //this.image[id] = file.data.data.id
+                this.image.push({id: id, image_id: file.data.data.id})
             })
         },
-        addMedia(event) {
+        addMedia(event, id) {
             let imageForm = new FormData()
             imageForm.append('file', event.target.files[0])
 
@@ -513,16 +555,24 @@ export default {
                 }
             ).then((file) => {
                 let obj = {
+                    id: id,
                     itemId: getRandomId(),
                     file: file.data.data.id,
                     name: event.target.files[0].name,
                     data: file.data,
                     path: file.data.data.path
                 };
-                this.multiples.push(obj)
+                //this.multiples.push(obj)
+                this.items[id].multiples.push(obj);
                 $('#article_multiples').val(null);
             })
         },
+        removePost(id) {
+            this.$delete(ARTICLE_DESTROY + id)
+                .then((res) => {
+                    document.location.reload();
+                })
+        }
     },
     mounted() {
         this.$get(ARTICLE + '?count=12&type=1').then( response => {
@@ -586,7 +636,7 @@ export default {
                         real: true,
                         active: false,
                         date: item.date,
-                        time: item.time,
+                        time: item.time.substr(0, 5),
                         title: item.title,
                         title_error: '',
                         time_error: '',
