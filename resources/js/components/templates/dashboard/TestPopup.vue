@@ -1,9 +1,9 @@
 <template>
     <div>
-        <button class="dashboard_study__block-more" type="button" data-toggle="modal" data-target="#db-test-popup">Подробней</button>
+        <button class="dashboard_study__block-more" type="button" data-toggle="modal" :data-target="'#db-test-popup-'+id">Подробней</button>
 
         <!-- modal -->
-        <div class="modal fade" tabindex="-1" role="dialog" id="db-test-popup" aria-hidden="true">
+        <div class="modal fade" tabindex="-1" role="dialog" :id="'db-test-popup-'+id" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered db-modal__dialog full-width" role="document">
                 <div class="study template_box modal-content margin-auto">
                     <p class="template_title">{{ title }}</p>
