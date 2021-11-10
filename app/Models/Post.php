@@ -44,9 +44,9 @@ class Post extends Model
      */
     protected $jsonable = ['metadata'];
 
-    protected $casts = [
+    /*protected $casts = [
       'cover_image' => 'object'
-    ];
+    ];*/
 
     /**
      * The attributes that should be mutated to dates.

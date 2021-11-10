@@ -230,8 +230,7 @@ class BlogController extends Controller
         ];
 
         $model->content = json_encode($content);
-        $file = File::findOrFail((integer)$request->cover_image_id);
-        $model->cover_image = $file->getAttributes();
+        $model->cover_image = $request->cover_image;
 
         $model->published_at = time();
         $saveStatus = $model->save();
@@ -308,8 +307,7 @@ class BlogController extends Controller
         ];
 
         $model->content = json_encode($content);
-        $file = File::findOrFail((integer)$request->cover_image_id);
-        $model->cover_image = $file->getAttributes();
+        $model->cover_image = $request->cover_image;
 
         $saveStatus = $model->save();
 
@@ -357,30 +355,25 @@ class BlogController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id){
+        $data = Articles::select(
+            'rainlab_blog_posts.id',
+            'rainlab_blog_posts.user_id',
+            'rainlab_blog_posts.title',
+            'rainlab_blog_posts.content',
+            'rainlab_blog_posts.content_html',
+            'rainlab_blog_posts.cover_image',
+            'rainlab_blog_posts.action',
+            'rainlab_blog_posts.button',
+            'rainlab_blog_posts.type',
+            )
+            ->with('gallery')
+            ->with('tags')
+            ->with('user')
+            ->with('recommended')
+            ->where(['id' => $id])
+            ->get();
 
-        Post::find($id)->increment('views');
-
-        $data = Articles::with( [/*'featured_images','content_images',*/ 'cover_image','recommended.post','recommended.post.cover_image'] )->where( 'id', '=', $id)->get();
-
-
-        if (!empty( $data)) {
-
-            //$apiUser = Auth::getUser();
-            /*$apiUser = Auth::user();
-
-            $opened = new Opened();
-            $opened->user_id = $apiUser->id;
-            $opened->news_id = $id;
-            $opened->save();
-
-            $tracking = new TrackingProvider($apiUser);
-            $tracking->setBlockReaded($id);*/
-
-            return $this->helpers->apiArrayResponseBuilder(200, 'success', $data );
-        }
-
-        return $this->helpers->apiArrayResponseBuilder(404, 'not found', ['error' => 'invalid id']);
-
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 
     /**

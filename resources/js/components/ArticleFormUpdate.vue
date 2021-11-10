@@ -18,9 +18,7 @@
                                         type="text"
                                         v-model="article.title"
                                     >
-                                    <div class="errors" v-if="title_error">
-                                        Заголовок обов'язковий
-                                    </div>
+                                    <div class="errors" v-if="title_error">{{ title_error }}</div>
                                 </div>
                                 <!-- article-title -->
                                 <article-input-title
@@ -67,16 +65,11 @@
                                 <textarea
                                     class="form-control"
                                     rows="4"
-                                    v-model="article.text"
+                                    v-model="article.content_html"
                                 ></textarea>
-                                <div class="errors" v-if="text_error">Текст обов'язковий</div>
+                                <div class="errors" v-if="text_error">{{ text_error }}</div>
                             </div>
                         </div>
-                        <!--<article-form-insert
-                            v-bind:insert.sync="insert"
-                            v-bind:textInsert.sync="textInsert"
-                            @insert="insertStore"
-                        />-->
                         <div class="articles_create-block">
                             <div class="articles_create__item">
                                 <div class="articles_create__item-title has_radio">
@@ -84,36 +77,27 @@
                                         type="checkbox"
                                         name="article-has-insert"
                                         id="article-has-insert"
-                                        v-model="textLocale"
-                                        :checked="textLocale"
+                                        v-model="article.textLocale"
+                                        :checked="article.textLocale"
                                         @onclick="getTextInsert"
                                     >
                                     <i></i>
                                     <p>Вставка в тексте</p>
                                 </div>
-                                <div class="articles_create__item-content direction-column" v-if="textLocale">
-                                    <v-input-text
-                                        :name="'title'"
-                                        v-on:update:value="updateInsertTitle($event)"
+                                <div class="articles_create__item-content direction-column" v-if="article.textLocale">
+                                    <input
+                                        type="text"
+                                        v-model="article.content_title"
                                         placeholder="Заголовок"
-                                        :text="''"
-                                        :classes="'mb20'"
-                                    />
-                                    <v-textarea
-                                        :rows="4"
-                                        v-on:update:text="updateInsertContent($event)"
-                                        :text="''"
+                                        class="mb20"
+                                    >
+                                    <textarea
+                                        rows="4"
+                                        v-model="article.content_text"
                                         placeholder="Текст"
-                                    />
+                                    ></textarea>
                                 </div>
                             </div>
-                            <!--<article-input-text
-                                v-if="textLocale"
-                                :v="v"
-                                :title="'Продовження статтi'"
-                                :text="this.insert[1].content"
-                                v-on:update:text="updateInsert(1, 'content', $event)"
-                            />-->
                         </div>
                         <div class="articles_create__item">
                             <p class="articles_create__item-title">Теги</p>
@@ -121,7 +105,7 @@
                                 <div class="articles_create__name-block">
                                     <div class="field_wrap_for_tags">
                                         <multiselect
-                                            v-model="chosenTags"
+                                            v-model="article.chosenTags"
                                             tag-placeholder="Добавить тег"
                                             placeholder="Выбрать тег"
                                             label="name"
@@ -131,6 +115,7 @@
                                             :taggable="true"
                                             :show-labels="false"
                                             :close-on-select="false"
+                                            :value="article.chosenTags"
                                             @tag="addTag"
                                         />
                                     </div>
@@ -190,7 +175,8 @@
                                     <div class="articles_create__addition-block width-194">
                                         <div class="articles_create-multiselect">
                                             <multiselect
-                                                v-model="user_id"
+                                                v-model="article.user_id"
+                                                :value="article.user_id"
                                                 tag-placeholder="Обрати автора"
                                                 placeholder="Обрати автора"
                                                 label="name"
@@ -216,14 +202,14 @@
                             :label="'Кнопка'"
                             :id="'is-article-button'"
                             :name="'is-article-button'"
-                            :text_button="button"
+                            :text_button="article.button"
                             @update="buttonStore"
                         />
                         <div class="articles_create__item">
                             <p class="articles_create__item-title">Реком. статьи</p>
                             <div class="articles_create__item-content">
                                 <multiselect
-                                    v-model="chosenRecommended"
+                                    v-model="article.chosenRecommended"
                                     tag-placeholder="Додати статтю"
                                     placeholder="Вибрати статтю"
                                     label="title"
@@ -232,6 +218,7 @@
                                     :multiple="true"
                                     :taggable="true"
                                     :show-labels="false"
+                                    :value="article.chosenRecommended"
                                     :close-on-select="false"
                                 />
                             </div>
@@ -240,12 +227,13 @@
                             :label="'Пряма ссилка'"
                             :id="'is-article-link'"
                             :name="'is-article-link'"
-                            :text_button="link"
+                            :text_button="article.action"
                             @update="linkStore"
                         />
                     </div>
                 </div>
-                <button class="articles_create-submit button-gradient" @click="submitForm">Опубликовать</button>
+                <input type="hidden" v-model="article.post_id" />
+                <button class="articles_create-submit button-gradient" @click="submitForm">Редактировать</button>
             </div>
         </div>
     </v-content>
@@ -263,9 +251,9 @@
     import VButton from "./templates/inputs/button"
     import ArticleFormButton from "./templates/article/form/button"
     import Multiselect from "vue-multiselect";
-    import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS} from "../api/endpoints";
-    import FragmentFormText from "./fragmets/text";
-    import ArticleSidebar from "./templates/article/sidebar";
+    import {ARTICLE, ARTICLE_UPDATE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS} from "../api/endpoints";
+    import FragmentFormText from "./fragmets/text"
+    import ArticleSidebar from "./templates/article/sidebar"
     import ArticleMultiple from "./templates/article/form/multiple"
     import SimpleTestMedia from "./fragmets/SimpleTestMedia"
     import { getRandomId } from './../utils'
@@ -295,7 +283,6 @@
         },
         data() {
             return {
-                //..this.$store.state.articles[0],
                 new_user: '',
                 errorArticleCover: '',
                 addUserError: '',
@@ -304,8 +291,6 @@
                 recommended: [],
                 authors: [],
                 user_id: 0,
-                chosenRecommended: [],
-                chosenTags: [],
                 tags: [],
                 link: '',
                 button: '',
@@ -313,12 +298,17 @@
                 insert: [],
                 multiples: [],
                 articleType: 1,
-                //type: 1,
                 textLocale: 0,
                 article: {
                     title: '',
                     type: 1,
-                    text: ''
+                    text: '',
+                    textLocale: 0,
+                    content_title: '',
+                    content_text: '',
+                    chosenTags: [],
+                    chosenRecommended: '',
+                    post_id: 0
                 }
             }
         },
@@ -354,34 +344,37 @@
                 this.text_error = '';
                 let error = false
 
-                if (this.image == null) {
+                if (this.image == null && this.article.cover_image == '') {
                     this.errorArticleCover = 'Обложка обязательна'
                     error = true;
                 }
 
-                if (this.title == null) {
+                if (this.article.title == null) {
                     this.title_error = 'Название обязательно'
                     error = true;
                 }
 
-                if (this.text == null) {
+                if (this.article.content_html == null) {
                     this.text_error = 'Описание обязательно'
                     error = true;
                 }
 
                 if (!error) {
-                    this.$post(ARTICLE, {
-                        title: this.title,
-                        articleType: this.articleType,
-                        text: this.text,
-                        button: this.button,
-                        action: this.link,
-                        insert: this.insert,
-                        user: this.user_id,
-                        cover_image_id: this.image,
-                        gallery: this.multiples,
-                        tags: this.chosenTags,
-                        recommended: this.chosenRecommended
+                    this.$post(ARTICLE_UPDATE, {
+                        post_id: this.article.post_id,
+                        title: this.article.title,
+                        articleType: this.article.type,
+                        text: this.article.content_html,
+                        button: this.article.button,
+                        action: this.article.action,
+                        content_title: this.article.content_title,
+                        content_text: this.article.content_text,
+                        user: (this.article.user_id[0])?this.article.user_id[0]['id']:0,
+                        active_user_id: this.article.active_user_id,
+                        cover_image_id: (this.image)?this.image:this.article.cover_image,
+                        gallery: this.article.multiples,
+                        tags: this.article.chosenTags,
+                        recommended: this.article.chosenRecommended,
                     })
                         .then((res) => {
                             this.$router.push({ name: 'articleList' });
@@ -502,10 +495,57 @@
                     let field = $('.buttonAddFile input');
                     let block = field.parents(".buttonAddFile");
                     let text = block.find("p span");
-                    let fileName = data.cover_image.disk_name;
+                    let fileName = data.cover_image;
                     block.addClass("has_file");
                     text.text(fileName);
                 }, 3000);
+
+                let gallery = [];
+                if (data.gallery) {
+                    for (const [indexG, itemG] of Object.entries(data.gallery)) {
+                        let obj = {
+                            itemId: getRandomId(),
+                            path: itemG.cover_image
+                        };
+                        gallery.push(obj)
+                    }
+                }
+
+                this.multiples = gallery;
+
+                if (data.content[0]) {
+                    this.article.textLocale = 1;
+                    this.article.content_title = data.content[0].title;
+                    this.article.content_text = data.content[0].content;
+                }
+
+                let tags = [];
+                if (data.tags) {
+                    for (const [indexT, itemT] of Object.entries(data.tags)) {
+                        let obj = {
+                            id: itemT.tag.id,
+                            name: itemT.tag.name
+                        };
+                        tags.push(obj)
+                    }
+                }
+
+                this.article.chosenTags = tags;
+
+                let recommended = [];
+                if (data.recommended) {
+                    for (const [indexR, itemR] of Object.entries(data.recommended)) {
+                        let obj = {
+                            id: itemR.recommended_id,
+                            title: itemR.post.title
+                        };
+                        recommended.push(obj)
+                    }
+                }
+
+                this.article.chosenRecommended = recommended;
+
+                this.article.user_id = (data.user)?[{id: data.user.id, name: data.user.name}]:0;
             });
         }
     }
