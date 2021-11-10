@@ -1,5 +1,5 @@
 <template>
-    <v-content v-if="project.options">
+    <v-content v-if="true">
         <template v-slot:sidebar>
             <project-list-sidebar :options="project.options"/>
         </template>

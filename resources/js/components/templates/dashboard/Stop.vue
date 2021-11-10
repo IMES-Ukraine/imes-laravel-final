@@ -14,7 +14,7 @@
                         <p class="stop_project__block-description">При скрытии проекта, все активности пользователей исчезнут. Все результаты проекта будут сохранены. Вы сможете продолжить проект в любой момент.</p>
                     </div>
                     <div class="stop_project-controls">
-                        <a class="sidebar_nav-button red radius-5" @click="stopped"><span>Остановить</span></a>
+                        <a class="sidebar_nav-button red radius-5" @click="stopped" data-dismiss = "modal"><span>Остановить</span></a>
                         <a class="sidebar_nav-button radius-5" data-dismiss="modal"><span>Отмена</span></a>
                     </div>
                 </div>

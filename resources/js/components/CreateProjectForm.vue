@@ -257,7 +257,7 @@
 </template>
 <script>
 import {ValidationProvider} from "vee-validate";
-import {ARTICLE_COVER, PROJECT, TOKEN} from "../api/endpoints";
+import {ARTICLE_COVER, PROJECT, PROJECT_IMAGE, TOKEN} from "../api/endpoints";
 // import {ValidationObserver} from 'vee-validate'
 import PlusButton from './controls/PlusButton'
 import VContent from "./templates/Content"
@@ -404,7 +404,7 @@ export default {
             imageForm.append('file', event.target.files[0])
 
             axios.post(
-                ARTICLE_COVER + '/articles',
+                PROJECT_IMAGE + '/articles',
                 imageForm,
                 {
                     headers: {

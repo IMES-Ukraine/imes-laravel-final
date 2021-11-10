@@ -302,7 +302,6 @@ class ProjectRepository
 
         }
         $data = [
-
             'options' => $project->options,
             'content' => $projects_items,//$content,
             'status_active' => $status_active,
@@ -318,6 +317,7 @@ class ProjectRepository
             ],
             'item' => $project
         ];
+        $data['options']['status'] = $project->status;
 
         return (object)[
             'data' => $data
