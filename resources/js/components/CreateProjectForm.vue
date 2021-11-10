@@ -19,7 +19,7 @@
                                 <div class="articles_create__item-content">
                                         <div class="articles_create__item-file width-auto buttonAddFile">
                                             <input type="file" name="cover"
-                                                   @change="handleUpload('cover')">
+                                                   @change="handleUpload($event, 'cover')">
                                             <p><span data-placeholder="Загрузить">{{ project.options.files.cover }}</span></p>
                                             <button class="delete_file deleteFile" type="button"></button>
                                         </div>
@@ -66,7 +66,7 @@
                                             <div class="articles_create__item-file buttonAddFile">
                                                 <input type="file" name="audience"
                                                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                                       @change="handleUpload('audience')">
+                                                       @change="handleUpload($event, 'audience')">
                                                 <p><span data-placeholder="Загрузить персональную аудиторию"></span>
                                                 </p>
                                                 <button class="delete_file deleteFile" type="button"></button>
@@ -399,12 +399,12 @@ export default {
 
         },
 
-        handleUploadArticle(event) {
+        handleUpload(event, field) {
             let imageForm = new FormData()
             imageForm.append('file', event.target.files[0])
 
             axios.post(
-                PROJECT_IMAGE + '/articles',
+                PROJECT_IMAGE + 'project',
                 imageForm,
                 {
                     headers: {
@@ -415,8 +415,11 @@ export default {
                     },
                 }
             ).then((file) => {
+                let project = this.$store.state.project;
+                project.options.files[field] = file.data.data.path;
+                this.$store.dispatch('storeProject', project);
                 this.name = event.target.files[0].name
-                this.article.images = file.data.data.id
+
             })
         },
         showTargeting() {
@@ -428,16 +431,16 @@ export default {
         },
 
 
-        handleUpload(fileName) {
-            if (event.target.files[0].size <= 1024 * 1024 * 1024) {
-                this.project.options.files.cover = event.target.files[0].name;
-                this.errorCover = '';
-            } else {
-                //this.$set(this.errorFile, 'cover', 'Изображение слишком большое')
-                this.errorFile = 'Изображение слишком большое';
-            }
-            //}
-        },
+        // handleUpload(fileName) {
+        //     if (event.target.files[0].size <= 1024 * 1024 * 1024) {
+        //         this.project.options.files.cover = event.target.files[0].name;
+        //         this.errorCover = '';
+        //     } else {
+        //         //this.$set(this.errorFile, 'cover', 'Изображение слишком большое')
+        //         this.errorFile = 'Изображение слишком большое';
+        //     }
+        //     //}
+        // },
     },
     mounted() {
         if (sessionStorage.project) {

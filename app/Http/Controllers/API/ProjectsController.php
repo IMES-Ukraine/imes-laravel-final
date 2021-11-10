@@ -21,6 +21,7 @@ class ProjectsController extends Controller
 {
     const ATTACHMENT_TYPE_ARTICLES = 'App\Models\Articles';
     const ATTACHMENT_TYPE_TEST_QUESTIONS = 'App\Models\TestQuestions';
+    const ATTACHMENT_TYPE_PROJECT = 'App\Models\Projects';
 
     protected $helpers;
     protected $project;
@@ -135,8 +136,12 @@ class ProjectsController extends Controller
 
         if ($type == 'articles') {
             $attachment_type = self::ATTACHMENT_TYPE_ARTICLES;
-        } elseif ($type == 'test') {
+        }
+        elseif ($type == 'test') {
             $attachment_type = self::ATTACHMENT_TYPE_TEST_QUESTIONS;
+        }
+        elseif ($type == 'project') {
+            $attachment_type = self::ATTACHMENT_TYPE_PROJECT;
         }
 
         $file = new File;
