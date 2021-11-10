@@ -295,7 +295,6 @@ export default {
     },
     data() {
         return {
-            //..this.$store.state.articles[0],
             new_user: '',
             errorArticleCover: '',
             addUserError: '',
@@ -373,7 +372,7 @@ export default {
                     action: this.link,
                     insert: this.insert,
                     user: this.user_id,
-                    cover_image_id: this.image,
+                    cover_image: this.image,
                     gallery: this.multiples,
                     tags: this.chosenTags,
                     recommended: this.chosenRecommended
@@ -386,9 +385,6 @@ export default {
                     }).finally(() => {
                     console.log('success or error')
                 });
-                /*this.$store.dispatch('submitArticle', this.$data).then(() => {
-                    this.$router.push({name: 'createContent'})
-                })*/
             }
         },
         AddNewUser() {
@@ -445,8 +441,7 @@ export default {
                 }
             ).then((file) => {
                 this.name = event.target.files[0].name
-                //this.articles[0].imeges.push(file.data)
-                this.image = file.data.data.id
+                this.image = file.data.data.path
             })
         },
         addMedia(event) {

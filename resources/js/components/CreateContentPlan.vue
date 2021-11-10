@@ -477,7 +477,7 @@ export default {
                             content_text: item.content_text,
                             user: (item.user_id[0])?item.user_id[0]['id']:0,
                             active_user_id: item.active_user_id,
-                            cover_image_id: image_id,
+                            cover_image: image_id,
                             gallery: item.multiples,
                             tags: item.chosenTags,
                             recommended: item.chosenRecommended,
@@ -535,7 +535,7 @@ export default {
                 this.name = event.target.files[0].name
                 //this.articles[0].imeges.push(file.data)
                 //this.image[id] = file.data.data.id
-                this.image.push({id: id, image_id: file.data.data.id})
+                this.image.push({id: id, image_id: file.data.data.path})
             })
         },
         addMedia(event, id) {
