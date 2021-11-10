@@ -290,6 +290,8 @@ import Schedule from "./fragmets/Project/schedule";
 import ProjectMixin from "../ProjectMixin";
 import ModalMixin from "../ModalMixin";
 
+import store from "../store/index"
+
 export default {
     name: 'CreateProjectForm',
     mixins: [ProjectMixin, ModalMixin],
@@ -320,11 +322,10 @@ export default {
         Schedule,
 
         VRadio,
-        VTextarea
+        VTextarea,
     },
     data() {
         return {
-            project: {...this.$store.state.project},
             isValidated: false,
             isComplex: false,
             picked: 'test',
@@ -333,11 +334,15 @@ export default {
             targeting: false,
             errorContent: '',
             errorCover: '',
-            scheduledKey: Math.random()
         }
     },
     computed: {
-
+        project: {
+            get: function() { return store.state.project },
+            set: function (newValue) {
+                store.commit('storeProject', newValue);
+            }
+        },
         contentList() {
             return this.$store.state.project.content;
         },

@@ -130,6 +130,7 @@ export default {
             add_new_article: false,
             index_article: 0,
             index_test: 0,
+            requiredErrorText: "Поле обязательное"
         }
     },
     computed: {

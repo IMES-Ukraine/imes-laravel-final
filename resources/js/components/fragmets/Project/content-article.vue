@@ -33,7 +33,7 @@
                         name="cover"
                         class="input-file-hidden"
                         role="button" />
-                    <p><span data-placeholder="Загрузить" id="article-cover">{{coverFile || 'Загрузить'}}</span></p>
+                    <p><span data-placeholder="Загрузить" id="article-cover">{{this.article.cover || 'Загрузить'}}</span></p>
                     <button class="delete_file deleteFile" id="deleteFileArticle"
                             type="button">
                     </button>
@@ -219,8 +219,7 @@ export default {
                 1: "Новини",
                 2: "Інформація"
             },
-            coverFile: '',
-            requiredErrorText: "Поле обовʼязкове"
+
         }
     },
     mounted() {
@@ -267,17 +266,17 @@ export default {
             this.errorArticleText = '';
             let error = false;
 
-            if (this.article.title == null) {
+            if (!this.article.title) {
                 this.errorArticleTitle = this.requiredErrorText;
                 error = true;
             }
 
-            if (this.article.text == null) {
+            if (!this.article.text) {
                 this.errorArticleText = this.requiredErrorText;
                 error = true;
             }
 
-            if (this.article.cover == null) {
+            if (!this.article.cover) {
                 this.errorArticleCover = this.requiredErrorText;
                 error = true;
             }
@@ -334,9 +333,8 @@ export default {
                 let article = this.$store.state.content.article;
                 article.cover = file.data.data.path;
                 this.$store.dispatch('storeArticle', article);
-                this.coverFile = event.target.files[0].name;
             })
-            console.log(event.target.files[0].name, this.$store.state.content.article.cover);
+
         },
 
     },
