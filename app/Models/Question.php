@@ -38,9 +38,8 @@ class Question
     {
         $this->title = $question['title'];
         $this->question = $question['text'];
-        $this->description = $question['question']['description'];
 
-        $this->agreement = $question['question']['agreement'];
+        $this->agreement = $question['question']['agreement'] ?? '';
         $this->test_type = $question['type'];
 
         if ($question['question']['answer']['type'] == self::BUTTONS_CARD) $this->buttonsType = self::BUTTONS_CARD;
@@ -54,7 +53,7 @@ class Question
 
         $options = [];
 
-        $description = $question['question']['description'];
+        $description = $question['question']['description'] ?? '';
         if( !empty( $description)) {
             $options[] = [
                 'type' => 'description',
@@ -102,7 +101,7 @@ class Question
         $options[] =
             [
                 'type' => 'to_learn',
-                'data' => $question['question']['link'],
+                'data' => $question['question']['link'] ?? '',
             ];
 
         if ( isset($question['question']['media']['cover']) && $question['question']['media']['cover']['id'] ) {

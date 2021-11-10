@@ -315,16 +315,34 @@ export default {
                 $('#article_multiples').val(null);
             })
         },
-        coverField() {
-            // let obj = {
-            //     itemId: 'img-' + getRandomId(),
-            //     file: file.data.data.id,
-            //     name: event.target.files[0].name,
-            //     data: file.data,
-            //     path: file.data.data.path
-            // };
-            // this.article.cover.push(obj);
-            this.article.cover = event.target.files[0].name;
+        coverField(event) {
+            let imageForm = new FormData()
+            imageForm.append('file', event.target.files[0])
+
+            axios.post(
+                ARTICLE_COVER + '/articles',
+                imageForm,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    params: {
+                        access_token: TOKEN
+                    },
+                }
+            ).then((file) => {
+                let obj = {
+                    itemId: 'img-' + getRandomId(),
+                    file: file.data.data.id,
+                    name: event.target.files[0].name,
+                    data: file.data,
+                    path: file.data.data.path
+                };
+                let article = this.$store.state.content.article;
+                article.cover = file.data.data.path;
+                this.$store.dispatch('storeArticle', article);
+            })
+
             console.log(event.target.files[0].name, this.article.cover);
         },
 

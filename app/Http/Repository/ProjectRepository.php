@@ -48,33 +48,40 @@ class ProjectRepository
         $index = 1;
         foreach ($projectTotal['content'] as $content) {
             //Сначала сделаем запись об элементе контента
-            $items = new ProjectItems;
-            $items->item_key = $index;
-            $items->item_id = 0;
-            $items->project_id = $project->id;
-            $items->data = $content['test'];
-            $isProjectItemsSaved &= $items->save();
+
 
             //если сложный вопрос - пишем все части отдельно
-            if ($content['test'] === 'complex') {
+            if ($content['test']['type'] == 'complex') {
                 $complex = $content['test']['complex_question'];
-                $IDs = [];
                 foreach ($complex as $question){
-                    $questionModel = TestQuestions::create((array)new Question($question));
+                    $items = new ProjectItems;
+                    $items->item_key = $index;
+                    $items->item_id = 0;
+                    $items->project_id = $project->id;
+                    $items->data = $question;
+                    $isProjectItemsSaved &= $items->save();
+
+                    $test = $content['test'];
+                    $test['question'] = $question;
+
+                    $questionModel = TestQuestions::create((array)new Question($test));
                     $questionModel->parent_id = $items->id;
                     $questionModel->save();
-                    $IDs[] = $questionModel->id;
+
+                    $items->item_type = get_class($questionModel);
+                    $items->item_id = $questionModel->id;
+                    $isProjectItemsSaved &= $items->save();
                 }
-                $items->item_type = get_class($questionModel);
-                $items->item_id = json_encode($IDs);
-                $isProjectItemsSaved &= $items->save();
             }
             //если простой - все проще
             else {
                 $questionModel = TestQuestions::create((array)new Question($content['test']));
-                $questionModel->parent_id = $items->id;
                 $questionModel->save();
 
+                $items = new ProjectItems;
+                $items->item_key = $index;
+                $items->project_id = $project->id;
+                $items->data = $content['test'];
                 $items->item_type = get_class($questionModel);
                 $items->item_id = $questionModel->id;
                 $isProjectItemsSaved &= $items->save();

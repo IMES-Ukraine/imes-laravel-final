@@ -168,11 +168,6 @@
                 required
             },
         },
-        computed: {
-            hasDescription: function() {
-                return false;
-            }
-        },
         methods: {
 
             addBlockComplex() {

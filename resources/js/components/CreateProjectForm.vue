@@ -337,6 +337,7 @@ export default {
         }
     },
     computed: {
+
         contentList() {
             return this.$store.state.project.content;
         },
@@ -368,7 +369,8 @@ export default {
         async createProject() {
             this.errorContent = '';
             this.errorCover = '';
-            this.project = this.$store.state.project;
+            this.project.content = this.$store.state.project.content;
+
             if (!Object.keys(this.project.content).length) {
                 this.errorContent = 'Потрібно створити контент';
             }
