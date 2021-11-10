@@ -180,14 +180,17 @@ class ProjectRepository
      * @param $id
      * @return object
      */
-    public
-    function find($id)
+    public function find($id)
     {
 
         $project = Projects::with(['tests', 'tests.cover_image', 'articles', 'articles.cover_image'])
             ->where('id', $id)->first();
 
-        $content = ProjectItems::where('project_id', $id)->get();
+        $itemsQuery = ProjectItems::where('project_id', $id);
+        if (! request()->input('all_items', 0)){
+            $itemsQuery->where('schedule', '<=', date ('Y-m-d H:i:s' ));
+        }
+        $content = $itemsQuery->get();
 
         if (empty($project) || empty($content)) {
             return (object)[
@@ -201,6 +204,7 @@ class ProjectRepository
         $status_not_active = 0;
 
         foreach ($content as $item) {
+            $projects_items['schedule'] = $item->schedule;
             if ($item['item_type'] == 'App\Models\TestQuestions') {
                 $test_not_participate = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_NOT_PARTICIPATE);
                 $test_active = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_ACTIVE);
