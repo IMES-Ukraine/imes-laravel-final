@@ -15,7 +15,7 @@
                             <div class="study__block-content" v-if="variants">
                                 <div class="study__item" v-for="variant in variants">
                                     <div class="study__item-content">
-                                        <div class="study__answer">
+                                        <div :class="hasCorrectAnswer(variant.itemId)">
                                             <p class="study__answer-letter">{{ variant.title }}</p>
                                             <p class="study__answer-text">{{ variant.variant }}</p>
                                         </div>
@@ -23,7 +23,7 @@
                                             <div class="study__info-block">
                                                 <p class="study__info-data">0%</p>
                                                 <div class="dashboard_main__status-line">
-                                                    <span style="width:20%;"></span>
+                                                    <span style="width:0%;"></span>
                                                 </div>
                                             </div>
                                             <p class="study__info-quantity">0</p>
@@ -58,7 +58,9 @@
                 isOpen: false,
                 title: '',
                 question: '',
-                variants: []
+                variants: [],
+                correct_answer: [],
+                test_type: ''
             }
         },
         methods: {
@@ -75,7 +77,19 @@
                     this.title = data.title
                     this.question = data.question
                     this.variants = data.variants.buttons
+                    this.correct_answer = data.variants.correct_answer
+                    this.test_type = data.test_type
                 });
+            },
+            hasCorrectAnswer (itemId) {
+                let active = '';
+                if (this.test_type == "easy") {
+                    if (this.correct_answer.includes(itemId)) {
+                        active = ' active';
+                    }
+                }
+
+                return 'study__answer' + active;
             }
         },
         mounted() {
