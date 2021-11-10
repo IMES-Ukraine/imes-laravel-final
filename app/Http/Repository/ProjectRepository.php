@@ -46,9 +46,11 @@ class ProjectRepository
         $isProjectItemsSaved = true;
 
         $index = 1;
+//------------- content block
         foreach ($projectTotal['content'] as $content) {
-            //Сначала сделаем запись об элементе контента
+            $scheduled = $content['scheduled_date'] . ' ' . $content['scheduled_time'];
 
+//------------  test
 
             //если сложный вопрос - пишем все части отдельно
             if ($content['test']['type'] == 'complex') {
@@ -59,6 +61,7 @@ class ProjectRepository
                     $items->item_id = 0;
                     $items->project_id = $project->id;
                     $items->data = $question;
+                    $items->schedule = $scheduled;
                     $isProjectItemsSaved &= $items->save();
 
                     $test = $content['test'];
@@ -84,12 +87,13 @@ class ProjectRepository
                 $items->data = $content['test'];
                 $items->item_type = get_class($questionModel);
                 $items->item_id = $questionModel->id;
+                $items->schedule = $scheduled;
                 $isProjectItemsSaved &= $items->save();
             }
+//------------ end test
 
 
-
-//------------
+//------------  article
             $article = $content['article'];
             $articleModel = $this->articleService->addArticle($article);
 
@@ -99,9 +103,11 @@ class ProjectRepository
             $items->item_id = $articleModel->id;
             $items->project_id = $project->id;
             $items->data = $content['article'];
+            $items->schedule = $scheduled;
             $isProjectItemsSaved &= $items->save();
             $index++;
         }
+//------------- end content block
 
         return (object)[
             'saved' => !$questionModel || !$articleModel || !$isProjectSaved || !$isProjectItemsSaved,
