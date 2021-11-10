@@ -6,7 +6,7 @@
             <div class="preview-box">
                 <div class="preview__block preview__block--title">
                     <div class="preview__title">
-                        <img :src="project.options.files.cover" class="preview__title-img" alt="">
+                        <img :src="cover" class="preview__title-img" alt="">
                         <p class="preview__title-title">Проект:</p>
                         <p class="preview__title-data">{{ project.options.title }}</p>
                     </div>
@@ -40,7 +40,7 @@
                     <p class="preview__block-title mt0">Тип подачи информации:</p>
                     <div class="preview__block-wrap">
                         <div class="preview__block-item">
-                            <p class="preview__block-type"><span>Все сразу</span></p>
+                            <p class="preview__block-type"><span>{{ types[project.options.presentation_type]}}</span></p>
                         </div>
                     </div>
                 </div>
@@ -59,10 +59,19 @@ export default {
     name: "project-preview",
     mixins: [ProjectMixin],
     data() {
-        return {
-        }
+      return {
+          project: {...this.$store.state.project},
+          types: {
+              'at_once': 'Все сразу',
+              'scheduled': 'По графику',
+              'series': 'Последовательность'
+          }
+      }
     },
     computed: {
+        cover() {
+          return this.project.options.files.cover;
+        },
         category() {
             return this.findByValue(this.lists.categories, this.project.options.selected.category);
         },
@@ -76,8 +85,7 @@ export default {
             let sum = 0;
             for (let index in this.project.content) {
                 sum = sum + parseInt(this.project.content[index].article.points ? this.project.content[index].article.points : 0)
-                    + parseInt(this.project.content[index].test.points ?this.project.content[index].article.points : 0);
-                console.log(index, sum, this.project.content[index]);
+                    + parseInt(this.project.content[index].test.points ? this.project.content[index].article.points : 0);
             }
             return sum;
         }

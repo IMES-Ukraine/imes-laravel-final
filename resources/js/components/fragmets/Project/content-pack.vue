@@ -188,7 +188,7 @@
         </div>
         <button class="articles_create-submit button-gradient" type="button"
                 @click="showFirstStep" v-show="is_points">
-            Зберегти
+            Сохранить
         </button>
     </div>
 </template>

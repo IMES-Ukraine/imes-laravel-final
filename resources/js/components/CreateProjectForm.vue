@@ -155,89 +155,104 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!--<div class="row mb-4" style="display: none;" id="block_content">
-                            <div class="article-edit__text col-3">
-                                Контент
-                            </div>
-                            <div class="col-3">
-                                <ValidationProvider rules="required" v-slot="{ errors }">
-                                    <div @click.prevent="setStep(2)">
-                                        <PlusButton label="Створити"></PlusButton>
-                                        <input class="form-control" type="hidden" v-model="questions">
-                                        <input class="form-control" type="hidden" v-model="articles">
-                                    </div>
-                                    <span class="errors">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                            </div>
-
-                        </div>-->
-
-                        <button class="articles_create-submit button-border" type="button"
-                                @click.prevent="createProject">
-                            <template v-if="packsPresent">Сохранить</template>
-                            <template v-else>Далее</template>
-                        </button>
                     </div>
-
                     <div v-if="currentStep == 2">
-                        <!--                            <project-close/>-->
-                        <p class="articles_create-title">Створення пакета контента</p>
-                        <content-pack/>
+                       <p class="articles_create-title">Створення пакета контента</p>
+                        <content-pack />
 
                     </div>
                     <div v-if="currentStep == 3">
                         <p class="articles_create-title">Створення статті</p>
-                        <content-article/>
+                        <content-article />
                     </div>
                     <div v-if="currentStep == 4">
                         <p class="articles_create-title">Створення теста</p>
                         <!--                            <project-close/>-->
-                        <content-test/>
+                        <content-test :projectParent="project"/>
                     </div>
                     <div v-if="currentStep == 5">
-                        <div class="row mb-4">
-                            <div class="article-edit__text col-3">
-                                Статус запуска проекта
-                            </div>
-                            <div class="col-3">
-                                <div class="row">
-                                    <div class="col-12 mb-2">
-                                        Ayдитория
+                        <div class="articles_create__item">
+                            <p class="articles_create__item-title">Тип подачи информации</p>
+                            <div class="articles_create__item-content">
+                                <div class="articles_create__grid width-third column-gap-25">
+                                    <div class="articles_create__grid-block">
+                                        <div class="articles_create__sorting">
+                                            <input type="radio" name="sorting-1" v-model="project.options.presentation_type" value="at_once">
+                                            <p><span class="icon-list">Все сразу</span></p>
+                                        </div>
                                     </div>
-                                    <div class="col-12">
-                                        Пользователи
+                                    <div class="articles_create__grid-block">
+                                        <div class="articles_create__sorting">
+                                            <input type="radio" name="sorting-1" v-model="project.options.presentation_type" value="scheduled" @click="scheduledKey=Math.random(); setStep(6)">
+                                            <p><span class="icon-list">По графику</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="articles_create__grid-block">
+                                        <div class="articles_create__sorting">
+                                            <input type="radio" name="sorting-1" v-model="project.options.presentation_type" value="series">
+                                            <p><span class="icon-list">Последовательность</span></p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-2">
-                                <div class="row">
-                                    <div class="col-12 mb-2 smaller-text__article">
-                                        1000
+                        </div>
+
+                        <div class="articles_create__item">
+                            <p class="articles_create__item-title">Статус запуска проекта</p>
+                            <div class="articles_create__item-content">
+                                <div class="articles_create__visual">
+                                    <div class="articles_create__indicators">
+                                        <div class="articles_create__indicators-block">
+                                            <p class="articles_create__indicators-title">Аудитория</p>
+                                            <div class="articles_create__indicators-item articlesCreateIndicators">
+                                                <div class="articles_create__indicators-line" data-value="1000" data-max="1000">
+                                                    <span></span></div>
+                                                <p class="articles_create__indicators-data"></p>
+                                            </div>
+                                        </div>
+                                        <div class="articles_create__indicators-block">
+                                            <p class="articles_create__indicators-title">Пользователи</p>
+                                            <div class="articles_create__indicators-item articlesCreateIndicators">
+                                                <div class="articles_create__indicators-line" data-value="700" data-max="1000">
+                                                    <span></span></div>
+                                                <p class="articles_create__indicators-data"></p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-12 smaller-text__article">
-                                        700
+                                    <div class="articles_create__visual-quantity">
+                                        <p>Количество активности</p>
+                                        <p><b>1000</b></p>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="row">
-                                    <div class="col-12 mb-2 smaller-text__article">
-                                        Количество активности
-                                    </div>
-                                    <div class="col-12">
-                                        1000
+                                    <div class="articles_create__result not_ready">
+                                        <!-- Для зеленого блока класс "ready" -->
+                                        <i class="articles_create__result-icon"></i>
+                                        <p class="articles_create__result-title">Часть аудитории еще не установили приложение
+                                        </p>
+                                        <ul class="articles_create__result-list">
+                                            <li class="articles_create__result-item">уменьшите количество активности, или</li>
+                                            <li class="articles_create__result-item">увеличить количество пользователей</li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div v-if="currentStep == 6">
-                        <project-preview/>
+
+                    <button  v-if="currentStep == 1 || currentStep == 5" class="articles_create-submit button-border" type="button"
+                            @click.prevent="createProject">
+                        <template v-if="packsPresent">Сохранить</template>
+                        <template v-else>Далее</template>
+                    </button>
+
+                    <div v-if="currentStep == 6" >
+                        <schedule />
+                    </div>
+                    <div v-if="currentStep == 7">
+                        <project-preview />
                     </div>
                 </form>
+                </div>
             </div>
-        </div>
     </v-content>
 </template>
 <script>
@@ -269,6 +284,8 @@ import ContentPack from "./fragmets/Project/content-pack";
 import ContentArticle from "./fragmets/Project/content-article";
 import ContentTest from "./fragmets/Project/content-test";
 import ProjectPreview from "./fragmets/Project/project-preview";
+import Schedule from "./fragmets/Project/schedule";
+
 
 import ProjectMixin from "../ProjectMixin";
 import ModalMixin from "../ModalMixin";
@@ -300,12 +317,14 @@ export default {
         ArticleInputCover: Cover,
         ArticleInputTitle,
         ProjectPreview,
+        Schedule,
 
         VRadio,
         VTextarea
     },
     data() {
         return {
+            project: {...this.$store.state.project},
             isValidated: false,
             isComplex: false,
             picked: 'test',
@@ -314,6 +333,7 @@ export default {
             targeting: false,
             errorContent: '',
             errorCover: '',
+            scheduledKey: Math.random()
         }
     },
     computed: {
@@ -364,7 +384,7 @@ export default {
 
                         switch (this.currentStep) {
                             case 5:
-                                this.setStep(6);
+                                this.setStep(7);
                                 break;
                             case 6:
                                 this.finalStoreProject();

@@ -46,8 +46,7 @@
             <p class="articles_create__item-title">Галерея</p>
             <div class="articles_create__item-content">
                 <div class="articles_create__media">
-                    <SimpleTestMedia
-                        :media="article.multiples"></SimpleTestMedia>
+                    <SimpleTestMedia :media="article.multiples"></SimpleTestMedia>
                     <div class="articles_create__media-add">
                         <input type="file" name="file" id="article_multiples"
                                @change="addMedia($event)">
@@ -58,10 +57,7 @@
         <div class="articles_create__item mb54">
             <p class="articles_create__item-title">Текст*</p>
             <div class="articles_create__item-content">
-                                            <textarea
-                                                class="form-control"
-                                                rows="4"
-                                                v-model="article.text"></textarea>
+            <textarea class="form-control" rows="4" v-model="article.text" />
             </div>
             <div class="errors" v-if="errorArticleText">{{ errorArticleText }}</div>
         </div>
@@ -239,7 +235,8 @@ export default {
     computed: {
         article() {
             return this.$store.state.content.article ;
-        }
+        },
+
     },
     methods: {
         AddNewUser() {
@@ -308,7 +305,7 @@ export default {
                 }
             ).then((file) => {
                 let obj = {
-                    itemId: 'cover-' + getRandomId(),
+                    itemId: 'img-' + getRandomId(),
                     file: file.data.data.id,
                     name: event.target.files[0].name,
                     data: file.data,
@@ -319,7 +316,14 @@ export default {
             })
         },
         coverField() {
-            this.$store.state.project.options.files.article_cover = event.target.files[0];
+            // let obj = {
+            //     itemId: 'img-' + getRandomId(),
+            //     file: file.data.data.id,
+            //     name: event.target.files[0].name,
+            //     data: file.data,
+            //     path: file.data.data.path
+            // };
+            // this.article.cover.push(obj);
             this.article.cover = event.target.files[0].name;
             console.log(event.target.files[0].name, this.article.cover);
         },

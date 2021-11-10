@@ -1,13 +1,14 @@
 import axios from 'axios';
-import {alphabet, getRandomId, makeId} from "./utils";
+import {alphabet, getRandomId} from "./utils";
 import {PROJECT} from "./api/endpoints";
 
 export default {
     data() {
         return {
-            project: {...this.$store.state.project},
             contentTemplate: {
                 title: null,
+                scheduled_date: '',
+                scheduled_time: '',
                 article: {
                     title: null,
                     articleType: 1,
@@ -22,7 +23,7 @@ export default {
                     recommended: [],
                     user_id: [],
                     chosenRecommended: [],
-                    cover: null,
+                    cover: [],
                     multiples: [],
                     insert: [
                         {
@@ -138,7 +139,7 @@ export default {
     },
     mounted() {
         if (sessionStorage.project) {
-            this.$store.state.project = JSON.parse(sessionStorage.project);
+            this.$store.dispatch('storeProject', JSON.parse(sessionStorage.project) );
         }
         this.project = {...this.$store.state.project};
 

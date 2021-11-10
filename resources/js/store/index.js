@@ -16,6 +16,7 @@ export default new Vuex.Store({
         project: {
             options: {
                 title: '',
+                presentation_type: 'at_once',   // {'at_once', 'scheduled', 'series' }
                 selected: {
                     category: 1,
                     region: 1
@@ -23,11 +24,10 @@ export default new Vuex.Store({
                 files: {
                     cover: null,
                     audience: null,
-                    article_cover: null,
-                    article_gallery: []
                 }
             },
             tag: '',
+
             content: {}
 
         },
