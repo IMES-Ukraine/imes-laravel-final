@@ -36,8 +36,9 @@ class AuthController extends Controller
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        return $this->respondWithToken($token, ['user' => Auth::user()]);
+//var_dump(User::find(auth()->user()->id) );
+//        die;
+        return $this->respondWithToken($token, ['user' =>auth()->user()]);
     }
 
     /**

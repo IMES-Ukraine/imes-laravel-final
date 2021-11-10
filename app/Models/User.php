@@ -19,7 +19,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string|null $persist_code
  * @property string|null $reset_password_code
  * @property string|null $permissions
- * @property int $is_activated
+ * @property boolean $is_activated
  * @property string|null $activated_at
  * @property string|null $last_login
  * @property Carbon|null $created_at
@@ -28,15 +28,15 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string|null $surname
  * @property string|null $deleted_at
  * @property string|null $last_seen
- * @property int $is_guest
- * @property int $is_superuser
+ * @property boolean $is_guest
+ * @property boolean $is_superuser
  * @property string|null $phone
  * @property string|null $city
  * @property string|null $work
  * @property string|null $messaging_token
  * @property int|null $company_id
  * @property string|null $firebase_token
- * @property int $is_verified
+ * @property boolean $is_verified
  * @property mixed|null $basic_information
  * @property mixed|null $specialized_information
  * @property mixed|null $financial_information
@@ -110,6 +110,10 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $casts = [
+        'is_activated' => 'boolean',
+        'is_guest' => 'boolean',
+        'is_superuser' => 'boolean',
+        'is_verified' => 'boolean',
         'email_verified_at' => 'datetime',
         'basic_information' => 'array',
         'specialized_information' => 'array',
