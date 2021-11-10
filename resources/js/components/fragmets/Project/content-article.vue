@@ -33,11 +33,10 @@
                         name="cover"
                         class="input-file-hidden"
                         role="button" />
-                    <p><span data-placeholder="Загрузить">Загрузить</span></p>
+                    <p><span data-placeholder="Загрузить" id="article-cover">{{coverFile || 'Загрузить'}}</span></p>
                     <button class="delete_file deleteFile" id="deleteFileArticle"
                             type="button">
                     </button>
-                    <p v-if="article.cover">{{article.cover.name}}</p>
                 </div>
                 <div v-if="errorArticleCover" class="errors">{{ errorArticleCover }}</div>
             </div>
@@ -220,6 +219,7 @@ export default {
                 1: "Новини",
                 2: "Інформація"
             },
+            coverFile: '',
             requiredErrorText: "Поле обовʼязкове"
         }
     },
@@ -315,11 +315,11 @@ export default {
                 $('#article_multiples').val(null);
             })
         },
-        coverField(event) {
+        async coverField(event) {
             let imageForm = new FormData()
             imageForm.append('file', event.target.files[0])
 
-            axios.post(
+            await axios.post(
                 ARTICLE_COVER + '/articles',
                 imageForm,
                 {
@@ -331,19 +331,12 @@ export default {
                     },
                 }
             ).then((file) => {
-                let obj = {
-                    itemId: 'img-' + getRandomId(),
-                    file: file.data.data.id,
-                    name: event.target.files[0].name,
-                    data: file.data,
-                    path: file.data.data.path
-                };
                 let article = this.$store.state.content.article;
                 article.cover = file.data.data.path;
                 this.$store.dispatch('storeArticle', article);
+                this.coverFile = event.target.files[0].name;
             })
-
-            console.log(event.target.files[0].name, this.article.cover);
+            console.log(event.target.files[0].name, this.$store.state.content.article.cover);
         },
 
     },
@@ -352,5 +345,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

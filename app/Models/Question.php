@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Models\File;
@@ -9,8 +10,8 @@ class Question
     const BUTTONS_CARD = 'card';
 
     const ANSWER_VARIANTS = 'variants';
-    const ANSWER_TEXT     = 'text';
-    const ANSWER_MEDIA     = 'media';
+    const ANSWER_TEXT = 'text';
+    const ANSWER_MEDIA = 'media';
 
     public $title;
     public $question;
@@ -25,8 +26,8 @@ class Question
     public $description;
 
     public $buttonsType = self::BUTTONS_TEXT;
-    public $answer_type  = self::ANSWER_VARIANTS;
-    public $answer_correct  = self::ANSWER_VARIANTS;
+    public $answer_type = self::ANSWER_VARIANTS;
+    public $answer_correct = self::ANSWER_VARIANTS;
 
     public $isTextAnswerType;
 
@@ -34,7 +35,7 @@ class Question
     public $agreement;
     public $options;
 
-    public function __construct( $question)
+    public function __construct($question)
     {
         $this->title = $question['title'];
         $this->question = $question['text'];
@@ -47,14 +48,14 @@ class Question
         $this->answer_type = $question['question']['answer']['type'];
         $this->answer_correct = $question['question']['answer']['correct'];
 
-        $this->isTextAnswerType = (boolean) ($this->answer_type == self::ANSWER_TEXT);
+        $this->isTextAnswerType = (boolean)($this->answer_type == self::ANSWER_TEXT);
 
         $this->passing_bonus = !empty($question['question']['points']) ? $question['question']['points'] : 0;
 
         $options = [];
 
         $description = $question['question']['description'] ?? '';
-        if( !empty( $description)) {
+        if (!empty($description)) {
             $options[] = [
                 'type' => 'description',
                 'data' => $description
@@ -65,7 +66,7 @@ class Question
 
         $buttons = [];
 
-        foreach ( $question['variants'] as $variant) {
+        foreach ($question['variants'] as $variant) {
             $fields = [
                 'itemId' => $variant['itemId'],
                 'variant' => $variant['text'],
@@ -73,19 +74,19 @@ class Question
             ];
             $mediaFields = [];
 
-            if ( isset( $variant['file']) && isset( $variant['file']['id']) && $attachmentId = $variant['file']['id']) {
+            if (isset($variant['file']) && isset($variant['file']['id']) && $attachmentId = $variant['file']['id']) {
                 $mediaFields = [
                     'description' => $variant['variant'],
-                    'file'        => File::find( $attachmentId)
+                    'file' => File::find($attachmentId)
                 ];
             }
 
 
-            if ( $this->buttonsType == self::BUTTONS_CARD) $fields = array_merge($fields, $mediaFields);
+            if ($this->buttonsType == self::BUTTONS_CARD) $fields = array_merge($fields, $mediaFields);
             $buttons[] = $fields;
         }
 
-        if ( $this->isTextAnswerType ) {
+        if ($this->isTextAnswerType) {
 
             $textVariant = $question['variants'][0]['variant'];
             $this->correctAnswer[] = $textVariant;
@@ -94,7 +95,7 @@ class Question
 
         $this->variants = array(
             'correct_answer' => $this->answer_correct,
-            'type'  => $this->buttonsType,
+            'type' => $this->buttonsType,
             'buttons' => $buttons
         );
 
@@ -104,15 +105,15 @@ class Question
                 'data' => $question['question']['link'] ?? '',
             ];
 
-        if ( isset($question['question']['media']['cover']) && $question['question']['media']['cover']['id'] ) {
+        if (isset($question['question']['media']['cover']) && $question['question']['media']['cover']['id']) {
 
-            $coverImage = File::find( $question['question']['media']['cover']['id']);
+            $coverImage = File::find($question['question']['media']['cover']['id']);
             $this->cover_image = $coverImage;
         }
 
-        if ( isset($question['question']['media']['video']) && isset($question['question']['media']['video']['id']) ) {
+        if (isset($question['question']['media']['video']) && isset($question['question']['media']['video']['id'])) {
 
-            $videoId   = $question['question']['media']['video']['id'];
+            $videoId = $question['question']['media']['video']['id'];
             $videoFile = File::find($videoId);
             $options[] =
                 [
@@ -123,7 +124,7 @@ class Question
         }
 
         $this->options = $options;
-        $this->is_popular = rand(0,1);
+        $this->is_popular = rand(0, 1);
 
         //$saveStatus = $model->save();
 
@@ -132,11 +133,13 @@ class Question
 
     }
 
-    public function setType( string $type) {
+    public function setType(string $type)
+    {
         $this->test_type = $type;
     }
 
-    public function setParentId($id) {
+    public function setParentId($id)
+    {
         $this->parent_id = $id;
     }
 
