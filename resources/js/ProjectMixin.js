@@ -23,7 +23,7 @@ export default {
                     recommended: [],
                     user_id: [],
                     chosenRecommended: [],
-                    cover: [],
+                    cover: '',
                     multiples: [],
                     insert: [
                         {

@@ -3,7 +3,7 @@
         <div class="articles_create-box">
 
             <fragment-form-text>
-                <input class="form-control" type="text" id="survey_question_title" name="title" v-model="question.title">
+                <input class="form-control" type="text" id="survey_question_title" name="title" v-model="test.title">
                 <div v-if="errorTestSurveyTitle" class="errors">{{ errorTestSurveyTitle }}</div>
             </fragment-form-text>
 
@@ -12,13 +12,13 @@
                 <div class="articles_create__item">
                     <p class="articles_create__item-title">Вопрос</p>
                     <div class="articles_create__item-content direction-column">
-                        <textarea class="form-control" rows="4" v-model="question.text"></textarea>
+                        <textarea class="form-control" rows="4" v-model="test.text"></textarea>
                         <div v-if="errorTestSurveyText" class="errors">{{ errorTestSurveyText }}</div>
                     </div>
                 </div>
             </div>
 
-            <SurveyTestVariants v-bind:variants="variants"></SurveyTestVariants>
+            <SurveyTestVariants :variants="test.variants"></SurveyTestVariants>
             <div class="mb20"></div>
 
             <button class="articles_create-submit button-border" type="button" @click="addSurvey">добавить ответ</button>
@@ -28,18 +28,15 @@
 </template>
 <script>
     import {required} from 'vuelidate/lib/validators'
-    //import SimpleTestVariant from './../components/inputs/SimpleTestVariant.vue';
     import SimpleTestVariants from './../inputs/SimpleTestVariantsArray.vue'
     import SurveyTestVariants from './../inputs/SurveyTestVariantsArray.vue'
     import VContent from "../templates/Content"
     import { getRandomId } from '../../utils'
     import FragmentFormText from "./text";
-    import {PROJECT_IMAGE} from "../../api/endpoints"
-    //import CreateProjectForm from "./CreateProjectForm";
-    //import { mapActions, mapState } from 'vuex'
+
     export default {
         name: 'TestQuestion',
-        props: ['title', 'text', 'link', 'button', 'variants', 'question', 'errorTestSurveyTitle', 'errorTestSurveyText'],
+        props: [ 'test', 'errorTestSurveyTitle', 'errorTestSurveyText'],
         components: {
             FragmentFormText,
             //SimpleTestVariant,
@@ -69,7 +66,7 @@
              */
             addSurvey() {
                 const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-                let length = this.variants.length
+                let length = this.test.variants.length
                 let obj = {
                     itemId: 'survey-' + getRandomId(),
                     title: alphabet[length],
@@ -79,7 +76,7 @@
                         type: 'text'
                     }
                 };
-                this.variants.push(obj)
+                this.test.variants.push(obj)
             }
         }
     }
