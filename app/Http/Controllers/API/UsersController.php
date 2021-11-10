@@ -40,6 +40,19 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
+    public function passing($status)
+    {
+
+        $data = $this
+            ->User
+            ->select('id', 'name', 'email', 'phone')
+            ->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
+            ->where('ulogic_projects_passing.status', $status)
+            ->paginate();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
     public function create(Request $request)
     {
         $phone = substr(filter_var($request->post('phone'), FILTER_SANITIZE_NUMBER_INT), 3);

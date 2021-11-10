@@ -19,6 +19,7 @@ export const ANALYTIC = V1 + 'analytics'
 export const NOTIFICATION = 'notification'
 export const USER = V1 + 'users'
 export const USER_LIST = V1 + 'users/list'
+export const USER_PASSING = V1 + 'users/passing'
 export const TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZWNoby5teWZ0cC5vcmdcL2FwaVwvdjJcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjE3NDc0NTMxLCJleHAiOjIyMTc0NzQ0NzEsIm5iZiI6MTYxNzQ3NDUzMSwianRpIjoibXptaWRwNVFDVnZGcndqWiIsInN1YiI6IjFvclZ4OHV2QzJucVJFN1BNS2c5S1lOZ0dHaSIsInBydiI6IjQxMWM5MTdhMGZiNTFlMGE0MjdhN2UzZGVhYTVhNDllMjkyZGRiOWIifQ.8eXEvSuykIXrbBpV_tf7LUBv8rLcUoTZdsQjiBXcDkk'
 
 export const WITHDRAWAL = V1_ADMIN + 'withdraw';
