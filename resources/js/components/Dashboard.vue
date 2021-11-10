@@ -43,7 +43,7 @@
                                 <p class="dashboard_main__item-quantity">{{ project.status_active }}</p>
                                 <input type="hidden" id="project_status_active" :value="(project.status_active)?project.status_active:0" />
                             </div>
-                            <users-popup :title="'Выполнили активности'" v-if="project.status_active"/>
+                            <users-popup :title="'Выполнили активности'" id="status_active" index="2" v-if="project.status_active"/>
                         </div>
                         <div class="dashboard_main__item">
                             <div class="dashboard_main__item-wrap">
@@ -51,7 +51,7 @@
                                 <p class="dashboard_main__item-quantity">{{ project.status_not_active }}</p>
                                 <input type="hidden" id="project_status_not_active" :value="(project.status_not_active)?project.status_not_active:0" />
                             </div>
-                            <users-popup :title="'Не выполнили активности'" v-if="project.status_not_active"/>
+                            <users-popup :title="'Не выполнили активности'" id="status_not_active" index="1" v-if="project.status_not_active"/>
                         </div>
                         <div class="dashboard_main__item">
                             <div class="dashboard_main__item-wrap">
@@ -59,7 +59,7 @@
                                 <p class="dashboard_main__item-quantity">{{ project.status_not_participate }}</p>
                                 <input type="hidden" id="project_status_not_participate" :value="(project.status_not_participate)?project.status_not_participate:0" />
                             </div>
-                            <users-popup :title="'Не участвовали'" v-if="project.status_not_participate"/>
+                            <users-popup :title="'Не участвовали'" id="status_not_participate" index="0" v-if="project.status_not_participate"/>
                         </div>
                     </div>
                 </div>
@@ -355,10 +355,4 @@
             this.loadProject()
         }
     }
-
-    $(document).ready(function() {
-        //window.addEventListener("load", function(event) {
-
-        //});
-    });
 </script>
