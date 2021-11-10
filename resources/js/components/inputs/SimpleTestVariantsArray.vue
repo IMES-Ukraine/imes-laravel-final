@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="articles_create-block" v-for="(variant, index) in variants" :key="variant.itemId"
+        <div class="articles_create-block" v-for="(variant, index) in test.variants" :key="variant.itemId"
              :id="'block-'+variant.itemId">
             <div class="articles_create-line"></div>
             <div class="articles_create__item">
@@ -142,8 +142,7 @@ export default {
         SimpleTestMedia
     },
     props: {
-        variants: Array,
-        question: Object,
+        test: Object,
         errors: Object
     },
     data() {
@@ -152,23 +151,23 @@ export default {
         }
     },
     mounted() {
-        this.localType = this.question.answer.type;
+        this.localType = this.test.question.answer.type;
     },
     watch: {
         localType() {
-            this.question.answer.type = this.localType;
+            this.test.question.answer.type = this.localType;
         }
     },
     methods: {
         setCorrect(id, data) {
             if (!data) {
-                this.question.answer.correct.push(id);
+                this.test.question.answer.correct.push(id);
                 this.errors.correct = '';
             } else {
-                this.question.answer.correct = this.question.answer.correct.filter( (item)=> {
+                this.test.question.answer.correct = this.test.question.answer.correct.filter( (item)=> {
                     return item !== data;
                 });
-                if (!this.question.answer.correct.length) {
+                if (!this.test.question.answer.correct.length) {
                     this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
                 }
             }
@@ -195,7 +194,7 @@ export default {
                     }
                 }
             ).then((file) => {
-                this.variants[index].file = file.data
+                this.test.variants[index].file = file.data
             })
         },
         addMedia(index, id, event) {
@@ -222,7 +221,7 @@ export default {
                     data: file.data,
                     path: file.data.data.path
                 };
-                this.variants[index].media.push(obj)
+                this.test.variants[index].media.push(obj)
                 $('#file-' + id).val(null);
             })
         }

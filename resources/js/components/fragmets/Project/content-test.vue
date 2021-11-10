@@ -53,8 +53,7 @@
             <div v-if="test.type === 'easy'">
                 <div>
                     <Question
-                        :question.sync="test.question"
-                        :variants="test.variants"
+                        :test.sync="test"
                         :errors="testErrors"/>
                 </div>
                 <div class="mb20"></div>
@@ -114,21 +113,6 @@ export default {
         }
     },
     methods: {
-        addComplexQuestion() {
-            this.questions.push({
-                question: {
-                    complex: {
-                        title: '',
-                        text: '',
-                        points: null,
-                        media: {
-                            cover: null,
-                            video: null,
-                        },
-                    }
-                },
-            })
-        },
         saveTestSurvey() {
             this.errorTestSurveyTitle = ''
             this.errorTestSurveyText = ''
@@ -160,21 +144,24 @@ export default {
         storeTest() {
             this.testErrors = {};
 
-            //триггер для запуска валидации в дочерних компонентах
+            //триггер для запуска валидации в дочерних компонентах сложного теста
             this.$store.commit('setTestError', false);
             this.toValidate = !this.toValidate;
 
-            if (this.test.question.title == '') {
-                this.testErrors.title = 'Назва обовʼязкова'
-            }
+            //валидация простого теста
+            if (this.test.type === 'easy') {
 
-            if (this.test.question.text == '') {
-                this.testErrors.text = 'Питання обовʼязкове'
-            }
-            if (!this.test.question.answer.correct.length) {
-                this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
-            }
+                if (this.test.title == '') {
+                    this.testErrors.title = 'Назва обовʼязкова'
+                }
 
+                if (this.test.text == '') {
+                    this.testErrors.text = 'Питання обовʼязкове'
+                }
+                if (!this.test.question.answer.correct.length) {
+                    this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
+                }
+            }
             if (!Object.keys(this.testErrors).length && !this.$store.state.testErrors) {
                 this.$store.commit('storeTest', this.test);
                 this.setStep(2);

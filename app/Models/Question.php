@@ -23,10 +23,10 @@ class Question
     public $parent_id;
 
     public $description;
-    public $correctAnswer;
 
     public $buttonsType = self::BUTTONS_TEXT;
     public $answer_type  = self::ANSWER_VARIANTS;
+    public $answer_correct  = self::ANSWER_VARIANTS;
 
     public $isTextAnswerType;
 
@@ -36,16 +36,17 @@ class Question
 
     public function __construct( $question)
     {
-        $this->title = $question['question']['title'];
-        $this->question = $question['question']['text'];
+        $this->title = $question['title'];
+        $this->question = $question['text'];
         $this->description = $question['question']['description'];
-        $this->correctAnswer = $question['answer']['correct'];
+
         $this->agreement = $question['question']['agreement'];
         $this->test_type = $question['type'];
 
-        if ($question['answer']['type'] == self::BUTTONS_CARD) $this->buttonsType = self::BUTTONS_CARD;
+        if ($question['question']['answer']['type'] == self::BUTTONS_CARD) $this->buttonsType = self::BUTTONS_CARD;
 
-        $this->answer_type = $question['answer']['type'];
+        $this->answer_type = $question['question']['answer']['type'];
+        $this->answer_correct = $question['question']['answer']['correct'];
 
         $this->isTextAnswerType = (boolean) ($this->answer_type == self::ANSWER_TEXT);
 
@@ -92,7 +93,7 @@ class Question
 
 
         $this->variants = array(
-            'correct_answer' => $this->correctAnswer,
+            'correct_answer' => $this->answer_correct,
             'type'  => $this->buttonsType,
             'buttons' => $buttons
         );

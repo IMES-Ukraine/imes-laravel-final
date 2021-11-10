@@ -87,7 +87,7 @@ import ComplexTestVariants from './../inputs/ComplexTestVariantsArray.vue'
 import ProjectMixin from "../../ProjectMixin";
 
 export default {
-    name: 'ComplexTestQuestionArray',
+    xname: 'ComplexTestQuestionArray',
     mixins: [ProjectMixin],
     components: {
         ComplexTestVariants

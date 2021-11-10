@@ -6,7 +6,7 @@
                     <p class="articles_create__item-title">Название</p>
                     <div class="articles_create__item-content">
                         <div class="articles_create__name-block">
-                            <input type="text" name="title" id="question_title" v-model="question.title">
+                            <input type="text" name="title" id="question_title" v-model="test.title">
                             <div v-if="errors.title" class="errors">{{ errors.title }}</div>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                 <div class="articles_create__item">
                     <p class="articles_create__item-title">Вопрос</p>
                     <div class="articles_create__item-content">
-                        <textarea v-model="question.text"></textarea>
+                        <textarea v-model="test.text"></textarea>
                         <div v-if="errors.text" class="errors">{{ errors.text }}</div>
                     </div>
                 </div>
@@ -61,9 +61,9 @@
                     </div>
                 </div>
             </div>
-            <SimpleTestVariants :question.sync="question" :variants="variants" :errors="errors"></SimpleTestVariants>
+            <SimpleTestVariants :test.sync="test" :errors="errors"></SimpleTestVariants>
 
-            <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest(variants.length)">добавить ответ</button>
+            <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest(test.variants.length)">добавить ответ</button>
             <div class="articles_create-line"></div>
 
             <div class="articles_create-block">
@@ -210,7 +210,7 @@ import ProjectMixin from "../../ProjectMixin";
 
 export default {
     name: 'TestQuestion',
-    props: ['title', 'text', 'link', 'button', 'variants', 'question', 'errors'],
+    props: ['test', 'errors'],
     mixins: [ProjectMixin],
     components: {
         FragmentFormText,
@@ -263,14 +263,14 @@ export default {
                 }
             ).then((file) => {
                 //this[type] = file.data
-                this.question.media[type] = file.data
+                this.test.question.media[type] = file.data
                 //this.options.files[input.dataset.ref] = file.data
             })
         },
 
     },
     mounted() {
-        if (! this.variants.length) {
+        if (! this.test.variants.length) {
             this.addAnswerTest(0);
             this.addAnswerTest(1);
         }

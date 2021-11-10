@@ -194,12 +194,11 @@ export default {
             let title = alphabet[varIndex];
             let newItem = {... this.getNewVariant(title) };
             if (!questionIndex) {
-                this.variants.push(newItem);
+                this.test.variants.push(newItem);
             }
             else {
                 questionIndex--;
                 let q;
-                console.log('index: ', questionIndex);
                 if (this.test.complex_question.length) {
                     q = [...this.test.complex_question[questionIndex].variants];
                 }else{

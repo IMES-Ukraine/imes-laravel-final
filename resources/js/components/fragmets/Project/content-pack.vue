@@ -114,13 +114,13 @@
                     <div class="articles_create__item-content">
                         <div class="articles_create__grid width-main-1">
                             <div class="articles_create__grid-block">
-                                <button v-if="! content.test.question.title" class="articles_create-add_btn height-47"
+                                <button v-if="! content.test.title" class="articles_create-add_btn height-47"
                                         type="button" @click.prevent="newTest()"><span
                                     class="icon-right">Создать</span>
                                 </button>
                                 <div id="add_new_test" v-else>
                                     <div class="articles_create__study">
-                                        <p class="articles_create__study-title">{{ content.test.question.title }}</p>
+                                        <p class="articles_create__study-title">{{ content.test.title }}</p>
                                         <div class="articles_create__study-controls">
                                             <button
                                                 class="articles_create__study-button articles_create__study-button--edit"
@@ -230,7 +230,7 @@ export default {
             return this.content ? this.content.article ? (this.content.article.title !== '')  : false : false;
         },
         haveTest() {
-            return this.content ? this.content.test ? (this.content.test.question.title !== '')  : false : false;
+            return this.content ? this.content.test ? (this.content.test.title !== '')  : false : false;
         },
         pointsSum() {
             if (this.content.article && this.content.test) {
