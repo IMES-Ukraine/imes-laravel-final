@@ -179,6 +179,7 @@ class ProjectsController extends Controller
 
         $model = Projects::findOrFail($request->id);
         $model->options->status = Projects::STATUS_ACTIVE;
+        $model->status = Projects::STATUS_ACTIVE;
         $model->save();
 
         /*$model->options->status = Projects::STATUS_ACTIVE;*/
@@ -204,9 +205,10 @@ class ProjectsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function stop(Request $request)
+    public function stop($id)
     {
-        $model = Projects::findOrFail($request->id);
+        $model = Projects::findOrFail($id);
+        $model->update(['status' => Projects::STATUS_INACTIVE]);
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success');
     }

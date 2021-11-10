@@ -96,7 +96,7 @@ Route::group(
             ],
             function () {
                 Route::post('/start', [ProjectsController::class, 'start']);
-                Route::post('/stop', [ProjectsController::class, 'stop']);
+                Route::post('/stop/{id}', [ProjectsController::class, 'stop']);
                 Route::get('/tags', [ProjectsController::class, 'tags']);
                 Route::get('/', [ProjectsController::class, 'index']);
                 Route::post('/cover/{type}', [ProjectsController::class, 'setImage']);

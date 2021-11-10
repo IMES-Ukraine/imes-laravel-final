@@ -31,6 +31,8 @@ class Projects extends Model
     public $rules = [
     ];
 
+    protected $fillable = ['options', 'status'];
+
     protected $casts = [
         'options' => 'array',
     ];

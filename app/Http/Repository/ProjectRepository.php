@@ -42,20 +42,21 @@ class ProjectRepository
 
         $project = new Projects;
         $project->options = $projectTotal['options'];
+        $project->status = Projects::STATUS_ACTIVE;
         $isProjectSaved = $project->save();
         $isProjectItemsSaved = true;
 
         $index = 1;
 //------------- content block
         foreach ($projectTotal['content'] as $content) {
-            $scheduled = $content['scheduled_date'] . ' ' . $content['scheduled_time'];
+            $scheduled = ($content['scheduled_date'] ?? date('Y-m-d') ) . ' ' . ( $content['scheduled_time'] ?? '00:00');
 
 //------------  test
 
             //если сложный вопрос - пишем все части отдельно
             if ($content['test']['type'] == 'complex') {
                 $complex = $content['test']['complex_question'];
-                foreach ($complex as $question){
+                foreach ($complex as $question) {
                     $items = new ProjectItems;
                     $items->item_key = $index;
                     $items->item_id = 0;
@@ -75,8 +76,7 @@ class ProjectRepository
                     $items->item_id = $questionModel->id;
                     $isProjectItemsSaved &= $items->save();
                 }
-            }
-            //если простой - все проще
+            } //если простой - все проще
             else {
                 $questionModel = TestQuestions::create((array)new Question($content['test']));
                 $questionModel->save();
@@ -187,8 +187,8 @@ class ProjectRepository
             ->where('id', $id)->first();
 
         $itemsQuery = ProjectItems::where('project_id', $id);
-        if (! request()->input('all_items', 0)){
-            $itemsQuery->where('schedule', '<=', date ('Y-m-d H:i:s' ));
+        if (!request()->input('all_items', 0)) {
+            $itemsQuery->where('schedule', '<=', date('Y-m-d H:i:s'));
         }
         $content = $itemsQuery->get();
 
