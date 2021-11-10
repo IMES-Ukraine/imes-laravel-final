@@ -68,6 +68,7 @@ class Question
 
         foreach ( $question['variants'] as $variant) {
             $fields = [
+                'itemId' => $variant['itemId'],
                 'variant' => $variant['text'],
                 'title' => $variant['title'],
             ];
