@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="articles_create-block" v-for="(variant, index) in test.variants" :key="variant.itemId"
+        <div class="articles_create-block" v-for="(variant, index) in test.question.variants" :key="variant.itemId"
              :id="'block-'+variant.itemId">
             <div class="articles_create-line"></div>
             <div class="articles_create__item">
@@ -194,7 +194,7 @@ export default {
                     }
                 }
             ).then((file) => {
-                this.test.variants[index].file = file.data
+                this.test.question.variants[index].file = file.data
             })
         },
         addMedia(index, id, event) {
@@ -221,7 +221,7 @@ export default {
                     data: file.data,
                     path: file.data.data.path
                 };
-                this.test.variants[index].media.push(obj)
+                this.test.question.variants[index].media.push(obj)
                 $('#file-' + id).val(null);
             })
         }

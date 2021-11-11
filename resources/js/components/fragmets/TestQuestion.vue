@@ -63,7 +63,7 @@
             </div>
             <SimpleTestVariants :test.sync="test" :errors="errors"></SimpleTestVariants>
 
-            <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest(test.variants.length)">добавить ответ</button>
+            <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest(test.question.variants.length)">добавить ответ</button>
             <div class="articles_create-line"></div>
 
             <div class="articles_create-block">
@@ -270,7 +270,7 @@ export default {
 
     },
     mounted() {
-        if (! this.test.variants.length) {
+        if (! this.test.question.variants.length) {
             this.addAnswerTest(0);
             this.addAnswerTest(1);
         }

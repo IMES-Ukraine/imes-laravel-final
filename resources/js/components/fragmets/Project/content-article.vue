@@ -32,8 +32,9 @@
                         @change="coverField"
                         name="cover"
                         class="input-file-hidden"
-                        role="button" />
-                    <p><span data-placeholder="Загрузить" id="article-cover">{{this.article.cover || 'Загрузить'}}</span></p>
+                        role="button"/>
+                    <p><span data-placeholder="Загрузить"
+                             id="article-cover">{{ this.article.cover || 'Загрузить' }}</span></p>
                     <button class="delete_file deleteFile" id="deleteFileArticle"
                             type="button">
                     </button>
@@ -56,7 +57,7 @@
         <div class="articles_create__item mb54">
             <p class="articles_create__item-title">Текст*</p>
             <div class="articles_create__item-content">
-            <textarea class="form-control" rows="4" v-model="article.text" />
+            <textarea class="form-control" rows="4" v-model="article.text"/>
             </div>
             <div class="errors" v-if="errorArticleText">{{ errorArticleText }}</div>
         </div>
@@ -206,7 +207,15 @@ import {getRandomId} from "../../../utils";
 export default {
     name: "content-article",
     mixins: [ProjectMixin],
-    components: {ValidationProvider, VCheckbox, SimpleTestMedia, Multiselect, ArticleFormInsert, ArticleFormButton, ArticleMultiple},
+    components: {
+        ValidationProvider,
+        VCheckbox,
+        SimpleTestMedia,
+        Multiselect,
+        ArticleFormInsert,
+        ArticleFormButton,
+        ArticleMultiple
+    },
     data() {
         return {
             recommended: [],
@@ -233,7 +242,7 @@ export default {
     },
     computed: {
         article() {
-            return this.$store.state.content.article ;
+            return this.$store.state.content.article;
         },
 
     },
@@ -282,8 +291,7 @@ export default {
             }
 
             if (!error) {
-                this.$store.commit('storeArticle', this.article);
-
+                this.$store.commit('saveArticle', this.article);
                 this.setStep(2);
             }
         },

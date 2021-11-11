@@ -123,8 +123,6 @@ export default {
             errorArticleText: '',
             errorNewTest: '',
             errorNewArticle: '',
-            errorTestSurveyTitle: '',
-            errorTestSurveyText: '',
             add_new_test: false,
             add_new_article: false,
             index_article: 0,
@@ -191,11 +189,9 @@ export default {
          * Adding one more answer variant to question
          */
         addAnswerTest(varIndex, questionIndex) {
-            console.log(varIndex, )
             let test = {...this.$store.state.test};
             let title = alphabet[varIndex];
             let newItem = {... this.getNewVariant(title) };
-            console.log(varIndex, test, newItem);
             let q = [];
             if (!questionIndex) {
                 if (test.question.variants.length) {
@@ -212,7 +208,7 @@ export default {
                 q.push(newItem);
                 test.complex_question[questionIndex].variants = [...q];
             }
-            this.$store.dispatch('storeTest', test);
+            this.$store.commit('storeTest', test);
         },
 
     }

@@ -57,7 +57,7 @@
                                         <div class="articles_create__study-controls">
                                             <button
                                                 class="articles_create__study-button articles_create__study-button--edit"
-                                                @click.prevent="setStep(3)" type="button"></button>
+                                                @click.prevent="editArticle" type="button"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                         <div class="articles_create__grid width-main-1">
                             <div class="articles_create__grid-block">
                                 <button v-if="! content.test.title" class="articles_create-add_btn height-47"
-                                        type="button" @click.prevent="newTest()"><span
+                                        type="button" @click.prevent="newTest"><span
                                     class="icon-right">Создать</span>
                                 </button>
                                 <div id="add_new_test" v-else>
@@ -124,7 +124,7 @@
                                         <div class="articles_create__study-controls">
                                             <button
                                                 class="articles_create__study-button articles_create__study-button--edit"
-                                                type="button" @click.prevent="setStep(4)"></button>
+                                                type="button" @click.prevent="editTest"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -197,6 +197,7 @@
 import ProjectMixin from "../../../ProjectMixin";
 import {ValidationProvider} from "vee-validate";
 import VCheckbox from "../../templates/inputs/checkbox"
+import store from "../../../store";
 
 export default {
     name: "content-pack",
@@ -211,26 +212,27 @@ export default {
     data() {
         return {
             contentTitle: this.$store.state.currentContent,
-            content: {},
             loaded: false,
             showFull: false
         }
     },
 
     mounted() {
-        this.loadContent();
-
         this.loaded = true;
-        if (this.content.title) {
-            this.showFull = true;
-        }
+        this.showFull =  !!this.content.title;
     },
     computed: {
+        content: {
+            get: function() { return store.state.content },
+            set: function (newValue) {
+                store.commit('storeContent', newValue);
+            }
+        },
         haveArticle() {
-            return this.content ? this.content.article ? (this.content.article.title !== '')  : false : false;
+            return this.content ? this.content.article ? this.content.article.title  : false : false;
         },
         haveTest() {
-            return this.content ? this.content.test ? (this.content.test.title !== '')  : false : false;
+            return this.content ? this.content.test ? this.content.test.title  : false : false;
         },
         pointsSum() {
             if (this.content.article && this.content.test) {
@@ -247,15 +249,23 @@ export default {
     },
     methods: {
         newTest() {
-            this.$store.dispatch('setCurrentTest', this.contentTemplate.test);
-            this.$store.dispatch('storeContent', this.content);
+            this.$store.dispatch('storeTest', this.contentTemplate.test);
             this.setStep(4);
         },
         newArticle() {
-            this.$store.dispatch('setCurrentArticle', this.contentTemplate.article);
-            // this.$store.dispatch('storeContent', this.content);
+            this.$store.dispatch('storeArticle', this.contentTemplate.article);
             this.setStep(3);
         },
+        editArticle() {
+            this.$store.dispatch('setCurrentArticle');
+            this.setStep(3);
+        },
+        editTest() {
+            this.$store.dispatch('setCurrentTest');
+            this.setStep(4);
+        },
+
+
         showContent() {
             this.$refs['packName'].validate().then((res) => {
                 if (res.valid) {
@@ -275,13 +285,12 @@ export default {
             if (!this.content.test.title) {
                 this.errorNewTest = 'Тест обовʼязковий';
             }
-            ``
 
             if (!this.content.article.title) {
                 this.errorNewArticle = 'Статья обовʼязкова';
             }
 
-            this.$store.dispatch('storeContent', this.content);
+            this.$store.dispatch('saveContent', this.content);
             this.setStep(1)
 
         },

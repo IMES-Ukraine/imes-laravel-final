@@ -108,7 +108,7 @@ export default {
     },
     computed: {
         test() {
-            return this.$store.state.content.test;
+            return this.$store.state.test;
         }
     },
     methods: {
@@ -132,7 +132,7 @@ export default {
                 }
 
                 if(this.test.picked === 'survey') {
-                    for (const [index, value] of Object.entries(this.test.variants)) {
+                    for (const [index, value] of Object.entries(this.test.question.variants)) {
                         if (value.variant == '') {
                             $('#variant-' + value.title).css('border', '1px solid red');
                             this.$store.commit('setTestError', true);
@@ -144,7 +144,7 @@ export default {
                 }
             }
             if (!Object.keys(this.testErrors).length && !this.$store.state.testErrors) {
-                this.$store.commit('storeTest', this.test);
+                this.$store.commit('saveTest', this.test);
                 this.setStep(2);
             }
         },

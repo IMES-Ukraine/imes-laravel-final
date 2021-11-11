@@ -66,7 +66,7 @@ class Question
 
         $buttons = [];
 
-        foreach ($question['variants'] as $variant) {
+        foreach ($question['question']['variants'] as $variant) {
             $fields = [
                 'itemId' => $variant['itemId'],
                 'variant' => $variant['text'],

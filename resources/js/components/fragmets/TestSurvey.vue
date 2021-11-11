@@ -18,7 +18,7 @@
                 </div>
             </div>
 
-            <SurveyTestVariants :variants="test.variants"></SurveyTestVariants>
+            <SurveyTestVariants :variants="test.question.variants"></SurveyTestVariants>
             <div class="mb20"></div>
 
             <button class="articles_create-submit button-border" type="button" @click="addSurvey">добавить ответ</button>
@@ -33,31 +33,28 @@
     import VContent from "../templates/Content"
     import { getRandomId } from '../../utils'
     import FragmentFormText from "./text";
+    import ProjectMixin from "../../ProjectMixin";
 
     export default {
         name: 'TestQuestion',
         props: [ 'test', 'errorTestSurveyTitle', 'errorTestSurveyText'],
+        mixins: [ProjectMixin],
         components: {
             FragmentFormText,
             //SimpleTestVariant,
             SimpleTestVariants,
             SurveyTestVariants,
-            VContent
-        },
-
-        data() {
-            return {
-                //tests: this.$store.state.tests,
-            }
-        },
-        validations: {
-            text: {
-                required
-            },
+            VContent,
         },
         computed: {
             hasDescription: function() {
                 return false;
+            }
+        },
+        mounted() {
+            if (! this.test.question.variants.length) {
+                this.addAnswerTest(0);
+                this.addAnswerTest(1);
             }
         },
         methods: {
@@ -65,18 +62,19 @@
              * Adding one more answer variant to question
              */
             addSurvey() {
-                const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-                let length = this.test.variants.length
-                let obj = {
-                    itemId: 'survey-' + getRandomId(),
-                    title: alphabet[length],
-                    variant: '',
-                    isCorrect: false,
-                    answer: {
-                        type: 'text'
-                    }
-                };
-                this.test.variants.push(obj)
+                this.addAnswerTest(this.test.question.variants.length);
+                // const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+                // let length = this.test.variants.length
+                // let obj = {
+                //     itemId: 'survey-' + getRandomId(),
+                //     title: alphabet[length],
+                //     variant: '',
+                //     isCorrect: false,
+                //     answer: {
+                //         type: 'text'
+                //     }
+                // };
+                // this.test.variants.push(obj)
             }
         }
     }

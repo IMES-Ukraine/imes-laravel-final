@@ -178,7 +178,7 @@
 
                 this.test.complex_question = [...this.complexQ];
                 let index = this.test.complex_question.length;
-
+                this.$store.commit('storeTest', this.test);
                 this.addAnswerTest(0,index);
                 this.addAnswerTest(1,index);
             },

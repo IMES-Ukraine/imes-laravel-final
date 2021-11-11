@@ -170,7 +170,7 @@ export default new Vuex.Store({
             state.content = content;
         },
         saveContent(state, content) {
-            state.content = content;
+            state.project.content[content.title] = content;
             sessionStorage.project = JSON.stringify(state.project);
         },
         loadContent(state) {
