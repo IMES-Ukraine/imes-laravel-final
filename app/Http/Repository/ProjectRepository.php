@@ -204,7 +204,6 @@ class ProjectRepository
         $status_not_active = 0;
 
         foreach ($content as $item) {
-            $projects_items['schedule'] = $item->schedule;
             if ($item['item_type'] == 'App\Models\TestQuestions') {
                 $test_not_participate = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_NOT_PARTICIPATE);
                 $test_active = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_ACTIVE);
@@ -238,6 +237,7 @@ class ProjectRepository
                     'not_active' => $article_not_active
                 ];
             }
+            $projects_items[$item['item_key']]['schedule'] = $item->schedule;
         }
 
         $total = $status_active + $status_not_active + $status_not_participate;
