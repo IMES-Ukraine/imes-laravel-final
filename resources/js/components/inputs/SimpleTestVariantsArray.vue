@@ -151,23 +151,23 @@ export default {
         }
     },
     mounted() {
-        this.localType = this.test.question.answer.type;
+        this.localType = this.test.question.type;
     },
     watch: {
         localType() {
-            this.test.question.answer.type = this.localType;
+            this.test.question.type = this.localType;
         }
     },
     methods: {
         setCorrect(id, data) {
             if (!data) {
-                this.test.question.answer.correct.push(id);
+                this.test.question.correct.push(id);
                 this.errors.correct = '';
             } else {
-                this.test.question.answer.correct = this.test.question.answer.correct.filter( (item)=> {
+                this.test.question.correct = this.test.question.correct.filter( (item)=> {
                     return item !== data;
                 });
-                if (!this.test.question.answer.correct.length) {
+                if (!this.test.question.correct.length) {
                     this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
                 }
             }

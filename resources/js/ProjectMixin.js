@@ -60,10 +60,8 @@ export default {
                             cover: null,
                             video: null,
                         },
-                        answer: {
-                            type: 'variants',
-                            correct: []
-                        },
+                        type: 'variants',
+                        correct: [],
                         isComplex: this.isComplex,
                         agreement: null,
                         variants: [],
@@ -84,10 +82,8 @@ export default {
                 title: '',
                 text: '',
                 cover: '',
-                answer: {
-                    type: 'variants',
-                    correct: []
-                },
+                type: 'variants',
+                correct: [],
                 variants: [],
             },
             variantTemplate: {

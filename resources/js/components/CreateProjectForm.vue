@@ -405,6 +405,13 @@ export default {
         },
 
         handleUpload(event, field) {
+            if (event.target.files[0].size <= 1024 * 1024 * 1024) {
+                this.project.options.files.cover = event.target.files[0].name;
+                this.errorCover = '';
+            } else {
+                this.errorCover = 'Изображение слишком большое';
+            }
+
             let imageForm = new FormData()
             imageForm.append('file', event.target.files[0])
 
@@ -423,7 +430,6 @@ export default {
                 let project = this.$store.state.project;
                 project.options.files[field] = file.data.data.path;
                 this.$store.dispatch('storeProject', project);
-                this.name = event.target.files[0].name
 
             })
         },

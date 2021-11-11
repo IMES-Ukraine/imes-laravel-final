@@ -155,11 +155,11 @@ export default {
         }
     },
     mounted() {
-        this.localType = this.question.answer.type;
+        this.localType = this.question.type;
     },
     watch: {
         localType() {
-            this.question.answer.type = this.localType;
+            this.question.type = this.localType;
         },
         toValidate() {
             this.errors.correct = '';
@@ -173,15 +173,14 @@ export default {
     },
     methods: {
         setCorrect(id, data) {
-            console.log(id, data);
             if (!data) {
-                this.question.answer.correct.push(id);
+                this.question.correct.push(id);
                 this.errors.correct = '';
             } else {
-                this.question.answer.correct = this.question.answer.correct.filter((item) => {
+                this.question.correct = this.question.correct.filter((item) => {
                     return item !== id;
                 });
-                if (!this.question.answer.correct.length) {
+                if (!this.question.correct.length) {
                     this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
                     this.$store.dispatch('setTestError', true);
                 }
