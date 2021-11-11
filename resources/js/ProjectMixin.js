@@ -46,10 +46,9 @@ export default {
                     textInsert: false,
                 },
                 test: {
+                    title: '',
+                    text: '',
                     question: {
-                        title: '',
-                        text: '',
-                        description: '',
                         link: '',
                         button: null,
                         count: null,
@@ -63,11 +62,11 @@ export default {
                             correct: []
                         },
                         isComplex: this.isComplex,
-                        agreement: null
+                        agreement: null,
+                        variants: [],
                     },
                     cover: '',
                     complex_question: [],
-                    variants: [],
                     picked: 'test',
                     type: 'easy',
                     count: null,
@@ -192,23 +191,28 @@ export default {
          * Adding one more answer variant to question
          */
         addAnswerTest(varIndex, questionIndex) {
-
+            console.log(varIndex, )
+            let test = {...this.$store.state.test};
             let title = alphabet[varIndex];
             let newItem = {... this.getNewVariant(title) };
+            console.log(varIndex, test, newItem);
+            let q = [];
             if (!questionIndex) {
-                this.test.variants.push(newItem);
+                if (test.question.variants.length) {
+                    q = [...test.question.variants];
+                }
+                q.push(newItem);
+                test.question.variants = [...q];
             }
             else {
                 questionIndex--;
-                let q;
-                if (this.test.complex_question.length) {
-                    q = [...this.test.complex_question[questionIndex].variants];
-                }else{
-                    q = [];
+                if (test.complex_question.length) {
+                    q = [...test.complex_question[questionIndex].variants];
                 }
                 q.push(newItem);
-                this.test.complex_question[questionIndex].variants = [...q];
+                test.complex_question[questionIndex].variants = [...q];
             }
+            this.$store.dispatch('storeTest', test);
         },
 
     }

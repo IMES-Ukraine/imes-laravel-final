@@ -94,5 +94,7 @@ export default {
 </script>
 
 <style scoped>
-
+.preview__title-img {
+    width: 80px;
+}
 </style>

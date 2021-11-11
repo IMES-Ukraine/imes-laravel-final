@@ -27,7 +27,6 @@ export default new Vuex.Store({
                 }
             },
             tag: '',
-
             content: {}
 
         },
@@ -142,29 +141,36 @@ export default new Vuex.Store({
            state.currentContent = title;
            state.content = state.project.content[title];
         },
-        setCurrentArticle(state, data) {
-           state.article = data;
+        setCurrentArticle(state) {
+           state.article = state.content.article;
         },
-        setCurrentTest(state, data) {
+        setCurrentTest(state,) {
+           state.test = state.content.test;
+        },
+
+        storeTest(state, data) {
             state.test = data;
         },
+        storeArticle(state, data) {
+            state.article = data;
+        },
 
 
-        storeArticle(state, article) {
+        saveArticle(state, article) {
             state.content.article = article;
             state.numberArticle = 1;
             sessionStorage.content = JSON.stringify(state.content);
         },
-        storeTest(state, test) {
+        saveTest(state, test) {
             state.content.test = test;
             state.numberTest = 1;
             sessionStorage.content = JSON.stringify(state.content);
         },
-        saveContent(state, content) {
+        storeContent(state, content) {
             state.content = content;
         },
-        storeContent(state, content) {
-            state.project.content[content.title] = content;
+        saveContent(state, content) {
+            state.content = content;
             sessionStorage.project = JSON.stringify(state.project);
         },
         loadContent(state) {
@@ -280,6 +286,9 @@ export default new Vuex.Store({
         storeArticle(context, article) {
             context.commit('storeArticle', article);
         },
+        storeTest(context, test) {
+            context.commit('storeTest', test);
+        },
 
         saveContent(context, content) {
             context.commit('saveContent', content);
@@ -307,12 +316,13 @@ export default new Vuex.Store({
             context.commit('loadContent', title);
             context.commit('setStep', 2);
         },
-        editArticle(context, title) {
-            context.commit('setCurrentArticle', title);
+
+        editArticle(context) {
+            context.commit('setCurrentArticle');
             context.commit('setStep', 2);
         },
-        editTest(context, title) {
-            context.commit('setCurrentTest', title);
+        editTest(context) {
+            context.commit('setCurrentTest');
             context.commit('setStep', 3);
         },
 
