@@ -193,7 +193,7 @@ class ProjectRepository
     {
 
         $project = Projects::with(['tests', 'tests.cover_image', 'articles', 'articles.cover_image'])
-            ->where('id', $id)->first();
+            ->where('id', $id)->first()->toArray();
 
         $itemsQuery = ProjectResearches::where('project_id', $id);
         if (!request()->input('all_items', 0)) {
@@ -207,13 +207,14 @@ class ProjectRepository
             ];
         }
 
+        return (object) ['data' => ['project' => $project, 'content' => $content] ];
+
         $projects_items = [];
         $status_active = 0;
         $status_not_participate = 0;
         $status_not_active = 0;
-
+/*
         foreach ($content as $item) {
-            if ($item['item_type'] == 'App\Models\TestQuestions') {
                 $test_not_participate = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_NOT_PARTICIPATE);
                 $test_active = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_ACTIVE);
                 $test_not_active = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_NOT_ACTIVE);
@@ -331,6 +332,7 @@ class ProjectRepository
         return (object)[
             'data' => $data
         ];
+*/
     }
 
 }
