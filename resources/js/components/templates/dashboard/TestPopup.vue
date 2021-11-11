@@ -19,7 +19,7 @@
                                         <div class="study__item-content">
                                             <div :class="(variant.right)?'study__answer active':'study__answer'">
                                                 <p class="study__answer-letter">{{ variant.title }}</p>
-                                                <p class="study__answer-text">{{ variant.text }}</p>
+                                                <p class="study__answer-text">{{ (variant.answer.type=='media')?variant.media[0]['name']:variant.text }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
@@ -106,15 +106,15 @@
                             </template>
 
                             <template v-if="(test.type == 'complex' && test.picked == 'test')">
-                                <div v-for="complex_question in test.complex_question">
+                                <div class="study__block-content" v-for="complex_question in test.complex_question">
                                     <p class="study__block-title">Вопрос: <b>{{ complex_question.text }}</b></p>
 
-                                    <div class="study__block-content" v-if="(complex_question.variants && complex_question.answer.type != 'text')">
+                                    <div  v-if="(complex_question.variants && complex_question.answer.type != 'text')">
                                         <div class="study__item" v-for="variant in complex_question.variants">
                                             <div class="study__item-content">
                                                 <div :class="(variant.right)?'study__answer active':'study__answer'">
                                                     <p class="study__answer-letter">{{ variant.title }}</p>
-                                                    <p class="study__answer-text">{{ variant.text }}</p>
+                                                    <p class="study__answer-text">{{ (variant.answer.type == 'media')?variant.media[0]['name']:variant.text }}</p>
                                                 </div>
                                                 <div class="study__info">
                                                     <div class="study__info-block">
