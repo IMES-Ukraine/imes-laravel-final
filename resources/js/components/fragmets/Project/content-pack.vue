@@ -35,7 +35,7 @@
                             <input
                                 class="form-control"
                                 type="text"
-                                v-model="contentTitle">
+                                v-model="content.title">
                             <span class="errors">{{ errors[0] }}</span>
                         </validation-provider>
                         <p class="articles_create__name-note">35 символов</p>
@@ -204,10 +204,6 @@ export default {
     mixins: [ProjectMixin],
     components: {ValidationProvider, VCheckbox},
     props: {
-        name: {
-            type: String,
-            required: false
-        }
     },
     data() {
         return {
@@ -269,7 +265,6 @@ export default {
         showContent() {
             this.$refs['packName'].validate().then((res) => {
                 if (res.valid) {
-                    this.content.title = this.contentTitle;
                     this.showFull = true;
                 }
             });
