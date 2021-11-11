@@ -1,18 +1,18 @@
 <template>
     <v-content v-if="true">
         <template v-slot:sidebar>
-            <project-list-sidebar :options="project.options"/>
+            <project-list-sidebar :options="project.project.options"/>
         </template>
 
         <div class="dashboard">
             <div class="dashboard-head">
-                <div class="dashboard__title" v-if="project.options">
-                    <cover :image="project.options.files.cover" :title="project.options.title" class="dashboard__title-logo"/>
-                    <p class="dashboard__title-text">{{ project.options.title }}</p>
+                <div class="dashboard__title" v-if="project.project.options">
+                    <cover :image="project.project.options.files.cover" :title="project.project.options.title" class="dashboard__title-logo"/>
+                    <p class="dashboard__title-text">{{ project.project.options.title }}</p>
                 </div>
-                <div class="dashboard__info" v-if="project.item">
+                <div class="dashboard__info" v-if="project.project">
                     <p class="dashboard__info-title">Дата запуска проекта:</p>
-                    <p class="dashboard__info-data">{{ project.item.created_at.substr(0, 10) }}</p>
+                    <p class="dashboard__info-data">{{ project.project.created_at.substr(0, 10) }}</p>
                 </div>
             </div>
             <div class="dashboard_main">
