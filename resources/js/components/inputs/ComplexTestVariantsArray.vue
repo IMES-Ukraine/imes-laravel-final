@@ -137,8 +137,9 @@
 
 <script>
 import {required} from 'vuelidate/lib/validators'
-import {PROJECT_IMAGE} from "../../api/endpoints"
+import {ARTICLE_COVER, PROJECT_IMAGE, TOKEN} from "../../api/endpoints"
 import SimpleTestMedia from "../fragmets/SimpleTestMedia"
+import {getRandomId} from "../../utils";
 
 export default {
     name: 'ComplexTestVariantsArray',
@@ -186,6 +187,37 @@ export default {
                 }
             }
         },
+
+      addMedia(index, id, event) {
+        let imageForm = new FormData()
+        imageForm.append('file', event.target.files[0])
+
+        axios.post(
+            ARTICLE_COVER + '/test',
+            imageForm,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              },
+              params: {
+                access_token: TOKEN
+              },
+            }
+        ).then((file) => {
+
+          let obj = {
+            itemId: 'media-' + getRandomId(),
+            file: file.data.data.id,
+            name: event.target.files[0].name,
+            data: file.data,
+            path: file.data.data.path
+          };
+          let q = [...this.question.variants[index].media];
+          q.push(obj);
+          this.question.variants[index].media = [...q];
+          $('#file-' + id).val(null);
+        })
+      },
 
         /**
          * Handle changing of file input (cover, video, variants)

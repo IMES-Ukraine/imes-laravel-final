@@ -221,7 +221,9 @@ export default {
                     data: file.data,
                     path: file.data.data.path
                 };
-                this.test.question.variants[index].media.push(obj)
+              let q = [...this.test.question.variants[index].media];
+              q.push(obj);
+              this.test.question.variants[index].media = [...q];
                 $('#file-' + id).val(null);
             })
         }
