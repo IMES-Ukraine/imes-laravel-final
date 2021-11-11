@@ -341,7 +341,7 @@ export default {
                 return;
             }
             imageForm.append('file', input.files[0]);
-            this.$post(PROJECT_IMAGE + type,
+            this.$post(PROJECT_IMAGE + 'cover',
                 imageForm,
                 {
                     headers: {
