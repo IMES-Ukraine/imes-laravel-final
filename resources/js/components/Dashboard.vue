@@ -65,9 +65,9 @@
                 </div>
             </div>
             <div class="dashboard_study" v-if="project.content">
-                <div class="dashboard_study-box" v-for="content in project.content">
+                <div class="dashboard_study-box" v-for="(content, key) in project.content">
                     <div class="dashboard_study__head">
-                        <p class="dashboard_study-title">{{ content.article.data.title }}</p>
+                        <p class="dashboard_study-title">{{ content.title }} {{ key }}</p>
                         <div class="dashboard_study__head-list">
                             <p class="status">Статус активностей</p>
                             <p>Выполнили активности</p>
@@ -78,7 +78,7 @@
                     <div class="dashboard_study__block">
                         <div class="dashboard_study__block-head">
                             <p class="dashboard_study__block-title">Тесты</p>
-                            <test-popup :id="content.test.item_id"/>
+                            <test-popup :id="key" :test="content.test.data"/>
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">

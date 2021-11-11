@@ -5,33 +5,59 @@
         <!-- modal -->
         <div class="modal fade" tabindex="-1" role="dialog" :id="'db-test-popup-'+id" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered db-modal__dialog full-width" role="document">
-                <div class="study template_box modal-content margin-auto">
-                    <p class="template_title">{{ title }}</p>
+                <div class="study template_box modal-content margin-auto" v-if="test">
+                    <p class="template_title">{{ test.title }}</p>
                     <button class="template_close" type="button" data-dismiss="modal"></button>
-                    <button class="study-download"><span>Скачать отчёт пакета</span></button>
+                    <button class="study-download" type="button"><span>Скачать отчёт пакета</span></button>
                     <div class="study-box">
                         <div class="study__block">
-                            <p class="study__block-title">Вопрос: <b>{{ question }}</b></p>
-                            <div class="study__block-content" v-if="variants">
-                                <div class="study__item" v-for="variant in variants">
-                                    <div class="study__item-content">
-                                        <div :class="hasCorrectAnswer(variant.itemId)">
-                                            <p class="study__answer-letter">{{ variant.title }}</p>
-                                            <p class="study__answer-text">{{ variant.variant }}</p>
-                                        </div>
-                                        <div class="study__info">
-                                            <div class="study__info-block">
-                                                <p class="study__info-data">0%</p>
-                                                <div class="dashboard_main__status-line">
-                                                    <span style="width:0%;"></span>
-                                                </div>
+                            <template v-if="(test.type == 'easy' && test.picked == 'test')">
+                                <p class="study__block-title">Вопрос: <b>{{ test.text }}</b></p>
+                                <div class="study__block-content" v-if="test.question.variants">
+                                    <div class="study__item" v-for="variant in test.question.variants">
+                                        <div class="study__item-content">
+                                            <div :class="(variant.isCorrect && type == 'variants')?'study__answer active':'study__answer'">
+                                                <p class="study__answer-letter">{{ variant.title }}</p>
+                                                <p class="study__answer-text">{{ variant.text }}</p>
                                             </div>
-                                            <p class="study__info-quantity">0</p>
+                                            <div class="study__info">
+                                                <div class="study__info-block">
+                                                    <p class="study__info-data">0%</p>
+                                                    <div class="dashboard_main__status-line">
+                                                        <span style="width:0%;"></span>
+                                                    </div>
+                                                </div>
+                                                <p class="study__info-quantity">0</p>
+                                            </div>
                                         </div>
+                                        <button class="study__item-button">Смотреть</button>
                                     </div>
-                                    <button class="study__item-button">Смотреть</button>
                                 </div>
-                            </div>
+                            </template>
+
+                            <template v-if="(test.type == 'easy' && test.picked == 'survey')">
+                                <p class="study__block-title">Вопрос: <b>{{ test.text }}</b></p>
+                                <div class="study__block-content" v-if="test.question.variants">
+                                    <div class="study__item" v-for="variant in test.question.variants">
+                                        <div class="study__item-content">
+                                            <div class="study__answer">
+                                                <p class="study__answer-letter">{{ variant.title }}</p>
+                                                <p class="study__answer-text">{{ variant.variant }}</p>
+                                            </div>
+                                            <div class="study__info">
+                                                <div class="study__info-block">
+                                                    <p class="study__info-data">0%</p>
+                                                    <div class="dashboard_main__status-line">
+                                                        <span style="width:0%;"></span>
+                                                    </div>
+                                                </div>
+                                                <p class="study__info-quantity">0</p>
+                                            </div>
+                                        </div>
+                                        <!--<button class="study__item-button" type=button>Смотреть</button>-->
+                                    </div>
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -51,6 +77,10 @@
             id: {
                 type: Number,
                 default: 0
+            },
+            test: {
+                type: Object,
+                default: {}
             }
         },
         data () {
@@ -60,7 +90,8 @@
                 question: '',
                 variants: [],
                 correct_answer: [],
-                test_type: ''
+                test_type: '',
+                type: ''
             }
         },
         methods: {
@@ -73,27 +104,17 @@
             loadTest () {
                 this.$get(TEST + '/' + this.id).then(response => {
                     console.log(response)
-                    let data = response.data[0]
+                    let data = response.data[0].items.data
                     this.title = data.title
-                    this.question = data.question
-                    this.variants = data.variants.buttons
-                    this.correct_answer = data.variants.correct_answer
+                    this.question = data.text
+                    this.variants = data.variants
                     this.test_type = data.test_type
+                    this.type = data.question.answer.type
                 });
-            },
-            hasCorrectAnswer (itemId) {
-                let active = '';
-                if (this.test_type == "easy") {
-                    if (this.correct_answer.includes(itemId)) {
-                        active = ' active';
-                    }
-                }
-
-                return 'study__answer' + active;
             }
         },
         mounted() {
-            this.loadTest()
+            //this.loadTest()
         }
     }
 </script>
