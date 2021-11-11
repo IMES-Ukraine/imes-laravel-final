@@ -50,12 +50,13 @@ class ProjectRepository
         $index = 1;
 //------------- content block
         foreach ($projectTotal['content'] as $content) {
-            $scheduled = ($content['scheduled_date'] ?? date('Y-m-d') ) . ' ' . ( $content['scheduled_time'] ?? '00:00');
+            $scheduled = ($content['scheduled_date'] ?? date('Y-m-d')) . ' ' . ($content['scheduled_time'] ?? '00:00');
 
             $content['project_id'] = $project->id;
             $content['schedule'] = $scheduled;
             $research = ProjectResearches::create($content);
-            dd ($research);
+        }
+/*
 
 //------------  test
 
@@ -119,6 +120,8 @@ class ProjectRepository
             'saved' => !$questionModel || !$articleModel || !$isProjectSaved || !$isProjectItemsSaved,
             'data' => $project
         ];
+*/
+            return  (object)['saved' => true, 'data' => $project];
 
     }
 
