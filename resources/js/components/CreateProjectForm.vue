@@ -356,7 +356,7 @@ export default {
     methods: {
         newContent() {
             this.errorContent = '';
-            this.$store.dispatch('setContent', this.contentTemplate);
+            this.$store.commit('setContent', this.contentTemplate);
             this.setStep(2);
         },
         editItem(title) {

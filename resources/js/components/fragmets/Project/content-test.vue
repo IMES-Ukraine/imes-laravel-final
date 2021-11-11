@@ -139,7 +139,7 @@ export default {
                         }
                     }
                 }
-                else if (!this.test.question.answer.correct.length) {
+                else if (!this.test.question.correct.length) {
                     this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
                 }
             }

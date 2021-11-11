@@ -269,10 +269,6 @@ export default {
                 }
             });
         },
-        loadContent() {
-            this.content = this.$store.state.content;
-            this.contentTitle = this.content.title;
-        },
         showFirstStep() {
             this.errorNewTest = '';
             this.errorNewArticle = '';
