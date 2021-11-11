@@ -237,8 +237,8 @@ Route::group(
                 'prefix' => 'moderation'
             ],
             function () {
-                Route::get('/',
-                    [ModerationController::class, 'index']);
+                Route::get('/', [ModerationController::class, 'index']);
+                Route::get('/{test_id}', [ModerationController::class, 'test']);
             }
         );
 

@@ -1,18 +1,18 @@
 <template>
     <v-content v-if="true">
         <template v-slot:sidebar>
-            <project-list-sidebar :options="project.options"/>
+            <project-list-sidebar :options="project.project.options"/>
         </template>
 
         <div class="dashboard">
             <div class="dashboard-head">
-                <div class="dashboard__title" v-if="project.options">
-                    <cover :image="project.options.files.cover" :title="project.options.title" class="dashboard__title-logo"/>
-                    <p class="dashboard__title-text">{{ project.options.title }}</p>
+                <div class="dashboard__title" v-if="project.project.options">
+                    <cover :image="project.project.options.files.cover" :title="project.project.options.title" class="dashboard__title-logo"/>
+                    <p class="dashboard__title-text">{{ project.project.options.title }}</p>
                 </div>
-                <div class="dashboard__info" v-if="project.item">
+                <div class="dashboard__info" v-if="project.project">
                     <p class="dashboard__info-title">Дата запуска проекта:</p>
-                    <p class="dashboard__info-data">{{ project.item.created_at.substr(0, 10) }}</p>
+                    <p class="dashboard__info-data">{{ project.project.created_at.substr(0, 10) }}</p>
                 </div>
             </div>
             <div class="dashboard_main">
@@ -67,7 +67,7 @@
             <div class="dashboard_study" v-if="project.content">
                 <div class="dashboard_study-box" v-for="(content, key) in project.content">
                     <div class="dashboard_study__head">
-                        <p class="dashboard_study-title">{{ content.title }} {{ key }}</p>
+                        <p class="dashboard_study-title">{{ content.title }}</p>
                         <div class="dashboard_study__head-list">
                             <p class="status">Статус активностей</p>
                             <p>Выполнили активности</p>
@@ -78,7 +78,7 @@
                     <div class="dashboard_study__block">
                         <div class="dashboard_study__block-head">
                             <p class="dashboard_study__block-title">Тесты</p>
-                            <test-popup :id="key" :test="content.test.data"/>
+                            <test-popup :id="key" :test="content.test"/>
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
@@ -305,7 +305,7 @@
             async loadProject() {
                 let projectId = this.$route.params.projectId
 
-                this.$get(PROJECT + '/' + projectId).then(response => {
+                this.$get(PROJECT + '/' + projectId + '?all_items=1').then(response => {
 
                     if (response.data) {
                         this.project = response.data
