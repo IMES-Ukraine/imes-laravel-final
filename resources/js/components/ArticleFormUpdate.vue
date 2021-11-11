@@ -371,7 +371,7 @@
                         content_text: this.article.content_text,
                         user: (this.article.user_id[0])?this.article.user_id[0]['id']:0,
                         active_user_id: this.article.active_user_id,
-                        cover_image_id: (this.image)?this.image:this.article.cover_image,
+                        cover_image: (this.image)?this.image:this.article.cover_image,
                         gallery: this.article.multiples,
                         tags: this.article.chosenTags,
                         recommended: this.article.chosenRecommended,
@@ -444,7 +444,7 @@
                 ).then((file) => {
                     this.name = event.target.files[0].name
                     //this.articles[0].imeges.push(file.data)
-                    this.image = file.data.data.id
+                    this.image = file.data.data.path
                 })
             },
             addMedia(event) {
