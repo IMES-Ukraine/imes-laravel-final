@@ -19,7 +19,7 @@
                                         <div class="study__item-content">
                                             <div :class="(variant.right)?'study__answer active':'study__answer'">
                                                 <p class="study__answer-letter">{{ variant.title }}</p>
-                                                <p class="study__answer-text">{{ (variant.answer.type=='media')?variant.media[0]['name']:variant.text }}</p>
+                                                <p class="study__answer-text">{{ (variant.answer && variant.answer.type=='media')?variant.media[0]['name']:variant.text }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
@@ -114,7 +114,7 @@
                                             <div class="study__item-content">
                                                 <div :class="(variant.right)?'study__answer active':'study__answer'">
                                                     <p class="study__answer-letter">{{ variant.title }}</p>
-                                                    <p class="study__answer-text">{{ (variant.answer.type == 'media')?variant.media[0]['name']:variant.text }}</p>
+                                                    <p class="study__answer-text">{{ (variant.answer && variant.answer.type == 'media')?variant.media[0]['name']:variant.text }}</p>
                                                 </div>
                                                 <div class="study__info">
                                                     <div class="study__info-block">
