@@ -7,6 +7,7 @@ use App\Http\Helpers;
 use App\Models\Article;
 use App\Models\Articles;
 use App\Models\Passing;
+use App\Models\ProjectResearches;
 use App\Models\Question;
 use App\Models\QuestionModeration;
 use App\Models\Test;
@@ -50,6 +51,11 @@ class ProjectRepository
 //------------- content block
         foreach ($projectTotal['content'] as $content) {
             $scheduled = ($content['scheduled_date'] ?? date('Y-m-d') ) . ' ' . ( $content['scheduled_time'] ?? '00:00');
+
+            $content['project_id'] = $project->id;
+            $content['schedule'] = $scheduled;
+            $research = ProjectResearches::create($content);
+            dd ($research);
 
 //------------  test
 
