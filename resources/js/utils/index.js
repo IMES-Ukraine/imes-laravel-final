@@ -36,7 +36,12 @@ const variantTemplate = {
         type: 'text' //answer type (variants | text field)
     },
 }
+const checkIsImage = (fileName) => {
+    console.log(fileName.split('.').pop());
+    return ! ($.inArray(fileName.split('.').pop(), ['jpg', 'jpeg', 'png', 'tiff', 'gif']) == -1 );
+}
 export {
+    checkIsImage,
     getRandomId,
     alphabet,
     variantTemplate,

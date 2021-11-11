@@ -24,6 +24,9 @@ export default {
                     user_id: [],
                     chosenRecommended: [],
                     cover: '',
+                    media: {
+                        cover: {}
+                    },
                     multiples: [],
                     insert: [
                         {
@@ -127,7 +130,8 @@ export default {
             add_new_article: false,
             index_article: 0,
             index_test: 0,
-            requiredErrorText: "Поле обязательное"
+            requiredErrorText: "Поле обязательное",
+            notImageText: "Файл должен иметь одно из расширений  'jpg', 'jpeg', 'png', 'tiff', 'gif' "
         }
     },
     computed: {

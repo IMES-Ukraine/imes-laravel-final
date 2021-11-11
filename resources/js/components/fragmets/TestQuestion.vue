@@ -15,10 +15,11 @@
                     <p class="articles_create__item-title">Обложка</p>
                     <div class="articles_create__item-content">
                         <div class="articles_create__item-file width-auto buttonAddFile">
-                            <input type="file" name="name" v-on:change="handleUpload">
-                            <p><span data-placeholder="Загрузить"></span></p>
+                            <input type="file" name="name" v-on:change="handleUpload" img_type="cover">
+                            <p><span data-placeholder="Загрузить">{{test.question.media.cover ? test.question.media.cover.file_name : ''}}</span></p>
                             <button class="delete_file deleteFile"></button>
                         </div>
+                        <div v-if="coverError" class="errors">{{ coverError }}</div>
                     </div>
                 </div>
             </div>
@@ -203,7 +204,7 @@ import {required} from 'vuelidate/lib/validators'
 
 import SimpleTestVariants from './../inputs/SimpleTestVariantsArray.vue';
 import VContent from "../templates/Content"
-import { getRandomId, alphabet } from '../../utils'
+import { checkIsImage} from '../../utils'
 import FragmentFormText from "./text";
 import {PROJECT_IMAGE} from "../../api/endpoints";
 import ProjectMixin from "../../ProjectMixin";
@@ -222,12 +223,12 @@ export default {
     data() {
         return {
             files: {},
-            cover: null,
             video: null,
             toLearn: false,
 
             isCheckedFile: false,
-            isCheckedVideo: false
+            isCheckedVideo: false,
+            coverError: ''
         }
     },
     validations: {
@@ -249,11 +250,14 @@ export default {
          * @param event
          */
         handleUpload( event) {
-
+            this.coverError = '';
             let imageForm = new FormData();
             let input = event.target
-            let type = input.getAttribute('img_type')
-
+            let type = input.getAttribute('img_type');
+            if (! checkIsImage(input.value) ) {
+                this.errorArticleCover = this.notImageText;
+                return;
+            }
             imageForm.append('file', input.files[0]);
             this.$post(PROJECT_IMAGE + type,
                 imageForm,
@@ -263,9 +267,7 @@ export default {
                     }
                 }
             ).then((file) => {
-                //this[type] = file.data
-                this.test.question.media[type] = file.data
-                //this.options.files[input.dataset.ref] = file.data
+                this.test.question.media[type] = file.data;
             })
         },
 

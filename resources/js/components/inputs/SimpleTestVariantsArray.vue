@@ -53,7 +53,7 @@
                         <SimpleTestMedia :media="variant.media"></SimpleTestMedia>
                         <div class="articles_create__media-add">
                             <input type="file" name="file" :id="'file-'+variant.itemId"
-                                   :disabled=" localType != 3"
+                                   :disabled=" localType != 'media'"
                                    @change="addMedia(index, variant.itemId, $event)">
                         </div>
                     </div>
@@ -215,7 +215,7 @@ export default {
             ).then((file) => {
 
                 let obj = {
-                    itemId: 'media-' + etRandomId(),
+                    itemId: 'media-' + getRandomId(),
                     file: file.data.data.id,
                     name: event.target.files[0].name,
                     data: file.data,

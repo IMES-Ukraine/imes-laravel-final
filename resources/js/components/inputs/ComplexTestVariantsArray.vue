@@ -12,7 +12,7 @@
                 <div class="articles_create__item-content">
                     <div class="articles_create__ready_answer">
                         <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
-                        <input type="text" name="text">
+                        <input type="text" name="text" v-model="variant.text">
                         <div class="articles_create-checkbox">
                             <input type="checkbox" :id="'right_answer_' + variant.itemId"
                                    v-model="variant.right"

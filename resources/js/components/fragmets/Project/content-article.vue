@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="articles_create__item half">
-            <p class="articles_create__item-title">Обкладинка*</p>
+            <p class="articles_create__item-title">Обложка*</p>
             <div class="articles_create__item-content">
                 <div class="articles_create__item-file width-auto buttonAddFile">
                     <input
@@ -195,14 +195,23 @@ import ProjectMixin from "../../../ProjectMixin";
 
 import {ValidationProvider} from "vee-validate";
 import VCheckbox from "../../templates/inputs/checkbox"
-import {ARTICLE, ARTICLE_COVER, ARTICLE_LIST, TOKEN, USER, USER_CREATE_NAME, USER_LIST} from "../../../api/endpoints";
+import {
+    ARTICLE,
+    ARTICLE_COVER,
+    ARTICLE_LIST,
+    PROJECT_IMAGE,
+    TOKEN,
+    USER,
+    USER_CREATE_NAME,
+    USER_LIST
+} from "../../../api/endpoints";
 import SimpleTestMedia from "../SimpleTestMedia";
 import Multiselect from "vue-multiselect";
 import ArticleFormInsert from "../../templates/article/form/insert";
 import ArticleFormButton from "../../templates/article/form/button";
 import ArticleMultiple from "../../templates/article/form/multiple";
 import axios from "axios";
-import {getRandomId} from "../../../utils";
+import {checkIsImage, getRandomId} from "../../../utils";
 
 export default {
     name: "content-article",
@@ -322,26 +331,54 @@ export default {
                 $('#article_multiples').val(null);
             })
         },
-        async coverField(event) {
-            let imageForm = new FormData()
-            imageForm.append('file', event.target.files[0])
-
-            await axios.post(
-                ARTICLE_COVER + '/articles',
+        coverField(event) {
+            this.errorArticleCover = '';
+            let imageForm = new FormData();
+            let input = event.target
+            let type = input.getAttribute('img_type');
+            if (! checkIsImage(input.value) ) {
+                this.errorArticleCover = this.notImageText;
+                return;
+            }
+            imageForm.append('file', input.files[0]);
+            this.$post(PROJECT_IMAGE + type,
                 imageForm,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data'
-                    },
-                    params: {
-                        access_token: TOKEN
-                    },
+                    }
                 }
             ).then((file) => {
-                let article = this.$store.state.content.article;
-                article.cover = file.data.data.path;
-                this.$store.dispatch('storeArticle', article);
+                this.article.media.cover = file.data;
+                this.article.cover=file.data.file_name;
+
             })
+
+
+
+            // if (! checkIsImage(event.target.files[0]) ) {
+            //     this.errorArticleCover = this.notImageText;
+            //     return;
+            // }
+            //
+            // let imageForm = new FormData()
+            // imageForm.append('file', event.target.files[0])
+            // await axios.post(
+            //     ARTICLE_COVER + '/articles',
+            //     imageForm,
+            //     {
+            //         headers: {
+            //             'Content-Type': 'multipart/form-data'
+            //         },
+            //         params: {
+            //             access_token: TOKEN
+            //         },
+            //     }
+            // ).then((file) => {
+            //     let article = this.$store.state.content.article;
+            //     article.cover = file.data.data.path;
+            //     this.$store.dispatch('storeArticle', article);
+            // })
 
         },
 
