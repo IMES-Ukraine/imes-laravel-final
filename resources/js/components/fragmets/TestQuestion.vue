@@ -69,11 +69,11 @@
             <div class="articles_create-block">
                 <div class="articles_create__item">
                     <div class="articles_create__item-title has_radio">
-                        <input type="radio" name="title_radio">
+                        <input type="checkbox" name="title_radio" v-model="toLearn">
                         <i></i>
                         <p>Изучить</p>
                     </div>
-                    <div class="articles_create__item-content">
+                    <div v-if="toLearn" class="articles_create__item-content">
                         <div class="articles_create__name-block">
                             <input type="text" name="name" placeholder="http//">
                         </div>
@@ -224,6 +224,7 @@ export default {
             files: {},
             cover: null,
             video: null,
+            toLearn: false,
 
             isCheckedFile: false,
             isCheckedVideo: false
