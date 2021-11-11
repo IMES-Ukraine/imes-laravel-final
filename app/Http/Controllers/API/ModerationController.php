@@ -39,6 +39,21 @@ class ModerationController extends Controller
             ->apiArrayResponseBuilder(200, 'success', []);
     }
 
+    /**
+     * @param $test_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function test( $test_id ) {
+
+        $data = $this->QuestionModeration
+            ->where('question_id', $test_id)
+            ->with('user')
+            ->get();
+
+        return $this->helpers
+            ->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
     public function show($id){
 
         $data = $this->QuestionModeration
