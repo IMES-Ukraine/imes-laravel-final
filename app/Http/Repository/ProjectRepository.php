@@ -195,7 +195,7 @@ class ProjectRepository
         $project = Projects::with(['tests', 'tests.cover_image', 'articles', 'articles.cover_image'])
             ->where('id', $id)->first();
 
-        $itemsQuery = ProjectItems::where('project_id', $id);
+        $itemsQuery = ProjectResearches::where('project_id', $id);
         if (!request()->input('all_items', 0)) {
             $itemsQuery->where('schedule', '<=', date('Y-m-d H:i:s'));
         }
