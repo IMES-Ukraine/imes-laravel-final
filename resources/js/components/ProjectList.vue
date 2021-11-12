@@ -17,7 +17,7 @@
                     :tag="(project.tags)?'#'+project.tags.project_tags.slug:''"
                 />
             </div>
-            <v-preloader v-else />
+            <!--<v-preloader v-else />-->
         </div>
 
     </v-content>
