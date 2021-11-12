@@ -19,7 +19,7 @@
                                         <div class="study__item-content">
                                             <div :class="(variant.right)?'study__answer active':'study__answer'">
                                                 <p class="study__answer-letter">{{ variant.title }}</p>
-                                                <p class="study__answer-text">{{ (variant.type=='media')?variant.variants[0].media[0]['name']:variant.text }}</p>
+                                                <p class="study__answer-text">{{ (variant.type=='media')?variant.variants[0].media[0]['path']:variant.text }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
@@ -114,7 +114,10 @@
                                             <div class="study__item-content">
                                                 <div :class="(variant.right)?'study__answer active':'study__answer'">
                                                     <p class="study__answer-letter">{{ variant.title }}</p>
-                                                    <p class="study__answer-text">{{ (complex_question.type == 'media')?variant.media[0]['name']:variant.text }}</p>
+                                                    <div class="study__answer-text" v-if="complex_question.type == 'media'">
+                                                        <img :src="variant.media[0]['path']" alt="" />
+                                                    </div>
+                                                    <p class="study__answer-text" v-else>{{ variant.text }}</p>
                                                 </div>
                                                 <div class="study__info">
                                                     <div class="study__info-block">
@@ -212,7 +215,8 @@
                 variants: [],
                 correct_answer: [],
                 test_type: '',
-                type: ''
+                type: '',
+                moderations: []
             }
         },
         methods: {
@@ -233,10 +237,11 @@
                     this.type = data.question.type
                 });
             },
-            async loadModerations (test_id) {
-                await this.$get(MODERATION + '/' + test_id).then(response => {
+            loadModerations (test_id) {
+                this.$get(MODERATION + '/' + test_id).then(response => {
                     console.log(response.data);
-                    return response.data
+                    this.moderations.push()
+                    return [{id: 1, username: 'ddd'}];//response.data //
                 });
             }
         },
