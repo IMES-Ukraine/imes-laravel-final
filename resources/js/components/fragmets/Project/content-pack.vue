@@ -207,7 +207,6 @@ export default {
     },
     data() {
         return {
-            contentTitle: this.$store.state.currentContent,
             loaded: false,
             showFull: false
         }
@@ -281,7 +280,10 @@ export default {
                 this.errorNewArticle = 'Статья обовʼязкова';
             }
 
-            this.$store.dispatch('saveContent', this.content);
+            this.$store.dispatch('saveContent', this.content).then(() => {
+                this.$store.commit('storeContent', this.contentTemplate);
+            });
+
             this.setStep(1)
 
         },

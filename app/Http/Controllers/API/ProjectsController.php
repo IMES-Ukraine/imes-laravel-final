@@ -7,6 +7,7 @@ use App\Http\Helpers;
 use App\Models\File;
 use App\Models\ImageHelper;
 use App\Models\ProjectItems;
+use App\Models\ProjectResearches;
 use App\Models\Tags;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -45,6 +46,28 @@ class ProjectsController extends Controller
     public function index() {
         $data = Projects::with('tags')->whereNull('deleted_at')->with('items')->orderBy('created_at', 'DESC')->get();
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+    }
+
+    public function getTests($id = null)
+    {
+        $data = [];
+        $query = ProjectResearches::query();
+        if ($id) {
+            $query->where(['project_id' => $id]);
+        }
+        if (! request()->input('all_items', 0)){
+            $query->where('schedule', '<=', date('Y-m-d H:i:s') );
+        }
+
+        $projectItems = $query->get();
+        foreach ($projectItems as $key => $item){
+            $data[$key] = (array)$item->test;
+            $data[$key]['id'] = $item->id;
+            $data[$key]['project_id'] = $item->project_id;
+            $data[$key]['schedule'] = $item->schedule;
+
+        }
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
     /**

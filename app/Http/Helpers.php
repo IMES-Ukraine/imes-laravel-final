@@ -2,21 +2,22 @@
 
 namespace App\Http;
 
+use Illuminate\Http\JsonResponse;
+
 class Helpers
 {
 
-    public function apiArrayResponseBuilder($statusCode = null, $message = null, $data = [])
+    public function apiArrayResponseBuilder($statusCode = null, $message = null, $data = []): JsonResponse
     {
         $arr = [
             'status_code' => (isset($statusCode)) ? $statusCode : 500,
             'message' => (isset($message)) ? $message : 'error'
         ];
 
-        $arr['data'] = $data;
+        $arr['data'] = (array)$data;
 
+        return \response()->json($arr, $arr['status_code']);
 
-        return response()->json($arr, $arr['status_code']);
-        //return $arr;
 
     }
 }

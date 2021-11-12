@@ -43,12 +43,14 @@ class Question
         $this->agreement = $question['question']['agreement'] ?? '';
         $this->test_type = $question['type'];
 
-        if ($question['question']['answer']['type'] == self::BUTTONS_CARD) $this->buttonsType = self::BUTTONS_CARD;
+        if ($question['question']['type'] == self::BUTTONS_CARD) {
+            $this->buttonsType = self::BUTTONS_CARD;
+        }
 
-        $this->answer_type = $question['question']['answer']['type'];
-        $this->answer_correct = $question['question']['answer']['correct'];
+        $this->answer_type = $question['question']['type'];
+        $this->answer_correct = $question['question']['correct'];
 
-        $this->isTextAnswerType = (boolean)($this->answer_type == self::ANSWER_TEXT);
+        $this->isTextAnswerType = $this->answer_type == self::ANSWER_TEXT;
 
         $this->passing_bonus = !empty($question['question']['points']) ? $question['question']['points'] : 0;
 
@@ -82,7 +84,9 @@ class Question
             }
 
 
-            if ($this->buttonsType == self::BUTTONS_CARD) $fields = array_merge($fields, $mediaFields);
+            if ($this->buttonsType == self::BUTTONS_CARD) {
+                $fields = array_merge($fields, $mediaFields);
+            }
             $buttons[] = $fields;
         }
 
@@ -107,8 +111,8 @@ class Question
 
         if (isset($question['question']['media']['cover']) && $question['question']['media']['cover']['id']) {
 
-            $coverImage = File::find($question['question']['media']['cover']['id']);
-            $this->cover_image = $coverImage;
+//            $coverImage = File::find($question['question']['media']['cover']['id']);
+            $this->cover_image = $question['question']['media']['cover']['id'];
         }
 
         if (isset($question['question']['media']['video']) && isset($question['question']['media']['video']['id'])) {

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Models\TestQuestions;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Auth;
 use App\Models\User;
 use App\Models\ProjectItems;
 use App\Models\Projects;
@@ -29,12 +31,13 @@ class TestsController extends Controller
     protected $projectItems;
 
 
-    public function __construct(Helpers $helpers, TestQuestions $Test,  Projects $project, ProjectItems  $projectItems/*, TestRepository $repository*/)
+    public function __construct(Helpers $helpers, TestQuestions $Test,  Projects $project /*ProjectItems  $projectItems, TestRepository $repository*/)
     {
+        parent::__construct($helpers);
         $this->Test    = $Test;
         $this->helpers          = $helpers;
         $this->project = $project;
-        $this->projectItems = $projectItems;
+//        $this->projectItems = $projectItems;
         //$this->repository       = $repository;
     }
 
@@ -48,32 +51,41 @@ class TestsController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', ['user' => 'ok']);
     }
 
-    public function index() {
-
-        //$apiUser = Auth::getUser();
-        $apiUser = Auth::user();
-
-        $passed = new PassingProvider($apiUser);
-        $passedIds = $passed->getIds(TestQuestions::class);
-
-        $userModel = User::find($apiUser->id);
+    public function index()
+    {
+        $userModel = Auth::user();
+        if( !$userModel) {
+            return $this->helpers->apiArrayResponseBuilder(400, 'no_user', []);
+        }
 
         if( !$userModel->is_verified) {
             return $this->helpers->apiArrayResponseBuilder(400, 'user_not_verified', []);
         }
 
-        $countOnPage = 15;//get('count', 15);
+        $passed = new PassingProvider($userModel);
+        $passedIds = $passed->getIds(TestQuestions::class);
 
-        $data = TestQuestions::with( ['cover_image', 'featured_images', 'agreementAccepted' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }])->where( 'test_type', '!=', 'child')->orderBy('id', 'desc')->whereNotIn('id', $passedIds)->paginate($countOnPage);
+
+
+        $countOnPage = request()->get('count', 15);
+
+        $data = TestQuestions::with( ['cover_image', 'featured_images',
+            'agreementAccepted' => function($q) use ($userModel) { $q->where('user_id', '=', $userModel->id); }
+            ])->where( 'test_type', '!=', 'child')
+            ->orderBy('id', 'desc')
+            ->whereNotIn('id', $passedIds)
+            ->paginate($countOnPage);
         $data->makeHidden(['agreement']);
 
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+
     }
 
     /**
      * Show agreement box
      * @param $id
+     * @return JsonResponse|void
      */
     public function showAgreement($id) {
 
@@ -89,7 +101,7 @@ class TestsController extends Controller
     /**
      * Accepts the agreement
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function acceptAgreement($id) {
 
@@ -113,11 +125,11 @@ class TestsController extends Controller
     /**
      * Select test by ID
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show($id){
 
-        $data = TestQuestions::with( ['cover_image', 'complex', 'featured_images', 'items'] )->where( 'id', '=', $id)->get();
+        $data = TestQuestions::with( ['cover_image', 'complex', 'featured_images'] )->where( 'id', '=', $id)->get();
         $data->makeHidden(['agreement']);
 
         if (!empty( $data)){
@@ -134,7 +146,7 @@ class TestsController extends Controller
     }
     /**
      * Storing project from admin panel
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function submitProject() {
 
@@ -446,7 +458,7 @@ class TestsController extends Controller
     }
     /**
      * Storing test results
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function submit() {
 
@@ -459,7 +471,7 @@ class TestsController extends Controller
 
         $submitedTest = TestQuestions::find($variant['test_id']);
 
-        if ( $submitedTest->test_type == Test::TYPE_CHILD ) {
+        if ( $submitedTest->test_type == TestQuestions::TYPE_CHILD ) {
 
             $parentId = $submitedTest->parent_id;
             $rootTest = Test::find($parentId);
@@ -600,7 +612,7 @@ class TestsController extends Controller
 
     public function update($id, Request $request){
 
-        $status = $this->Test->where('id',$id)->update($data);
+        $status = $this->Test->where('id',$id)->update($request->input('data') );
 
         if( $status ){
 

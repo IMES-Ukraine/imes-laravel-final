@@ -11,6 +11,7 @@ class TestQuestions extends Model
 {
     const STATUS_PASSED = 'passed';
     const STATUS_FAILED = 'failed';
+    const STATUS_SUBMITTED = 'submitted';
 
     const TYPE_SIMPLE = 'simple';
     const TYPE_COMPLEX = 'complex';
@@ -57,14 +58,14 @@ class TestQuestions extends Model
     public $rules = [
     ];
 
-    public function getVariantsAttribute($value)
+    public function getVariantsAttribute()
     {
-        return json_decode($value);
+        return json_decode($this->getAttribute('variants'));
     }
 
-    public function getOptionsAttribute($value)
+    public function getOptionsAttribute()
     {
-        return json_decode($value);
+        return json_decode($this->getAttribute('options'));
     }
 
     /**

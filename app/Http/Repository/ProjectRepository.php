@@ -55,8 +55,11 @@ class ProjectRepository
             $content['project_id'] = $project->id;
             $content['schedule'] = $scheduled;
             $research = ProjectResearches::create($content);
-        }
-/*
+
+            //------------  article
+            $article = $content['article'];
+            $articleModel = $this->articleService->addArticle($article);
+
 
 //------------  test
 
@@ -64,42 +67,42 @@ class ProjectRepository
             if ($content['test']['type'] == 'complex') {
                 $complex = $content['test']['complex_question'];
                 foreach ($complex as $question) {
-                    $items = new ProjectItems;
-                    $items->item_key = $index;
-                    $items->item_id = 0;
-                    $items->project_id = $project->id;
-                    $items->data = $question;
-                    $items->schedule = $scheduled;
-                    $isProjectItemsSaved &= $items->save();
+//                    $items = new ProjectItems;
+//                    $items->item_key = $index;
+//                    $items->item_id = 0;
+//                    $items->project_id = $project->id;
+//                    $items->data = $question;
+//                    $items->schedule = $scheduled;
+//                    $isProjectItemsSaved &= $items->save();
 
                     $test = $content['test'];
                     $test['question'] = $question;
 
                     $questionModel = TestQuestions::create((array)new Question($test));
-                    $questionModel->parent_id = $items->id;
+                    $questionModel->parent_id = $research->id;
                     $questionModel->save();
 
-                    $items->item_type = get_class($questionModel);
-                    $items->item_id = $questionModel->id;
-                    $isProjectItemsSaved &= $items->save();
+//                    $items->item_type = get_class($questionModel);
+//                    $items->item_id = $questionModel->id;
+//                    $isProjectItemsSaved &= $items->save();
                 }
             } //если простой - все проще
             else {
                 $questionModel = TestQuestions::create((array)new Question($content['test']));
                 $questionModel->save();
 
-                $items = new ProjectItems;
-                $items->item_key = $index;
-                $items->project_id = $project->id;
-                $items->data = $content['test'];
-                $items->item_type = get_class($questionModel);
-                $items->item_id = $questionModel->id;
-                $items->schedule = $scheduled;
-                $isProjectItemsSaved &= $items->save();
+//                $items = new ProjectItems;
+//                $items->item_key = $index;
+//                $items->project_id = $project->id;
+//                $items->data = $content['test'];
+//                $items->item_type = get_class($questionModel);
+//                $items->item_id = $questionModel->id;
+//                $items->schedule = $scheduled;
+//                $isProjectItemsSaved &= $items->save();
             }
 //------------ end test
 
-
+/*
 //------------  article
             $article = $content['article'];
             $articleModel = $this->articleService->addArticle($article);
@@ -113,6 +116,8 @@ class ProjectRepository
             $items->schedule = $scheduled;
             $isProjectItemsSaved &= $items->save();
             $index++;
+
+*/
         }
 //------------- end content block
 
@@ -120,7 +125,7 @@ class ProjectRepository
             'saved' => !$questionModel || !$articleModel || !$isProjectSaved || !$isProjectItemsSaved,
             'data' => $project
         ];
-*/
+
             return  (object)['saved' => true, 'data' => $project];
 
     }
