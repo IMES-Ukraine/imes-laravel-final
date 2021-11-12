@@ -60,14 +60,14 @@ class BlogController extends Controller
                     //->toDateTimeString())
                 ->isArticle()
                 ->orderBy('id', 'desc')
-                ->paginate();
+                ->get()->all();
         } else {
             $data = Articles::with($relations)
                 //->where( 'published_at', '<=', Carbon::now()
                     //->toDateTimeString())
                 ->isInformation()
                 ->orderBy('id', 'desc')
-                ->paginate();
+                ->get()->all();
         }
 
         //$data->makeHidden(['content']);
