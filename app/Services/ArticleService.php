@@ -32,6 +32,7 @@ class ArticleService
                 'content' => $article['text']
             ],
         ];
+
         foreach ( $article['insert'] as $insert) {
             if ( !empty( $insert['content'])) {
                 $content[] = [
@@ -49,7 +50,9 @@ class ArticleService
 //        $file = File::find($article['images']['cover']['id']);
 
         // !!!
-        $model->cover_image = $article['media']['cover'];
+
+        $model->cover_image = $article['media']['cover']['id'];
+
         //plugins_path() . '/ulogic/news/updates/news-featured.png';
         //$model->featured_images = $file;
         // !!!
@@ -58,6 +61,9 @@ class ArticleService
 
         if ( $result ){
             $this->attachRecommended( $recommended, $model);
+            $file = File::find($article['media']['cover']['id'])->first();
+            $file->attachment_id = $model->id;
+            $model->save();
         }
 
         return $model;

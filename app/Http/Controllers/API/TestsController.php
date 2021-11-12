@@ -20,6 +20,7 @@ use App\Models\Test;
 use App\Models\Recommended;
 use App\Models\PassingProvider;
 use App\Models\TestOpened;
+use function MongoDB\BSON\toJSON;
 
 
 class TestsController extends Controller
@@ -77,13 +78,13 @@ class TestsController extends Controller
             ->orderBy('id', 'desc')
             ->whereNotIn('id', $passedIds);
 
+      //  $query->makeHidden(['agreement']);
+        $data = json_decode($query->paginate()->toJSON() );
 
-        $data = $query->get()->all();
 
 
-//        $data->makeHidden(['agreement']);
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', ['items' => $data]);
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
     }
 

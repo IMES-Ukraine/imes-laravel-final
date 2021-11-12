@@ -60,18 +60,18 @@ class BlogController extends Controller
                     //->toDateTimeString())
                 ->isArticle()
                 ->orderBy('id', 'desc')
-                ->get()->all();
+                ->paginate();
         } else {
             $data = Articles::with($relations)
                 //->where( 'published_at', '<=', Carbon::now()
                     //->toDateTimeString())
                 ->isInformation()
                 ->orderBy('id', 'desc')
-                ->get()->all();
+                ->paginate();
         }
 
         //$data->makeHidden(['content']);
-
+$data = json_decode($data->toJSON() );
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
         //if ($apiUser && $apiUser->hasAccess('news.access_news'))

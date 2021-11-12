@@ -28,18 +28,9 @@ class Articles extends Post {
 
     public function beforeSave()
     {
-        //$this->content_html = self::formatHtml($this->content);
+//        $this->content_html = self::formatHtml($this->content[0]['content']);
     }
 
-    public function getContentAttribute($value)
-    {
-        return json_decode($value);
-    }
-
-    public function setContentAttribute($value)
-    {
-        return json_encode($value);
-    }
 
     /**
      * Recomended articles

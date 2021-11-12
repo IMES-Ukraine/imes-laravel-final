@@ -44,15 +44,16 @@ class Post extends Model
      */
     protected $jsonable = ['metadata'];
 
-    /*protected $casts = [
-      'cover_image' => 'object'
-    ];*/
+    protected $casts = [
+        'content' => 'object'
+    ];
 
     /**
      * The attributes that should be mutated to dates.
      * @var array
      */
     protected $dates = ['published_at'];
+
 
     /**
      * The attributes on which the post list can be ordered.
@@ -90,15 +91,7 @@ class Post extends Model
         'content_images'  => \App\Models\File::class
     ];
 
-//    public function getCoverImageAttribute()
-//    {
-//        return json_decode($this->cover_image);
-//    }
-//
-//    public function setCoverImageAttribute($value)
-//    {
-//        return json_encode($value);
-//    }
+
 
     /**
      * File file
@@ -125,15 +118,6 @@ class Post extends Model
 
     public $preview = null;
 
-    public function getMetadataAttribute($value)
-    {
-        return json_decode($value);
-    }
-
-    public function getContentAttribute($value)
-    {
-        return json_decode($value);
-    }
 
     public function tags()
     {
