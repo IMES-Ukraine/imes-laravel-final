@@ -37,6 +37,7 @@ class Question
 
     public function __construct($question)
     {
+
         $this->title = $question['title'];
         $this->question = $question['text'];
 

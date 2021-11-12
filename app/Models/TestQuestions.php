@@ -58,15 +58,7 @@ class TestQuestions extends Model
     public $rules = [
     ];
 
-    public function getVariantsAttribute()
-    {
-        return json_decode($this->getAttribute('variants'));
-    }
 
-    public function getOptionsAttribute()
-    {
-        return json_decode($this->getAttribute('options'));
-    }
 
     /**
      * Featured images

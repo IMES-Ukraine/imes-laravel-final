@@ -65,6 +65,9 @@ class ProjectRepository
 
             //если сложный вопрос - пишем все части отдельно
             if ($content['test']['type'] == 'complex') {
+                $questionModel = TestQuestions::create((array)new Question($content['test']));
+                $questionModel->
+                $questionModel->save();
                 $complex = $content['test']['complex_question'];
                 foreach ($complex as $question) {
 //                    $items = new ProjectItems;
@@ -121,10 +124,10 @@ class ProjectRepository
         }
 //------------- end content block
 
-        return (object)[
-            'saved' => !$questionModel || !$articleModel || !$isProjectSaved || !$isProjectItemsSaved,
-            'data' => $project
-        ];
+//        return (object)[
+//            'saved' => !$questionModel || !$articleModel || !$isProjectSaved || !$isProjectItemsSaved,
+//            'data' => $project
+//        ];
 
             return  (object)['saved' => true, 'data' => $project];
 

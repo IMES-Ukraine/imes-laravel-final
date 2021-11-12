@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
@@ -31,11 +32,11 @@ class TestsController extends Controller
     protected $projectItems;
 
 
-    public function __construct(Helpers $helpers, TestQuestions $Test,  Projects $project /*ProjectItems  $projectItems, TestRepository $repository*/)
+    public function __construct(Helpers $helpers, TestQuestions $Test, Projects $project /*ProjectItems  $projectItems, TestRepository $repository*/)
     {
         parent::__construct($helpers);
-        $this->Test    = $Test;
-        $this->helpers          = $helpers;
+        $this->Test = $Test;
+        $this->helpers = $helpers;
         $this->project = $project;
 //        $this->projectItems = $projectItems;
         //$this->repository       = $repository;
@@ -44,8 +45,8 @@ class TestsController extends Controller
     /**
      * Make profile verified
      */
-    public function verify(){
-
+    public function verify()
+    {
 
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', ['user' => 'ok']);
@@ -54,11 +55,11 @@ class TestsController extends Controller
     public function index()
     {
         $userModel = Auth::user();
-        if( !$userModel) {
+        if (!$userModel) {
             return $this->helpers->apiArrayResponseBuilder(400, 'no_user', []);
         }
 
-        if( !$userModel->is_verified) {
+        if (!$userModel->is_verified) {
             return $this->helpers->apiArrayResponseBuilder(400, 'user_not_verified', []);
         }
 
@@ -66,19 +67,23 @@ class TestsController extends Controller
         $passedIds = $passed->getIds(TestQuestions::class);
 
 
-
         $countOnPage = request()->get('count', 15);
 
-        $data = TestQuestions::with( ['cover_image', 'featured_images',
-            'agreementAccepted' => function($q) use ($userModel) { $q->where('user_id', '=', $userModel->id); }
-            ])->where( 'test_type', '!=', 'child')
+        $query = TestQuestions::with(['cover_image', 'featured_images',
+            'agreementAccepted' => function ($q) use ($userModel) {
+                $q->where('user_id', '=', $userModel->id);
+            }
+        ])->where('test_type', '!=', 'child')
             ->orderBy('id', 'desc')
-            ->whereNotIn('id', $passedIds)
-            ->paginate($countOnPage);
-        $data->makeHidden(['agreement']);
+            ->whereNotIn('id', $passedIds);
 
 
-    return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+        $data = $query->get()->all();
+
+
+//        $data->makeHidden(['agreement']);
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', ['items' => $data]);
 
     }
 
@@ -87,11 +92,12 @@ class TestsController extends Controller
      * @param $id
      * @return JsonResponse|void
      */
-    public function showAgreement($id) {
+    public function showAgreement($id)
+    {
 
         $data = TestQuestions::where('id', '=', $id)->get();
 
-        if (!empty($data)){
+        if (!empty($data)) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
         }
 
@@ -103,7 +109,8 @@ class TestsController extends Controller
      * @param $id
      * @return JsonResponse
      */
-    public function acceptAgreement($id) {
+    public function acceptAgreement($id)
+    {
 
         //$apiUser = Auth::getUser();
         $apiUser = Auth::user();
@@ -113,7 +120,7 @@ class TestsController extends Controller
         $model->test_id = $id;
         $model->save();
 
-        if (!empty($model)){
+        if (!empty($model)) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $model->toArray());
         }
 
@@ -121,18 +128,18 @@ class TestsController extends Controller
     }
 
 
-
     /**
      * Select test by ID
      * @param $id
      * @return JsonResponse
      */
-    public function show($id){
+    public function show($id)
+    {
 
-        $data = TestQuestions::with( ['cover_image', 'complex', 'featured_images'] )->where( 'id', '=', $id)->get();
-        $data->makeHidden(['agreement']);
+        $data = TestQuestions::with(['cover_image', 'complex', 'featured_images'])->where('id', '=', $id)->get()->all();
+   //     $data->makeHidden(['agreement']);
 
-        if (!empty( $data)){
+        if (!empty($data)) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
         }
 
@@ -141,24 +148,27 @@ class TestsController extends Controller
     }
 
 
-    private function genSlug($str){
+    private function genSlug($str)
+    {
         return preg_replace("/[^A-Za-z0-9]/", '', $str);
     }
+
     /**
      * Storing project from admin panel
      * @return JsonResponse
      */
-    public function submitProject() {
+    public function submitProject()
+    {
 
         $saveStatus = false;
 
-        $tests = is_array( post('tests')) ? post('tests') : [] ;
+        $tests = is_array(post('tests')) ? post('tests') : [];
 
         $isComplex = count($tests) === 1 ? false : true;
         $testType = $isComplex ? 'complex' : 'simple';
         $parentSavedId = null;
 
-        foreach ( $tests as $test) {
+        foreach ($tests as $test) {
 
             $title = $test['question']['title'];
             $question = $test['question']['text'];
@@ -173,15 +183,15 @@ class TestsController extends Controller
             $answerType = 'variants';
             if ($test['answer']['type'] == 'text') $answerType = 'text';
 
-            $isTextAnswerType = (boolean) ($answerType == 'text');
+            $isTextAnswerType = (boolean)($answerType == 'text');
             $questionMedia = $test['question']['media'];
             $points = !empty($test['question']['points']) ? $test['question']['points'] : 0;
             $variantsPictures = is_array(post('attachments')) ? post('attachments') : [];
             $informationLink = $test['question']['link'];
 
-            if ( !is_int( $parentSavedId)) {
+            if (!is_int($parentSavedId)) {
 
-                if ( $isComplex) {
+                if ($isComplex) {
 
                     $complexTestParentModel = new Test;
                     $complexTestParentModel->title = $title;
@@ -190,7 +200,7 @@ class TestsController extends Controller
                     $complexTestParentModel->answer_type = 'variants';
                     $complexTestParentModel->duration_seconds = 360;
                     $complexTestParentModel->passing_bonus = $points;
-                    $complexTestParentModel->is_popular = rand(0,1);
+                    $complexTestParentModel->is_popular = rand(0, 1);
                     $complexTestParentModel->variants = null;
                     $complexTestParentModel->agreement = $agreement;
                     $complexTestParentModel->options = [
@@ -204,9 +214,9 @@ class TestsController extends Controller
                         ]
                     ];
 
-                    if ( isset( $variantsPictures[$questionMedia])){
+                    if (isset($variantsPictures[$questionMedia])) {
 
-                        $coverImage = File::find( $variantsPictures[$questionMedia]);
+                        $coverImage = File::find($variantsPictures[$questionMedia]);
 
                         $complexTestParentModel->cover_image = $coverImage;
 
@@ -221,15 +231,15 @@ class TestsController extends Controller
                 $model = new Test;
                 $model->title = $title;
 
-                if ( $isComplex) {
+                if ($isComplex) {
                     $parentSavedId = $complexTestParentModel->id;
                     $model->parent_id = $parentSavedId;
                     $model->test_type = 'child';
                 } else {
                     $model->test_type = $testType;
-                    if ( isset( $variantsPictures[$questionMedia])){
+                    if (isset($variantsPictures[$questionMedia])) {
 
-                        $coverImage = File::find( $variantsPictures[$questionMedia]);
+                        $coverImage = File::find($variantsPictures[$questionMedia]);
 
                         $model->cover_image = $coverImage;
                     }
@@ -240,36 +250,36 @@ class TestsController extends Controller
                 $model->answer_type = $answerType;
                 $model->duration_seconds = 360;
                 $model->passing_bonus = $points;
-                $model->is_popular = rand(0,1);
+                $model->is_popular = rand(0, 1);
                 $model->agreement = $agreement;
 
                 $buttons = [];
 
-                foreach ( $test['variants'] as $variant){
+                foreach ($test['variants'] as $variant) {
                     $fields = [
                         'variant' => $variant['title'],
                         'title' => $variant['variant'],
                     ];
                     $mediaFields = [];
 
-                    if ( isset( $variantsPictures[$variant['itemId']])){
+                    if (isset($variantsPictures[$variant['itemId']])) {
                         $mediaFields = [
                             'description' => $variant['variant'],
-                            'file'        => File::find( $variantsPictures[$variant['itemId']])
+                            'file' => File::find($variantsPictures[$variant['itemId']])
                         ];
                     }
 
 
-                    if ( $buttonsType == 'card') $fields = array_merge($fields, $mediaFields);
+                    if ($buttonsType == 'card') $fields = array_merge($fields, $mediaFields);
                     $buttons[] = $fields;
                 }
 
-                if ( $isTextAnswerType )
+                if ($isTextAnswerType)
                     $correctAnswer = [$test['variants'][0]['variant']];
 
                 $model->variants = array(
                     'correct_answer' => $correctAnswer,
-                    'type'  => $buttonsType,
+                    'type' => $buttonsType,
                     'buttons' => $buttons
                 );
 
@@ -280,12 +290,12 @@ class TestsController extends Controller
                     ],
                 ];
 
-                if ( isset( $variantsPictures[$questionMedia])) {
+                if (isset($variantsPictures[$questionMedia])) {
 
                     $options[] =
                         [
                             'type' => 'video',
-                            'data' => File::find( $variantsPictures[$questionMedia])->path,
+                            'data' => File::find($variantsPictures[$questionMedia])->path,
                         ];
 
                 }
@@ -305,41 +315,41 @@ class TestsController extends Controller
                 $model->duration_seconds = 360;
 
                 $buttons = [];
-                foreach ( $test['variants'] as $variant) {
+                foreach ($test['variants'] as $variant) {
                     $fields = [
                         'variant' => $variant['title'],
                         'title' => $variant['variant'],
                     ];
                     $mediaFields = [];
 
-                    if ( isset( $variantsPictures[$variant['itemId']])){
+                    if (isset($variantsPictures[$variant['itemId']])) {
                         $mediaFields = [
                             'description' => $variant['variant'],
-                            'file'        => File::find( $variantsPictures[$variant['itemId']])
+                            'file' => File::find($variantsPictures[$variant['itemId']])
                         ];
                     }
 
 
-                    if ( $buttonsType == 'card') $fields = array_merge($fields, $mediaFields);
+                    if ($buttonsType == 'card') $fields = array_merge($fields, $mediaFields);
                     $buttons[] = $fields;
                 }
 
 
-                if ( $answerType == 'text')
+                if ($answerType == 'text')
                     $correctAnswer = [$test['variants'][0]['variant']];
 
                 $model->variants = array(
                     'correct_answer' => $correctAnswer,
-                    'type'  => $buttonsType,
+                    'type' => $buttonsType,
                     'buttons' => $buttons
                 );
 
-                if ( isset( $variantsPictures[$questionMedia])) {
+                if (isset($variantsPictures[$questionMedia])) {
 
                     $model->options = array(
                         [
                             'type' => 'video',
-                            'data' => File::find( $variantsPictures[$questionMedia])->path,
+                            'data' => File::find($variantsPictures[$questionMedia])->path,
                         ],
                     );
                 } else {
@@ -362,9 +372,9 @@ class TestsController extends Controller
             }
         }
 
-        $articles = is_array( post('articles')) ? post('articles') : [];
+        $articles = is_array(post('articles')) ? post('articles') : [];
 
-        foreach ( $articles as $article) {
+        foreach ($articles as $article) {
 
             $recommended = $article['chosenRecommended'];
             $action = !empty($article['button']) ? $article['button'] : '';
@@ -376,7 +386,7 @@ class TestsController extends Controller
             $model->content_html = '';
             $model->type = $article['articleType'];
             $model->learning_bonus = $article['points'];
-            $model->is_popular = rand(0,1);
+            $model->is_popular = rand(0, 1);
             $model->action = $action;
             $model->user_id = 0;//$article['user_id']['id'];
 
@@ -387,8 +397,8 @@ class TestsController extends Controller
                     'content' => $article['text']
                 ],
             ];
-            foreach ( $article['insert'] as $insert) {
-                if ( !empty( $insert['content'])) {
+            foreach ($article['insert'] as $insert) {
+                if (!empty($insert['content'])) {
                     $content[] = [
                         'type' => 'text',
                         'title' => $insert['title'],
@@ -406,8 +416,8 @@ class TestsController extends Controller
             $model->published_at = time();
             $saveStatus = $model->save();
 
-            if ( $saveStatus ){
-                foreach ( $recommended as $rec){
+            if ($saveStatus) {
+                foreach ($recommended as $rec) {
                     Recommended::create([
                         'parent_id' => $model->id,
                         'recommended_id' => $rec['id']
@@ -416,7 +426,7 @@ class TestsController extends Controller
             }
         }
 
-        if ( !$saveStatus)
+        if (!$saveStatus)
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'saving_error']);
 
         $data = $model;
@@ -429,9 +439,8 @@ class TestsController extends Controller
         $items = new ProjectItems;
         $items->item_type = get_class($model);
         $items->project_id = $project->id;
-        $items->item_id    = $model->id;
+        $items->item_id = $model->id;
         $projectItemsStatus = $items->save();
-
 
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
@@ -445,25 +454,28 @@ class TestsController extends Controller
      * @param $variants
      * @return int
      */
-    private function getFullVariantsCount( $variants) {
+    private function getFullVariantsCount($variants)
+    {
 
         $fullCount = 0;
 
-        foreach ( $variants as $v) {
+        foreach ($variants as $v) {
 
-            foreach ( $v['variant'] as $a )  $fullCount++;
+            foreach ($v['variant'] as $a) $fullCount++;
 
         }
         return $fullCount;
     }
+
     /**
      * Storing test results
      * @return JsonResponse
      */
-    public function submit() {
+    public function submit()
+    {
 
         $apiUser = Auth::getUser();
-        $passed = new PassingProvider( $apiUser);
+        $passed = new PassingProvider($apiUser);
 
         $variants = post('data');
 
@@ -471,12 +483,12 @@ class TestsController extends Controller
 
         $submitedTest = TestQuestions::find($variant['test_id']);
 
-        if ( $submitedTest->test_type == TestQuestions::TYPE_CHILD ) {
+        if ($submitedTest->test_type == TestQuestions::TYPE_CHILD) {
 
             $parentId = $submitedTest->parent_id;
             $rootTest = Test::find($parentId);
             $fullPassingBonus = $rootTest->passing_bonus;
-            $passed->setId( $rootTest, $parentId);
+            $passed->setId($rootTest, $parentId);
         } else {
             $passed->setId($submitedTest, $variant['test_id']);
             $fullPassingBonus = $submitedTest->passing_bonus;
@@ -485,35 +497,34 @@ class TestsController extends Controller
         //$userVariants = [];
 
 
+        if ($submitedTest->answer_type !== Question::ANSWER_TEXT) {
 
-        if ( $submitedTest->answer_type !== Question::ANSWER_TEXT ) {
-
-            $fullCount = $this->getFullVariantsCount( $variants);
+            $fullCount = $this->getFullVariantsCount($variants);
             $dummyAnswersCount = 0; //опросы
 
             $accountingAnswersCount = 0;
             $correctAnswersCount = 0;
 
-            foreach ( $variants as $var) {
+            foreach ($variants as $var) {
 
                 $userVariants = $var['variant'];
 
-                $test = TestQuestions::find( $var['test_id']);
+                $test = TestQuestions::find($var['test_id']);
                 $correctAnswer = $test->variants['correct_answer'];
 
 
-                $passed->setId( $test, $var['test_id']);
+                $passed->setId($test, $var['test_id']);
 
 
-                if ( empty( $correctAnswer ) ) {
+                if (empty($correctAnswer)) {
 
                     $dummyAnswersCount++;
 
 
                 } else {
 
-                    foreach ( $correctAnswer as $answ ) {
-                        if ( in_array($answ, $userVariants) ) $correctAnswersCount++;
+                    foreach ($correctAnswer as $answ) {
+                        if (in_array($answ, $userVariants)) $correctAnswersCount++;
                     }
 
                 }
@@ -526,23 +537,23 @@ class TestsController extends Controller
             $testStatus = TestQuestions::STATUS_FAILED;
             $userPassingBonus = 0;
 
-            if ( $accountingAnswersCount > 0 ) {
+            if ($accountingAnswersCount > 0) {
 
-                $correctAnswersPercent = ( $correctAnswersCount / $accountingAnswersCount ) * 100;
-                switch ( true ) {
+                $correctAnswersPercent = ($correctAnswersCount / $accountingAnswersCount) * 100;
+                switch (true) {
 
-                    case ( $correctAnswersPercent < 20):
+                    case ($correctAnswersPercent < 20):
                         break;
-                    case ( $correctAnswersPercent >= 50 && $correctAnswersPercent < 70):
+                    case ($correctAnswersPercent >= 50 && $correctAnswersPercent < 70):
                         $userPassingBonus = $fullPassingBonus / 2;
                         $testStatus = TestQuestions::STATUS_PASSED;
                         break;
-                    case ( $correctAnswersPercent >= 70):
+                    case ($correctAnswersPercent >= 70):
                         $userPassingBonus = $fullPassingBonus;
                         $testStatus = TestQuestions::STATUS_PASSED;
                         break;
                 }
-            } elseif ( $accountingAnswersCount == 0 ) {
+            } elseif ($accountingAnswersCount == 0) {
 
                 $testStatus = TestQuestions::STATUS_SUBMITTED;
             }
@@ -566,7 +577,7 @@ class TestsController extends Controller
             ]);
         } else {
 
-            if (isset($variant['variant']))  $userVariants = $variant['variant'];
+            if (isset($variant['variant'])) $userVariants = $variant['variant'];
             if (isset($variant['variants'])) $userVariants = $variant['variants'];
 
             $moderationModel = new QuestionModeration();
@@ -590,51 +601,55 @@ class TestsController extends Controller
         }
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
         $arr = $request->all();
 
-        while ( $data = current($arr)) {
+        while ($data = current($arr)) {
             $this->Test->{key($arr)} = $data;
             next($arr);
         }
 
         $validation = Validator::make($request->all(), $this->Test->rules);
 
-        if( $validation->passes() ){
+        if ($validation->passes()) {
             $this->Test->save();
             return $this->helpers->apiArrayResponseBuilder(201, 'created', ['id' => $this->Test->id]);
-        }else{
-            return $this->helpers->apiArrayResponseBuilder(400, 'fail', $validation->errors() );
+        } else {
+            return $this->helpers->apiArrayResponseBuilder(400, 'fail', $validation->errors());
         }
 
     }
 
-    public function update($id, Request $request){
+    public function update($id, Request $request)
+    {
 
-        $status = $this->Test->where('id',$id)->update($request->input('data') );
+        $status = $this->Test->where('id', $id)->update($request->input('data'));
 
-        if( $status ){
+        if ($status) {
 
             return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been updated successfully.');
 
-        }else{
+        } else {
 
             return $this->helpers->apiArrayResponseBuilder(400, 'bad request', 'Error, data failed to update.');
 
         }
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
 
-        $this->Test->where('id',$id)->delete();
+        $this->Test->where('id', $id)->delete();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
 
-        $this->Test->where('id',$id)->delete();
+        $this->Test->where('id', $id)->delete();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
     }
