@@ -1,7 +1,7 @@
 <template>
     <div class="card__table-block" v-if="user.email">
         <div class="card__table-item">
-            <p class="card__table-number">{{ id }}</p>
+            <p class="card__table-number">{{ index }}</p>
         </div>
         <div class="card__table-item">
             <p class="card__table-id">{{ user.id }}</p>
@@ -146,6 +146,10 @@ export default {
         },
         comment: {
             type: String,
+            require: true
+        },
+        index: {
+            type: Number,
             require: true
         }
     },

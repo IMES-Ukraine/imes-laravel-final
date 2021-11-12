@@ -18,9 +18,10 @@
             </div>-->
         </div>
         <item
-            v-for="(request) in requests"
+            v-for="(request, index) in requests"
             v-bind:key="request.id"
             :id="request.id"
+            :index="index + 1"
             :total="Math.trunc(request.cost)"
             :user="(request.user)?request.user:{}"
             :card="(request.card)?request.card:{}"
