@@ -49,7 +49,7 @@ class ArticleService
 //        $file = File::find($article['images']['cover']['id']);
 
         // !!!
-        $model->cover_image = $article['cover'];
+        $model->cover_image = $article['media']['cover'];
         //plugins_path() . '/ulogic/news/updates/news-featured.png';
         //$model->featured_images = $file;
         // !!!

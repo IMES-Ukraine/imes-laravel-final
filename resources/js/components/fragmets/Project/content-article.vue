@@ -264,18 +264,18 @@ export default {
         insertStore(value) {
             this.article.insert = value
         },
-        // textInsertStore(value) {
-        //     this.article.textInsert = value
-        // },
+        textInsertStore(value) {
+            this.article.textInsert = value
+        },
         // linkStore(value) {
         //     this.article.link = value
         // },
         // articleTypeStore(value) {
         //     this.article.type = value
         // },
-        buttonStore(value) {
-            this.article.text_button = value
-        },
+        // buttonStore(value) {
+        //     this.article.text_button = value
+        // },
 
 
         storeArticle() {

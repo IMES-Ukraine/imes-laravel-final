@@ -113,7 +113,8 @@ class Question
         if (isset($question['question']['media']['cover']) && $question['question']['media']['cover']['id']) {
 
 //            $coverImage = File::find($question['question']['media']['cover']['id']);
-            $this->cover_image = $question['question']['media']['cover']['id'];
+//            $this->cover_image = $question['question']['media']['cover']['id'];
+            $this->cover_image = $question['question']['media']['cover'];
         }
 
         if (isset($question['question']['media']['video']) && isset($question['question']['media']['video']['id'])) {
