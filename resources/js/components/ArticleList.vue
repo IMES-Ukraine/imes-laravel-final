@@ -12,6 +12,8 @@
                     v-bind:key="article.id"
                     :id="article.id"
                     :title="article.title"
+                    :views="article.views"
+                    :callbacks="article.callbacks"
                 />
             </div>
             <v-preloader v-else />

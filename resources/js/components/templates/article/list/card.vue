@@ -11,11 +11,11 @@
             <div class="articles_list2__block-info">
                 <div>
                     <p>Количество просмотров</p>
-                    <p><b>35</b></p>
+                    <p><b>{{ views }}</b></p>
                 </div>
                 <div>
                     <p>Количество выполнения целей (нажатия кнопки)</p>
-                    <p><b>10</b></p>
+                    <p><b>{{ callbacks }}</b></p>
                 </div>
             </div>
         </div>
@@ -48,6 +48,14 @@
             title: {
                 type: String,
                 require: true
+            },
+            callbacks: {
+                type: Number,
+                default: 0
+            },
+            views: {
+                type: Number,
+                default: 0
             }
         },
         methods: {
