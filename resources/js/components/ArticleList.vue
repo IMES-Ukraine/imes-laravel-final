@@ -16,7 +16,7 @@
                     :callbacks="article.callbacks"
                 />
             </div>
-            <v-preloader v-else />
+            <!--<v-preloader v-else />-->
         </div>
 
     </v-content>
@@ -34,7 +34,7 @@ export default {
     components: {ArticleSidebar, VPreloader, ArticleListCard, ProjectListSidebar, VContent},
     data() {
         return {
-            articleList: this.$store.state.articles,
+            articleList: []//this.$store.state.articles,
         }
     },
     computed: {
@@ -47,8 +47,10 @@ export default {
             this.$get(ARTICLE).then( response => {
 
                 if (response.data && response.data.data.length > 0) {
-                    this.articleList = response.data.data
-                    this.$store.state.articles = response.data.data
+                    if (response.data) {
+                        this.articleList = response.data.data
+                    }
+                    //this.$store.state.articles = response.data.data
                 }
             })
         },
