@@ -60,4 +60,9 @@ class Notifications extends Model
     public $hasMany = [
         'status' => [NotificationsStatus::class, 'key' => 'notification_id'],
     ];
+
+    public function status()
+    {
+        return $this->hasMany(NotificationsStatus::class, 'notification_id');
+    }
 }
