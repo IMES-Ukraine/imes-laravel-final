@@ -20,7 +20,7 @@ class ProjectsController extends Controller
      * @return JsonResponse
      */
     public function index() {
-        $data = Projects::with('tags')->whereNull('deleted_at')->with('items')->get();
+        $data = Projects::with('tags')->with('items')->whereNull('deleted_at')->with('items')->get();
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 

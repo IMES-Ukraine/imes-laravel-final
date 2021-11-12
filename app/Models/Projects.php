@@ -92,6 +92,7 @@ class Projects extends Model
      */
     public function items()
     {
-        return $this->hasMany('App\Models\ProjectItems', 'project_id', 'id');
+        return $this->hasMany('App\Models\ProjectResearches', 'project_id', 'id');
+        //return $this->hasMany('App\Models\ProjectItems', 'project_id', 'id');
     }
 }

@@ -14,8 +14,8 @@
                 </div>
                 <ul v-if="items">
                     <template v-for="item in items">
-                        <li v-if="item.item_type=='App\\Models\\TestQuestions'">
-                            {{ item.data.title }}
+                        <li>
+                            {{ item.title }}
                         </li>
                     </template>
                 </ul>
