@@ -14,12 +14,12 @@
                             <template v-if="(test.type == 'easy' && test.picked == 'test')">
                                 <p class="study__block-title">Вопрос: <b>{{ test.text }}</b></p>
 
-                                <div class="study__block-content" v-if="(test.question.variants && test.question.answer.type != 'text')">
+                                <div class="study__block-content" v-if="(test.question.variants && test.question.type != 'text')">
                                     <div class="study__item" v-for="variant in test.question.variants">
                                         <div class="study__item-content">
                                             <div :class="(variant.right)?'study__answer active':'study__answer'">
                                                 <p class="study__answer-letter">{{ variant.title }}</p>
-                                                <p class="study__answer-text">{{ (variant.answer && variant.answer.type=='media')?variant.variants[0].media[0]['name']:variant.text }}</p>
+                                                <p class="study__answer-text">{{ (variant.type=='media')?variant.variants[0].media[0]['name']:variant.text }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
@@ -56,7 +56,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="study__table-block" v-for="(moderation, key) in moderations">
+                                        <div class="study__table-block" v-for="(moderation, key) in loadModerations(content_id)">
                                             <div class="study__table-item">
                                                 <p class="study__table-number">{{key}}</p>
                                             </div>
@@ -81,7 +81,7 @@
 
                             </template>
 
-                            <template v-if="(test.type == 'easy' && test.picked == 'survey')">
+                            <template v-if="test.picked == 'survey'">
                                 <p class="study__block-title">Вопрос: <b>{{ test.text }}</b></p>
                                 <div class="study__block-content" v-if="test.question.variants">
                                     <div class="study__item" v-for="variant in test.question.variants">
@@ -106,15 +106,15 @@
                             </template>
 
                             <template v-if="(test.type == 'complex' && test.picked == 'test')">
-                                <div class="study__block-content" v-for="complex_question in test.complex_question">
+                                <div class="study__block-content" v-for="complex_question in test.complex_question" style="padding-bottom: 30px;">
                                     <p class="study__block-title">Вопрос: <b>{{ complex_question.text }}</b></p>
 
-                                    <div  v-if="(complex_question.variants && complex_question.answer.type != 'text')">
+                                    <div v-if="(complex_question.variants && complex_question.type != 'text')">
                                         <div class="study__item" v-for="variant in complex_question.variants">
                                             <div class="study__item-content">
                                                 <div :class="(variant.right)?'study__answer active':'study__answer'">
                                                     <p class="study__answer-letter">{{ variant.title }}</p>
-                                                    <p class="study__answer-text">{{ (variant.answer && variant.answer.type == 'media')?variant.variants[0].media[0]['name']:variant.text }}</p>
+                                                    <p class="study__answer-text">{{ (complex_question.type == 'media')?variant.media[0]['name']:variant.text }}</p>
                                                 </div>
                                                 <div class="study__info">
                                                     <div class="study__info-block">
@@ -151,7 +151,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="study__table-block" v-for="(moderation, key) in moderations">
+                                            <div class="study__table-block" v-for="(moderation, key) in loadModerations(content_id)">
                                                 <div class="study__table-item">
                                                     <p class="study__table-number">{{key}}</p>
                                                 </div>
@@ -198,6 +198,10 @@
             test: {
                 type: Object,
                 default: {}
+            },
+            content_id: {
+                type: Number,
+                default: 0
             }
         },
         data () {
@@ -208,8 +212,7 @@
                 variants: [],
                 correct_answer: [],
                 test_type: '',
-                type: '',
-                moderations: []
+                type: ''
             }
         },
         methods: {
@@ -227,19 +230,15 @@
                     this.question = data.text
                     this.variants = data.variants
                     this.test_type = data.test_type
-                    this.type = data.question.answer.type
+                    this.type = data.question.type
                 });
             },
-            loadModerations (test_id) {
-                this.$get(MODERATION + '/' + test_id).then(response => {
-                    console.log(response)
-                    this.moderations = response.data
+            async loadModerations (test_id) {
+                await this.$get(MODERATION + '/' + test_id).then(response => {
+                    console.log(response.data);
+                    return response.data
                 });
             }
         },
-        mounted() {
-            //this.loadTest()
-            this.loadModerations(2702)
-        }
     }
 </script>

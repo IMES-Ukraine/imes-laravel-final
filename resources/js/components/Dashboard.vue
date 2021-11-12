@@ -78,7 +78,7 @@
                     <div class="dashboard_study__block">
                         <div class="dashboard_study__block-head">
                             <p class="dashboard_study__block-title">Тесты</p>
-                            <test-popup :id="key" :test="content.test"/>
+                            <test-popup :id="key" :content_id="content.id" :test="content.test"/>
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
