@@ -11,8 +11,8 @@ use App\Traits\NotificationsHelper;
 use App\Traits\UserSettings;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\ImageHelper;
@@ -215,7 +215,7 @@ class ProfileController extends Controller
         $apiUser = Auth::user();
 
         $model = User::find($apiUser->id);
-        $model->messaging_token = $request->post('token');
+        $model->messaging_token = $request->input('token');
         $model->save();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success');
