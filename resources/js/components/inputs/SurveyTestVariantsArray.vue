@@ -5,7 +5,7 @@
             <div class="articles_create__item-content">
                 <div class="articles_create__ready_answer full_width">
                     <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
-                    <input type="text" name="title" placeholder="" :id="'variant-' + variant.title" v-model.lazy="variant.variant">
+                    <input type="text" name="title" placeholder="" :id="'variant-' + variant.title" v-model.lazy="variant.text">
                     <button class="articles_create__ready_answer-delete" type="button" @click="removeVariant(variant.itemId)"></button>
                 </div>
             </div>
