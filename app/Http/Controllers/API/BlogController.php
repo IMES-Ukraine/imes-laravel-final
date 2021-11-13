@@ -39,11 +39,7 @@ class BlogController extends Controller
      */
     public function index(){
 
-        /*$isAuthenticated = Auth::check();
 
-        $apiUser = Auth::getUser();*/
-
-        //$isAuthenticated = Auth::check();
 
         //$apiUser = Auth::user();
 

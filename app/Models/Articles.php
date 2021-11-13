@@ -26,11 +26,6 @@ class Articles extends Post {
         return $query->where('type', self::INFORMATION);
     }
 
-    public function beforeSave()
-    {
-//        $this->content_html = self::formatHtml($this->content[0]['content']);
-    }
-
 
     /**
      * Recomended articles

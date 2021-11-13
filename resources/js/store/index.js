@@ -39,8 +39,6 @@ export default new Vuex.Store({
             projectId: null
         },
         currentStep: 1,
-        currentContent: '',
-        setCurrentTest: '',
         isEdit: false,
         inEdit: false,
         checkbox: {
@@ -57,7 +55,8 @@ export default new Vuex.Store({
 
         numberTest: 0,
         numberArticle: 0,
-        testErrors: false
+        testErrors: false,
+        formKey: Math.random()
     },
     getters: {
     },
@@ -74,9 +73,9 @@ export default new Vuex.Store({
 
         setContent(state, data) {
             state.content = data;
+            state.formKey = Math.random();
         },
         resetContent(state, title) {
-            state.currentContent = null;
             Vue.delete(state.project.content, title);
             sessionStorage.project = JSON.stringify(state.project);
         },
@@ -138,7 +137,6 @@ export default new Vuex.Store({
         },
 
         setCurrentContent(state, title) {
-           state.currentContent = title;
            state.content = state.project.content[title];
         },
         setCurrentArticle(state) {
@@ -159,12 +157,10 @@ export default new Vuex.Store({
         saveArticle(state, article) {
             state.content.article = article;
             state.numberArticle = 1;
-            sessionStorage.content = JSON.stringify(state.content);
         },
         saveTest(state, test) {
             state.content.test = test;
             state.numberTest = 1;
-            sessionStorage.content = JSON.stringify(state.content);
         },
         storeContent(state, content) {
             state.content = content;
@@ -172,9 +168,6 @@ export default new Vuex.Store({
         saveContent(state, content) {
             state.project.content[content.title] = content;
             sessionStorage.project = JSON.stringify(state.project);
-        },
-        loadContent(state) {
-            state.content = JSON.parse(sessionStorage.content);
         },
 
         storeTestContent() {
@@ -309,12 +302,6 @@ export default new Vuex.Store({
         },
         setCurrentTest(context, data) {
             context.commit('setCurrentTest', data);
-        },
-
-
-        editContent(context, title) {
-            context.commit('loadContent', title);
-            context.commit('setStep', 2);
         },
 
         editArticle(context) {

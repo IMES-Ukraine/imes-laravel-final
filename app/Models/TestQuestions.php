@@ -46,6 +46,7 @@ class TestQuestions extends Model
         'variants' => 'array',
     ];
 
+    protected $hidden = ['agreement'];
 
     /**
      * @var string The database table used by the model.

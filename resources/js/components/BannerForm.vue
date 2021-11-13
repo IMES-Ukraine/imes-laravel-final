@@ -21,7 +21,7 @@
                                 <div class="articles_create__item-content direction-column">
                                     <div class="articles_create__item-file delete-style-2 width-auto buttonAddFile">
                                         <input type="file" name="image" accept="image/*" @change="handleUploadBanner">
-                                        <p><span data-placeholder="Загрузить изображение">Загрузить изображение</span></p>
+                                        <p><span data-placeholder="Загрузить изображение">{{image.name || "Загрузить изображение"}}</span></p>
                                         <button class="delete_file deleteFile" type="button" @change="removeImage"></button>
                                         <!--<p class="note">до 5 kb</p>-->
                                     </div>

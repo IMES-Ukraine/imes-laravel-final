@@ -1,12 +1,15 @@
 <?php
 namespace App\Models;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Carbon\Carbon;
 use App\Models\BackendUsers as BackendUser;
+use Nette\Utils\Html;
 
 /**
  * Class Post

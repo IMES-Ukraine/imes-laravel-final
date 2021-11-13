@@ -11,9 +11,9 @@ use App\Traits\NotificationsHelper;
 use App\Traits\UserSettings;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
-use Auth;
 use App\Models\User;
 use App\Models\ImageHelper;
 use App\Models\Withdraw;
@@ -58,7 +58,7 @@ class ProfileController extends Controller
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
             'user' => $data,
-            'settings' => $this->getUserSettings(),
+        //    'settings' => $this->getUserSettings(),
         ]);
     }
 
@@ -207,10 +207,10 @@ class ProfileController extends Controller
 
     /**
      * Set User messaging token
-     * @param Illuminate\Http\Request $request
+     * @param Request $request
      * @return JsonResponse
      */
-    public function token(\Illuminate\Http\Request $request){
+    public function token(Request $request){
 
         $apiUser = Auth::user();
 

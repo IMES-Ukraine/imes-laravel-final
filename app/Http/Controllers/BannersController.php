@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Banners;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 
 class BannersController extends Controller
 {
@@ -20,12 +21,13 @@ class BannersController extends Controller
         $image = '';
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('banners');
-            $image = '/' . $path;
+            $path = $request->file('image')->store('banners', 'public');
+            $image = $path;
+
         }
 
         $status = $item->update([
-            'image' => $image,
+            'image' => Storage::url($image),
             'url' => $request->url
         ]);
 

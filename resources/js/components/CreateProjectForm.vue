@@ -7,7 +7,7 @@
                 :tag="project.tag"/>
         </template>
 
-        <div class="articles">
+        <div class="articles" :key="formKey">
             <div class="articles_create">
                 <project-close/>
                 <project-alert-test/>
@@ -129,8 +129,8 @@
                                     <div class="articles_create__grid width-third column-gap-25">
                                         <div class="articles_create__grid-block">
                                             <button class="articles_create-add_btn height-47" type="button"
-                                                    @click.prevent="newContent()"><span
-                                                class="icon-right">Создать</span>
+                                                    @click.prevent="newContent()">
+                                                <span class="icon-right">Создать</span>
                                             </button>
                                             <span class="errors">{{ errorContent }}</span>
                                         </div>
@@ -357,6 +357,7 @@ export default {
         newContent() {
             this.errorContent = '';
             this.$store.commit('setContent', this.contentTemplate);
+            console.log('new ', this.$store.state.content);
             this.setStep(2);
         },
         editItem(title) {

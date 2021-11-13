@@ -79,7 +79,8 @@ class TestsController extends Controller
             ->whereNotIn('id', $passedIds);
 
       //  $query->makeHidden(['agreement']);
-        $data = json_decode($query->paginate()->toJSON() );
+        $data = $query->paginate();
+      $data = json_decode($data->toJSON() );
 
 
 

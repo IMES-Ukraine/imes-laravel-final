@@ -1,5 +1,5 @@
 <template>
-    <div class="articles_create-box">
+    <div class="articles_create-box"  :key="formKey">
         <div class="articles_create-block">
             <div class="articles_create__item">
                 <p class="articles_create__item-title">Выбор шаблона</p>
@@ -217,6 +217,9 @@ export default {
         this.showFull =  !!this.content.title;
     },
     computed: {
+        formKey() {
+          return this.$store.state.formKey;
+        },
         content: {
             get: function() { return store.state.content },
             set: function (newValue) {

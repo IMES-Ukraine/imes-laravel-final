@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 /**
  * Class ProjectResearches
@@ -16,8 +17,8 @@ use Illuminate\Notifications\Notifiable;
  * @property string $article
  * @property string $test
  * @property string $schedule
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class ProjectResearches extends Model
 {
@@ -105,7 +106,7 @@ class ProjectResearches extends Model
 
     public function ulogic_projects_settings()
     {
-        return $this->belongsTo(UlogicProjectsSettings::class);
+        return $this->belongsTo(Projects::class);
     }
 
 }
