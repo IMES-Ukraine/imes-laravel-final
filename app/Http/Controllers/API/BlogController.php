@@ -79,7 +79,7 @@ $data = json_decode($data->toJSON() );
 
     public function list(): JsonResponse
     {
-        $data = Articles::select('id', 'title')->get();
+        $data = Articles::select('id', 'title')->get()->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }

@@ -28,14 +28,14 @@ class UsersController extends Controller
     public function index()
     {
 
-        return $this->User->paginate();
+        return $this->User->get()->all();
 
     }
 
     public function list()
     {
 
-        $data = $this->User->select('id', 'name')->get();
+        $data = $this->User->select('id', 'name')->get()->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
