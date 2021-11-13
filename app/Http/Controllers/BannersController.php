@@ -21,9 +21,7 @@ class BannersController extends Controller
         $image = '';
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('banners', 'public');
-            $image = $path;
-
+            $image = $request->file('image')->store('banners', 'public');
         }
 
         $status = $item->update([
