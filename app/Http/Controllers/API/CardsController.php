@@ -51,7 +51,7 @@ class CardsController extends Controller
             }
         }
 
-        return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $error]);
+        return $this->helpers->apiArrayResponseBuilder(400, 'low balance', ['error' => $error]);
 
     }
 }

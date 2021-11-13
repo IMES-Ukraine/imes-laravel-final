@@ -37,7 +37,7 @@ class CardsController extends Controller
         }
 
 
-        $card = Cards::find($id)->first();
+        $card = Cards::findOrFail($id)->toArray();
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $card);
 
     }
