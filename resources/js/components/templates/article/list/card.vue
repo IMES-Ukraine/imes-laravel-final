@@ -30,11 +30,8 @@
 </template>
 
 <script>
-    import { ARTICLE_DESTROY } from "../../../../api/endpoints"
-
     export default {
         name: "article-list-card",
-        components: {ARTICLE_DESTROY},
         data () {
             return {
                 routeName: 'viewArticle'
@@ -59,14 +56,8 @@
             }
         },
         methods: {
-            removeArticle() {
-                this.$delete(ARTICLE_DESTROY + this.id).then()
-
-                for (const [index, value] of Object.entries(this.$store.state.articles)) {
-                    if (value.id == this.id) {
-                        this.$store.state.articles.splice(index, 1)
-                    }
-                }
+            removeArticle(value) {
+                this.$emit('update', this.id);
             }
         }
     }
