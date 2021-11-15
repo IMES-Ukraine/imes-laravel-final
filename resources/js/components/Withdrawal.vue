@@ -7,10 +7,6 @@
         </template>
 
         <div class="template_box style_for_table">
-            <div class="links_wrap right mb20">
-                <a class="sidebar_nav-button width-auto height-35" href="/banner/new"><span>Баннер</span></a>
-                <a class="sidebar_nav-button width-auto height-35 active" href="/cards"><span>Создать карточку</span></a>
-            </div>
             <requests-table v-if="hasRequests()"
                 v-bind:requests="requests"
                 v-on:accept="accept"
