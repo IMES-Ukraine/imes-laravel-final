@@ -77,6 +77,9 @@ class TestsController extends Controller
         ])->where('test_type', '!=', 'child')
             ->orderBy('id', 'desc')
             ->whereNotIn('id', $passedIds);
+        if(! \request()->input('all_items')) {
+            $query->where('schedule', '<=', date('Y-m-d H:i:s'));
+        }
 
         //  $query->makeHidden(['agreement']);
         $data = $query->paginate();
