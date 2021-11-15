@@ -149,15 +149,12 @@
                                 <div class="articles_create__grid-block">
                                     <div class="articles_create__field_with_label">
                                         <p class="articles_create__field_with_label-label">Баллы</p>
-                                        <validation-provider
-                                            rules="required"
-                                            v-slot="{ errors }">
-
+                                        <validation-provider rules="required" v-slot="{ errors }">
                                             <input
                                                 class="form-control"
                                                 type="number"
                                                 name="name"
-                                                v-model="content.test.points">
+                                                v-model="content.test.points" />
 
                                             <span class="errors">{{ errors[0] }}</span>
                                         </validation-provider>
@@ -165,11 +162,7 @@
                                 </div>
                                 <div class="articles_create__grid-block">
                                     <div class="articles_create__field_with_label">
-                                        <v-checkbox
-                                            :id="'can-retake-button'"
-                                            :name="'can-retake-button'"
-                                            v-model="content.test.canRetake"
-                                        />
+                                        <v-checkbox :value.sync="content.test.canRetake" />
                                     </div>
                                 </div>
                         </div>
@@ -285,18 +278,21 @@ export default {
         showFirstStep() {
             this.errorNewTest = '';
             this.errorNewArticle = '';
+            let error = false;
 
             if (!this.content.test.title) {
                 this.errorNewTest = 'Тест обовʼязковий';
+                error = true;
             }
 
             if (!this.content.article.title) {
                 this.errorNewArticle = 'Статья обовʼязкова';
+                error = true;
             }
-
-            this.$store.dispatch('saveContent', this.content);
-
-            this.setStep(1)
+            if ( ! error ) {
+                this.$store.dispatch('saveContent', this.content);
+                this.setStep(1)
+            }
 
         },
     },

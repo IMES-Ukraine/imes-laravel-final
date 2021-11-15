@@ -18,7 +18,7 @@
                         <input :id="'text-'+variant.itemId" type="text" v-model="variant.text">
                         <div class="articles_create-checkbox">
                             <input type="checkbox" v-model="variant.right"
-                                   @click="setCorrect(variant.itemId, variant.right)">
+                                   @click="setCorrect(variant.title, variant.right)">
                             <i></i>
                             <p>Правильный ответ</p>
                         </div>

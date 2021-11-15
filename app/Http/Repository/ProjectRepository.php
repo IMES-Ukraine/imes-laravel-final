@@ -45,16 +45,17 @@ class ProjectRepository
         $project->options = $projectTotal['options'];
         $project->status = Projects::STATUS_ACTIVE;
         $isProjectSaved = $project->save();
-        $isProjectItemsSaved = true;
 
-        $index = 1;
+
 //------------- content block
         foreach ($projectTotal['content'] as $content) {
             $scheduled = ($content['scheduled_date'] ?? date('Y-m-d')) . ' ' . ($content['scheduled_time'] ?? '00:00');
+            $content['test']['schedule'] = $scheduled;
 
             $content['project_id'] = $project->id;
             $content['schedule'] = $scheduled;
-            $research = ProjectResearches::create($content);
+            ProjectResearches::create($content);
+
 
             //------------  article
             $article = $content['article'];
@@ -65,18 +66,15 @@ class ProjectRepository
 
             //если сложный вопрос - пишем все части отдельно
             if ($content['test']['type'] == 'complex') {
+                //Сначала записываем весь сложный вопрос в качерстве родителя
                 $questionModel = TestQuestions::create((array)new Question($content['test']));
                 $questionModel->save();
+
                 $parentID = $questionModel->id;
                 $complex = $content['test']['complex_question'];
+
+                //потом пишем подвопросы как потомков
                 foreach ($complex as $question) {
-//                    $items = new ProjectItems;
-//                    $items->item_key = $index;
-//                    $items->item_id = 0;
-//                    $items->project_id = $project->id;
-//                    $items->data = $question;
-//                    $items->schedule = $scheduled;
-//                    $isProjectItemsSaved &= $items->save();
 
                     $test = $content['test'];
                     $test['question'] = $question;
@@ -86,51 +84,25 @@ class ProjectRepository
                     $questionModel->parent_id = $parentID;
                     $questionModel->save();
 
-//                    $items->item_type = get_class($questionModel);
-//                    $items->item_id = $questionModel->id;
-//                    $isProjectItemsSaved &= $items->save();
+
                 }
             } //если простой - все проще
             else {
                 $questionModel = TestQuestions::create((array)new Question($content['test']));
                 $questionModel->save();
 
-//                $items = new ProjectItems;
-//                $items->item_key = $index;
-//                $items->project_id = $project->id;
-//                $items->data = $content['test'];
-//                $items->item_type = get_class($questionModel);
-//                $items->item_id = $questionModel->id;
-//                $items->schedule = $scheduled;
-//                $isProjectItemsSaved &= $items->save();
             }
 //------------ end test
 
-/*
-//------------  article
-            $article = $content['article'];
-            $articleModel = $this->articleService->addArticle($article);
-
-            $items = new ProjectItems;
-            $items->item_type = get_class($articleModel);
-            $items->item_key = $index;
-            $items->item_id = $articleModel->id;
-            $items->project_id = $project->id;
-            $items->data = $content['article'];
-            $items->schedule = $scheduled;
-            $isProjectItemsSaved &= $items->save();
-            $index++;
-
-*/
         }
 //------------- end content block
 
-//        return (object)[
-//            'saved' => !$questionModel || !$articleModel || !$isProjectSaved || !$isProjectItemsSaved,
-//            'data' => $project
-//        ];
+        return (object)[
+            'saved' => true ,
+            'data' => $project
+        ];
 
-            return  (object)['saved' => true, 'data' => $project];
+
 
     }
 

@@ -73,7 +73,7 @@ export default {
                     type: 'easy',
                     count: null,
                     points: null,
-                    canRetake: null,
+                    canRetake: false,
 
                 },
 
@@ -163,6 +163,8 @@ export default {
                 this.$router.push({name: 'projectList'});
             });
         },
+
+        //служебная функция - поиск в массиве по полу value
         findByValue(array, id) {
             let res = array.filter(row => row.value == id);
             if (res.length) {
@@ -192,9 +194,6 @@ export default {
             }
             this.recommended.push(tag)
             this.chosenRecommended.push(tag)
-        },
-        reloadBlockSurveyTest() {
-            this.$store.state.contentList[this.$store.state.currentContent].test = {};
         },
 
         /**

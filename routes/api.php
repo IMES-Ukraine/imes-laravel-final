@@ -209,7 +209,8 @@ Route::group(
                 Route::get('/{id}', [TestsController::class, 'show'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
                 Route::delete('/{id}', [TestsController::class, 'destroy'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
                 Route::post('/', [TestsController::class, 'create'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
-                Route::post('/{id}', [TestsController::class, 'update'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                Route::post('/submit', [TestsController::class, 'submit'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                //Route::post('/{id}', [TestsController::class, 'update'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
             }
         );
 

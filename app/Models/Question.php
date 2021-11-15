@@ -35,6 +35,9 @@ class Question
     public $agreement;
     public $options;
 
+    public $schedule;
+    public $can_retake;
+
     public function __construct($question)
     {
 
@@ -53,10 +56,12 @@ class Question
 
         $this->isTextAnswerType = $this->answer_type == self::ANSWER_TEXT;
 
-        $this->passing_bonus = !empty($question['question']['points']) ? $question['question']['points'] : 0;
+        $this->passing_bonus = $question['points'] ??  0;
+
+        $this->schedule = $question['schedule'];
+        $this->can_retake = $question['canRetake'];
 
         $options = [];
-
         $description = $question['question']['description'] ?? '';
         if (!empty($description)) {
             $options[] = [

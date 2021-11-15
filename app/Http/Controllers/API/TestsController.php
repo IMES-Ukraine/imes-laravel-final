@@ -78,11 +78,9 @@ class TestsController extends Controller
             ->orderBy('id', 'desc')
             ->whereNotIn('id', $passedIds);
 
-      //  $query->makeHidden(['agreement']);
+        //  $query->makeHidden(['agreement']);
         $data = $query->paginate();
-      $data = json_decode($data->toJSON() );
-
-
+        $data = json_decode($data->toJSON());
 
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
@@ -139,7 +137,7 @@ class TestsController extends Controller
     {
 
         $data = TestQuestions::with(['cover_image', 'complex', 'featured_images'])->where('id', '=', $id)->get()->all();
-   //     $data->makeHidden(['agreement']);
+        //     $data->makeHidden(['agreement']);
 
         if (!empty($data)) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
@@ -473,39 +471,48 @@ class TestsController extends Controller
      * Storing test results
      * @return JsonResponse
      */
-    public function submit()
+    public function submit(Request $request)
     {
-
-        $apiUser = Auth::getUser();
+        /** @var User $apiUser */
+        $apiUser = auth()->user();
         $passed = new PassingProvider($apiUser);
 
-        $variants = post('data');
+        $variants = $request->post('data');
 
         $variant = reset($variants);
+        if (in_array($variant['test_id'], $passed->getIds(TestQuestions::class)) ){
+            return $this->helpers->apiArrayResponseBuilder(200, 'success', [
+                'data' => 'test already done',
+                'type' => 'test_submit',
+                'points' => 0,
+                'status' => TestQuestions::STATUS_PASSED,
+                'user' => $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray(),
+            ]);
+    }
 
-        $submitedTest = TestQuestions::find($variant['test_id']);
+        $submittedTest = TestQuestions::find($variant['test_id']);
 
-        if ($submitedTest->test_type == TestQuestions::TYPE_CHILD) {
 
-            $parentId = $submitedTest->parent_id;
+
+        if ($submittedTest->test_type == TestQuestions::TYPE_CHILD) {
+
+            $parentId = $submittedTest->parent_id;
             $rootTest = Test::find($parentId);
             $fullPassingBonus = $rootTest->passing_bonus;
             $passed->setId($rootTest, $parentId);
         } else {
-            $passed->setId($submitedTest, $variant['test_id']);
-            $fullPassingBonus = $submitedTest->passing_bonus;
+            $passed->setId($submittedTest, $variant['test_id']);
+            $fullPassingBonus = $submittedTest->passing_bonus;
         }
 
         //$userVariants = [];
 
 
-        if ($submitedTest->answer_type !== Question::ANSWER_TEXT) {
+        if ($submittedTest->answer_type !== Question::ANSWER_TEXT) {
 
             $fullCount = $this->getFullVariantsCount($variants);
             $dummyAnswersCount = 0; //опросы
-
-            $accountingAnswersCount = 0;
-            $correctAnswersCount = 0;
+            $correctAnswersCount = 0; //тесты
 
             foreach ($variants as $var) {
 
@@ -514,27 +521,18 @@ class TestsController extends Controller
                 $test = TestQuestions::find($var['test_id']);
                 $correctAnswer = $test->variants['correct_answer'];
 
-
                 $passed->setId($test, $var['test_id']);
 
-
                 if (empty($correctAnswer)) {
-
                     $dummyAnswersCount++;
-
-
                 } else {
-
                     foreach ($correctAnswer as $answ) {
                         if (in_array($answ, $userVariants)) $correctAnswersCount++;
                     }
-
                 }
-
             }
 
             $accountingAnswersCount = $fullCount - $dummyAnswersCount;
-
 
             $testStatus = TestQuestions::STATUS_FAILED;
             $userPassingBonus = 0;
@@ -543,7 +541,6 @@ class TestsController extends Controller
 
                 $correctAnswersPercent = ($correctAnswersCount / $accountingAnswersCount) * 100;
                 switch (true) {
-
                     case ($correctAnswersPercent < 20):
                         break;
                     case ($correctAnswersPercent >= 50 && $correctAnswersPercent < 70):
@@ -554,33 +551,18 @@ class TestsController extends Controller
                         $userPassingBonus = $fullPassingBonus;
                         $testStatus = TestQuestions::STATUS_PASSED;
                         break;
+                    default :
                 }
-            } elseif ($accountingAnswersCount == 0) {
-
+            } else {
                 $testStatus = TestQuestions::STATUS_SUBMITTED;
             }
 
-            $userModel = User::find($apiUser->id);
-            $userModel->balance = $userModel->balance + $userPassingBonus;
-            $userModel->save();
-
-            $data = $userModel->toArray();
-
-            foreach (['permissions', 'deleted_at', 'updated_at', 'activated_at'] as $v) {
-                unset($data[$v]);
-            }
-
-            return $this->helpers->apiArrayResponseBuilder(200, 'success', [
-                'data' => 'ok',
-                'type' => 'test_submit',
-                'points' => $userPassingBonus,
-                'status' => $testStatus,
-                'user' => $data,
-            ]);
+            $apiUser->balance = $apiUser->balance + $userPassingBonus;
+            $apiUser->save();
         } else {
-
-            if (isset($variant['variant'])) $userVariants = $variant['variant'];
-            if (isset($variant['variants'])) $userVariants = $variant['variants'];
+            if (isset($variant['variant'])) {
+                $userVariants = $variant['variant'];
+            }
 
             $moderationModel = new QuestionModeration();
             $moderationModel->user_id = $apiUser->id;
@@ -588,19 +570,20 @@ class TestsController extends Controller
             $moderationModel->answer = reset($userVariants);
             $moderationModel->save();
 
-            $userModel = User::find($apiUser->id);
-
-            $data = $userModel->toArray();
-
-            return $this->helpers->apiArrayResponseBuilder(200, 'success', [
-                'data' => 'ok',
-                'type' => 'test_submit',
-                'points' => 0,
-                'status' => TestQuestions::STATUS_PASSED,
-                'user' => $data,
-            ]);
+            $testStatus = TestQuestions::STATUS_PASSED;
+            $userPassingBonus = 0;
 
         }
+
+        $data = $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', [
+            'data' => 'ok',
+            'type' => 'test_submit',
+            'points' => $userPassingBonus,
+            'status' => $testStatus,
+            'user' => $data,
+        ]);
     }
 
     public function store(Request $request)

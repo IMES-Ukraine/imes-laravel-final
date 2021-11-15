@@ -34,6 +34,8 @@ class TestQuestions extends Model
         'passing_bonus',
         'is_popular',
         'agreement',
+        'schedule',
+        'can_retake'
     ];
 
     /**
