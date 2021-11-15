@@ -1,5 +1,5 @@
 <template>
-    <div class="articles_create-box"  :key="formKey">
+    <div class="articles_create-box" >
         <div class="articles_create-block">
             <div class="articles_create__item">
                 <p class="articles_create__item-title">Выбор шаблона</p>
@@ -35,7 +35,7 @@
                             <input
                                 class="form-control"
                                 type="text"
-                                v-model="content.title">
+                                v-model="content.title" @change="setShowFull">
                             <span class="errors">{{ errors[0] }}</span>
                         </validation-provider>
                         <p class="articles_create__name-note">35 символов</p>
@@ -204,33 +204,38 @@ export default {
     mixins: [ProjectMixin],
     components: {ValidationProvider, VCheckbox},
     props: {
+        title: String
     },
     data() {
         return {
+            content: {...this.contentTemplate},
             loaded: false,
             showFull: false
         }
     },
 
     mounted() {
+        if (this.$store.state.currentAction === 'create') {
+            this.content = this.contentTemplate;
+        } else if (this.$store.state.currentAction === 'edit'){
+            this.$store.dispatch('setCurrentContent', this.title).then(() => {
+                this.content = this.$store.state.content;
+                this.showFull = true;
+            });
+        }
+        else {
+            this.content = this.$store.state.content;
+            this.content.title = this.$store.state.currentContentTitle;
+            this.showFull = true;
+        }
         this.loaded = true;
-        this.showFull =  !!this.content.title;
     },
     computed: {
-        formKey() {
-          return this.$store.state.formKey;
-        },
-        content: {
-            get: function() { return store.state.content },
-            set: function (newValue) {
-                store.commit('storeContent', newValue);
-            }
-        },
         haveArticle() {
-            return this.content ? this.content.article ? this.content.article.title  : false : false;
+            return this.content ? this.content.article ? this.content.article.title : false : false;
         },
         haveTest() {
-            return this.content ? this.content.test ? this.content.test.title  : false : false;
+            return this.content ? this.content.test ? this.content.test.title : false : false;
         },
         pointsSum() {
             if (this.content.article && this.content.test) {
@@ -246,6 +251,16 @@ export default {
 
     },
     methods: {
+        setShowFull() {
+            if (this.content.title) {
+                this.showFull = true;
+                this.$store.commit('setCurrentAction', 'other');
+                this.$store.dispatch('setContent', this.content);
+                this.$store.dispatch('setCurrentContentTitle', this.content.title);
+            } else {
+                this.showFull = false;
+            }
+        },
         newTest() {
             this.$store.dispatch('storeTest', this.contentTemplate.test);
             this.setStep(4);
@@ -283,9 +298,7 @@ export default {
                 this.errorNewArticle = 'Статья обовʼязкова';
             }
 
-            this.$store.dispatch('saveContent', this.content).then(() => {
-                this.$store.commit('storeContent', this.contentTemplate);
-            });
+            this.$store.dispatch('saveContent', this.content);
 
             this.setStep(1)
 

@@ -27,8 +27,7 @@ export default new Vuex.Store({
                 }
             },
             tag: '',
-            content: {}
-
+            content: {},
         },
 
         content: {},
@@ -56,7 +55,8 @@ export default new Vuex.Store({
         numberTest: 0,
         numberArticle: 0,
         testErrors: false,
-        formKey: Math.random()
+        currentContentTitle: '',
+        currentAction: '',
     },
     getters: {
     },
@@ -138,6 +138,7 @@ export default new Vuex.Store({
 
         setCurrentContent(state, title) {
            state.content = state.project.content[title];
+           state.content.currentContentTitle = title;
         },
         setCurrentArticle(state) {
            state.article = state.content.article;
@@ -176,6 +177,12 @@ export default new Vuex.Store({
 
         setTestError(state, error) {
             this.state.testErrors = error;
+        },
+        setCurrentAction(state, action){
+           this.state.currentAction = action;
+        } ,
+        setCurrentContentTitle(state, title){
+           this.state.currentContentTitle = title;
         }
     },
     actions: {
@@ -325,6 +332,13 @@ export default new Vuex.Store({
 
         setTestError(context, error) {
           context.commit('setTestError', error);
+        },
+
+        setCurrentAction(context, action){
+            context.commit('setCurrentAction', action);
+        },
+        setCurrentContentTitle(context, title){
+            context.commit('setCurrentContentTitle', title);
         }
     },
     modules: {}

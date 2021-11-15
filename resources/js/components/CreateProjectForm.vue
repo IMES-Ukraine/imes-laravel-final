@@ -7,7 +7,7 @@
                 :tag="project.tag"/>
         </template>
 
-        <div class="articles" :key="formKey">
+        <div class="articles" >
             <div class="articles_create">
                 <project-close/>
                 <project-alert-test/>
@@ -134,7 +134,7 @@
                                             </button>
                                             <span class="errors">{{ errorContent }}</span>
                                         </div>
-                                        <span v-for="content in contentList" :key="content.title">
+                                        <span v-for="content in this.$store.state.project.content" :key="content.title">
                                                     <div class="articles_create__grid-block">
                                                         <div class="articles_create__study">
                                                             <p class="articles_create__study-title">{{
@@ -158,7 +158,7 @@
                     </div>
                     <div v-if="currentStep == 2">
                        <p class="articles_create-title">Створення пакета контента</p>
-                        <content-pack />
+                        <content-pack :title="contentTitle" :key="contentTitle"/>
 
                     </div>
                     <div v-if="currentStep == 3">
@@ -258,7 +258,6 @@
 <script>
 import {ValidationProvider} from "vee-validate";
 import {ARTICLE_COVER, PROJECT, PROJECT_IMAGE, TOKEN} from "../api/endpoints";
-// import {ValidationObserver} from 'vee-validate'
 import PlusButton from './controls/PlusButton'
 import VContent from "./templates/Content"
 import axios from 'axios'
@@ -334,6 +333,7 @@ export default {
             targeting: false,
             errorContent: '',
             errorCover: '',
+            contentTitle: ''
         }
     },
     computed: {
@@ -343,25 +343,21 @@ export default {
                 store.commit('storeProject', newValue);
             }
         },
-        contentList() {
-            return this.$store.state.project.content;
-        },
         packsPresent() {
-            return Object.keys(this.contentList).length;
+            return Object.keys(this.$store.state.project.content).length;
         },
-        projectCover() {
-            return this.project.options.files.cover;
-        }
     },
     methods: {
         newContent() {
             this.errorContent = '';
-            this.$store.commit('setContent', this.contentTemplate);
-            console.log('new ', this.$store.state.content);
+            this.$store.dispatch('setCurrentAction', 'create');
+            this.$store.dispatch('setCurrentContentTitle', '');
             this.setStep(2);
         },
         editItem(title) {
-            this.$store.dispatch('setCurrentContent', title);
+            this.contentTitle = title;
+            this.$store.dispatch('setCurrentAction', 'edit');
+            this.$store.dispatch('setCurrentContentTitle', title);
             this.setStep(2);
         },
         deleteItem(title) {
@@ -380,7 +376,7 @@ export default {
             if (!Object.keys(this.project.content).length) {
                 this.errorContent = 'Потрібно створити контент';
             }
-            if (! this.projectCover) {
+            if (! this.project.options.files.cover) {
                 this.errorCover = 'Виберіть обкладинку';
             }
             const valTitle = await this.$refs['title'].validate();

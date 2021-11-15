@@ -267,15 +267,15 @@ export default {
         textInsertStore(value) {
             this.article.textInsert = value
         },
-        // linkStore(value) {
-        //     this.article.link = value
-        // },
-        // articleTypeStore(value) {
-        //     this.article.type = value
-        // },
-        // buttonStore(value) {
-        //     this.article.text_button = value
-        // },
+        linkStore(value) {
+            this.article.link = value
+        },
+        articleTypeStore(value) {
+            this.article.type = value
+        },
+        buttonStore(value) {
+            this.article.text_button = value
+        },
 
 
         storeArticle() {
