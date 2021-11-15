@@ -27,6 +27,10 @@
         </template>
 
         <div class="main-db">
+            <div class="links_wrap right mb20">
+                <a class="sidebar_nav-button width-auto height-35" href="/banner/new"><span>Баннер</span></a>
+                <a class="sidebar_nav-button width-auto height-35 active" @click="addCard()"><span>Создать карточку</span></a>
+            </div>
             <div class="db__block">
                 <div class="db-edit card">
                     <div class="card-body">
