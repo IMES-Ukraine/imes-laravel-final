@@ -13,7 +13,7 @@
                 </div>
                 <div class="articles_create__item half">
                     <p class="articles_create__item-title">Обложка</p>
-                    <file-input :key="test.title + '-cover'" :question="test.question" :error="coverError" type="cover"/>
+                    <file-input :key="test.title + '-cover'" :entity="test.question" :error="coverError" type="cover"/>
                 </div>
             </div>
             <div class="articles_create-block">
@@ -32,7 +32,7 @@
                         <p>Изображения</p>
                     </div>
                     <div class="articles_create__item-content">
-                        <file-input :key="test.title + '-img'" :question="test.question" type="img" :disabled="!isCheckedFile"/>
+                        <file-input :key="test.title + '-img'" :entity="test.question" type="img" :disabled="!isCheckedFile"/>
                     </div>
                 </div>
                 <div class="articles_create__item half"></div>
@@ -43,7 +43,7 @@
                         <p>Видео</p>
                     </div>
                     <div class="articles_create__item-content">
-                        <file-input :key="test.title + '-video'" :question="test.question" type="video" :disabled="!isCheckedVideo"/>
+                        <file-input :key="test.title + '-video'" :entity="test.question" type="video" :disabled="!isCheckedVideo"/>
                     </div>
                 </div>
             </div>
@@ -193,7 +193,7 @@ import SimpleTestVariants from './../inputs/SimpleTestVariantsArray.vue';
 import VContent from "../templates/Content"
 import FragmentFormText from "./text";
 import ProjectMixin from "../../ProjectMixin";
-import FileInput from "./Project/file-input";
+import FileInput from "../inputs/file-input";
 
 export default {
     name: 'TestQuestion',

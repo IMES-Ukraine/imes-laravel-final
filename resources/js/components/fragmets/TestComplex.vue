@@ -24,7 +24,7 @@
                 </div>
                 <div class="articles_create__item half">
                     <p class="articles_create__item-title">Обложка</p>
-                    <file-input :question="test.question" :error="coverError" type="cover"/>
+                    <file-input :entity="test.question" :error="coverError" type="cover"/>
                 </div>
             </div>
             <div class="articles_create-block">
@@ -124,7 +124,7 @@
     import { getRandomId } from '../../utils'
     import FragmentFormText from "./text";
     import ProjectMixin from "../../ProjectMixin";
-    import FileInput from "./Project/file-input";
+    import FileInput from "../inputs/file-input";
 
     export default {
         name: 'TestComplex',

@@ -19,7 +19,7 @@
                         </div>
                         <div class="articles_create__item half">
                             <p class="articles_create__item-title">Обложка</p>
-                            <file-input :key="question.itemId + '-cover'" :question.sync="question" type="cover"/>
+                            <file-input :key="question.itemId + '-cover'" :entity.sync="question" type="cover"/>
 
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                                 <p>Изображения</p>
                             </div>
                             <div class="articles_create__item-content">
-                                <file-input :key="question.itemId + '-img'" :question.sync="question" type="img" :disabled="!isCheckedFile" />
+                                <file-input :key="question.itemId + '-img'" :entity.sync="question" type="img" :disabled="!isCheckedFile" />
                             </div>
                         </div>
                         <div class="articles_create__item half"></div>
@@ -49,7 +49,7 @@
                                 <p>Видео</p>
                             </div>
                             <div class="articles_create__item-content">
-                                <file-input :key="question.itemId + '-video'" :question.sync="question" type="video" :disabled="!isCheckedVideo" />
+                                <file-input :key="question.itemId + '-video'" :entity.sync="question" type="video" :disabled="!isCheckedVideo" />
                             </div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@ import {required} from 'vuelidate/lib/validators'
 import {PROJECT_IMAGE} from "../../api/endpoints"
 import ComplexTestVariants from './../inputs/ComplexTestVariantsArray.vue'
 import ProjectMixin from "../../ProjectMixin";
-import FileInput from "../fragmets/Project/file-input";
+import FileInput from "./file-input";
 
 export default {
     xname: 'ComplexTestQuestionArray',

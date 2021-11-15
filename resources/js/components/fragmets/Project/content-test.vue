@@ -133,7 +133,7 @@ export default {
 
                 if(this.test.picked === 'survey') {
                     for (const [index, value] of Object.entries(this.test.question.variants)) {
-                        if (value.variant == '') {
+                        if (value.text == '') {
                             $('#variant-' + value.title).css('border', '1px solid red');
                             this.$store.commit('setTestError', true);
                         }

@@ -24,7 +24,7 @@
         </div>
         <div class="articles_create__item half">
             <p class="articles_create__item-title">Обложка*</p>
-            <file-input :key="article.title + '-img'" :article.sync="article" :error="errorArticleCover" type="cover"/>
+            <file-input :key="article.title + '-img'" :entity="article" :error="errorArticleCover" type="cover"/>
         </div>
         <div class="articles_create__item half">
             <p class="articles_create__item-title">Галерея</p>
@@ -194,7 +194,7 @@ import ArticleFormButton from "../../templates/article/form/button";
 import ArticleMultiple from "../../templates/article/form/multiple";
 import axios from "axios";
 import {checkIsImage, getRandomId} from "../../../utils";
-import FileInput from "./file-input";
+import FileInput from "../../inputs/file-input";
 
 export default {
   name: "content-article",

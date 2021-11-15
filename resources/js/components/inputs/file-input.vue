@@ -11,17 +11,16 @@
 </template>
 
 <script>
-import ProjectMixin from "../../../ProjectMixin";
-import {checkIsImage} from "../../../utils";
-import {PROJECT_IMAGE} from "../../../api/endpoints";
+import ProjectMixin from "../../ProjectMixin";
+import {checkIsImage} from "../../utils";
+import {PROJECT_IMAGE} from "../../api/endpoints";
 
 export default {
     name: "file-input",
     mixins: [ProjectMixin],
     props: {
         disabled: Boolean,
-        question: Object,
-        article: Object,
+        entity: Object,
         error: String,
         type: String
     },
@@ -29,12 +28,6 @@ export default {
       haveImage() {
           return !!this.entity.media[this.type] &&  !!Object.keys(this.entity.media[this.type]).length
       },
-        entity() {
-          if (undefined !== this.question){
-              return this.question;
-          }
-          return this.article;
-        }
     },
     methods: {
         /**
