@@ -77,7 +77,7 @@ class TestsController extends Controller
         ])->where('test_type', '!=', 'child')
             ->orderBy('id', 'desc')
             ->whereNotIn('id', $passedIds);
-        if(! \request()->input('all_items')) {
+        if (!\request()->input('all_items')) {
             $query->where('schedule', '<=', date('Y-m-d H:i:s'));
         }
 
@@ -483,7 +483,9 @@ class TestsController extends Controller
         $variants = $request->post('data');
 
         $variant = reset($variants);
-        if (in_array($variant['test_id'], $passed->getIds(TestQuestions::class)) ){
+        $submittedTest = TestQuestions::find($variant['test_id']);
+
+        if (!$submittedTest->can_retaked && in_array($variant['test_id'], $passed->getIds(TestQuestions::class))) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', [
                 'data' => 'test already done',
                 'type' => 'test_submit',
@@ -491,10 +493,7 @@ class TestsController extends Controller
                 'status' => TestQuestions::STATUS_PASSED,
                 'user' => $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray(),
             ]);
-    }
-
-        $submittedTest = TestQuestions::find($variant['test_id']);
-
+        }
 
 
         if ($submittedTest->test_type == TestQuestions::TYPE_CHILD) {
