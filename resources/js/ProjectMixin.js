@@ -144,6 +144,12 @@ export default {
     },
 
     methods: {
+        editContent(title) {
+            this.contentTitle = title;
+            this.$store.commit('setCurrentAction', 'edit');
+            this.$store.commit('setCurrentContentTitle', title);
+            this.setStep(2);
+        },
         finalStoreProject() {
             axios.post(PROJECT, {
                 project: this.project

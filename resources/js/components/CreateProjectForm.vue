@@ -143,7 +143,7 @@
                                                             <div class="articles_create__study-controls">
                                                                 <button type="button"
                                                                         class="articles_create__study-button articles_create__study-button--edit"
-                                                                        @click="editItem(content.title)"></button>
+                                                                        @click="editContent(content.title)"></button>
                                                                 <button type="button"
                                                                         class="articles_create__study-button articles_create__study-button--delete"
                                                                         @click="deleteItem(content.title)"></button>
@@ -158,7 +158,7 @@
                     </div>
                     <div v-if="currentStep == 2">
                        <p class="articles_create-title">Створення пакета контента</p>
-                        <content-pack :title="contentTitle" :key="contentTitle"/>
+                        <content-pack :key="contentTitle"/>
 
                     </div>
                     <div v-if="currentStep == 3">
@@ -352,12 +352,6 @@ export default {
             this.errorContent = '';
             this.$store.dispatch('setCurrentAction', 'create');
             this.$store.dispatch('setCurrentContentTitle', '');
-            this.setStep(2);
-        },
-        editItem(title) {
-            this.contentTitle = title;
-            this.$store.dispatch('setCurrentAction', 'edit');
-            this.$store.dispatch('setCurrentContentTitle', title);
             this.setStep(2);
         },
         deleteItem(title) {

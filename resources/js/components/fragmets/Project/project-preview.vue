@@ -16,7 +16,7 @@
                     <div class="preview__block-wrap">
                         <div class="preview__block-item">
                             <p class="preview__block-file"><span>{{ category }} : {{ region }}</span></p>
-                            <button class="preview__block-more" type="button">Подробнее</button>
+                            <button class="preview__block-more" type="button" @click="setStep(1)">Подробнее</button>
                         </div>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                                     <p class="preview__study-item">100 статей</p>
                                 </div>
                             </div>
-                            <button class="preview__block-more" type="button">Подробнее</button>
+                            <button class="preview__block-more" type="button" @click="editContent(item.title)">Подробнее</button>
                         </div>
 
                     </div>
@@ -84,8 +84,8 @@ export default {
         projectPoints() {
             let sum = 0;
             for (let index in this.project.content) {
-                sum = sum + parseInt(this.project.content[index].article.points ? this.project.content[index].article.points : 0)
-                    + parseInt(this.project.content[index].test.points ? this.project.content[index].article.points : 0);
+                sum = sum + parseInt(this.project.content[index].article.points)
+                    + parseInt(this.project.content[index].test.points);
             }
             return sum;
         }

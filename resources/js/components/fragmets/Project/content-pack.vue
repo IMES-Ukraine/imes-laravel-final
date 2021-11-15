@@ -197,15 +197,11 @@
 import ProjectMixin from "../../../ProjectMixin";
 import {ValidationProvider} from "vee-validate";
 import VCheckbox from "../../templates/inputs/checkbox"
-import store from "../../../store";
 
 export default {
     name: "content-pack",
     mixins: [ProjectMixin],
     components: {ValidationProvider, VCheckbox},
-    props: {
-        title: String
-    },
     data() {
         return {
             content: {...this.contentTemplate},
@@ -218,7 +214,7 @@ export default {
         if (this.$store.state.currentAction === 'create') {
             this.content = this.contentTemplate;
         } else if (this.$store.state.currentAction === 'edit'){
-            this.$store.dispatch('setCurrentContent', this.title).then(() => {
+            this.$store.dispatch('setCurrentContent', this.$store.state.currentContentTitle).then(() => {
                 this.content = this.$store.state.content;
                 this.showFull = true;
             });
