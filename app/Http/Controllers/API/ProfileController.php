@@ -119,7 +119,7 @@ class ProfileController extends Controller
     public function setImage( $type){
 
         $file = new File;
-        $file->data = Request::file('file');
+        $file->data = request()->file('file');
         $file->is_public = true;
         $file->field = 'cover_image';
         $file->attachment_type = 'App\Models\TestQuestions';
