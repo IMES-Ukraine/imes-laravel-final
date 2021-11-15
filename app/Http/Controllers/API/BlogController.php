@@ -260,7 +260,7 @@ $data = json_decode($data->toJSON() );
                 $model_times = new PostTimes();
                 $model_times->post_id = $model->id;
                 $model_times->date = date("Y-m-d", strtotime($request->date));
-                $model_times->time = date("H:m:s", strtotime($request->time));
+                $model_times->time = $request->time;
                 $model_times->save();
             }
         }
