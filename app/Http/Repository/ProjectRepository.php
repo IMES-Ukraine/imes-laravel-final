@@ -66,8 +66,8 @@ class ProjectRepository
             //если сложный вопрос - пишем все части отдельно
             if ($content['test']['type'] == 'complex') {
                 $questionModel = TestQuestions::create((array)new Question($content['test']));
-                $questionModel->
                 $questionModel->save();
+                $parentID = $questionModel->id;
                 $complex = $content['test']['complex_question'];
                 foreach ($complex as $question) {
 //                    $items = new ProjectItems;
@@ -80,9 +80,10 @@ class ProjectRepository
 
                     $test = $content['test'];
                     $test['question'] = $question;
+                    $test['type'] = 'child';
 
                     $questionModel = TestQuestions::create((array)new Question($test));
-                    $questionModel->parent_id = $research->id;
+                    $questionModel->parent_id = $parentID;
                     $questionModel->save();
 
 //                    $items->item_type = get_class($questionModel);
