@@ -24,13 +24,7 @@
                 </div>
                 <div class="articles_create__item half">
                     <p class="articles_create__item-title">Обложка</p>
-                    <div class="articles_create__item-content">
-                        <div class="articles_create__item-file width-auto buttonAddFile">
-                            <input type="file" name="name" v-on:change="handleUpload">
-                            <p><span data-placeholder="Загрузить"></span></p>
-                            <button class="delete_file deleteFile"></button>
-                        </div>
-                    </div>
+                    <file-input :question="test.question" :error="coverError" type="cover"/>
                 </div>
             </div>
             <div class="articles_create-block">
@@ -129,8 +123,9 @@
     import VContent from "../templates/Content"
     import { getRandomId } from '../../utils'
     import FragmentFormText from "./text";
-    import {PROJECT_IMAGE} from "../../api/endpoints";
     import ProjectMixin from "../../ProjectMixin";
+    import FileInput from "./Project/file-input";
+
     export default {
         name: 'TestComplex',
         props: [ 'test', 'errors', 'toValidate'],
@@ -140,6 +135,7 @@
             //SimpleTestVariant,
             ComplexTestVariants,
             ComplexTestQuestion,
+            FileInput,
             VContent
         },
 
@@ -155,6 +151,7 @@
                     {name: 'Кардиология', id: 3},
                     {name: 'Гастроэнтерология', id: 4},
                 ],
+                coverError: ''
             }
         },
         validations: {
@@ -182,33 +179,6 @@
                 this.addAnswerTest(0,index);
                 this.addAnswerTest(1,index);
             },
-            /**
-             * Handle changing of file input (cover, video, variants)
-             * @param event
-             */
-            handleUpload( event) {
-
-                let imageForm = new FormData();
-                let input = event.target
-                let type = input.getAttribute('img_type')
-
-                imageForm.append('file', input.files[0]);
-                this.$post(PROJECT_IMAGE + type,
-                    imageForm,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }
-                ).then((file) => {
-                    //this[type] = file.data
-                    this.test.media[type] = file.data
-                    //this.options.files[input.dataset.ref] = file.data
-                })
-            },
         },
-        mounted() {
-            //this.addComplex();
-        }
     }
 </script>

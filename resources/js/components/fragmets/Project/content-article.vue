@@ -8,8 +8,8 @@
                     <div class="articles_create__name-block">
                         <input type="text" name="name" v-model="article.title">
                         <div v-if="errorArticleTitle" class="errors">{{
-                                errorArticleTitle
-                            }}
+                            errorArticleTitle
+                          }}
                         </div>
                     </div>
 
@@ -24,23 +24,7 @@
         </div>
         <div class="articles_create__item half">
             <p class="articles_create__item-title">Обложка*</p>
-            <div class="articles_create__item-content">
-                <div class="articles_create__item-file width-auto buttonAddFile">
-                    <input
-                        type="file"
-                        id="articleCover"
-                        @change="coverField"
-                        name="cover"
-                        class="input-file-hidden"
-                        role="button"/>
-                    <p><span data-placeholder="Загрузить"
-                             id="article-cover">{{ this.article.cover || 'Загрузить' }}</span></p>
-                    <button class="delete_file deleteFile" id="deleteFileArticle"
-                            type="button">
-                    </button>
-                </div>
-                <div v-if="errorArticleCover" class="errors">{{ errorArticleCover }}</div>
-            </div>
+            <file-input :key="article.title + '-img'" :article.sync="article" :error="errorArticleCover" type="cover"/>
         </div>
         <div class="articles_create__item half">
             <p class="articles_create__item-title">Галерея</p>
@@ -61,52 +45,52 @@
             </div>
             <div class="errors" v-if="errorArticleText">{{ errorArticleText }}</div>
         </div>
-        <!--<div class="articles_create__item">
-            <p class="articles_create__item-title">Категории</p>
-            <div class="articles_create__item-content">
-                <div class="articles_create__addition">
-                    <div class="articles_create__addition-block">
-                        <div class="articles_create__addition-select">
-                            <select class="my-ui-select articles_create-select">
-                                <option value="1">Значение 1</option>
-                                <option value="2">Значение 2</option>
-                                <option value="3">Значение 3</option>
-                                <option value="4">Значение 4</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="articles_create__addition-block">
-                        <div class="articles_create__addition-field">
-                            <input type="text" name="text" class="">
-                        </div>
-                        <button class="articles_create__addition-button">Добавить категорию</button>
-                    </div>
-                </div>
-            </div>
-        </div>-->
-        <!--<div class="articles_create__item">
-            <p class="articles_create__item-title">Рубрики</p>
-            <div class="articles_create__item-content">
-                <div class="articles_create__addition">
-                    <div class="articles_create__addition-block">
-                        <div class="articles_create__addition-select">
-                            <select class="my-ui-select articles_create-select">
-                                <option value="1">Значение 1</option>
-                                <option value="2">Значение 2</option>
-                                <option value="3">Значение 3</option>
-                                <option value="4">Значение 4</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="articles_create__addition-block">
-                        <div class="articles_create__addition-field">
-                            <input type="text" name="text" class="">
-                        </div>
-                        <button class="articles_create__addition-button">Добавить рубрику</button>
-                    </div>
-                </div>
-            </div>
-        </div>-->
+      <!--<div class="articles_create__item">
+          <p class="articles_create__item-title">Категории</p>
+          <div class="articles_create__item-content">
+              <div class="articles_create__addition">
+                  <div class="articles_create__addition-block">
+                      <div class="articles_create__addition-select">
+                          <select class="my-ui-select articles_create-select">
+                              <option value="1">Значение 1</option>
+                              <option value="2">Значение 2</option>
+                              <option value="3">Значение 3</option>
+                              <option value="4">Значение 4</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="articles_create__addition-block">
+                      <div class="articles_create__addition-field">
+                          <input type="text" name="text" class="">
+                      </div>
+                      <button class="articles_create__addition-button">Добавить категорию</button>
+                  </div>
+              </div>
+          </div>
+      </div>-->
+      <!--<div class="articles_create__item">
+          <p class="articles_create__item-title">Рубрики</p>
+          <div class="articles_create__item-content">
+              <div class="articles_create__addition">
+                  <div class="articles_create__addition-block">
+                      <div class="articles_create__addition-select">
+                          <select class="my-ui-select articles_create-select">
+                              <option value="1">Значение 1</option>
+                              <option value="2">Значение 2</option>
+                              <option value="3">Значение 3</option>
+                              <option value="4">Значение 4</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="articles_create__addition-block">
+                      <div class="articles_create__addition-field">
+                          <input type="text" name="text" class="">
+                      </div>
+                      <button class="articles_create__addition-button">Добавить рубрику</button>
+                  </div>
+              </div>
+          </div>
+      </div>-->
         <div class="articles_create__item">
             <p class="articles_create__item-title">Автор</p>
             <div class="articles_create__item-content">
@@ -196,14 +180,12 @@ import ProjectMixin from "../../../ProjectMixin";
 import {ValidationProvider} from "vee-validate";
 import VCheckbox from "../../templates/inputs/checkbox"
 import {
-    ARTICLE,
-    ARTICLE_COVER,
-    ARTICLE_LIST,
-    PROJECT_IMAGE,
-    TOKEN,
-    USER,
-    USER_CREATE_NAME,
-    USER_LIST
+  ARTICLE_COVER,
+  ARTICLE_LIST,
+  PROJECT_IMAGE,
+  TOKEN,
+  USER_CREATE_NAME,
+  USER_LIST
 } from "../../../api/endpoints";
 import SimpleTestMedia from "../SimpleTestMedia";
 import Multiselect from "vue-multiselect";
@@ -212,177 +194,178 @@ import ArticleFormButton from "../../templates/article/form/button";
 import ArticleMultiple from "../../templates/article/form/multiple";
 import axios from "axios";
 import {checkIsImage, getRandomId} from "../../../utils";
+import FileInput from "./file-input";
 
 export default {
-    name: "content-article",
-    mixins: [ProjectMixin],
-    components: {
-        ValidationProvider,
-        VCheckbox,
-        SimpleTestMedia,
-        Multiselect,
-        ArticleFormInsert,
-        ArticleFormButton,
-        ArticleMultiple
+  name: "content-article",
+  mixins: [ProjectMixin],
+  components: {
+    ValidationProvider,
+    VCheckbox,
+    SimpleTestMedia,
+    Multiselect,
+    ArticleFormInsert,
+    ArticleFormButton,
+    ArticleMultiple,
+    FileInput
+  },
+  data() {
+    return {
+      recommended: [],
+      authors: [],
+      new_user: null,
+      chosenRecommended: null,
+      textInsert: '',
+      text_button: '',
+      articleTypes: {
+        1: "Новини",
+        2: "Інформація"
+      },
+
+    }
+  },
+  mounted() {
+    axios.get(USER_LIST, {params: {count: 12}}).then(response => {
+      this.authors = response.data.data;
+    });
+    axios.get(ARTICLE_LIST, {params: {count: 12, type: 1}}).then(response => {
+      this.recommended = response.data.data;
+    });
+
+  },
+  computed: {
+    article() {
+      return this.$store.state.content.article;
     },
-    data() {
-        return {
-            recommended: [],
-            authors: [],
-            new_user: null,
-            chosenRecommended: null,
-            textInsert: '',
-            text_button: '',
-            articleTypes: {
-                1: "Новини",
-                2: "Інформація"
+
+  },
+  methods: {
+    AddNewUser() {
+      this.$get(USER_CREATE_NAME + '/' + this.new_user).then(response => {
+        this.authors = response.data
+      })
+    },
+    insertStore(value) {
+      this.article.insert = value
+    },
+    textInsertStore(value) {
+      this.article.textInsert = value
+    },
+    linkStore(value) {
+      this.article.link = value
+    },
+    articleTypeStore(value) {
+      this.article.type = value
+    },
+    buttonStore(value) {
+      this.article.text_button = value
+    },
+
+
+    storeArticle() {
+      this.errorArticleTitle = '';
+      this.errorArticleCover = '';
+      this.errorArticleText = '';
+      let error = false;
+
+      if (!this.article.title) {
+        this.errorArticleTitle = this.requiredErrorText;
+        error = true;
+      }
+
+      if (!this.article.text) {
+        this.errorArticleText = this.requiredErrorText;
+        error = true;
+      }
+
+      if (!this.article.media.cover) {
+        this.errorArticleCover = this.requiredErrorText;
+        error = true;
+      }
+
+      if (!error) {
+        this.$store.commit('saveArticle', this.article);
+        this.setStep(2);
+      }
+    },
+    addMedia(event) {
+      let imageForm = new FormData()
+      imageForm.append('file', event.target.files[0])
+
+      axios.post(
+          ARTICLE_COVER + '/articles',
+          imageForm,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
             },
-
-        }
+            params: {
+              access_token: TOKEN
+            },
+          }
+      ).then((file) => {
+        let obj = {
+          itemId: 'img-' + getRandomId(),
+          file: file.data.data.id,
+          name: event.target.files[0].name,
+          data: file.data,
+          path: file.data.data.path
+        };
+        this.article.multiples.push(obj)
+        $('#article_multiples').val(null);
+      })
     },
-    mounted() {
-        axios.get(USER_LIST, {params: {count: 12}}).then(response => {
-            this.authors = response.data.data;
-        });
-        axios.get(ARTICLE_LIST, {params: {count: 12, type: 1}}).then(response => {
-            this.recommended = response.data.data;
-        });
-
-    },
-    computed: {
-        article() {
-            return this.$store.state.content.article;
-        },
-
-    },
-    methods: {
-        AddNewUser() {
-            this.$get(USER_CREATE_NAME + '/' + this.new_user).then(response => {
-                this.authors = response.data
-            })
-        },
-        insertStore(value) {
-            this.article.insert = value
-        },
-        textInsertStore(value) {
-            this.article.textInsert = value
-        },
-        linkStore(value) {
-            this.article.link = value
-        },
-        articleTypeStore(value) {
-            this.article.type = value
-        },
-        buttonStore(value) {
-            this.article.text_button = value
-        },
-
-
-        storeArticle() {
-            this.errorArticleTitle = '';
-            this.errorArticleCover = '';
-            this.errorArticleText = '';
-            let error = false;
-
-            if (!this.article.title) {
-                this.errorArticleTitle = this.requiredErrorText;
-                error = true;
+    coverField(event) {
+      this.errorArticleCover = '';
+      let imageForm = new FormData();
+      let input = event.target
+      let type = input.getAttribute('img_type');
+      if (!checkIsImage(input.value)) {
+        this.errorArticleCover = this.notImageText;
+        return;
+      }
+      imageForm.append('file', input.files[0]);
+      this.$post(PROJECT_IMAGE + 'cover',
+          imageForm,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
             }
+          }
+      ).then((file) => {
+        this.article.media.cover = file.data;
+        this.article.cover = file.data.file_name;
 
-            if (!this.article.text) {
-                this.errorArticleText = this.requiredErrorText;
-                error = true;
-            }
-
-            if (!this.article.cover) {
-                this.errorArticleCover = this.requiredErrorText;
-                error = true;
-            }
-
-            if (!error) {
-                this.$store.commit('saveArticle', this.article);
-                this.setStep(2);
-            }
-        },
-        addMedia(event) {
-            let imageForm = new FormData()
-            imageForm.append('file', event.target.files[0])
-
-            axios.post(
-                ARTICLE_COVER + '/articles',
-                imageForm,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    params: {
-                        access_token: TOKEN
-                    },
-                }
-            ).then((file) => {
-                let obj = {
-                    itemId: 'img-' + getRandomId(),
-                    file: file.data.data.id,
-                    name: event.target.files[0].name,
-                    data: file.data,
-                    path: file.data.data.path
-                };
-                this.article.multiples.push(obj)
-                $('#article_multiples').val(null);
-            })
-        },
-        coverField(event) {
-            this.errorArticleCover = '';
-            let imageForm = new FormData();
-            let input = event.target
-            let type = input.getAttribute('img_type');
-            if (! checkIsImage(input.value) ) {
-                this.errorArticleCover = this.notImageText;
-                return;
-            }
-            imageForm.append('file', input.files[0]);
-            this.$post(PROJECT_IMAGE + 'cover',
-                imageForm,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            ).then((file) => {
-                this.article.media.cover = file.data;
-                this.article.cover=file.data.file_name;
-
-            })
+      })
 
 
-
-            // if (! checkIsImage(event.target.files[0]) ) {
-            //     this.errorArticleCover = this.notImageText;
-            //     return;
-            // }
-            //
-            // let imageForm = new FormData()
-            // imageForm.append('file', event.target.files[0])
-            // await axios.post(
-            //     ARTICLE_COVER + '/articles',
-            //     imageForm,
-            //     {
-            //         headers: {
-            //             'Content-Type': 'multipart/form-data'
-            //         },
-            //         params: {
-            //             access_token: TOKEN
-            //         },
-            //     }
-            // ).then((file) => {
-            //     let article = this.$store.state.content.article;
-            //     article.cover = file.data.data.path;
-            //     this.$store.dispatch('storeArticle', article);
-            // })
-
-        },
+      // if (! checkIsImage(event.target.files[0]) ) {
+      //     this.errorArticleCover = this.notImageText;
+      //     return;
+      // }
+      //
+      // let imageForm = new FormData()
+      // imageForm.append('file', event.target.files[0])
+      // await axios.post(
+      //     ARTICLE_COVER + '/articles',
+      //     imageForm,
+      //     {
+      //         headers: {
+      //             'Content-Type': 'multipart/form-data'
+      //         },
+      //         params: {
+      //             access_token: TOKEN
+      //         },
+      //     }
+      // ).then((file) => {
+      //     let article = this.$store.state.content.article;
+      //     article.cover = file.data.data.path;
+      //     this.$store.dispatch('storeArticle', article);
+      // })
 
     },
+
+  },
 
 }
 </script>

@@ -19,13 +19,8 @@
                         </div>
                         <div class="articles_create__item half">
                             <p class="articles_create__item-title">Обложка</p>
-                            <div class="articles_create__item-content">
-                                <div class="articles_create__item-file width-auto buttonAddFile">
-                                    <input type="file" name="name" v-on:change="handleUpload(index, $event)">
-                                    <p><span data-placeholder="Загрузить"></span></p>
-                                    <button class="delete_file deleteFile"></button>
-                                </div>
-                            </div>
+                            <file-input :key="question.itemId + '-cover'" :question.sync="question" type="cover"/>
+
                         </div>
                     </div>
                     <div class="articles_create-block">
@@ -43,12 +38,7 @@
                                 <p>Изображения</p>
                             </div>
                             <div class="articles_create__item-content">
-                                <div class="articles_create__item-file width-auto buttonAddFile"
-                                     :class="(!isCheckedFile)?'fileDisabled':''">
-                                    <input type="file" name="name" :disabled="!isCheckedFile">
-                                    <p><span data-placeholder="Загрузить"></span></p>
-                                    <button class="delete_file deleteFile" type="button"></button>
-                                </div>
+                                <file-input :key="question.itemId + '-img'" :question.sync="question" type="img" :disabled="!isCheckedFile" />
                             </div>
                         </div>
                         <div class="articles_create__item half"></div>
@@ -59,12 +49,7 @@
                                 <p>Видео</p>
                             </div>
                             <div class="articles_create__item-content">
-                                <div class="articles_create__item-file width-auto buttonAddFile"
-                                     :class="(!isCheckedVideo)?'fileDisabled':''">
-                                    <input type="file" name="name" :disabled="!isCheckedVideo">
-                                    <p><span data-placeholder="Загрузить"></span></p>
-                                    <button class="delete_file deleteFile" type="button"></button>
-                                </div>
+                                <file-input :key="question.itemId + '-video'" :question.sync="question" type="video" :disabled="!isCheckedVideo" />
                             </div>
                         </div>
                     </div>
@@ -85,12 +70,14 @@ import {required} from 'vuelidate/lib/validators'
 import {PROJECT_IMAGE} from "../../api/endpoints"
 import ComplexTestVariants from './../inputs/ComplexTestVariantsArray.vue'
 import ProjectMixin from "../../ProjectMixin";
+import FileInput from "../fragmets/Project/file-input";
 
 export default {
     xname: 'ComplexTestQuestionArray',
     mixins: [ProjectMixin],
     components: {
-        ComplexTestVariants
+        ComplexTestVariants,
+        FileInput
     },
     props: ['complex_question', 'toValidate'],
     data() {
@@ -102,6 +89,11 @@ export default {
                 title: [],
                 text: []
             }
+        }
+    },
+    computed: {
+        test() {
+            return this.$store.state.test;
         }
     },
     watch: {

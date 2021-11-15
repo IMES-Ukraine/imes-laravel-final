@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {alphabet, getRandomId} from "./utils";
-import {PROJECT} from "./api/endpoints";
+import {alphabet, checkIsImage, getRandomId} from "./utils";
+import {PROJECT, PROJECT_IMAGE} from "./api/endpoints";
 
 export default {
     data() {
@@ -57,6 +57,7 @@ export default {
                         count: null,
                         points: null,
                         media: {
+                            img: null,
                             cover: null,
                             video: null,
                         },
@@ -85,6 +86,11 @@ export default {
                 type: 'variants',
                 correct: [],
                 variants: [],
+                media: {
+                    img: null,
+                    cover: null,
+                    video: null,
+                },
             },
             variantTemplate: {
                 itemId: '',
@@ -216,6 +222,7 @@ export default {
             }
             this.$store.commit('storeTest', test);
         },
+
 
     }
 }

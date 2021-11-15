@@ -13,14 +13,7 @@
                 </div>
                 <div class="articles_create__item half">
                     <p class="articles_create__item-title">Обложка</p>
-                    <div class="articles_create__item-content">
-                        <div class="articles_create__item-file width-auto buttonAddFile">
-                            <input type="file" name="name" v-on:change="handleUpload" img_type="cover">
-                            <p><span data-placeholder="Загрузить">{{test.question.media.cover ? test.question.media.cover.file_name : ''}}</span></p>
-                            <button class="delete_file deleteFile"></button>
-                        </div>
-                        <div v-if="coverError" class="errors">{{ coverError }}</div>
-                    </div>
+                    <file-input :key="test.title + '-cover'" :question="test.question" :error="coverError" type="cover"/>
                 </div>
             </div>
             <div class="articles_create-block">
@@ -39,32 +32,26 @@
                         <p>Изображения</p>
                     </div>
                     <div class="articles_create__item-content">
-                        <div class="articles_create__item-file width-auto buttonAddFile" :class = "(!isCheckedFile)?'fileDisabled':''">
-                            <input type="file" name="name" :disabled="!isCheckedFile">
-                            <p><span data-placeholder="Загрузить"></span></p>
-                            <button class="delete_file deleteFile" type="button"></button>
-                        </div>
+                        <file-input :key="test.title + '-img'" :question="test.question" type="img" :disabled="!isCheckedFile"/>
                     </div>
                 </div>
                 <div class="articles_create__item half"></div>
                 <div class="articles_create__item half">
                     <div class="articles_create__item-title has_radio">
-                        <input type="checkbox" name="checkbox_video" v-model="isCheckedVideo" >
+                        <input type="checkbox" name="checkbox_video" v-model="isCheckedVideo">
                         <i></i>
                         <p>Видео</p>
                     </div>
                     <div class="articles_create__item-content">
-                        <div class="articles_create__item-file width-auto buttonAddFile" :class = "(!isCheckedVideo)?'fileDisabled':''">
-                            <input type="file" name="name" :disabled="!isCheckedVideo">
-                            <p><span data-placeholder="Загрузить"></span></p>
-                            <button class="delete_file deleteFile" type="button"></button>
-                        </div>
+                        <file-input :key="test.title + '-video'" :question="test.question" type="video" :disabled="!isCheckedVideo"/>
                     </div>
                 </div>
             </div>
             <SimpleTestVariants :test.sync="test" :errors="errors"></SimpleTestVariants>
 
-            <button class="articles_create-submit button-border mtb20" type="button" @click="addAnswerTest(test.question.variants.length)">добавить ответ</button>
+            <button class="articles_create-submit button-border mtb20" type="button"
+                    @click="addAnswerTest(test.question.variants.length)">добавить ответ
+            </button>
             <div class="articles_create-line"></div>
 
             <div class="articles_create-block">
@@ -204,10 +191,9 @@ import {required} from 'vuelidate/lib/validators'
 
 import SimpleTestVariants from './../inputs/SimpleTestVariantsArray.vue';
 import VContent from "../templates/Content"
-import { checkIsImage} from '../../utils'
 import FragmentFormText from "./text";
-import {PROJECT_IMAGE} from "../../api/endpoints";
 import ProjectMixin from "../../ProjectMixin";
+import FileInput from "./Project/file-input";
 
 export default {
     name: 'TestQuestion',
@@ -215,8 +201,8 @@ export default {
     mixins: [ProjectMixin],
     components: {
         FragmentFormText,
-        //SimpleTestVariant,
         SimpleTestVariants,
+        FileInput,
         VContent
     },
 
@@ -242,38 +228,10 @@ export default {
             required
         },
     },
-    computed: {
-    },
-    methods: {
-        /**
-         * Handle changing of file input (cover, video, variants)
-         * @param event
-         */
-        handleUpload( event) {
-            this.coverError = '';
-            let imageForm = new FormData();
-            let input = event.target
-            let type = input.getAttribute('img_type');
-            if (! checkIsImage(input.value) ) {
-                this.errorArticleCover = this.notImageText;
-                return;
-            }
-            imageForm.append('file', input.files[0]);
-            this.$post(PROJECT_IMAGE + type,
-                imageForm,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            ).then((file) => {
-                this.test.question.media[type] = file.data;
-            })
-        },
-
-    },
+    computed: {},
+    methods: {},
     mounted() {
-        if (! this.test.question.variants.length) {
+        if (!this.test.question.variants.length) {
             this.addAnswerTest(0);
             this.addAnswerTest(1);
         }
