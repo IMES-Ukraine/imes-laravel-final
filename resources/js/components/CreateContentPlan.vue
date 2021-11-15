@@ -343,7 +343,7 @@ import {
 import FragmentFormText from "./fragmets/text"
 import ArticleMultiple from "./templates/article/form/multiple"
 import SimpleTestMedia from "./fragmets/SimpleTestMedia"
-import { getRandomId, currentDate } from './../utils'
+import { getRandomId, currentDate, changeFormatDate } from './../utils'
 import VRadio from "./templates/inputs/radio"
 import VTextarea from "./templates/inputs/textarea"
 import VInputText from "./templates/inputs/text"
@@ -651,7 +651,7 @@ export default {
                         post_id: item.id,
                         real: true,
                         active: false,
-                        date: item.date,
+                        date: changeFormatDate(item.date),
                         time: item.time.substr(0, 5),
                         title: item.title,
                         title_error: '',

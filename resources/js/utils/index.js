@@ -8,6 +8,10 @@ const currentDate = () => {
     var curr_year = d.getFullYear();
     return curr_date + "-" + curr_month + "-" + curr_year;
 };
+const changeFormatDate = (date) => {
+    let arrDate = date.split('-');
+    return arrDate[2] + '-' + arrDate[1] + '-' + arrDate[0]
+};
 const getRandomId = () => {
     return Math.random().toString(36).substr(2, 9)
 }
@@ -45,5 +49,6 @@ export {
     getRandomId,
     alphabet,
     variantTemplate,
-    currentDate
+    currentDate,
+    changeFormatDate
 };
