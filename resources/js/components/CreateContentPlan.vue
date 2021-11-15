@@ -343,7 +343,7 @@ import {
 import FragmentFormText from "./fragmets/text"
 import ArticleMultiple from "./templates/article/form/multiple"
 import SimpleTestMedia from "./fragmets/SimpleTestMedia"
-import { getRandomId, currentDate } from './../utils'
+import { getRandomId, currentDate, changeFormatDate } from './../utils'
 import VRadio from "./templates/inputs/radio"
 import VTextarea from "./templates/inputs/textarea"
 import VInputText from "./templates/inputs/text"
@@ -497,7 +497,7 @@ export default {
                             gallery: item.multiples,
                             tags: item.chosenTags,
                             recommended: item.chosenRecommended,
-                            time: item.time,
+                            time: item.time + ':00',
                             date: item.date
                         })
                             .then((res) => {
@@ -608,10 +608,14 @@ export default {
                         let field = $('#inputFile'+item.id+' input');
                         let block = field.parents(".buttonAddFile");
                         let text = block.find("p span");
-                        let fileName = item.cover_image.disk_name;
+                        let fileName = item.cover_image;
                         block.addClass("has_file");
                         text.text(fileName);
                     }, 3000);
+                    this.image.push({
+                        id : item.id,
+                        image_id: item.cover_image
+                    });
 
                     let gallery = [];
                     if (item.gallery) {
@@ -651,7 +655,7 @@ export default {
                         post_id: item.id,
                         real: true,
                         active: false,
-                        date: item.date,
+                        date: changeFormatDate(item.date),
                         time: item.time.substr(0, 5),
                         title: item.title,
                         title_error: '',
