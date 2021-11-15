@@ -497,7 +497,7 @@ export default {
                             gallery: item.multiples,
                             tags: item.chosenTags,
                             recommended: item.chosenRecommended,
-                            time: item.time,
+                            time: item.time + ':00',
                             date: item.date
                         })
                             .then((res) => {
@@ -608,10 +608,14 @@ export default {
                         let field = $('#inputFile'+item.id+' input');
                         let block = field.parents(".buttonAddFile");
                         let text = block.find("p span");
-                        let fileName = item.cover_image.disk_name;
+                        let fileName = item.cover_image;
                         block.addClass("has_file");
                         text.text(fileName);
                     }, 3000);
+                    this.image.push({
+                        id : item.id,
+                        image_id: item.cover_image
+                    });
 
                     let gallery = [];
                     if (item.gallery) {
