@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('content:plan')->cron('*/7 * * * *')->withoutOverlapping();
+        $schedule->command('content:plan')->dailyAt('08:00');
     }
 
     /**
