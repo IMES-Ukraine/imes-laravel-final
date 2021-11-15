@@ -62,7 +62,7 @@
                                                 <span class="icon-left" v-else>Добавить</span>
                                             </button>
                                         </div>
-                                        <div class="articles_create__grid-block">
+                                        <!--<div class="articles_create__grid-block">
                                             <div class="articles_create__item-file buttonAddFile">
                                                 <input type="file" name="audience"
                                                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
@@ -71,7 +71,7 @@
                                                 </p>
                                                 <button class="delete_file deleteFile" type="button"></button>
                                             </div>
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -187,12 +187,12 @@
                                             <p><span class="icon-list">По графику</span></p>
                                         </div>
                                     </div>
-                                    <div class="articles_create__grid-block">
+                                    <!--<div class="articles_create__grid-block">
                                         <div class="articles_create__sorting">
                                             <input type="radio" name="sorting-1" v-model="project.options.presentation_type" value="series">
                                             <p><span class="icon-list">Последовательность</span></p>
                                         </div>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
