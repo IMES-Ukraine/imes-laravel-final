@@ -96,7 +96,7 @@ class UsersController extends Controller
 
         $user->save();
 
-        $data = $this->User->all();
+        $data = $this->User->all()->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }

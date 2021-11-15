@@ -30,14 +30,22 @@
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Время</p>
                                     <div class="articles_create__item-content">
-                                        <input type="text" class="date_time" v-model="item.time">
+                                        <!--<input type="time" class="date_time" v-model="item.time">-->
+                                        <date-picker
+                                            v-model="item.time"
+                                            format="HH:mm"
+                                            value-type="format"
+                                            type="time"
+                                            placeholder="HH:mm"
+                                        ></date-picker>
                                         <div class="errors" v-if="item.time_error">{{ item.time_error }}</div>
                                     </div>
                                 </div>
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Дата</p>
                                     <div class="articles_create__item-content">
-                                        <input type="text" class="date_time" v-model="item.date">
+                                        <!--<input type="date" class="date_time" v-model="item.date" value-type="format" format="YYYY-MM-DD">-->
+                                        <date-picker v-model="item.date" value-type="format" format="DD-MM-YYYY"></date-picker>
                                         <div class="errors" v-if="item.date_error">{{ item.date_error }}</div>
                                     </div>
                                 </div>
@@ -324,7 +332,7 @@ import ArticleFormButton from "./templates/article/form/button"
 import Multiselect from "vue-multiselect"
 import {
     ARTICLE,
-    USER,
+    USER_LIST,
     USER_CREATE_NAME,
     ARTICLE_COVER,
     TOKEN,
@@ -340,6 +348,8 @@ import { getRandomId, currentDate } from './../utils'
 import VRadio from "./templates/inputs/radio"
 import VTextarea from "./templates/inputs/textarea"
 import VInputText from "./templates/inputs/text"
+import DatePicker from 'vue2-datepicker';
+import 'vue2-datepicker/index.css';
 
 export default {
     name: "CreateContentPlan",
@@ -363,7 +373,8 @@ export default {
         SimpleTestMedia,
         VRadio,
         VTextarea,
-        VInputText
+        VInputText,
+        DatePicker
     },
     data() {
         return {
@@ -395,7 +406,7 @@ export default {
             type: 1,
             textLocale: 0,
             current_date: currentDate(),
-            image: []
+            image: [],
         }
     },
     validations: {
@@ -578,7 +589,7 @@ export default {
         this.$get(ARTICLE + '?count=12&type=1').then( response => {
             this.recommended = response.data.data
         })
-        this.$get(USER + '?count=12').then( response => {
+        this.$get(USER_LIST + '?count=12').then( response => {
             this.authors = response.data
         })
         this.$get(ARTICLE_TAGS).then( response => {
@@ -714,7 +725,7 @@ export default {
                         button: '',
                         chosenRecommended: [],
                         action: '',
-                        multiples: ''
+                        multiples: []
                     });
                 }
             }
