@@ -23,8 +23,8 @@
                     <div class="swiper-button-prev" slot="button-prev"></div>
                     <div class="swiper-button-next" slot="button-next"></div>
                 </div>
-                <div class="articles_tabs__content articlesTabsContent">
-                    <div class="articles_tabs__content-block" v-for="(item, key) in items">
+                <div class="articles_tabs__content articlesTabsContent" :key="itemsKey">
+                    <div class="articles_tabs__content-block" v-for="(item, key) in items" >
                         <div class="articles_create-box">
                             <div class="articles_create-block">
                                 <div class="articles_create__item half">
@@ -83,15 +83,14 @@
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Обложка</p>
                                     <div class="articles_create__item-content">
-                                        <div class="articles_create__item-file width-auto buttonAddFile" :id="'inputFile'+item.id">
+                                        <div :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: !!(image[key] ? image[key].image_id : 0)}]" :id="'inputFile'+item.id">
                                             <input
                                                 type="file"
                                                 class="input-file-hidden"
                                                 v-on:change="handleUploadArticle($event, item.id)"
-                                                role="button"
-                                            >
-                                            <p><span data-placeholder="Загрузить">Загрузить</span></p>
-                                            <button class="delete_file deleteFile"></button>
+                                                role="button" />
+                                            <p><span >{{image[key] ? image[key].image_id : 'Загрузить'}}</span></p>
+                                            <button class="delete_file deleteFile" @click="removeImage(key)"></button>
                                         </div>
                                         <div v-if="item.image_error" class="errors">{{ item.image_error }}</div>
                                     </div>
@@ -407,6 +406,7 @@ export default {
             textLocale: 0,
             current_date: currentDate(),
             image: [],
+            itemsKey: Math.random()
         }
     },
     validations: {
@@ -417,7 +417,12 @@ export default {
             required
         }
     },
+
     methods: {
+        removeImage(key) {
+            this.image[key] = null;
+            this.itemsKey = Math.random();
+        },
         updateInsertTitle(value) {
             this.insert.push({title:value})
         },
@@ -543,7 +548,7 @@ export default {
                     },
                 }
             ).then((file) => {
-                this.name = event.target.files[0].name
+                this.name = file.data.data.file_name
                 //this.articles[0].imeges.push(file.data)
                 //this.image[id] = file.data.data.id
                 this.image.push({id: id, image_id: file.data.data.path})
