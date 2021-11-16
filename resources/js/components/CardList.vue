@@ -133,4 +133,7 @@ export default {
         opacity: 1;
         z-index: 1;
     }
+    .close:hover {
+        opacity: 1;
+    }
 </style>
