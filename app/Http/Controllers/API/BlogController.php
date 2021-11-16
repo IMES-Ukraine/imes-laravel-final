@@ -58,7 +58,7 @@ class BlogController extends Controller
                 ->isArticle()
                 ->notTimes()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
-                ->paginate();
+                ->paginate($countOnPage);
         } else {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
@@ -67,7 +67,7 @@ class BlogController extends Controller
                 ->isInformation()
                 ->notTimes()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
-                ->paginate();
+                ->paginate($countOnPage);
         }
 
         //$data->makeHidden(['content']);

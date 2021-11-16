@@ -61,6 +61,8 @@ extend('max', max)
 
 localize({ ru });
 
+Vue.component('pagination', require('laravel-vue-pagination'));
+
 // Set Axios
 Vue.use(VueAxios, axios);
 Vue.prototype.$get = get
