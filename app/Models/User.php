@@ -75,7 +75,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereWork($value)
- * @mixin \Eloquent
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -122,12 +121,12 @@ class User extends Authenticatable implements JWTSubject
 
     /**
      * Looks up a user by their email address.
-     * @return self
+     * @return self|null
      */
     public static function findByEmail($email)
     {
         if (!$email) {
-            return;
+            return null;
         }
 
         return self::where('email', $email)->first();

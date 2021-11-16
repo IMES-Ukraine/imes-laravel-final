@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 
 class UsersController extends Controller
 {
@@ -28,7 +29,7 @@ class UsersController extends Controller
     public function index()
     {
 
-        return $this->User->get()->all();
+        return $this->User->paginate();
 
     }
 
@@ -67,7 +68,7 @@ class UsersController extends Controller
             'name' => $request->post('name'),
             'phone' => $phone,
             'email' => $email,
-            'username' => $request->post('name'),
+            'username' => Str::slug($request->post('name') ),
             'password' => $password,
             'messaging_token' => 'eUpQSLg0fkqLqK8o7T5bD4:APA91bGfNkJ5cr8DXcLubsBlqBz7fSgz_BogwAC5muytt8jOF4VEk6_Vj9D_NMff0owflTvA9TFnEV-DneQJeUGshLktOjC2PUFsmSS4Gz_qTU7ycUh8Fbxi28i0h8pa28fL3jiuJ2g5'
         ]);

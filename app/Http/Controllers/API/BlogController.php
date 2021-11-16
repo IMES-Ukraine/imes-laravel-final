@@ -131,7 +131,6 @@ $data = json_decode($data->toJSON() );
         $images = $post->featured_images;
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [$post->toArray()] + [$images]);
-
     }
 
     /**

@@ -83,7 +83,7 @@ class TestsController extends Controller
 
         //  $query->makeHidden(['agreement']);
         $data = $query->paginate();
-        $data = json_decode($data->toJSON());
+     //   $data = json_decode($data->toJSON());
 
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
@@ -485,7 +485,7 @@ class TestsController extends Controller
         $variant = reset($variants);
         $submittedTest = TestQuestions::find($variant['test_id']);
 
-        if (!$submittedTest->can_retaked && in_array($variant['test_id'], $passed->getIds(TestQuestions::class))) {
+        if (!$submittedTest->can_retake && in_array($variant['test_id'], $passed->getIds(TestQuestions::class))) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', [
                 'data' => 'test already done',
                 'type' => 'test_submit',
