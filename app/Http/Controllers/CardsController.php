@@ -21,7 +21,7 @@ class CardsController extends Controller
      * @param null $id
      * @return JsonResponse
      */
-    //TODO доработать пагинацию при сортировке
+
     public function index(Request $request, $id = null): JsonResponse
     {
         if (!$id) {
@@ -33,7 +33,7 @@ class CardsController extends Controller
             }else {
                 $page = Cards::query()->paginate();
             }
-            return response()->json(compact('page'));
+            return response()->json($page);
         }
 
 

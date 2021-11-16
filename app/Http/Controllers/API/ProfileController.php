@@ -13,6 +13,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\ImageHelper;
@@ -21,6 +22,7 @@ use App\Traits\RetrieveFirebaseToken;
 use App\Models\AccountVerificationRequests;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+use function Symfony\Component\Translation\t;
 
 class ProfileController extends Controller
 {
@@ -66,7 +68,7 @@ class ProfileController extends Controller
     /**
      * Make profile verified
      */
-    public function verify(){
+    public function verify(Request $request){
 
         $apiUser = Auth::user();
 
@@ -75,19 +77,19 @@ class ProfileController extends Controller
 
         $userModel = User::find($userId);
 
-        if ( post('basic_information')){
+        if ( $request->post('basic_information')){
             if ( !is_array( $userModel->basic_information)) $userModel->basic_information = [];
-            $userModel->basic_information = array_merge( $userModel->basic_information, post('basic_information'));
+            $userModel->basic_information = array_merge( $userModel->basic_information, $request->post('basic_information'));
         }
 
-        if ( post('specialized_information')){
+        if ( $request->post('specialized_information')){
             if ( !is_array( $userModel->specialized_information)) $userModel->specialized_information = [];
-            $userModel->specialized_information = array_merge( $userModel->specialized_information, post('specialized_information'));
+            $userModel->specialized_information = array_merge( $userModel->specialized_information, $request->post('specialized_information'));
         }
 
-        if ( post('financial_information')){
+        if ( $request->post('financial_information')){
             if ( !is_array( $userModel->financial_information)) $userModel->financial_information = [];
-            $userModel->financial_information = array_merge( $userModel->financial_information, post('financial_information'));
+            $userModel->financial_information = array_merge( $userModel->financial_information, $request->post('financial_information'));
         }
 
         if( !$userModel->save()){
@@ -171,8 +173,6 @@ class ProfileController extends Controller
                 ]);
             } catch(AuthenticationException $e) {
                 return $this->helpers->apiArrayResponseBuilder(401, 'error', ['password_not_match']);
-            } finally {
-
             }
 
             $authenticateStatus = $isAuthenticated ? 'yes' : 'no';
@@ -191,8 +191,7 @@ class ProfileController extends Controller
         $userId = $apiUser->id;
 
         $user = User::find($userId);
-        $user->password = $request->post('password');
-        $user->password_confirmation = $request->post('password');
+        $user->password =Hash::make($request->post('password'));
         $user->save();
 
         $data = User::find($userId)->toArray();
@@ -225,31 +224,33 @@ class ProfileController extends Controller
      * Submit withdraw from User
      * @return JsonResponse
      */
-    public function withdraw(){
+    public function withdraw(Request $request){
 
-        //$apiUser = Auth::getUser();
-        $apiUser = Auth::user();
+        $apiUser = \auth()->user();
 
         $model       = User::find($apiUser->id);
         if ( !$model) return $this->helpers->apiArrayResponseBuilder(401, 'error', ['You must be logged in!']);
         $userBalance = (int) $model->balance;
-        $total       = (int) Request::post('total');
+        $total       = (int) $request->post('total');
+        $type = $request->post('type');
 
 
         $validator = Validator::make(
             [
                 'total' => $total,
+                'type' => $type,
                 'balance' => $userBalance
             ],
             [
 
                 'total' => 'required|numeric|min:20|max:' . $userBalance,
+                'type' => 'required',
                 'balance' => 'numeric|min:20',
             ],
             [
-                'required' => ':attribute_field_is_required',
-                'min'      => ':attribute_is_not_enough',
-                'max'      => ':attribute_is_too_much',
+                'required' => ':attribute ' . t('field_is_required'),
+                'min'      => ':attribute ' . t('is_not_enough'),
+                'max'      => ':attribute is_too_much',
             ]
         );
 
@@ -259,9 +260,9 @@ class ProfileController extends Controller
 
         $withdraw = new Withdraw();
         $withdraw->user_id = $apiUser->id;
-        $withdraw->total   = post('total');
-        $withdraw->comment = post('type');
-        $withdraw->type = post('type');
+        $withdraw->total   = $total;
+        $withdraw->comment = $type;
+        $withdraw->type = $request->post('type');
 
         $withdraw->save();
 

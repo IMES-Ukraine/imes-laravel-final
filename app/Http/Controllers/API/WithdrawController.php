@@ -30,11 +30,8 @@ class WithdrawController extends Controller
 
         //$data = $this->Withdraw->all()->orderBy('created_at', 'desc')->toArray();
         $data = Withdraw::where('user_id', $apiUser->id)->orderBy('created_at', 'desc')
-            ->limit($countOnPage)
-            ->offset(0)
-            ->get();
-            //->paginate($countOnPage);
-        //$data = Withdraw::orderBy('created_at', 'desc')->paginate($countOnPage);
+            ->paginate($countOnPage);
+        $data = json_decode($data->toJSON());
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }

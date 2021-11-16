@@ -33,6 +33,7 @@
         "bootstrap-vue": "^2.21.2",
         "es6-promise": "^4.2.8",
         "firebase": "^9.2.0",
+        "laravel-vue-pagination": "^2.3.1",
         "swiper": "^5.4.5",
         "v-autocomplete": "^1.8.2",
         "vue-awesome-swiper": "^4.1.1",

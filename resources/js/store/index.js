@@ -46,6 +46,7 @@ export default new Vuex.Store({
         },
         statusAddAnswer: true,
 
+        responseData: {},
         modalData: {},
         showUserModal: false,
         filterId: null,
@@ -58,17 +59,16 @@ export default new Vuex.Store({
         currentContentTitle: '',
         currentAction: '',
     },
-    getters: {
-    },
+    getters: {},
     mutations: {
         setFilter(state, data) {
-          state.filterId = data;
+            state.filterId = data;
         },
         setModalData(state, data) {
-          state.modalData = data  ;
+            state.modalData = data;
         },
         setShowUserModal(state, data) {
-          state.showUserModal = data  ;
+            state.showUserModal = data;
         },
 
         setContent(state, data) {
@@ -93,7 +93,7 @@ export default new Vuex.Store({
             state.test.answer.correct.push(data);
         },
         removeCorrect(state, data) {
-            state.test.answer.correct = state.test.answer.correct.filter( (item)=> {
+            state.test.answer.correct = state.test.answer.correct.filter((item) => {
                 return item !== data;
             });
         },
@@ -137,14 +137,14 @@ export default new Vuex.Store({
         },
 
         setCurrentContent(state, title) {
-           state.content = state.project.content[title];
-           state.content.currentContentTitle = title;
+            state.content = state.project.content[title];
+            state.content.currentContentTitle = title;
         },
         setCurrentArticle(state) {
-           state.article = state.content.article;
+            state.article = state.content.article;
         },
         setCurrentTest(state,) {
-           state.test = state.content.test;
+            state.test = state.content.test;
         },
 
         storeTest(state, data) {
@@ -178,34 +178,45 @@ export default new Vuex.Store({
         setTestError(state, error) {
             this.state.testErrors = error;
         },
-        setCurrentAction(state, action){
-           this.state.currentAction = action;
-        } ,
-        setCurrentContentTitle(state, title){
-           this.state.currentContentTitle = title;
+        setCurrentAction(state, action) {
+            this.state.currentAction = action;
+        },
+        setCurrentContentTitle(state, title) {
+            this.state.currentContentTitle = title;
+        },
+        setClients(state, data) {
+            state.clients = data;
+        },
+        setCards(state, data) {
+            state.cards = data;
+        },
+        setResponseData(state, data) {
+            state.responseData = data;
         }
+
+
     },
     actions: {
         setFilter(context, data) {
             context.commit('setFilter', data);
         },
 
-        setModalData(context, data){
-          context.commit('setModalData', data);
+        setModalData(context, data) {
+            context.commit('setModalData', data);
         },
-        setShowUserModal(context, data){
+        setShowUserModal(context, data) {
             context.commit('setShowUserModal', data)
         },
 
 
-        addCorrect(context, data){
+        addCorrect(context, data) {
             context.commit('addCorrect', data)
         },
-        removeCorrect(context, data){
+        removeCorrect(context, data) {
             context.commit('removeCorrect', data)
         },
 
-        setContent(context, data){
+        setContent(context, data) {
             context.commit('setContent', data);
         },
 
@@ -279,7 +290,6 @@ export default new Vuex.Store({
         },
 
 
-
         storeProject(context, project) {
             context.commit('storeProject', project)
         },
@@ -327,18 +337,28 @@ export default new Vuex.Store({
         },
 
         setQuestionType(context, type) {
-          context.commit('setQuestionType', type);
+            context.commit('setQuestionType', type);
         },
 
         setTestError(context, error) {
-          context.commit('setTestError', error);
+            context.commit('setTestError', error);
         },
 
-        setCurrentAction(context, action){
+        setCurrentAction(context, action) {
             context.commit('setCurrentAction', action);
         },
-        setCurrentContentTitle(context, title){
+        setCurrentContentTitle(context, title) {
             context.commit('setCurrentContentTitle', title);
+        },
+
+        setClients(context, data) {
+            context.commit('setClients', data);
+        },
+        setCards(context, data) {
+            context.commit('setCards', data);
+        },
+        setResponseData(context, data) {
+            context.commit('setResponseData', data);
         }
     },
     modules: {}
