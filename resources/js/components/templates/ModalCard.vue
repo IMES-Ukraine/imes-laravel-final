@@ -5,7 +5,8 @@
              class="db-modal">
         <template #modal-header-close>
             <!-- Emulate built in modal header close button action -->
-            <b-button size="sm" variant="outline-danger" @click="closeModal()" class="articles_create-close"></b-button>
+            <button class="articles_create-close" type="button" @click="closeModal()"></button>
+            <!--<b-button size="sm" variant="outline-danger" @click="closeModal()" class="articles_create-close"></b-button>-->
             <h5 v-if="id">Дані картки {{ id }}</h5>
         </template>
 
@@ -423,7 +424,7 @@ export default {
 </script>
 
 <style scoped>
-div.form-select {
-    display: block;
-}
+    div.form-select {
+        display: block;
+    }
 </style>

@@ -176,8 +176,10 @@
             </span>
         </div>
         <div class="articles_create-line" v-show="is_points"></div>
-        <div class="articles_create-note" v-show="is_points">1 пользователь = 1 тест + 1 статья = <p>{{ pointsSum }}</p>
-            баллов
+        <div class="articles_create-block" v-show="is_points">
+            <div class="articles_create-note">1 пользователь = 1 тест + 1 статья = <p>{{ pointsSum }}</p>
+                баллов
+            </div>
         </div>
         <button class="articles_create-submit button-gradient" type="button"
                 @click="showFirstStep" v-show="is_points">

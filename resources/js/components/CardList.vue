@@ -114,3 +114,23 @@ export default {
 
 }
 </script>
+
+<style>
+    .modal-dialog {
+        max-width: 847px;
+    }
+    .modal-header, .modal-footer {
+        border: none;
+        padding: 0;
+    }
+    .modal-footer > * {
+        margin: 0;
+    }
+    .modal-body {
+        padding: 0;
+    }
+    .close {
+        opacity: 1;
+        z-index: 1;
+    }
+</style>
