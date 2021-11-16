@@ -26,6 +26,11 @@ class Articles extends Post {
         return $query->where('type', self::INFORMATION);
     }
 
+    public function scopeNotTimes($query) {
+        return $query->leftJoin('rainlab_blog_posts_times', 'rainlab_blog_posts_times.post_id', '=', 'rainlab_blog_posts.id')
+            ->whereNull('rainlab_blog_posts_times.date');
+    }
+
 
     /**
      * Recomended articles
