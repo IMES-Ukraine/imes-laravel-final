@@ -24,14 +24,15 @@ class CardsController extends Controller
 
     public function index(Request $request, $id = null): JsonResponse
     {
+        $perPage = 15;
         if (!$id) {
             if($sortby = $request->input('sortby') )
             {
                 $order = $request->input('order', 'asc');
-                $page = Cards::orderBy($sortby, $order)->paginate();
+                $page = Cards::orderBy($sortby, $order)->paginate($perPage);
                 $page->appends(['sortby' => $sortby, 'order' => $order])->links();
             }else {
-                $page = Cards::query()->paginate();
+                $page = Cards::query()->paginate($perPage);
             }
             return response()->json($page);
         }

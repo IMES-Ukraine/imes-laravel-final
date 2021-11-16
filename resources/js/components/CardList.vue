@@ -41,6 +41,7 @@
                         ></cards-table>
                     </div>
                 </div>
+                <pagination :data="responseData" @pagination-change-page="loadCards"></pagination>
             </div>
         </div>
     </v-content>

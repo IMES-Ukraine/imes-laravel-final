@@ -1,6 +1,11 @@
 import {CARDS, CLIENTS} from "./api/endpoints";
 
 export default {
+    data() {
+        return {
+            responseData: {}
+        }
+    },
     methods: {
         showMsgBox(text) {
             this.boxOne = ''
@@ -20,17 +25,24 @@ export default {
             this.$store.dispatch('setFilter',  '');
             this.$store.dispatch('setShowUserModal', false);
         },
-        async loadClients() {
-            this.$get(CLIENTS).then( response => {
-                this.$store.dispatch('setClients',  response.data || {} );
-                this.$store.dispatch('setResponseData',  response || {} );
-
+        loadClients(page) {
+            if (typeof page === 'undefined') {
+                page = 1;
+            }
+            this.$get(CLIENTS, {page: page}).then( response => {
+                this.$store.commit('setClients',  response.data || {} );
+                this.$store.commit('setResponseData',  response || {} );
+                this.responseData = response;
             });
         },
-        async loadCards() {
-            this.$get(CARDS).then( response => {
-                this.$store.dispatch('setCards',  response.data || {} );
-                this.$store.dispatch('setResponseData',  response || {} );
+        loadCards(page) {
+            if (typeof page === 'undefined') {
+                page = 1;
+            }
+            this.$get(CARDS, {page: page}).then( response => {
+                this.$store.commit('setCards',  response.data || {} );
+                this.$store.commit('setResponseData',  response || {} );
+                this.responseData = response;
             });
         },
     }

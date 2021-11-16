@@ -28,14 +28,13 @@ class UserCardsController extends Controller
         $withdraws = UserCards::with('user')
             ->with('card')
             ->orderBy('created_at', 'desc')
-            ->paginate();
+            ->paginate(2);
 
         return $this->helpers->apiArrayResponseBuilder(
             200,
             'success',
             $withdraws);
-        /*$page = UserCards::query()->paginate();
-        return view("$this->viewPath.index", compact('page'));*/
+
     }
 
     /**
