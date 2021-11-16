@@ -31,6 +31,7 @@
                                 <div class="form-group col-12">
                                     <label class="form-control__label">Email</label>
                                     <input class="form-control db-edit-modal__input" name="email" type="email" v-model="email">
+                                    <div v-if="errors && errors.email" class="errors">{{ errors.email }}</div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -134,8 +135,10 @@ export default {
             if (!this.name) {
                 this.errors.name = 'Укажите имя';
             }
+            if (!this.email) {
+                this.errors.email = 'Укажите email';
+            }
             this.phone = this.$refs['phone-input'].value;
-
             if (!this.phone) {
                 this.errors.phone = 'Укажите телефон';
             } /*else if (!this.validEmail(this.email)) {
