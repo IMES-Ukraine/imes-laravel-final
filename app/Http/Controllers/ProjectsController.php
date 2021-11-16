@@ -20,8 +20,10 @@ class ProjectsController extends Controller
      * @return JsonResponse
      */
     public function index() {
-        $data = Projects::with('tags')->with('items')->whereNull('deleted_at')->with('items')->get();
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+        $countOnPage = 15;
+        $data = Projects::with('tags')->with('items')->whereNull('deleted_at')->with('items')->orderBy('created_at', 'DESC')->paginate($countOnPage);
+        $data = json_decode($data->toJSON() );
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
     /**
