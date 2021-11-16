@@ -14,6 +14,7 @@
                             v-on:onUnBlockUser="onUnBlockUserHandler"
                         ></clients-table>
                     </div>
+                    <pagination :data="responseData" @pagination-change-page="loadClients"></pagination>
                 </div>
             </div>
         </div>
@@ -24,19 +25,23 @@
 import VContent from "./templates/Content";
 import SidebarUsers from "./templates/SidebarUsers";
 import ClientsTable from './templates/clients/table-user'
-import { CLIENTS, CLIENTS_BLOCK_USER, CLIENTS_DELETE_USER, CLIENTS_UNBLOCK_USER } from "../api/endpoints"
+import { CLIENTS_BLOCK_USER, CLIENTS_DELETE_USER, CLIENTS_UNBLOCK_USER } from "../api/endpoints"
 import VPreloader from "./fragmets/preloader"
 import ModalMixin from "../ModalMixin";
+import Pagination from "laravel-vue-pagination";
 
 export default {
     name: "Clients",
     components: {
-        VContent,SidebarUsers,ClientsTable,VPreloader
+        VContent,SidebarUsers,ClientsTable,VPreloader, Pagination
     },
     mixins: [ModalMixin],
     computed: {
         requests() {
          return this.$store.state.clients;
+        },
+        responseData() {
+            return this.$store.state.responseData;
         }
     },
     methods: {

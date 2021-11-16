@@ -81,9 +81,8 @@ class TestsController extends Controller
             $query->where('schedule', '<=', date('Y-m-d H:i:s'));
         }
 
-        //  $query->makeHidden(['agreement']);
-        $data = $query->paginate();
-     //   $data = json_decode($data->toJSON());
+        $data = $query->paginate()->makeHidden(['agreement']);
+        $data = json_decode($data->toJSON());
 
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
@@ -501,9 +500,13 @@ class TestsController extends Controller
             $parentId = $submittedTest->parent_id;
             $rootTest = Test::find($parentId);
             $fullPassingBonus = $rootTest->passing_bonus;
-            $passed->setId($rootTest, $parentId);
+            $testClass = $rootTest;
+            $testID = $parentId;
+//            $passed->setId($rootTest, $parentId);
         } else {
-            $passed->setId($submittedTest, $variant['test_id']);
+            $testClass = $submittedTest;
+            $testID = $variant['test_id'];
+//            $passed->setId($submittedTest, $variant['test_id']);
             $fullPassingBonus = $submittedTest->passing_bonus;
         }
 
@@ -517,22 +520,25 @@ class TestsController extends Controller
             $correctAnswersCount = 0; //тесты
 
             foreach ($variants as $var) {
-
                 $userVariants = $var['variant'];
-
                 $test = TestQuestions::find($var['test_id']);
                 $correctAnswer = $test->variants['correct_answer'];
 
-                $passed->setId($test, $var['test_id']);
-
+                $isRightAnswer = false;
                 if (empty($correctAnswer)) {
                     $dummyAnswersCount++;
                 } else {
+                    //TODO разобраться, может ли быть несколько ответов к одному вопросу
                     foreach ($correctAnswer as $answ) {
-                        if (in_array($answ, $userVariants)) $correctAnswersCount++;
+                        if (in_array($answ, $userVariants)) {
+                            $correctAnswersCount++;
+                            $isRightAnswer = true;
+                        }
                     }
                 }
+                $passed->setId($testClass, $testID, $isRightAnswer);
             }
+
 
             $accountingAnswersCount = $fullCount - $dummyAnswersCount;
 
@@ -540,7 +546,7 @@ class TestsController extends Controller
             $userPassingBonus = 0;
 
             if ($accountingAnswersCount > 0) {
-
+                //если есть вопросы с выбором ответов. Считаем сумму полученных бонусов
                 $correctAnswersPercent = ($correctAnswersCount / $accountingAnswersCount) * 100;
                 switch (true) {
                     case ($correctAnswersPercent < 20):
@@ -556,7 +562,9 @@ class TestsController extends Controller
                     default :
                 }
             } else {
+                //иначе - мы в опроснике и отдаём сразу всю сумму бонусов
                 $testStatus = TestQuestions::STATUS_SUBMITTED;
+                $userPassingBonus = $fullPassingBonus;
             }
 
             $apiUser->balance = $apiUser->balance + $userPassingBonus;

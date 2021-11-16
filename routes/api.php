@@ -75,7 +75,7 @@ Route::group(
                 'prefix' => 'users'
             ],
             function () {
-                Route::get ('/',  [UsersController::class, 'index']);
+                Route::get ('/',  [UsersController::class, 'index'])->middleware('auth:api');
                 Route::get ('/list',  [UsersController::class, 'list']);
                 Route::get ('/passing/{status}',  [UsersController::class, 'passing']);
                 //Route::get('/{id}', [UsersController::class, 'show']);
@@ -163,8 +163,8 @@ Route::group(
                 Route::post('/token',
                     [ProfileController::class, 'token'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
 
-                Route::get('/withdraw',
-                    [ProfileController::class, 'index'])
+                Route::post('/withdraw',
+                    [ProfileController::class, 'withdraw'])
                     ->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
 
                 Route::post('/verify',
