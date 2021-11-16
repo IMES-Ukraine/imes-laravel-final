@@ -52,17 +52,21 @@ class BlogController extends Controller
 
         if ( $type == Articles::ARTICLE) {
             $data = Articles::with($relations)
+                ->select('rainlab_blog_posts.*')
                 //->where( 'published_at', '<=', Carbon::now()
                     //->toDateTimeString())
                 ->isArticle()
-                ->orderBy('id', 'desc')
+                ->notTimes()
+                ->orderBy('rainlab_blog_posts.id', 'desc')
                 ->paginate();
         } else {
             $data = Articles::with($relations)
+                ->select('rainlab_blog_posts.*')
                 //->where( 'published_at', '<=', Carbon::now()
                     //->toDateTimeString())
                 ->isInformation()
-                ->orderBy('id', 'desc')
+                ->notTimes()
+                ->orderBy('rainlab_blog_posts.id', 'desc')
                 ->paginate();
         }
 
