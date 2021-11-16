@@ -6,9 +6,9 @@
         </template>
 
         <div class="articles">
-            <div class="articles_list" v-if="hasProjects()">
+            <div class="articles_list">
                 <project-list-card
-                    v-for="(project) in projectList"
+                    v-for="(project) in projectList.data"
                     v-bind:key="project.id"
                     :id="project.id"
                     :title="project.options.title"
@@ -16,6 +16,9 @@
                     :items="project.items"
                     :tag="(project.tags)?'#'+project.tags.project_tags.slug:''"
                 />
+            </div>
+            <div class="articles_pagination center">
+                <pagination :data="projectList" @pagination-change-page="getResults"></pagination>
             </div>
             <!--<v-preloader v-else />-->
         </div>
@@ -25,7 +28,7 @@
 <script>
     import VContent from "./templates/Content";
     import ProjectListSidebar from "./templates/project/list/sidebar";
-    import {PROJECT} from "../api/endpoints"
+    import {ADMIN_PROJECT} from "../api/endpoints"
     import ProjectListCard from "./templates/project/list/card";
     import VPreloader from "./fragmets/preloader";
     export default {
@@ -33,7 +36,7 @@
         components: {VPreloader, ProjectListCard, ProjectListSidebar, VContent},
         data() {
             return {
-                projectList: this.$store.state.projects,
+                projectList: {}
             }
         },
         computed: {
@@ -42,23 +45,19 @@
             hasProjects () {
                 return !!Object.keys(this.projectList).length;
             },
-            async loadProjects () {
-
-                if (this.hasProjects()) {
-                    return
+            getResults(page) {
+                if (typeof page === 'undefined') {
+                    page = 1;
                 }
 
-                this.$get(PROJECT).then( response => {
-
-                    if (response.data) {
-
-                        this.projectList = response.data
-                    }
-                })
+                this.$get(ADMIN_PROJECT + '?page=' + page)
+                    .then(response => {
+                        this.projectList = response.data;
+                    });
             },
         },
         mounted() {
-            this.loadProjects()
+            this.getResults();
         }
     }
 </script>
