@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exports\ExportUserView;
 use App\Http\Controllers\Controller;
 use App\Models\AccountVerificationRequests;
 use App\Models\UserCards;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UsersController extends Controller
 {
@@ -226,6 +228,11 @@ class UsersController extends Controller
 
         return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'Empty cards']);
 
+    }
+
+    public function exportUsers($project_id)
+    {
+        return Excel::download(new ExportUserView($project_id), 'users.xlsx');
     }
 
 }

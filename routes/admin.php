@@ -87,4 +87,6 @@ Route::group(
                 Route::get('/', [ProjectsController::class, 'index']);
             }
         );
+
+        Route::get('/export-users/{project_id}', [UsersController::class, 'exportUsers'])->name('export-users');
     });

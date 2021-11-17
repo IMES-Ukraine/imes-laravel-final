@@ -131,4 +131,9 @@ class User extends Authenticatable implements JWTSubject
 
         return self::where('email', $email)->first();
     }
+
+    public function city_info()
+    {
+        return $this->hasOne(City::class, 'id', 'city');
+    }
 }
