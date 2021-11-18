@@ -370,6 +370,7 @@ $data = json_decode($data->toJSON() );
             'rainlab_blog_posts.button',
             'rainlab_blog_posts.type',
             'rainlab_blog_posts.learning_bonus',
+            'rainlab_blog_posts.cover_image_id',
             )
             ->with('cover_image')
             ->with('is_opened')
