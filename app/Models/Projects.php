@@ -42,40 +42,31 @@ class Projects extends Model
         return date_format(date_create($value), 'd.m.Y');
     }
 
-//    public function getOptionsAttribute($value)
-//    {
-//        return json_decode($value);
+
+
+//    public function tests() {
+//        //return $this->hasMany(ProjectItems::class, 'project_id')->where('item_type', Test::class);
+//        return $this->hasManyThrough(
+//            TestQuestions::class,
+//            ProjectItems::class,
+//            'project_id',
+//            'id',
+//            'id',
+//            'item_id'
+//        )->where('item_type', TestQuestions::class);
 //    }
-//
-//    public function setOptionsAttribute($value)
-//    {
-//        return json_encode($value);
+
+//    public function articles() {
+//        return $this->hasManyThrough(
+//            Articles::class,
+//            ProjectItems::class,
+//            'project_id',
+//            'id',
+//            'id',
+//            'item_id'
+//        )->where('item_type', Articles::class);
+//        //return $this->hasMany(ProjectItems::class, 'project_id')->where('item_type', Articles::class);
 //    }
-
-
-    public function tests() {
-        //return $this->hasMany(ProjectItems::class, 'project_id')->where('item_type', Test::class);
-        return $this->hasManyThrough(
-            TestQuestions::class,
-            ProjectItems::class,
-            'project_id',
-            'id',
-            'id',
-            'item_id'
-        )->where('item_type', TestQuestions::class);
-    }
-
-    public function articles() {
-        return $this->hasManyThrough(
-            Articles::class,
-            ProjectItems::class,
-            'project_id',
-            'id',
-            'id',
-            'item_id'
-        )->where('item_type', Articles::class);
-        //return $this->hasMany(ProjectItems::class, 'project_id')->where('item_type', Articles::class);
-    }
 
     /**
      * Tags
@@ -83,7 +74,7 @@ class Projects extends Model
      */
     public function tags()
     {
-        return $this->hasOne('App\Models\ProjectTags', 'project_id', 'id')->with('project_tags');
+        return $this->hasOne(ProjectTags::class, 'project_id', 'id')->with('project_tags');
     }
 
     /**
@@ -92,7 +83,7 @@ class Projects extends Model
      */
     public function items()
     {
-        return $this->hasMany('App\Models\ProjectResearches', 'project_id', 'id');
+        return $this->hasMany(ProjectResearches::class, 'project_id', 'id')->with(['tests','articles']);
         //return $this->hasMany('App\Models\ProjectItems', 'project_id', 'id');
     }
 }
