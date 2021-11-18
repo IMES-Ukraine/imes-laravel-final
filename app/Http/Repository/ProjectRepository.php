@@ -61,6 +61,7 @@ class ProjectRepository
             $article = $content['article'];
             $articleModel = $this->articleService->addArticle($article);
             $articleModel->research_id = $research->id;
+            $articleModel->scheduled = $scheduled;
             $articleModel->save();
 
 

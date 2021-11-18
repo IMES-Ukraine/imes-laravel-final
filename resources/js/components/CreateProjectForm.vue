@@ -20,7 +20,7 @@
                                         <div class="articles_create__item-file width-auto buttonAddFile">
                                             <input type="file" name="cover"
                                                    @change="handleUpload($event, 'cover')">
-                                            <p><span data-placeholder="Загрузить">{{ project.options.files.cover }}</span></p>
+                                            <p><span data-placeholder="Загрузить">{{ project.options.files.cover.file_name }}</span></p>
                                             <button class="delete_file deleteFile" type="button"></button>
                                         </div>
                                         <span class="errors">{{ errorCover }}</span>
@@ -397,7 +397,6 @@ export default {
 
         handleUpload(event, field) {
             if (event.target.files[0].size <= 1024 * 1024 * 1024) {
-                this.project.options.files.cover = event.target.files[0].name;
                 this.errorCover = '';
             } else {
                 this.errorCover = 'Изображение слишком большое';
@@ -419,9 +418,8 @@ export default {
                 }
             ).then((file) => {
                 let project = this.$store.state.project;
-                project.options.files[field] = file.data.data.path;
+                project.options.files[field] = file.data.data;
                 this.$store.dispatch('storeProject', project);
-
             })
         },
         showTargeting() {

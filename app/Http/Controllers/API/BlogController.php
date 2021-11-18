@@ -53,11 +53,13 @@ class BlogController extends Controller
         if ( $type == Articles::ARTICLE) {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
+                ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s') )
                 //->where( 'published_at', '<=', Carbon::now()
                     //->toDateTimeString())
                 ->isArticle()
                 ->notTimes()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
+
                 ->paginate($countOnPage);
         } else {
             $data = Articles::with($relations)
