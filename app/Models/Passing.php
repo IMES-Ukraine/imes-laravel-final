@@ -25,4 +25,6 @@ class Passing extends Model
      */
     public $rules = [
     ];
+
+    protected $casts = ['answer' => 'object'];
 }

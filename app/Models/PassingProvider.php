@@ -27,12 +27,13 @@ class PassingProvider
 
     }
 
-    public function setId( $entity, $entityId, $status) {
+    public function setId( $entity, $entityId, $status=0, $userVariants=[]) {
         $model = new Passing();
         $model->entity_type = get_class($entity);
         $model->entity_id = $entityId;
         $model->user_id = $this->user->id;
         $model->status = $status;
+        $model->answer = $userVariants;
 
         return $model->save();
     }
