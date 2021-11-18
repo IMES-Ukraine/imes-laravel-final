@@ -102,7 +102,7 @@ class Post extends Model
      */
     public function featured_images()
     {
-        return $this->hasMany('App\Models\File', 'attachment_id', 'id');
+        return $this->hasMany(File::class, 'attachment_id', 'id');
     }
 
     /**
