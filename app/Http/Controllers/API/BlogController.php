@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
@@ -29,39 +30,39 @@ class BlogController extends Controller
 
     public function __construct(Post $Post, Helpers $helpers)
     {
-        $this->Post    = $Post;
-        $this->helpers          = $helpers;
+        $this->Post = $Post;
+        $this->helpers = $helpers;
     }
 
     /**
      * Return posts
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(){
+    public function index()
+    {
 
         $countOnPage = 15;//get('count', 15);
 
         $type = Articles::ARTICLE;//get('type', Articles::ARTICLE);
 
-        $relations = ['user'/*, 'featured_images','content_images'*/, 'cover_image','recommended.post'/*, 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/ ];
+        $relations = ['user'/*, 'featured_images','content_images'*/, 'cover_image', 'recommended.post'/*, 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/];
         //if (!isset($apiUser->id)) unset($relations['is_opened']);
 
-        if ( $type == Articles::ARTICLE) {
+        if ($type == Articles::ARTICLE) {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
-                ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s') )
+                ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
                 //->where( 'published_at', '<=', Carbon::now()
-                    //->toDateTimeString())
+                //->toDateTimeString())
                 ->isArticle()
                 ->notTimes()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
-
                 ->paginate($countOnPage);
         } else {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
                 //->where( 'published_at', '<=', Carbon::now()
-                    //->toDateTimeString())
+                //->toDateTimeString())
                 ->isInformation()
                 ->notTimes()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
@@ -69,7 +70,7 @@ class BlogController extends Controller
         }
 
         //$data->makeHidden(['content']);
-$data = json_decode($data->toJSON() );
+        $data = json_decode($data->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
         //if ($apiUser && $apiUser->hasAccess('news.access_news'))
@@ -85,7 +86,8 @@ $data = json_decode($data->toJSON() );
     /**
      * @return JsonResponse
      */
-    public function tags() {
+    public function tags()
+    {
         $data = Tag::all();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
@@ -94,7 +96,8 @@ $data = json_decode($data->toJSON() );
     /**
      * @return JsonResponse
      */
-    public function times() {
+    public function times()
+    {
         $data = Articles::select(
             'rainlab_blog_posts.id',
             'rainlab_blog_posts.user_id',
@@ -125,7 +128,8 @@ $data = json_decode($data->toJSON() );
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function callback($id){
+    public function callback($id)
+    {
 
         Post::find($id)->increment('callbacks');
 
@@ -141,7 +145,8 @@ $data = json_decode($data->toJSON() );
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function read($articleId, $blockId) {
+    public function read($articleId, $blockId)
+    {
 
         $userModel = auth()->user();
 
@@ -151,8 +156,9 @@ $data = json_decode($data->toJSON() );
         $article = Post::findOrFail($articleId);
 
         $learningBonus = $article->learning_bonus;
+        $finalBonus = 0;
 
-        if ( is_array($content = $article->content)) {
+        if (is_array($content = $article->content)) {
 
             $lastBlock = key(array_slice($content, -1, 1, true));
 
@@ -162,7 +168,7 @@ $data = json_decode($data->toJSON() );
             if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($articleId)) {
                 $userModel->balance = $userModel->balance + $learningBonus;
                 $userModel->save();
-
+                $finalBonus = $learningBonus;
                 $passed->setId($article, $articleId);
             }
 
@@ -170,19 +176,17 @@ $data = json_decode($data->toJSON() );
 
             Post::find($articleId)->increment('callbacks');
 
-            $response = ['user' => $data];
-
-            if ( !in_array($articleId, $passedIds) && ( $blockId == $lastBlock) && $tracking->isReadClosely($articleId) )
-                $response['reading_status'] = [
-                    'points_earned' => $learningBonus
-                ];
-
+            $response = [
+                'user' => $data,
+                'reading_status' => [
+                    'points_earned' => $finalBonus
+                ]
+            ];
 
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $response);
         }
 
         return $this->helpers->apiArrayResponseBuilder(500, 'invalid article', ['error' => 'invalid article']);
-
 
 
     }
@@ -202,7 +206,7 @@ $data = json_decode($data->toJSON() );
         $model->content_html = $request->text;
         $model->type = $request->articleType;
         $model->learning_bonus = 0;
-        $model->is_popular = rand(0,1);
+        $model->is_popular = rand(0, 1);
 
         $model->action = !empty($request->action) ? $request->action : '';
         $model->button = !empty($request->button) ? $request->button : '';
@@ -224,25 +228,25 @@ $data = json_decode($data->toJSON() );
         $model->published_at = time();
         $saveStatus = $model->save();
 
-        if ( !$saveStatus)
+        if (!$saveStatus)
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
 
-        if ( $saveStatus ){
-            foreach ( $request->gallery as $value){
+        if ($saveStatus) {
+            foreach ($request->gallery as $value) {
                 $model_gallery = new PostGallery();
                 $model_gallery->post_id = $model->id;
                 $model_gallery->cover_image = $value['path'];
                 $model_gallery->save();
             }
 
-            foreach ( $request->tags as $tag){
+            foreach ($request->tags as $tag) {
                 $model_tags = new PostTag();
                 $model_tags->post_id = $model->id;
                 $model_tags->tag_id = $tag['id'];
                 $model_tags->save();
             }
 
-            foreach ( $request->recommended as $rec){
+            foreach ($request->recommended as $rec) {
                 Recommended::create([
                     'parent_id' => $model->id,
                     'recommended_id' => $rec['id']
@@ -300,12 +304,12 @@ $data = json_decode($data->toJSON() );
 
         $saveStatus = $model->save();
 
-        if ( !$saveStatus)
+        if (!$saveStatus)
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
 
-        if ( $saveStatus ){
+        if ($saveStatus) {
             PostGallery::where('post_id', $model->id)->delete();
-            foreach ( $request->gallery as $value){
+            foreach ($request->gallery as $value) {
                 $model_gallery = new PostGallery();
                 $model_gallery->post_id = $model->id;
                 $model_gallery->cover_image = $value['path'];
@@ -313,7 +317,7 @@ $data = json_decode($data->toJSON() );
             }
 
             PostTag::where('post_id', $model->id)->delete();
-            foreach ( $request->tags as $tag){
+            foreach ($request->tags as $tag) {
                 $model_tags = new PostTag();
                 $model_tags->post_id = $model->id;
                 $model_tags->tag_id = $tag['id'];
@@ -321,7 +325,7 @@ $data = json_decode($data->toJSON() );
             }
 
             Recommended::where('parent_id', $model->id)->delete();
-            foreach ( $request->recommended as $rec){
+            foreach ($request->recommended as $rec) {
                 Recommended::create([
                     'parent_id' => $model->id,
                     'recommended_id' => $rec['id']
@@ -343,7 +347,8 @@ $data = json_decode($data->toJSON() );
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id){
+    public function show($id)
+    {
         $data = Articles::select(
             'rainlab_blog_posts.id',
             'rainlab_blog_posts.title',
@@ -361,7 +366,7 @@ $data = json_decode($data->toJSON() );
             'rainlab_blog_posts.type',
             'rainlab_blog_posts.learning_bonus',
             'rainlab_blog_posts.cover_image_id',
-            )
+        )
             ->with('cover_image')
             ->with('is_opened')
             ->with('gallery')
