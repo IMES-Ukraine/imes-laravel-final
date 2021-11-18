@@ -50,9 +50,14 @@ class AuthController extends Controller
         $email = request('email');
         $password = request('password');
 
+        if (User::findByEmail($email)) {
+            return response()->json(['message' => 'Email already registered'], 401);
+        }
+
         $user = new User();
         $user->name = $name;
         $user->email = $email;
+        $user->username = request('login') ?? $email;
         $user->password = Hash::make($password);
         $user->save();
 
