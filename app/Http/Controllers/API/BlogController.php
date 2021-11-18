@@ -39,10 +39,6 @@ class BlogController extends Controller
      */
     public function index(){
 
-
-
-        //$apiUser = Auth::user();
-
         $countOnPage = 15;//get('count', 15);
 
         $type = Articles::ARTICLE;//get('type', Articles::ARTICLE);
@@ -147,10 +143,9 @@ $data = json_decode($data->toJSON() );
 
     public function read($articleId, $blockId) {
 
-        //$apiUser = Auth::getUser();
-        $apiUser = Auth::user();
+        $userModel = auth()->user();
 
-        $tracking = new TrackingProvider($apiUser);
+        $tracking = new TrackingProvider($userModel);
         $tracking->setBlockReaded($articleId, $blockId);
 
         $article = Post::findOrFail($articleId);
@@ -161,11 +156,8 @@ $data = json_decode($data->toJSON() );
 
             $lastBlock = key(array_slice($content, -1, 1, true));
 
-
-            $passed = new PassingProvider($apiUser);
+            $passed = new PassingProvider($userModel);
             $passedIds = $passed->getIds(Post::class);
-
-            $userModel = User::find($apiUser->id);
 
             if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($articleId)) {
                 $userModel->balance = $userModel->balance + $learningBonus;
@@ -174,11 +166,7 @@ $data = json_decode($data->toJSON() );
                 $passed->setId($article, $articleId);
             }
 
-            $data = $userModel->toArray();
-
-            foreach (['permissions', 'deleted_at', 'updated_at', 'activated_at'] as $v) {
-                unset($data[$v]);
-            }
+            $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
 
             Post::find($articleId)->increment('callbacks');
 

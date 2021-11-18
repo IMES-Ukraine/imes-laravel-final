@@ -31,13 +31,17 @@ class TrackingProvider
 
             $blockCount = count($content) - 1;
 
+            if ($blockCount === 0 ){
+                return  true;
+            }
+
             $totalSymbolsCount = 0;
             $totalWordsCount = 0;
 
             foreach ($content as $contentBlock) {
 
-                $contentSymbolsCount = strlen($contentBlock['content']);
-                $wordsArray = explode(' ', $contentBlock['content']);
+                $contentSymbolsCount = strlen($contentBlock->content);
+                $wordsArray = explode(' ', $contentBlock->content);
 
                 array_filter($wordsArray);
 
