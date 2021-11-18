@@ -47,7 +47,7 @@ class Articles extends Post {
      */
     public function cover_image()
     {
-        return $this->hasOne('App\Models\File', 'attachment_id', 'id');
+        return $this->hasOne(File::class, 'id', 'cover_image_id');
     }
 
     public function is_opened()
