@@ -60,6 +60,8 @@ class ProjectRepository
             //------------  article
             $article = $content['article'];
             $articleModel = $this->articleService->addArticle($article);
+            $articleModel->research_id = $research->id;
+            $articleModel->save();
 
 
 //------------  test
@@ -176,7 +178,7 @@ class ProjectRepository
     public function find($id)
     {
 
-        $project = Projects::with(['tests', 'tests.cover_image', 'articles', 'articles.cover_image'])
+        $project = Projects::with(['items'])
             ->where('id', $id)->first()->toArray();
 
         $itemsQuery = ProjectResearches::where('project_id', $id);

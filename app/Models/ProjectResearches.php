@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -57,17 +59,11 @@ class ProjectResearches extends Model
      * @var array
      */
     protected $fillable = [
-
         'project_id',
-
         'title',
-
         'article',
-
         'test',
-
         'schedule',
-
     ];
 
     /**
@@ -90,23 +86,35 @@ class ProjectResearches extends Model
     ];
 
     const RuleList = [
-
         'project_id' => ['required', 'integer'],
-
         'title' => ['required', 'max:255'],
-
         'article' => ['required'],
-
         'test' => ['required'],
-
         'schedule' => ['required'],
-
     ];
 
 
-    public function ulogic_projects_settings()
+    public function ulogic_projects_settings(): BelongsTo
     {
         return $this->belongsTo(Projects::class);
+    }
+
+    /**
+     * All tests in research
+     * @return HasMany
+     */
+    public function tests(): HasMany
+    {
+        return $this->hasMany(TestQuestions::class, 'research_id', 'id');
+    }
+
+    /**
+     * All articles in research
+     * @return HasMany
+     */
+    public function articles(): HasMany
+    {
+        return $this->hasMany(Articles::class, 'research_id', 'id');
     }
 
 }
