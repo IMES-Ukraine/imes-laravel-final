@@ -536,7 +536,7 @@ class TestsController extends Controller
                         }
                     }
                 }
-                $passed->setId($testClass, $testID, $isRightAnswer);
+                $passed->setId($testClass, $testID, $isRightAnswer, $userVariants);
             }
 
 
