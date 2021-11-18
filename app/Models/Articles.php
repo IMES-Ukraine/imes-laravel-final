@@ -47,12 +47,12 @@ class Articles extends Post {
      */
     public function cover_image()
     {
-        return $this->hasOne(File::class, 'id', 'cover_image_id');
+        return $this->belongsTo(File::class, 'cover_image_id', 'id');
     }
 
     public function is_opened()
     {
-        return $this->hasMany('App\Models\Opened', 'news_id', 'id');
+        return $this->hasMany(Opened::class, 'news_id', 'id');
     }
 
     public function user()
@@ -87,10 +87,4 @@ class Articles extends Post {
         return $this->hasMany('App\Models\PostTag', 'post_id', 'id')->with('tag');
     }
 
-
-    /*public $attachMany = [
-        'featured_images' => ['System\Models\File', 'order' => 'sort_order'],
-        'cover_image' => ['System\Models\File', 'order' => 'sort_order'],
-        'content_images'  => ['System\Models\File']
-    ];*/
 }
