@@ -54,7 +54,7 @@ class ProjectRepository
 
             $content['project_id'] = $project->id;
             $content['schedule'] = $scheduled;
-            ProjectResearches::create($content);
+            $research = ProjectResearches::create($content);
 
 
             //------------  article
@@ -66,8 +66,9 @@ class ProjectRepository
 
             //если сложный вопрос - пишем все части отдельно
             if ($content['test']['type'] == 'complex') {
-                //Сначала записываем весь сложный вопрос в качерстве родителя
+                //Сначала записываем весь сложный вопрос в качестве родителя
                 $questionModel = TestQuestions::create((array)new Question($content['test']));
+                $questionModel->research_id = $research->id;
                 $questionModel->save();
 
                 $parentID = $questionModel->id;
@@ -82,6 +83,7 @@ class ProjectRepository
 
                     $questionModel = TestQuestions::create((array)new Question($test));
                     $questionModel->parent_id = $parentID;
+                    $questionModel->research_id = $research->id;
                     $questionModel->save();
 
 
@@ -89,6 +91,7 @@ class ProjectRepository
             } //если простой - все проще
             else {
                 $questionModel = TestQuestions::create((array)new Question($content['test']));
+                $questionModel->research_id = $research->id;
                 $questionModel->save();
 
             }
