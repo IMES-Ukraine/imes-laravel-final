@@ -27,4 +27,14 @@ class Passing extends Model
     ];
 
     protected $casts = ['answer' => 'object'];
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function withdraw()
+    {
+        return $this->hasOne(Withdraw::class, 'id', 'user_id');
+    }
 }
