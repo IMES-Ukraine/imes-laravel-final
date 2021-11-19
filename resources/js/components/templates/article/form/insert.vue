@@ -16,15 +16,15 @@
             <div class="articles_create__item-content direction-column" v-if="textLocale">
                 <v-input-text
                     :name="'title'"
+                    :value="this.insert[0].title"
                     v-on:update:value="updateInsert(0, 'title', $event)"
                     placeholder="Заголовок"
-                    :text="''"
                     :classes="'mb20'"
                 />
                 <v-textarea
                     :rows="4"
                     v-on:update:text="updateInsert(0, 'content', $event)"
-                    :text="''"
+                    :text="this.insert[0].content"
                     placeholder="Текст"
                 />
             </div>
@@ -49,7 +49,7 @@ export default {
     data () {
         return {
             textLocale: this.textInsert,
-            insertLocal: []//this.insert,
+            insertLocal: this.insert,
         }
     },
     components: {ArticleInputText, VInputText, VTextarea},
