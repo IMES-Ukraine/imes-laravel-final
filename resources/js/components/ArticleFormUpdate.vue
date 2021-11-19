@@ -36,12 +36,14 @@
                                 <div class="articles_create__item-file width-auto buttonAddFile">
                                     <input
                                         type="file"
+                                        id="articleCover"
                                         name="addCover"
                                         class="input-file-hidden"
                                         v-on:change="handleUploadArticle"
-                                        role="button">
-                                    <p><span data-placeholder="Загрузить">{{article.cover_image.file_name || 'Загрузить'}}</span></p>
-                                    <button class="delete_file deleteFile" @click="article.cover_image={}"></button>
+                                        role="button"
+                                    >
+                                    <p><span data-placeholder="Загрузить">Загрузить</span></p>
+                                    <button class="delete_file deleteFile"></button>
                                 </div>
                                 <div v-if="errorArticleCover" class="errors">{{ errorArticleCover }}</div>
                             </div>
@@ -77,7 +79,8 @@
                                         id="article-has-insert"
                                         v-model="article.textLocale"
                                         :checked="article.textLocale"
-                                        @onclick="getTextInsert" />
+                                        @onclick="getTextInsert"
+                                    >
                                     <i></i>
                                     <p>Вставка в тексте</p>
                                 </div>
@@ -305,7 +308,8 @@
                     content_text: '',
                     chosenTags: [],
                     chosenRecommended: '',
-                    post_id: 0
+                    post_id: 0,
+                    multiples: []
                 }
             }
         },
@@ -361,7 +365,7 @@
                         post_id: this.article.id,
                         title: this.article.title,
                         articleType: this.article.type,
-                        text: this.article.content_html,
+                        content_html: this.article.content_html,
                         button: this.article.button,
                         action: this.article.action,
                         content_title: this.article.content_title,
@@ -403,13 +407,13 @@
                 this.title = value
             },
             buttonStore(value) {
-                this.button = value
+                this.article.button = value
             },
             insertStore(value) {
                 this.insert = value
             },
             linkStore(value) {
-                this.link = value
+                this.article.link = value
             },
             articleTypeStore(value) {
                 this.articleType = value
@@ -439,7 +443,9 @@
                         },
                     }
                 ).then((file) => {
-                    this.article.cover_image = file.data.data
+                    this.name = event.target.files[0].name
+                    //this.articles[0].imeges.push(file.data)
+                    this.image = file.data.data.id
                 })
             },
             addMedia(event) {
