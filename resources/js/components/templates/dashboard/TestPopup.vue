@@ -56,7 +56,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="study__table-block" v-for="(moderation, key) in loadModerations(content_id)">
+                                        <div class="study__table-block" v-for="(moderation, key) in getModerations(content_id)">
                                             <div class="study__table-item">
                                                 <p class="study__table-number">{{key}}</p>
                                             </div>
@@ -88,19 +88,19 @@
                                         <div class="study__item-content">
                                             <div class="study__answer">
                                                 <p class="study__answer-letter">{{ variant.title }}</p>
-                                                <p class="study__answer-text">{{ variant.variant }}</p>
+                                                <p class="study__answer-text">{{ variant.text }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
-                                                    <p class="study__info-data">0%</p>
+                                                    <p class="study__info-data">{{ getStaticTest(variant.title, tests[0]['id']) }}%</p>
                                                     <div class="dashboard_main__status-line">
-                                                        <span style="width:0%;"></span>
+                                                        <span :style="'width:'+getStaticTest(variant.title, tests[0]['id'])+'%;'"></span>
                                                     </div>
                                                 </div>
-                                                <p class="study__info-quantity">0</p>
+                                                <p class="study__info-quantity">{{ getStaticTest(variant.title, tests[0]['id']) }}</p>
                                             </div>
                                         </div>
-                                        <!--<button class="study__item-button" type=button>Смотреть</button>-->
+                                        <button class="study__item-button" type="button" v-if="getStaticTest(variant.title, tests[0]['id'])">Смотреть</button>
                                     </div>
                                 </div>
                             </template>
@@ -154,7 +154,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="study__table-block" v-for="(moderation, key) in loadModerations(content_id)">
+                                            <div class="study__table-block" v-for="(moderation, key) in getModerations(content_id)">
                                                 <div class="study__table-item">
                                                     <p class="study__table-number">{{key}}</p>
                                                 </div>
@@ -202,6 +202,14 @@
                 type: Object,
                 default: {}
             },
+            tests: {
+                type: Object,
+                default: {}
+            },
+            passing_tests: {
+                type: Object,
+                default: {}
+            },
             content_id: {
                 type: Number,
                 default: 0
@@ -220,13 +228,20 @@
             }
         },
         methods: {
+            getStaticTest (title, test_id) {
+                if (this.passing_tests[test_id] && this.passing_tests[test_id][title]) {
+                    return this.passing_tests[test_id][title].length;
+                }
+
+                return 0;
+            },
             toggle () {
                 this.isOpen = this.isOpen === false;
             },
             close () {
                 this.$router.push({ path: '/' })
             },
-            loadTest () {
+            /*loadTest () {
                 this.$get(TEST + '/' + this.id).then(response => {
                     console.log(response)
                     let data = response.data[0].items.data
@@ -236,12 +251,11 @@
                     this.test_type = data.test_type
                     this.type = data.question.type
                 });
-            },
-            loadModerations (test_id) {
+            },*/
+            getModerations (test_id) {
                 this.$get(MODERATION + '/' + test_id).then(response => {
                     console.log(response.data);
-                    this.moderations.push()
-                    return [{id: 1, username: 'ddd'}];//response.data //
+                    return response.data
                 });
             }
         },
