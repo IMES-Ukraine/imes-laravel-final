@@ -91,19 +91,21 @@ Route::group(
                 'prefix' => 'project'
             ],
             function () {
-                Route::post('/start', [\App\Http\Controllers\API\ProjectsController::class, 'start']);
-                Route::post('/stop/{id}', [ProjectsController::class, 'stop']);
-                Route::get('/tags', [ProjectsController::class, 'tags']);
-                Route::get('/tests/{id?}', [ProjectsController::class, 'getTests']);
-                Route::get('/', [ProjectsController::class, 'index']);
-                Route::post('/cover/{type}', [ProjectsController::class, 'setImage']);
-                Route::post('/image/{type}', [ProfileController::class, 'setImage']);
-                Route::get('/{id}', [\App\Http\Controllers\API\ProjectsController::class, 'show']);
-                Route::post('/{id}', [ProjectsController::class, 'update']);
-                Route::post('/', [ProjectsController::class, 'create']);
+                Route::post('/start', [ProjectsApiController::class, 'start']);
+                Route::post('/stop/{id}', [ProjectsApiController::class, 'stop']);
+                Route::get('/tags', [ProjectsApiController::class, 'tags']);
+                Route::get('/tests/{id?}', [ProjectsApiController::class, 'getTests']);
+                Route::get('/', [ProjectsApiController::class, 'index']);
+                Route::post('/cover/{type}', [ProjectsApiController::class, 'setImage']);
+                Route::get('/{id}', [ProjectsApiController::class, 'show']);
+                Route::post('/{id}', [ProjectsApiController::class, 'update']);
+                Route::post('/', [ProjectsApiController::class, 'create']);
 
-                Route::delete('/destroy/{id}', [ProjectsController::class, 'destroy']);
-                //Route::get('/', [ProjectsController::class, 'index']);
+                Route::delete('/destroy/{id}', [ProjectsApiController::class, 'destroy']);
+
+
+
+                Route::post('/image/{type}', [ProfileController::class, 'setImage']);
             }
         );
 

@@ -8,7 +8,7 @@ class ImageHelper
 {
     private $user;
     public function __construct( User $apiUser = null){
-        if ( !empty( $apiUser) && isset( $apiUser->id)) $this->user = User::find($apiUser->id);
+       $this->user = $apiUser;
     }
 
     public function uploadImage( $type, $file){
