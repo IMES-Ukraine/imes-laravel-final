@@ -1,12 +1,11 @@
 <template>
     <div class="articles_create__item">
         <div class="articles_create__item-title has_radio">
-            <v-checkbox
+            <input type="checkbox"
                 name="button"
-                :id="id"
-                :checked="isChecked"
-                v-bind:value.sync="isChecked"
-                v-on:update:value="getText('')"
+                v-model="isChecked"
+                   :checked="isChecked"
+                @input="getText('')"
             />
             <i></i>
             <p>{{label}}</p>
@@ -33,11 +32,6 @@ import VInputText from "../../inputs/text";
 export default {
     name: "article-form-button",
     components: {VInputText, VCheckbox},
-    data() {
-        return {
-            isChecked: this.text_button?true:false
-        }
-    },
     props: {
         v: {
             type: Object,
@@ -56,16 +50,21 @@ export default {
             default: ''
         }
     },
+    data() {
+        return{
+            isChecked: false
+        }
+    },
     methods: {
         getText (value) {
             this.$emit('update', value);
         }
     },
-    beforeMount() {
-        if (this.text_button) {
-             this.$set(this, 'isChecked', true)
+    watch: {
+        text_button() {
+            this.isChecked =  !!this.text_button;
         }
-    }
+    },
 }
 </script>
 <style>

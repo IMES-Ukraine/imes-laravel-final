@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -43,6 +44,8 @@ class Post extends Model
         'metadata',
         ['slug', 'index' => true]
     ];
+
+
 
     /**
      * @var array Attributes to be stored as JSON
@@ -127,15 +130,38 @@ class Post extends Model
     /**
      * @var array The accessors to append to the model's array form.
      */
-    protected $appends = ['summary', 'has_summary'];
+    protected $appends = ['summary', 'has_summary', 'tags', 'recommended'];
 
     public $preview = null;
 
-
-    public function tags()
+    public function getTagsAttribute()
     {
-        return $this->hasMany('App\Models\PostTag', 'post_id', 'id');
+        $tagList = PostTag::where(['post_id' => $this->id])->get();
+        $tags = [];
+        foreach ($tagList as $tagItem) {
+            $tags[] = $tagItem->tag;
+        }
+        return $tags;
     }
+
+    public function getRecommendedAttribute()
+    {
+        $recList = Recommended::where(['parent_id' => $this->id])->get();
+        $recommended = [];
+        foreach ($recList as $recItem) {
+            $recommended[] = $recItem->post;
+        }
+        return $recommended;
+    }
+
+//    /**
+//     * Recomended articles
+//     * @return mixed
+//     */
+//    public function recommended()
+//    {
+//        return $this->hasMany(Recommended::class, 'parent_id', 'id')->with('post');
+//    }
 
     /**
      * Limit visibility of the published-button

@@ -45,7 +45,7 @@ class BlogController extends Controller
 
         $type = Articles::ARTICLE;//get('type', Articles::ARTICLE);
 
-        $relations = [/*'user', 'featured_images','content_images',*/ 'cover_image', 'recommended.post'/*, 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/];
+        $relations = [/*'user', 'featured_images','content_images',*/ 'cover_image' /*, 'recommended.post', 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/];
         //if (!isset($apiUser->id)) unset($relations['is_opened']);
 
         if ($type == Articles::ARTICLE) {
@@ -200,17 +200,10 @@ class BlogController extends Controller
     public function store(Request $request): JsonResponse
     {
         $model = new Articles();
+        $model->fill($request->post());
 
-        $model->title = $request->title;
-        $model->excerpt = $request->excerpt;
         $model->content_html = $request->excerpt;
-        $model->type = $request->type;
-        $model->action = $request->action;
-        $model->button = $request->button;
-        $model->user_id = $request->user_id;
-        $model->content = $request->input('content');
         $model->cover_image_id = $request->cover_image['id'];
-
         $model->published = true;
         $model->learning_bonus = 0;
         $model->is_popular = rand(0, 1);
@@ -224,7 +217,7 @@ class BlogController extends Controller
 
         if ($saveStatus) {
             foreach ($request->featured_images as $image) {
-                $fileImage = File::find($image['file']);
+                $fileImage = File::find($image['id']);
                 $fileImage->attachment_id = $model->id;
                 $fileImage->save();
 //                $model_gallery = new PostGallery();
@@ -265,49 +258,44 @@ class BlogController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(Request $request): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
-        $model = Post::findOrFail($request->post_id);
-        $model->title = $request->title;
+        $model = Post::findOrFail($id);
+
+        $model->fill($request->post());
+
+        $model->content_html = $request->excerpt;
+        $model->cover_image_id = $request->cover_image['id'];
         $model->published = true;
-        $model->content_html = $request->text;
-        $model->type = $request->articleType;
-
-        $model->action = !empty($request->action) ? $request->action : '';
-        $model->button = !empty($request->button) ? $request->button : '';
-
-        if ($request->user) {
-            $user_id = null;
-            if (isset($request->user) && $request->user) {
-                $user_id = $request->user;
-            } else {
-                $user_id = $request->active_user_id;
-            }
-            $model->user_id = $user_id;
+        $model->learning_bonus = 0;
+        $model->is_popular = rand(0, 1);
+        $model->slug = uniqid();
+        $model->published_at = time();
+        if (!$model->button) {
+            $model->button = '';
         }
-
-        $content = [];
-        $content[] = [
-            'type' => 'text',
-            'title' => $request->content_title,
-            'content' => $request->content_text
-        ];
-
-        $model->content = json_encode($content);
-        $model->cover_image_id = $request->cover_image_id;
+        if (!$model->action) {
+            $model->action = '';
+        }
 
         $saveStatus = $model->save();
 
         if (!$saveStatus)
-            $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
+        {
+            return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
+        }
 
         if ($saveStatus) {
-            PostGallery::where('post_id', $model->id)->delete();
-            foreach ($request->gallery as $value) {
-                $model_gallery = new PostGallery();
-                $model_gallery->post_id = $model->id;
-                $model_gallery->cover_image = $value['path'];
-                $model_gallery->save();
+            //Пока у нас изображения в галерее не удаляются
+//            File::where('attachment_id', $model->id)->delete();
+            foreach ($request->featured_images as $image) {
+                $fileImage = File::find($image['id']);
+                $fileImage->attachment_id = $model->id;
+                $fileImage->save();
+//                $model_gallery = new PostGallery();
+//                $model_gallery->post_id = $model->id;
+//                $model_gallery->cover_image = $value['path'];
+//                $model_gallery->save();
             }
 
             PostTag::where('post_id', $model->id)->delete();
@@ -363,15 +351,14 @@ class BlogController extends Controller
         )
             ->with('cover_image')
             ->with('is_opened')
-            ->with('gallery')
+//            ->with('gallery')
             ->with('featured_images')
-            ->with('tags')
-            ->with('user')
-            ->with('recommended')
             ->where(['id' => $id])
             ->get();
-
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+        $data = $data->toArray();
+        $user = User::where(['id' => $data[0]['user_id']])->select('id', 'name')->first();
+        $data[0]['user'] = $user;
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
     /**
