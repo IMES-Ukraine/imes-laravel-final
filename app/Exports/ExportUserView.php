@@ -5,6 +5,8 @@ use App\Models\Articles;
 use App\Models\Passing;
 use App\Models\ProjectResearches;
 use App\Models\TestQuestions;
+use App\Services\ArticleService;
+use App\Services\TestService;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 
@@ -20,8 +22,8 @@ class ExportUserView implements FromView
     public function view(): View
     {
         $research = ProjectResearches::select('id')->where('project_id', $this->project_id)->first();
-        $articles_ids = Articles::select('id')->where('research_id', $research->id)->pluck('id')->toArray();
-        $test_ids = TestQuestions::select('id')->where('research_id', $research->id)->pluck('id')->toArray();
+        $articles_ids = ArticleService::pluckIDArticles($research->id);
+        $test_ids = TestService::pluckIDArticles($research->id);
 
         $results = Passing::with('user')
             ->with('withdraw')

@@ -3,6 +3,7 @@ namespace App\Services;
 
 
 use App\Models\TestQuestions as TestModel;
+use App\Models\TestQuestions;
 
 class TestService
 {
@@ -26,6 +27,13 @@ class TestService
 
     }
 
-
+    /**
+     * Return pluck ID for Test
+     * @param $content_id
+     * @return array
+     */
+    public static function pluckIDArticles($content_id) {
+        return TestQuestions::select('id')->where('research_id', $content_id)->pluck('id')->toArray();
+    }
 
 }
