@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 class Helpers
 {
 
-    public function apiArrayResponseBuilder($statusCode = null, $message = null, $data = []): JsonResponse
+    public function apiArrayResponseBuilder($statusCode = null, $message = null, $data = [])
     {
         $arr = [
             'status_code' => (isset($statusCode)) ? $statusCode : 500,
@@ -16,7 +16,7 @@ class Helpers
 
         $arr['data'] = (array)$data;
 
-        return \response()->json($arr, $arr['status_code']);
+        return response()->json($arr, $arr['status_code']);
 
 
     }

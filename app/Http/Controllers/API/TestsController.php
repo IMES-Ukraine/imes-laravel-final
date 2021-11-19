@@ -42,7 +42,6 @@ class TestsController extends Controller
     }
 
 
-
     public function index()
     {
         $userModel = Auth::user();
@@ -87,13 +86,13 @@ class TestsController extends Controller
     public function showAgreement($id)
     {
 
-        $data = TestQuestions::where('id', '=', $id)->get();
+        $data = TestQuestions::where('id', '=', $id)->first();
 
-        if (!empty($data)) {
-            return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+        if (!$data) {
+            return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
         }
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
 
-        $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
     }
 
     /**
