@@ -27,6 +27,13 @@ export default {
                     media: {
                         cover: {}
                     },
+                    content: [
+                        {
+                            type: 'text',
+                            title: '',
+                            content: ''
+                        }
+                    ],
                     multiples: [],
                     insert: [
                         {

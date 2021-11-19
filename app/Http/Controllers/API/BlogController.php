@@ -209,6 +209,13 @@ class BlogController extends Controller
         $model->is_popular = rand(0, 1);
         $model->slug = uniqid();
         $model->published_at = time();
+        if (!$model->button) {
+            $model->button = '';
+        }
+        if (!$model->action) {
+            $model->action = '';
+        }
+
         $saveStatus = $model->save();
 
 
