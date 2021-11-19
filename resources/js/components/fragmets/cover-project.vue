@@ -1,5 +1,5 @@
 <template>
-    <img :src="image.path" class="img-fluid" :alt="title" :title="title">
+    <img :src="image" class="img-fluid" :alt="title" :title="title">
 </template>
 
 <script>
@@ -7,7 +7,7 @@
         name: "coverProject",
         props: {
             image: {
-                type: Object,
+                type: String,
                 require: true
             },
             title: {
