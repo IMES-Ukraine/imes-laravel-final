@@ -6,8 +6,7 @@
                 :name="this.name"
                 :value="1"
                 :checked="(articleType==1)?true:false"
-                v-on:update:value="getType"
-            >Новости</v-radio>
+                v-on:update:value="getType">Новости</v-radio>
             <!--<i></i>
             <p>Новости</p>-->
         </div>
@@ -17,8 +16,7 @@
                 :name="this.name"
                 :value="2"
                 :checked="(articleType==2)?true:false"
-                v-on:update:value="getType"
-            >Информация</v-radio>
+                v-on:update:value="getType">Информация</v-radio>
             <!--<i></i>
             <p>Информация</p>-->
         </div>

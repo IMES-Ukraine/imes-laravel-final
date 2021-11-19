@@ -308,7 +308,8 @@
                     content_text: '',
                     chosenTags: [],
                     chosenRecommended: '',
-                    post_id: 0
+                    post_id: 0,
+                    multiples: []
                 }
             }
         },
@@ -364,7 +365,7 @@
                         post_id: this.article.id,
                         title: this.article.title,
                         articleType: this.article.type,
-                        text: this.article.content_html,
+                        content_html: this.article.content_html,
                         button: this.article.button,
                         action: this.article.action,
                         content_title: this.article.content_title,
@@ -406,13 +407,13 @@
                 this.title = value
             },
             buttonStore(value) {
-                this.button = value
+                this.article.button = value
             },
             insertStore(value) {
                 this.insert = value
             },
             linkStore(value) {
-                this.link = value
+                this.article.link = value
             },
             articleTypeStore(value) {
                 this.articleType = value
@@ -444,7 +445,7 @@
                 ).then((file) => {
                     this.name = event.target.files[0].name
                     //this.articles[0].imeges.push(file.data)
-                    this.image = file.data.data.path
+                    this.image = file.data.data.id
                 })
             },
             addMedia(event) {

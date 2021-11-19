@@ -45,7 +45,7 @@ class BlogController extends Controller
 
         $type = Articles::ARTICLE;//get('type', Articles::ARTICLE);
 
-        $relations = ['user'/*, 'featured_images','content_images'*/, 'cover_image', 'recommended.post'/*, 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/];
+        $relations = [/*'user', 'featured_images','content_images',*/ 'cover_image', 'recommended.post'/*, 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/];
         //if (!isset($apiUser->id)) unset($relations['is_opened']);
 
         if ($type == Articles::ARTICLE) {
@@ -69,7 +69,7 @@ class BlogController extends Controller
                 ->paginate($countOnPage);
         }
 
-        //$data->makeHidden(['content']);
+//        $data->makeHidden(['content']);
         $data = json_decode($data->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
@@ -199,44 +199,38 @@ class BlogController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $model = new Post();
+        $model = new Articles();
+
         $model->title = $request->title;
-        $model->slug = uniqid();
+        $model->excerpt = $request->excerpt;
+        $model->content_html = $request->excerpt;
+        $model->type = $request->type;
+        $model->action = $request->action;
+        $model->button = $request->button;
+        $model->user_id = $request->user_id;
+        $model->content = $request->input('content');
+        $model->cover_image_id = $request->cover_image['id'];
+
         $model->published = true;
-        $model->content_html = $request->text;
-        $model->type = $request->articleType;
         $model->learning_bonus = 0;
         $model->is_popular = rand(0, 1);
-
-        $model->action = !empty($request->action) ? $request->action : '';
-        $model->button = !empty($request->button) ? $request->button : '';
-
-        if ($request->user) {
-            $model->user_id = $request->user['id'];
-        }
-
-        $content = [];
-        $content[] = [
-            'type' => 'text',
-            'title' => $request->content_title,
-            'content' => $request->content_text
-        ];
-
-        $model->content = json_encode($content);
-        $model->cover_image_id = $request->cover_image;
-
+        $model->slug = uniqid();
         $model->published_at = time();
         $saveStatus = $model->save();
+
 
         if (!$saveStatus)
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
 
         if ($saveStatus) {
-            foreach ($request->gallery as $value) {
-                $model_gallery = new PostGallery();
-                $model_gallery->post_id = $model->id;
-                $model_gallery->cover_image = $value['path'];
-                $model_gallery->save();
+            foreach ($request->featured_images as $image) {
+                $fileImage = File::find($image['file']);
+                $fileImage->attachment_id = $model->id;
+                $fileImage->save();
+//                $model_gallery = new PostGallery();
+//                $model_gallery->post_id = $model->id;
+//                $model_gallery->cover_image = $value['path'];
+//                $model_gallery->save();
             }
 
             foreach ($request->tags as $tag) {
@@ -300,7 +294,7 @@ class BlogController extends Controller
         ];
 
         $model->content = json_encode($content);
-        $model->cover_image = $request->cover_image;
+        $model->cover_image_id = $request->cover_image_id;
 
         $saveStatus = $model->save();
 

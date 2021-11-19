@@ -16,8 +16,7 @@
                                     <input
                                         class="form-control"
                                         type="text"
-                                        v-model="title"
-                                    >
+                                        v-model="article.title"/>
                                     <div class="errors" v-if="title_error">
                                         Заголовок обов'язковий
                                     </div>
@@ -34,29 +33,33 @@
                         </div>
                         <div class="articles_create__item half">
                             <p class="articles_create__item-title">Обложка</p>
+
                             <div class="articles_create__item-content">
                                 <div class="articles_create__item-file width-auto buttonAddFile">
                                     <input
                                         type="file"
-                                        id="articleCover"
                                         name="addCover"
                                         class="input-file-hidden"
                                         v-on:change="handleUploadArticle"
-                                        role="button"
-                                    >
-                                    <p><span data-placeholder="Загрузить">Загрузить</span></p>
-                                    <button class="delete_file deleteFile"></button>
+                                        role="button"/>
+
+                                    <p><span
+                                        data-placeholder="Загрузить">{{ article.cover_image.file_name || 'Загрузить' }}</span>
+                                    </p>
+                                    <button class="delete_file deleteFile" @click="article.cover_image={}"></button>
                                 </div>
                                 <div v-if="errorArticleCover" class="errors">{{ errorArticleCover }}</div>
                             </div>
+
                         </div>
                         <div class="articles_create__item half">
                             <p class="articles_create__item-title">Галерея</p>
                             <div class="articles_create__item-content">
                                 <div class="articles_create__media">
-                                    <SimpleTestMedia :media="multiples"></SimpleTestMedia>
+                                    <SimpleTestMedia :media="article.featured_images"></SimpleTestMedia>
                                     <div class="articles_create__media-add">
-                                        <input type="file" name="file" id="article_multiples" @change="addMedia($event)">
+                                        <input type="file" name="file" id="article_multiples"
+                                               @change="addMedia($event)">
                                     </div>
                                 </div>
                             </div>
@@ -67,9 +70,8 @@
                                 <textarea
                                     class="form-control"
                                     rows="4"
-                                    v-model="text"
-                                ></textarea>
-                                <div class="errors" v-if="text_error">Текст обов'язковий</div>
+                                    v-model="article.excerpt"/>
+                                <div class="errors" v-if="text_error">{{text_error}}</div>
                             </div>
                         </div>
                         <!--<article-form-insert
@@ -86,8 +88,7 @@
                                         id="article-has-insert"
                                         v-model="textLocale"
                                         :checked="textLocale"
-                                        @onclick="getTextInsert"
-                                    >
+                                        @onclick="getTextInsert"/>
                                     <i></i>
                                     <p>Вставка в тексте</p>
                                 </div>
@@ -121,7 +122,7 @@
                                 <div class="articles_create__name-block">
                                     <div class="field_wrap_for_tags">
                                         <multiselect
-                                            v-model="chosenTags"
+                                            v-model="article.tags"
                                             tag-placeholder="Добавить тег"
                                             placeholder="Выбрать тег"
                                             label="name"
@@ -131,7 +132,6 @@
                                             :taggable="true"
                                             :show-labels="false"
                                             :close-on-select="false"
-                                            @tag="addTag"
                                         />
                                     </div>
                                 </div>
@@ -190,7 +190,8 @@
                                     <div class="articles_create__addition-block width-194">
                                         <div class="articles_create-multiselect">
                                             <multiselect
-                                                v-model="user_id"
+                                                v-model="user"
+                                                @input="selectAuthor"
                                                 tag-placeholder="Обрати автора"
                                                 placeholder="Обрати автора"
                                                 label="name"
@@ -204,10 +205,12 @@
                                     </div>
                                     <div class="articles_create__addition-block">
                                         <div class="articles_create__addition-field">
-                                            <input type="text" id="new_user" v-model="new_user" />
+                                            <input type="text" id="new_user" v-model="new_user"/>
                                             <div class="errors" v-if="addUserError">{{ addUserError }}</div>
                                         </div>
-                                        <button class="articles_create__addition-button" type="button" @click="AddNewUser">Добавить автора</button>
+                                        <button class="articles_create__addition-button" type="button"
+                                                @click="AddNewUser">Добавить автора
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -223,7 +226,7 @@
                             <p class="articles_create__item-title">Реком. статьи</p>
                             <div class="articles_create__item-content">
                                 <multiselect
-                                    v-model="chosenRecommended"
+                                    v-model="article.recommended"
                                     tag-placeholder="Додати статтю"
                                     placeholder="Вибрати статтю"
                                     label="title"
@@ -263,12 +266,12 @@ import ArticleFormSelect from "./templates/article/form/select"
 import VButton from "./templates/inputs/button"
 import ArticleFormButton from "./templates/article/form/button"
 import Multiselect from "vue-multiselect";
-import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS} from "../api/endpoints";
+import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS, USER_LIST} from "../api/endpoints";
 import FragmentFormText from "./fragmets/text";
 import ArticleSidebar from "./templates/article/sidebar";
 import ArticleMultiple from "./templates/article/form/multiple"
 import SimpleTestMedia from "./fragmets/SimpleTestMedia"
-import { getRandomId } from './../utils'
+import {getRandomId} from './../utils'
 import VTextarea from "./templates/inputs/textarea"
 import VInputText from "./templates/inputs/text"
 
@@ -302,7 +305,7 @@ export default {
             text_error: '',
             recommended: [],
             authors: [],
-            user_id: 0,
+            user: {},
             chosenRecommended: [],
             chosenTags: [],
             tags: [],
@@ -313,25 +316,36 @@ export default {
             multiples: [],
             articleType: 1,
             type: 1,
-            textLocale: 0
+            textLocale: 0,
+            article: {
+                type: 1,
+                title: '',
+                excerpt: '',
+                cover_image: {
+                    file_name: ''
+                },
+                content: [
+                    {
+                        type: 'text',
+                        title: '',
+                        content: ''
+                    }
+                ],
+                tags: [],
+                recommended: [],
+                featured_images: [],
+                user_id: 0,
+                button: '',
+                action: ''
+            }
         }
     },
-    computed: {
-        //
-    },
-    validations: {
-        title: {
-            required
-        },
-        text: {
-            required
-        }
-    },
+
     methods: {
         getTextInsert() {
             this.textLocale = 1;
         },
-        addTag (newTag) {
+        addTag(newTag) {
             const tag = {
                 name: newTag,
                 code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
@@ -339,8 +353,8 @@ export default {
             this.recommended.push(tag)
             this.chosenRecommended.push(tag)
         },
-        selectAuthor (user_id) {
-            this.user_id = [user_id]
+        selectAuthor() {
+            this.article.user_id = this.user.id
         },
         submitForm() {
             this.errorArticleCover = '';
@@ -348,37 +362,36 @@ export default {
             this.text_error = '';
             let error = false
 
-            if (this.image == null) {
+            if (!this.article.cover_image.file_name) {
                 this.errorArticleCover = 'Обложка обязательна'
                 error = true;
             }
 
-            if (this.title == null) {
+            if (!this.article.title) {
                 this.title_error = 'Название обязательно'
                 error = true;
             }
 
-            if (this.text == null) {
+            if (!this.article.excerpt) {
                 this.text_error = 'Описание обязательно'
                 error = true;
             }
 
             if (!error) {
-                this.$post(ARTICLE, {
-                    title: this.title,
-                    articleType: this.articleType,
-                    text: this.text,
-                    button: this.button,
-                    action: this.link,
-                    insert: this.insert,
-                    user: this.user_id,
-                    cover_image: this.image,
-                    gallery: this.multiples,
-                    tags: this.chosenTags,
-                    recommended: this.chosenRecommended
-                })
-                    .then((res) => {
-                        this.$router.push({ name: 'articleList' });
+                this.$post(ARTICLE, this.article
+                    // title: this.title,
+                    // articleType: this.articleType,
+                    // text: this.text,
+                    // button: this.button,
+                    // action: this.link,
+                    // insert: this.insert,
+                    // user: this.user_id,
+                    // gallery: this.multiples,
+                    // tags: this.chosenTags,
+                    // recommended: this.chosenRecommended
+                // }
+            ).then((res) => {
+                     //   this.$router.push({name: 'articleList'});
                     })
                     .catch((error) => {
                         console.log(error)
@@ -404,25 +417,25 @@ export default {
             this.title = value
         },
         buttonStore(value) {
-            this.button = value
+            this.article.button = value
         },
         insertStore(value) {
-            this.insert = value
+            this.article.insert = value
         },
         linkStore(value) {
-            this.link = value
+            this.article.action = value
         },
         articleTypeStore(value) {
-            this.articleType = value
+            this.article.type = value
         },
         multiplesStore(value) {
-            this.multiples = value
+            this.article.multiples = value
         },
         updateInsertTitle(value) {
-            this.insert.push({title:value})
+            this.article.content[0].title = value
         },
         updateInsertContent(value) {
-            this.insert.push({content:value})
+            this.article.content[0].content = value
         },
         handleUploadArticle(event) {
             let imageForm = new FormData()
@@ -440,8 +453,7 @@ export default {
                     },
                 }
             ).then((file) => {
-                this.name = event.target.files[0].name
-                this.image = file.data.data.path
+                this.article.cover_image = file.data.data
             })
         },
         addMedia(event) {
@@ -467,19 +479,19 @@ export default {
                     data: file.data,
                     path: file.data.data.path
                 };
-                this.multiples.push(obj)
+                this.article.featured_images.push(obj)
                 $('#article_multiples').val(null);
             })
         },
     },
     mounted() {
-        this.$get(ARTICLE + '?count=12&type=1').then( response => {
+        this.$get(ARTICLE + '?count=12&type=1').then(response => {
             this.recommended = response.data.data
         })
-        this.$get(USER + '?count=12').then( response => {
+        this.$get(USER_LIST + '?count=12').then(response => {
             this.authors = response.data
         })
-        this.$get(ARTICLE_TAGS).then( response => {
+        this.$get(ARTICLE_TAGS).then(response => {
             this.tags = response.data
         })
     }
@@ -488,238 +500,238 @@ export default {
 
 <!--<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>-->
 <style>
-    .multiselect {
-        min-height: 35px;
-    }
+.multiselect {
+    min-height: 35px;
+}
 
-    .multiselect--active:not(.multiselect--above) .multiselect__tags {
-        border-radius: 5px 5px 0 0;
-    }
+.multiselect--active:not(.multiselect--above) .multiselect__tags {
+    border-radius: 5px 5px 0 0;
+}
 
-    .multiselect--active .multiselect__tags {
-        border-radius: 0 0 5px 5px;
-    }
+.multiselect--active .multiselect__tags {
+    border-radius: 0 0 5px 5px;
+}
 
-    .multiselect--active .multiselect__tags:after {
-        -webkit-transform: rotate(-180deg);
-        -ms-transform: rotate(-180deg);
-        transform: rotate(-180deg);
-    }
+.multiselect--active .multiselect__tags:after {
+    -webkit-transform: rotate(-180deg);
+    -ms-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+}
 
-    .multiselect--active .multiselect__placeholder {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-    }
+.multiselect--active .multiselect__placeholder {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
 
-    .multiselect--active.multiselect--above {
-        border-radius: 0 0 5px 5px;
-    }
+.multiselect--active.multiselect--above {
+    border-radius: 0 0 5px 5px;
+}
 
-    .multiselect--active.multiselect--above .multiselect__content-wrapper {
-        border-bottom: none;
-        border-radius: 5px 5px 0 0;
-    }
+.multiselect--active.multiselect--above .multiselect__content-wrapper {
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+}
 
-    .multiselect--above .multiselect__content-wrapper {
-        border: 1px solid #D9D9D9;
-        top: auto;
-        bottom: 100%;
-    }
+.multiselect--above .multiselect__content-wrapper {
+    border: 1px solid #D9D9D9;
+    top: auto;
+    bottom: 100%;
+}
 
-    .multiselect__select {
-        display: none;
-    }
+.multiselect__select {
+    display: none;
+}
 
-    .multiselect__tags {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-        justify-content: space-between;
-        min-height: 35px;
-        font-weight: 500;
-        font-size: 11px;
-        line-height: 1.2;
-        letter-spacing: -0.0024em;
-        border: 1px solid #D9D9D9;
-        border-radius: 5px;
-        padding: 0;
-        position: relative;
-    }
+.multiselect__tags {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    min-height: 35px;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 1.2;
+    letter-spacing: -0.0024em;
+    border: 1px solid #D9D9D9;
+    border-radius: 5px;
+    padding: 0;
+    position: relative;
+}
 
-    .multiselect__tags:after {
-        content: "";
-        display: block;
-        -ms-flex-negative: 0;
-        flex-shrink: 0;
-        width: 9px;
-        height: 6px;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='9' height='6' viewBox='0 0 9 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' clip-rule='evenodd' d='M9 0.951882L4.5 6L-2.2066e-07 0.951882L0.848528 -1.20525e-07L4.5 4.09624L8.15147 -4.39747e-07L9 0.951882Z' fill='%2300B7FF'/%3e%3c/svg%3e ");
-        background-size: contain;
-        position: absolute;
-        top: 14px;
-        right: 14px;
-        z-index: 0;
-        -webkit-transition: .3s;
-        -o-transition: .3s;
-        transition: .3s;
-    }
+.multiselect__tags:after {
+    content: "";
+    display: block;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    width: 9px;
+    height: 6px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='9' height='6' viewBox='0 0 9 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' clip-rule='evenodd' d='M9 0.951882L4.5 6L-2.2066e-07 0.951882L0.848528 -1.20525e-07L4.5 4.09624L8.15147 -4.39747e-07L9 0.951882Z' fill='%2300B7FF'/%3e%3c/svg%3e ");
+    background-size: contain;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 0;
+    -webkit-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
+}
 
-    .multiselect__tags-wrap {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-align: start;
-        -ms-flex-align: start;
-        align-items: flex-start;
-        -webkit-box-pack: start;
-        -ms-flex-pack: start;
-        justify-content: flex-start;
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        width: 100%;
-        gap: 5px;
-        padding: 5px;
-        padding-right: 30px;
-    }
+.multiselect__tags-wrap {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 5px;
+    padding: 5px;
+    padding-right: 30px;
+}
 
-    .multiselect__tags input {
-        border: none;
-        padding: 0 14px;
-    }
+.multiselect__tags input {
+    border: none;
+    padding: 0 14px;
+}
 
-    .multiselect__tags input:focus {
-        border-color: #D9D9D9;
-    }
+.multiselect__tags input:focus {
+    border-color: #D9D9D9;
+}
 
-    .multiselect__tag {
-        background: #00B7FF;
-        padding: 5px 25px 5px 10px;
-        margin: 0;
-    }
+.multiselect__tag {
+    background: #00B7FF;
+    padding: 5px 25px 5px 10px;
+    margin: 0;
+}
 
-    .multiselect__tag-icon:hover {
-        background: #FF608D;
-    }
+.multiselect__tag-icon:hover {
+    background: #FF608D;
+}
 
-    .multiselect__tag-icon:after {
-        font-size: 16px;
-        color: #fff;
-    }
+.multiselect__tag-icon:after {
+    font-size: 16px;
+    color: #fff;
+}
 
-    .multiselect__placeholder {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        -webkit-box-pack: start;
-        -ms-flex-pack: start;
-        justify-content: flex-start;
-        width: 100%;
-        min-height: 35px;
-        padding: 0 14px;
-        padding-right: 30px;
-        margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        -o-text-overflow: ellipsis;
-        text-overflow: ellipsis;
-        position: relative;
-        z-index: 1;
-    }
+.multiselect__placeholder {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 35px;
+    padding: 0 14px;
+    padding-right: 30px;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    position: relative;
+    z-index: 1;
+}
 
-    .multiselect__single {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        -webkit-box-pack: start;
-        -ms-flex-pack: start;
-        justify-content: flex-start;
-        width: 100%;
-        min-height: 35px;
-        font-size: 11px;
-        line-height: 1.2;
-        padding: 0 14px;
-        padding-right: 30px;
-        margin: 0;
-        white-space: pre;
-        overflow: hidden;
-        -o-text-overflow: ellipsis;
-        text-overflow: ellipsis;
-        position: relative;
-        z-index: 1;
-    }
+.multiselect__single {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 35px;
+    font-size: 11px;
+    line-height: 1.2;
+    padding: 0 14px;
+    padding-right: 30px;
+    margin: 0;
+    white-space: pre;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    position: relative;
+    z-index: 1;
+}
 
-    .multiselect__content {
-        overflow: hidden;
-    }
+.multiselect__content {
+    overflow: hidden;
+}
 
-    .multiselect__content-wrapper {
-        border: 1px solid #D9D9D9;
-        border-top: none;
-        border-radius: 0 0 5px 5px;
-        padding-top: 11px;
-        padding-bottom: 14px;
-        margin: 0;
-        top: 100%;
-    }
+.multiselect__content-wrapper {
+    border: 1px solid #D9D9D9;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    padding-top: 11px;
+    padding-bottom: 14px;
+    margin: 0;
+    top: 100%;
+}
 
-    .multiselect__content-wrapper::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-        background-color: #F2F2F2;
-    }
+.multiselect__content-wrapper::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: #F2F2F2;
+}
 
-    .multiselect__content-wrapper::-webkit-scrollbar-thumb {
-        background-color: #D9D9D9;
-    }
+.multiselect__content-wrapper::-webkit-scrollbar-thumb {
+    background-color: #D9D9D9;
+}
 
-    .multiselect__element {
-        margin-bottom: 8px;
-    }
+.multiselect__element {
+    margin-bottom: 8px;
+}
 
-    .multiselect__element:last-child {
-        margin-bottom: 0;
-    }
+.multiselect__element:last-child {
+    margin-bottom: 0;
+}
 
-    .multiselect__option {
-        min-height: auto;
-        font-size: 12px;
-        line-height: 1.2;
-        color: #4F4F4F;
-        white-space: normal;
-        padding: 0 14px;
-    }
+.multiselect__option {
+    min-height: auto;
+    font-size: 12px;
+    line-height: 1.2;
+    color: #4F4F4F;
+    white-space: normal;
+    padding: 0 14px;
+}
 
-    .multiselect__option--selected {
-        font-weight: bold;
-        color: #4F4F4F;
-        background: transparent;
-    }
+.multiselect__option--selected {
+    font-weight: bold;
+    color: #4F4F4F;
+    background: transparent;
+}
 
-    .multiselect__option--selected.multiselect__option--highlight {
-        font-weight: bold;
-        color: #4F4F4F;
-        background: transparent;
-    }
+.multiselect__option--selected.multiselect__option--highlight {
+    font-weight: bold;
+    color: #4F4F4F;
+    background: transparent;
+}
 
-    .multiselect__option--highlight {
-        font-weight: bold;
-        color: #4F4F4F;
-        background: transparent;
-    }
+.multiselect__option--highlight {
+    font-weight: bold;
+    color: #4F4F4F;
+    background: transparent;
+}
 </style>

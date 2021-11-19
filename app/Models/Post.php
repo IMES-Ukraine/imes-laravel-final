@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Models;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -24,8 +26,8 @@ class Post extends Model
      * Validation
      */
     public $rules = [
-        'title'   => 'required',
-        'slug'    => ['required', 'regex:/^[a-z0-9\/\:_\-\*\[\]\+\?\|]*$/i', 'unique:rainlab_blog_posts'],
+        'title' => 'required',
+        'slug' => ['required', 'regex:/^[a-z0-9\/\:_\-\*\[\]\+\?\|]*$/i', 'unique:rainlab_blog_posts'],
         'content' => 'required',
         'excerpt' => ''
     ];
@@ -47,8 +49,13 @@ class Post extends Model
      */
     protected $jsonable = ['metadata'];
 
+    protected function asJson($value)
+    {
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
     protected $casts = [
-        'content' => 'object'
+        'content' => 'object',
     ];
 
     /**
@@ -57,21 +64,25 @@ class Post extends Model
      */
     protected $dates = ['published_at'];
 
+    protected $fillable = [
+        'user_id', 'title', 'excerpt', 'content', 'action', 'button', 'type', 'learning_bonus'
+    ];
+
 
     /**
      * The attributes on which the post list can be ordered.
      * @var array
      */
     public static $allowedSortingOptions = [
-        'title asc'         => 'rainlab.blog::lang.sorting.title_asc',
-        'title desc'        => 'rainlab.blog::lang.sorting.title_desc',
-        'created_at asc'    => 'rainlab.blog::lang.sorting.created_asc',
-        'created_at desc'   => 'rainlab.blog::lang.sorting.created_desc',
-        'updated_at asc'    => 'rainlab.blog::lang.sorting.updated_asc',
-        'updated_at desc'   => 'rainlab.blog::lang.sorting.updated_desc',
-        'published_at asc'  => 'rainlab.blog::lang.sorting.published_asc',
+        'title asc' => 'rainlab.blog::lang.sorting.title_asc',
+        'title desc' => 'rainlab.blog::lang.sorting.title_desc',
+        'created_at asc' => 'rainlab.blog::lang.sorting.created_asc',
+        'created_at desc' => 'rainlab.blog::lang.sorting.created_desc',
+        'updated_at asc' => 'rainlab.blog::lang.sorting.updated_asc',
+        'updated_at desc' => 'rainlab.blog::lang.sorting.updated_desc',
+        'published_at asc' => 'rainlab.blog::lang.sorting.published_asc',
         'published_at desc' => 'rainlab.blog::lang.sorting.published_desc',
-        'random'            => 'rainlab.blog::lang.sorting.random'
+        'random' => 'rainlab.blog::lang.sorting.random'
     ];
 
     /*
@@ -91,9 +102,8 @@ class Post extends Model
 
     public $attachMany = [
         'featured_images' => [\App\Models\File::class, 'order' => 'sort_order'],
-        'content_images'  => \App\Models\File::class
+        'content_images' => \App\Models\File::class
     ];
-
 
 
     /**
@@ -131,7 +141,7 @@ class Post extends Model
      * Limit visibility of the published-button
      *
      * @param       $fields
-     * @param  null $context
+     * @param null $context
      * @return void
      */
     public function filterFields($fields, $context = null)
@@ -145,8 +155,7 @@ class Post extends Model
         if (!$user->hasAnyAccess(['rainlab.blog.access_publish'])) {
             $fields->published->hidden = true;
             $fields->published_at->hidden = true;
-        }
-        else {
+        } else {
             $fields->published->hidden = false;
             $fields->published_at->hidden = false;
         }
@@ -166,7 +175,7 @@ class Post extends Model
         $options = [];
 
         foreach (BackendUser::all() as $user) {
-            $options[$user->id] = $user->fullname . ' ('.$user->login.')';
+            $options[$user->id] = $user->fullname . ' (' . $user->login . ')';
         }
 
         return $options;
@@ -194,7 +203,7 @@ class Post extends Model
     public function setUrl($pageName, $controller, $params = [])
     {
         $params = array_merge([
-            'id'   => $this->id,
+            'id' => $this->id,
             'slug' => $this->slug,
         ], $params);
 
@@ -204,9 +213,9 @@ class Post extends Model
 
         // Expose published year, month and day as URL parameters.
         if ($this->published) {
-            $params['year']  = $this->published_at->format('Y');
+            $params['year'] = $this->published_at->format('Y');
             $params['month'] = $this->published_at->format('m');
-            $params['day']   = $this->published_at->format('d');
+            $params['day'] = $this->published_at->format('d');
         }
 
         return $this->url = $controller->pageUrl($pageName, $params);
@@ -215,7 +224,7 @@ class Post extends Model
     /**
      * Used to test if a certain user has permission to edit post,
      * returns TRUE if the user is the owner or has other posts access.
-     * @param  BackendUser $user
+     * @param BackendUser $user
      * @return bool
      */
     public function canEdit(BackendUser $user)
@@ -252,15 +261,14 @@ class Post extends Model
             ->whereNotNull('published')
             ->where('published', true)
             ->whereNotNull('published_at')
-            ->where('published_at', '<', Carbon::now())
-            ;
+            ->where('published_at', '<', Carbon::now());
     }
 
     /**
      * Lists posts for the frontend
      *
      * @param        $query
-     * @param  array $options Display options
+     * @param array $options Display options
      * @return Post
      */
     public function scopeListFrontEnd($query, $options)
@@ -269,15 +277,15 @@ class Post extends Model
          * Default options
          */
         extract(array_merge([
-            'page'             => 1,
-            'perPage'          => 30,
-            'sort'             => 'created_at',
-            'categories'       => null,
+            'page' => 1,
+            'perPage' => 30,
+            'sort' => 'created_at',
+            'categories' => null,
             'exceptCategories' => null,
-            'category'         => null,
-            'search'           => '',
-            'published'        => true,
-            'exceptPost'       => null
+            'category' => null,
+            'search' => '',
+            'published' => true,
+            'exceptPost' => null
         ], $options));
 
         $searchableFields = ['title', 'slug', 'excerpt', 'content'];
@@ -342,7 +350,7 @@ class Post extends Model
          */
         if ($categories !== null) {
             $categories = is_array($categories) ? $categories : [$categories];
-            $query->whereHas('categories', function($q) use ($categories) {
+            $query->whereHas('categories', function ($q) use ($categories) {
                 $q->withoutGlobalScope(NestedTreeScope::class)->whereIn('id', $categories);
             });
         }
@@ -366,7 +374,7 @@ class Post extends Model
             $category = Category::find($category);
 
             $categories = $category->getAllChildrenAndSelf()->lists('id');
-            $query->whereHas('categories', function($q) use ($categories) {
+            $query->whereHas('categories', function ($q) use ($categories) {
                 $q->withoutGlobalScope(NestedTreeScope::class)->whereIn('id', $categories);
             });
         }
@@ -376,13 +384,13 @@ class Post extends Model
 
     /**
      * Allows filtering for specifc categories.
-     * @param  Illuminate\Query\Builder  $query      QueryBuilder
-     * @param  array                     $categories List of category ids
+     * @param Illuminate\Query\Builder $query QueryBuilder
+     * @param array $categories List of category ids
      * @return Illuminate\Query\Builder              QueryBuilder
      */
     public function scopeFilterCategories($query, $categories)
     {
-        return $query->whereHas('categories', function($q) use ($categories) {
+        return $query->whereHas('categories', function ($q) use ($categories) {
             $q->withoutGlobalScope(NestedTreeScope::class)->whereIn('id', $categories);
         });
     }
@@ -532,8 +540,8 @@ class Post extends Model
             }
 
             $result = [
-                'references'   => $references,
-                'nesting'      => false,
+                'references' => $references,
+                'nesting' => false,
                 'dynamicItems' => false
             ];
         }
@@ -553,7 +561,7 @@ class Post extends Model
             }
 
             $result = [
-                'references'   => $references,
+                'references' => $references,
                 'dynamicItems' => true
             ];
         }
@@ -630,21 +638,19 @@ class Post extends Model
             $result['url'] = $pageUrl;
             $result['isActive'] = $pageUrl == $url;
             $result['mtime'] = $category->updated_at;
-        }
-        elseif ($item->type == 'all-blog-posts') {
+        } elseif ($item->type == 'all-blog-posts') {
             $result = [
                 'items' => []
             ];
 
             $posts = self::isPublished()
                 ->orderBy('title')
-                ->get()
-            ;
+                ->get();
 
             foreach ($posts as $post) {
                 $postItem = [
                     'title' => $post->title,
-                    'url'   => self::getPostPageUrl($item->cmsPage, $post, $theme),
+                    'url' => self::getPostPageUrl($item->cmsPage, $post, $theme),
                     'mtime' => $post->updated_at
                 ];
 
@@ -652,8 +658,7 @@ class Post extends Model
 
                 $result['items'][] = $postItem;
             }
-        }
-        elseif ($item->type == 'category-blog-posts') {
+        } elseif ($item->type == 'category-blog-posts') {
             if (!$item->reference || !$item->cmsPage) {
                 return;
             }
@@ -671,7 +676,7 @@ class Post extends Model
                 ->orderBy('title');
 
             $categories = $category->getAllChildrenAndSelf()->lists('id');
-            $query->whereHas('categories', function($q) use ($categories) {
+            $query->whereHas('categories', function ($q) use ($categories) {
                 $q->withoutGlobalScope(NestedTreeScope::class)->whereIn('id', $categories);
             });
 
@@ -680,7 +685,7 @@ class Post extends Model
             foreach ($posts as $post) {
                 $postItem = [
                     'title' => $post->title,
-                    'url'   => self::getPostPageUrl($item->cmsPage, $post, $theme),
+                    'url' => self::getPostPageUrl($item->cmsPage, $post, $theme),
                     'mtime' => $post->updated_at
                 ];
 
@@ -723,9 +728,9 @@ class Post extends Model
         $paramName = substr(trim($matches[1]), 1);
         $params = [
             $paramName => $category->slug,
-            'year'  => $category->published_at->format('Y'),
+            'year' => $category->published_at->format('Y'),
             'month' => $category->published_at->format('m'),
-            'day'   => $category->published_at->format('d')
+            'day' => $category->published_at->format('d')
         ];
         $url = CmsPage::url($page->getBaseFileName(), $params);
 
