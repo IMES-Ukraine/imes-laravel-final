@@ -7,7 +7,7 @@
         <div class="dashboard">
             <div class="dashboard-head">
                 <div class="dashboard__title" v-if="project.project.options">
-                    <cover :image="project.project.options.files.cover" :title="project.project.options.title" class="dashboard__title-logo"/>
+                    <cover :image="project.project.options.files.cover.path" :title="project.project.options.title" class="dashboard__title-logo"/>
                     <p class="dashboard__title-text">{{ project.project.options.title }}</p>
                 </div>
                 <div class="dashboard__info" v-if="project.project">

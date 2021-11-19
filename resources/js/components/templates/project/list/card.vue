@@ -10,7 +10,7 @@
             ></router-link>
             <div class="articles_list__block-content">
                 <div class="articles_list__block-img" v-if="options.files && options.files.cover">
-                    <cover :image="options.files.cover" :title="title" class="m-auto"/>
+                    <cover :image="options.files.cover.path" :title="title" class="m-auto"/>
                 </div>
                 <ul v-if="items">
                     <template v-for="item in items">
