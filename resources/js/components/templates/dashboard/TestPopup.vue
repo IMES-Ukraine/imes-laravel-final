@@ -203,11 +203,11 @@
                 default: {}
             },
             tests: {
-                type: Object,
+                type: Array,
                 default: {}
             },
             passing_tests: {
-                type: Object,
+                type: Array,
                 default: {}
             },
             content_id: {

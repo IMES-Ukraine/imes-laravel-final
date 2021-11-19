@@ -1,5 +1,5 @@
 <template>
-    <v-content v-if="true">
+    <v-content v-if="isLoaded">
         <template v-slot:sidebar>
             <project-list-sidebar :options="project.project.options" :project_id="project.project.id" />
         </template>
@@ -299,6 +299,7 @@
         data() {
             return {
                 project: {},
+                isLoaded: false
             }
         },
         methods: {
@@ -309,7 +310,6 @@
 
                     if (response.data) {
                         this.project = response.data
-
                         setTimeout(() => {
                             let canvas = document.getElementById("dashboardCircle");
 
@@ -344,6 +344,7 @@
                                 }
                             }
                         }, 2000);
+                        this.isLoaded = true;
                     }
                 })
             },
