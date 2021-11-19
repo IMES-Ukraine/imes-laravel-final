@@ -276,7 +276,7 @@ class BlogController extends Controller
         $model = Post::findOrFail($request->post_id);
         $model->title = $request->title;
         $model->published = true;
-        $model->content_html = $request->text;
+        $model->content_html = $request->content_html;
         $model->type = $request->articleType;
 
         $model->action = !empty($request->action) ? $request->action : '';
@@ -300,7 +300,7 @@ class BlogController extends Controller
         ];
 
         $model->content = json_encode($content);
-        $model->cover_image = $request->cover_image;
+        $model->cover_image_id = $request->cover_image;
 
         $saveStatus = $model->save();
 
@@ -309,11 +309,13 @@ class BlogController extends Controller
 
         if ($saveStatus) {
             PostGallery::where('post_id', $model->id)->delete();
-            foreach ($request->gallery as $value) {
-                $model_gallery = new PostGallery();
-                $model_gallery->post_id = $model->id;
-                $model_gallery->cover_image = $value['path'];
-                $model_gallery->save();
+            if ($request->gallery) {
+                foreach ($request->gallery as $value) {
+                    $model_gallery = new PostGallery();
+                    $model_gallery->post_id = $model->id;
+                    $model_gallery->cover_image = $value['path'];
+                    $model_gallery->save();
+                }
             }
 
             PostTag::where('post_id', $model->id)->delete();
