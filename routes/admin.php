@@ -98,7 +98,7 @@ Route::group(
                 Route::get('/', [ProjectsController::class, 'index']);
                 Route::post('/cover/{type}', [ProjectsController::class, 'setImage']);
                 Route::post('/image/{type}', [ProfileController::class, 'setImage']);
-                Route::get('/{id}', [ProjectsController::class, 'show']);
+                Route::get('/{id}', [\App\Http\Controllers\API\ProjectsController::class, 'show']);
                 Route::post('/{id}', [ProjectsController::class, 'update']);
                 Route::post('/', [ProjectsController::class, 'create']);
 
