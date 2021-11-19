@@ -30,8 +30,9 @@ class UsersController extends Controller
 
     public function index()
     {
-
-        return $this->User->paginate();
+        $users = $this->User->paginate();
+        $data = json_decode($users->toJSON());
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
     }
 
