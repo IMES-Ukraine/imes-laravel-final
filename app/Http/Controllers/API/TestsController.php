@@ -39,19 +39,9 @@ class TestsController extends Controller
         $this->Test = $Test;
         $this->helpers = $helpers;
         $this->project = $project;
-//        $this->projectItems = $projectItems;
-        //$this->repository       = $repository;
     }
 
-    /**
-     * Make profile verified
-     */
-    public function verify()
-    {
 
-
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', ['user' => 'ok']);
-    }
 
     public function index()
     {
@@ -81,7 +71,7 @@ class TestsController extends Controller
             $query->where('schedule', '<=', date('Y-m-d H:i:s'));
         }
 
-        $data = $query->paginate()->makeHidden(['agreement']);
+        $data = $query->paginate($countOnPage);
         $data = json_decode($data->toJSON());
 
 
