@@ -196,24 +196,41 @@ class ProjectRepository
 
         $total = 0;
         $passing_tests = [];
-        $status_active = 0;
-        $status_not_participate = 0;
-        $status_not_active = 0;
+        $total_status_active = 0;
+        $total_status_not_participate = 0;
+        $total_status_not_active = 0;
 
-        foreach ($content as $item) {
-            $test_id = $item->tests[0]['id'];
-            $passing = Passing::where('entity_type', 'TestQuestions')->where('entity_id', $test_id)->get();
+        foreach ($content as $key => $item) {
+            if (isset($item->tests[0])) {
+                $test_id = $item->tests[0]['id'];
+                $passing = Passing::where('entity_type', 'TestQuestions')->where('entity_id', $test_id)->get();
 
-            foreach ($passing as $pass) {
-                foreach ($pass['answer'] as $answer) {
-                    $passing_tests[$test_id][$answer][] = $pass->user_id;
+                foreach ($passing as $pass) {
+                    foreach ($pass['answer'] as $answer) {
+                        $passing_tests[$test_id][$answer][] = $pass->user_id;
+                    }
                 }
-            }
 
-            $status_active += PassingService::getPassingTotalStatus($item->id, Passing::PASSING_ACTIVE);
-            $status_not_active += PassingService::getPassingTotalStatus($item->id, Passing::PASSING_NOT_ACTIVE);
-            $status_not_participate += PassingService::getPassingTotalStatus($item->id, Passing::PASSING_NOT_PARTICIPATE);
-            $total += PassingService::getPassingTotal($item->id);
+                //Status passing active - 2
+                $status_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_ACTIVE);
+                $total_status_active += $status_active;
+                $content[$key]->offsetSet('test_status_active', PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_ACTIVE));
+                $content[$key]->offsetSet('article_status_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE));
+
+                //Status passing not active - 1
+                $status_not_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_NOT_ACTIVE);
+                $total_status_not_active += $status_not_active;
+                $content[$key]->offsetSet('test_status_not_active', PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_NOT_ACTIVE));
+                $content[$key]->offsetSet('article_status_not_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_NOT_ACTIVE));
+
+                //Status passing not participate - 0
+                $status_not_participate = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_NOT_PARTICIPATE);
+                $total_status_not_participate += $status_not_participate;
+                $content[$key]->offsetSet('test_status_not_participate', PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_NOT_PARTICIPATE));
+                $content[$key]->offsetSet('article_status_not_participate', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_NOT_PARTICIPATE));
+
+                $total += PassingService::getPassingTotal($item->id);
+            }
         }
 
         return (object) ['data' => [
@@ -221,9 +238,9 @@ class ProjectRepository
             'content' => $content,
             'passing_tests' => $passing_tests,
             'total' => $total,
-            'status_active' => $status_active,
-            'status_not_active' => $status_not_active,
-            'status_not_participate' => $status_not_participate,
+            'status_active' => $total_status_active,
+            'status_not_active' => $total_status_not_active,
+            'status_not_participate' => $total_status_not_participate,
         ] ];
 
         $projects_items = [];

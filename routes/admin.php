@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Components\Filter;
+use App\Http\Controllers\API\AnalyticsController;
+use App\Http\Controllers\API\BlogController;
+use App\Http\Controllers\API\ModerationController;
+use App\Http\Controllers\API\NotificationsController;
+use App\Http\Controllers\API\TestsController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\CardsController;
 use Illuminate\Support\Facades\Route;
@@ -30,8 +36,10 @@ Route::group(
         ],
             function () {
                 Route::post('all', [AdminController::class, 'NotificationSendAll']);
-
                 Route::post('/to', [AdminController::class, 'notificationSendTo']);
+                Route::get('/', [NotificationsController::class, 'index']);
+                Route::get('/{id}', [NotificationsController::class, 'show']);
+                //Route::delete('/{id}', [NotificationsController::class, 'destroy'])->name('destroy');
             });
 
         Route::group([
@@ -83,10 +91,95 @@ Route::group(
                 'prefix' => 'project'
             ],
             function () {
-                Route::delete('/destroy/{id}', [ProjectsController::class, 'destroy']);
+                Route::post('/start', [\App\Http\Controllers\API\ProjectsController::class, 'start']);
+                Route::post('/stop/{id}', [ProjectsController::class, 'stop']);
+                Route::get('/tags', [ProjectsController::class, 'tags']);
+                Route::get('/tests/{id?}', [ProjectsController::class, 'getTests']);
                 Route::get('/', [ProjectsController::class, 'index']);
+                Route::post('/cover/{type}', [ProjectsController::class, 'setImage']);
+                Route::post('/image/{type}', [ProfileController::class, 'setImage']);
+                Route::get('/{id}', [ProjectsController::class, 'show']);
+                Route::post('/{id}', [ProjectsController::class, 'update']);
+                Route::post('/', [ProjectsController::class, 'create']);
+
+                Route::delete('/destroy/{id}', [ProjectsController::class, 'destroy']);
+                //Route::get('/', [ProjectsController::class, 'index']);
             }
         );
 
         Route::get('/export-users/{project_id}', [UsersController::class, 'exportUsers'])->name('export-users');
+
+        Route::group(
+            [
+                'prefix' => 'blog'
+            ],
+            function () {
+
+                Route::get('/', [BlogController::class, 'index']);
+                Route::get('/list', [BlogController::class, 'list']);
+
+                Route::post('/update', [BlogController::class, 'update']);
+                Route::post('/', [BlogController::class, 'store']);
+
+                Route::get('/tags', [BlogController::class, 'tags']);
+
+                Route::get('/times', [BlogController::class, 'times']);
+
+                Route::get('/{id}', [BlogController::class, 'show']);;
+
+                Route::delete('/destroy/{id}', [BlogController::class, 'destroy']);
+            }
+        );
+
+        Route::group(
+            [
+                'prefix' => 'tests'
+            ],
+            function () {
+                Route::get ('/',  [TestsController::class, 'index']);
+                Route::get('/{id}', [TestsController::class, 'show']);
+                Route::delete('/{id}', [TestsController::class, 'destroy']);
+                Route::post('/', [TestsController::class, 'create']);
+                Route::post('/submit', [TestsController::class, 'submit']);
+            }
+        );
+
+        Route::group(
+            [
+                'prefix' => 'moderation'
+            ],
+            function () {
+                Route::get('/', [ModerationController::class, 'index']);
+                Route::get('/{test_id}', [ModerationController::class, 'test']);
+            }
+        );
+
+        Route::group(
+            [
+                'prefix' => 'analytics'
+            ],
+            function () {
+                Route::get('/', [AnalyticsController::class, 'index']);
+            }
+        );
+
+        Route::group(
+            [
+                'prefix' => 'users'
+            ],
+            function () {
+                Route::get ('/',  [UsersController::class, 'index']);
+                Route::get ('/list',  [UsersController::class, 'list']);
+                Route::get ('/passing/{status}',  [UsersController::class, 'passing']);
+                //Route::get('/{id}', [UsersController::class, 'show']);
+                Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
+                Route::post('/balance', [UsersController::class, 'balance']);
+                Route::get('/create-name/{name}', [UsersController::class, 'createName']);
+                Route::post('/', [UsersController::class, 'create']);
+                Route::post('/{id}', [UsersController::class, 'update']);
+                Route::get('/block/{id}', [UsersController::class, 'block']);
+                Route::get('/unblock/{id}', [UsersController::class, 'unblock']);
+                Route::get('/search/{query}', [UsersController::class, 'search']);
+            }
+        );
     });
