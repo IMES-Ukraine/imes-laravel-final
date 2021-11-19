@@ -1,112 +1,70 @@
 <table style="border-collapse: collapse;border: 1px solid grey;">
     <thead>
     <tr>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">ФИО</th>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">специализация</th>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">город</th>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">место работы</th>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">номер телефона</th>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">всего баллов</th>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">всего баллов. (статьи)</th>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">всего баллов (тесты)</th>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">переведено баллов</th>
-        <th rowspan="2" style="border: 1px solid grey;padding: 5px;">тип обмена</th>
-        <th colspan="4" style="border: 1px solid grey;padding: 5px;">тест 1.</th>
-        <th colspan="4" style="border: 1px solid grey;padding: 5px;">тест 1.</th>
-        <th colspan="4" style="border: 1px solid grey;padding: 5px;">тест 1.</th>
-        <th colspan="4" style="border: 1px solid grey;padding: 5px;">статья 1.</th>
+        <th align="center" rowspan="1" style="width:200px;background-color: #f5f5f5;border: 1px solid grey;">ФИО</th>
+        <th align="center" rowspan="1" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">специализация</th>
+        <th align="center" rowspan="1" style="width:100px;background-color: #f5f5f5;border: 1px solid grey;">город</th>
+        <th align="center" rowspan="1" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">место работы</th>
+        <th align="center" rowspan="1" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">номер телефона</th>
+        <th align="center" rowspan="1" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">всего баллов</th>
+        <th align="center" rowspan="1" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">всего баллов. (статьи)</th>
+        <th align="center" rowspan="1" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">всего баллов (тесты)</th>
+        <th align="center" rowspan="1" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">переведено баллов</th>
+        <th align="center" rowspan="1" style="width:100px;background-color: #f5f5f5;border: 1px solid grey;">тип обмена</th>
+        <!--<th align="center" colspan="4" style="background-color: #f5f5f5;border: 1px solid grey;">тест 1.</th>
+        <th align="center" colspan="4" style="background-color: #f5f5f5;border: 1px solid grey;">тест 1.</th>
+        <th align="center" colspan="4" style="background-color: #f5f5f5;border: 1px solid grey;">тест 1.</th>
+        <th align="center" colspan="4" style="background-color: #f5f5f5;border: 1px solid grey;">статья 1.</th>-->
     </tr>
-    <tr>
-        <th style="border: 1px solid grey;padding: 5px;">время старта</th>
-        <th style="border: 1px solid grey;padding: 5px;">время прохождения</th>
-        <th style="border: 1px solid grey;padding: 5px;">провал</th>
-        <th style="border: 1px solid grey;padding: 5px;">полученные балы</th>
-        <th style="border: 1px solid grey;padding: 5px;">время старта</th>
-        <th style="border: 1px solid grey;padding: 5px;">время прохождения</th>
-        <th style="border: 1px solid grey;padding: 5px;">провал</th>
-        <th style="border: 1px solid grey;padding: 5px;">полученные балы</th>
-        <th style="border: 1px solid grey;padding: 5px;">время старта</th>
-        <th style="border: 1px solid grey;padding: 5px;">время прохождения</th>
-        <th style="border: 1px solid grey;padding: 5px;">провал</th>
-        <th style="border: 1px solid grey;padding: 5px;">полученные балы</th>
-        <th style="border: 1px solid grey;padding: 5px;">время старта</th>
-        <th style="border: 1px solid grey;padding: 5px;">время прохождения</th>
-        <th style="border: 1px solid grey;padding: 5px;">провал</th>
-        <th style="border: 1px solid grey;padding: 5px;">полученные балы</th>
-    </tr>
+    <!--<tr>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">время старта</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">время прохождения</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">провал</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">полученные балы</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">время старта</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">время прохождения</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">провал</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">полученные балы</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">время старта</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">время прохождения</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">провал</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">полученные балы</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">время старта</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">время прохождения</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">провал</th>
+        <th align="center" style="width:150px;background-color: #f5f5f5;border: 1px solid grey;">полученные балы</th>
+    </tr>-->
     </thead>
     <tbody>
-    <tr>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-        <td style="border: 1px solid grey;padding: 5px;">lorem</td>
-    </tr>
-    </tbody>
-</table>
-<!--<table>
-    <thead>
-    <tr>
-        <th rowspan="2">id</th>
-        <th rowspan="2" valign="center">ФИО</th>
-        <th rowspan="2">специализация</th>
-        <th rowspan="2">город</th>
-        <th rowspan="2">место работы</th>
-        <th rowspan="2">номер телефона</th>
-        <th rowspan="2">всего баллов</th>
-        <th rowspan="2">всего баллов. (статьи)</th>
-        <th rowspan="2">всего баллов (тесты)</th>
-        <th style="background-color: #E9EE4E" rowspan="2">переведено баллов</th>
-        <th style="background-color: #E9EE4E" rowspan="2">тип обмена</th>
-        <th colspan="4">тест 1 .</th>
-        <th colspan="4">тест 2 .</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach($users as $user)
+    @foreach($results as $value)
         <tr>
-            <td>{{ $user->id }}</td>
-            <td style="white-space: nowrap;">{{ ($user->basic_information && isset($user->basic_information['name']))?$user->basic_information['name']:$user->name }} {{ ($user->basic_information && isset($user->basic_information['surname']))?$user->basic_information['surname']:'' }}</td>
-            <td>{{ ($user->specialized_information && isset($user->specialized_information['specification']))?$user->specialized_information['specification']:'' }}</td>
-            <td>{{ ($user->city_info)?$user->city_info['name']:'' }}</td>
-            <td>{{ ($user->specialized_information && isset($user->specialized_information['workplace']))?$user->specialized_information['workplace']:'' }}</td>
-            <td>{{ $user->phone }}</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td style="background-color: #E9EE4E">0</td>
-            <td style="background-color: #E9EE4E">0</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td style="border: 1px solid grey;">{{ ($value->user['basic_information'] && isset($value->user['basic_information']['name']))?$value->user['basic_information']['name']:$value->user['name'] }} {{ ($value->user['basic_information'] && isset($value->user['basic_information']['surname']))?$value->user['basic_information']['surname']:'' }}</td>
+            <td style="border: 1px solid grey;">{{ ($value->user['specialized_information'] && isset($value->user['specialized_information']['specification']))?$value->user['specialized_information']['specification']:'' }}</td>
+            <td style="border: 1px solid grey;">{{ ($value->user['city_info'])?$value->user['city_info']['name']:'' }}</td>
+            <td style="border: 1px solid grey;">{{ ($value->user['specialized_information'] && isset($value->user['specialized_information']['workplace']))?$value->user['specialized_information']['workplace']:'' }}</td>
+            <td style="border: 1px solid grey;">{{ $value->user['phone'] }}</td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;background-color: #E9EE4E"></td>
+            <td style="border: 1px solid grey;background-color: #E9EE4E"></td>
+            <!--<td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;"></td>-->
         </tr>
     @endforeach
     </tbody>
-</table>-->
+</table>
