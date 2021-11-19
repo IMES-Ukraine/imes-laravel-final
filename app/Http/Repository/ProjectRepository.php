@@ -182,7 +182,7 @@ class ProjectRepository
         $project = Projects::with(['items'])
             ->where('id', $id)->first()->toArray();
 
-        $itemsQuery = ProjectResearches::where('project_id', $id);
+        $itemsQuery = ProjectResearches::with('tests')->with('articles')->where('project_id', $id);
         if (!request()->input('all_items', 0)) {
             $itemsQuery->where('schedule', '<=', date('Y-m-d H:i:s'));
         }
@@ -194,7 +194,19 @@ class ProjectRepository
             ];
         }
 
-        return (object) ['data' => ['project' => $project, 'content' => $content] ];
+        $passing_tests = [];
+        foreach ($content as $item) {
+            $test_id = $item->tests[0]['id'];
+            $passing = Passing::where('entity_type', 'TestQuestions')->where('entity_id', $test_id)->get();
+
+            foreach ($passing as $pass) {
+                foreach ($pass['answer'] as $answer) {
+                    $passing_tests[$test_id][$answer][] = $pass->user_id;
+                }
+            }
+        }
+
+        return (object) ['data' => ['project' => $project, 'content' => $content, 'passing_tests' => $passing_tests] ];
 
         $projects_items = [];
         $status_active = 0;
