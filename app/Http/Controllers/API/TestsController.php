@@ -86,7 +86,7 @@ class TestsController extends Controller
     public function showAgreement($id)
     {
 
-        $data = TestQuestions::where('id', '=', $id)->first();
+        $data = TestQuestions::where('id', '=', $id)->get();
 
         if (!$data) {
             return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
@@ -127,11 +127,11 @@ class TestsController extends Controller
     public function show($id)
     {
 
-        $data = TestQuestions::with(['cover_image', 'complex', 'featured_images'])->where('id', '=', $id)->get()->all();
+        $data = TestQuestions::with(['cover_image', 'complex', 'featured_images'])->where('id', '=', $id)->get();
         //     $data->makeHidden(['agreement']);
 
         if (!empty($data)) {
-            return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+            return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
         }
 
         $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
