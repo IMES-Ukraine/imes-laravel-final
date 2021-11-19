@@ -44,7 +44,7 @@ class AuthController extends Controller
     /**
      * User registration
      */
-    public function registration()
+    public function registration(): JsonResponse
     {
         $name = request('name');
         $email = request('email');
