@@ -43,8 +43,37 @@ class ProjectsController extends Controller
     /**
      * @return JsonResponse
      */
+    /**
+     * @return JsonResponse
+     */
     public function index() {
-        $data = Projects::with('tags')->whereNull('deleted_at')->with('items')->orderBy('created_at', 'DESC')->get();
+        $countOnPage = 15;
+        $data = Projects::with('tags')->with('items')->whereNull('deleted_at')->with('items')->orderBy('created_at', 'DESC')->paginate($countOnPage);
+        $data = json_decode($data->toJSON() );
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy($id)
+    {
+        $model = Projects::findOrFail($id);
+        $model->delete();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success');
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function tags(): JsonResponse
+    {
+        $data = Tags::all();
+
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 

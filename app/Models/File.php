@@ -487,8 +487,6 @@ class File extends EloquentModel
 
             $data = $this->data;
             $this->save();
-
-            $this->data = null;
         }
 
         return $data;
