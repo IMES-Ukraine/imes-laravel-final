@@ -35,7 +35,8 @@
                             <p class="articles_create__item-title">Обложка</p>
 
                             <div class="articles_create__item-content">
-                                <div class="articles_create__item-file width-auto buttonAddFile">
+                                <div
+                                    :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: article.cover_image.path} ] ">
                                     <input
                                         type="file"
                                         name="addCover"
@@ -43,8 +44,7 @@
                                         v-on:change="handleUploadArticle"
                                         role="button"/>
 
-                                    <p><span
-                                        data-placeholder="Загрузить">{{ article.cover_image.file_name || 'Загрузить' }}</span>
+                                    <p><span>{{ article.cover_image.file_name || 'Загрузить' }}</span>
                                     </p>
                                     <button class="delete_file deleteFile" @click="article.cover_image={}"></button>
                                 </div>
@@ -71,14 +71,10 @@
                                     class="form-control"
                                     rows="4"
                                     v-model="article.excerpt"/>
-                                <div class="errors" v-if="text_error">{{text_error}}</div>
+                                <div class="errors" v-if="text_error">{{ text_error }}</div>
                             </div>
                         </div>
-                        <!--<article-form-insert
-                            v-bind:insert.sync="insert"
-                            v-bind:textInsert.sync="textInsert"
-                            @insert="insertStore"
-                        />-->
+
                         <div class="articles_create-block">
                             <div class="articles_create__item">
                                 <div class="articles_create__item-title has_radio">
@@ -97,13 +93,14 @@
                                         :name="'title'"
                                         v-on:update:value="updateInsertTitle($event)"
                                         placeholder="Заголовок"
+                                        :value="article.content[0].title"
                                         :text="''"
                                         :classes="'mb20'"
                                     />
                                     <v-textarea
                                         :rows="4"
+                                        :text="article.content[0].content"
                                         v-on:update:text="updateInsertContent($event)"
-                                        :text="''"
                                         placeholder="Текст"
                                     />
                                 </div>
@@ -123,6 +120,7 @@
                                     <div class="field_wrap_for_tags">
                                         <multiselect
                                             v-model="article.tags"
+                                            :value="article.tags"
                                             tag-placeholder="Добавить тег"
                                             placeholder="Выбрать тег"
                                             label="name"
@@ -190,7 +188,8 @@
                                     <div class="articles_create__addition-block width-194">
                                         <div class="articles_create-multiselect">
                                             <multiselect
-                                                v-model="user"
+                                                v-model="article.user"
+                                                :value="article.user"
                                                 @input="selectAuthor"
                                                 tag-placeholder="Обрати автора"
                                                 placeholder="Обрати автора"
@@ -217,9 +216,7 @@
                         </div>
                         <article-form-button
                             :label="'Кнопка'"
-                            :id="'is-article-button'"
-                            :name="'is-article-button'"
-                            :text_button="button"
+                            :text_button="article.button"
                             @update="buttonStore"
                         />
                         <div class="articles_create__item">
@@ -227,6 +224,7 @@
                             <div class="articles_create__item-content">
                                 <multiselect
                                     v-model="article.recommended"
+                                    :value="article.recommended"
                                     tag-placeholder="Додати статтю"
                                     placeholder="Вибрати статтю"
                                     label="title"
@@ -241,9 +239,7 @@
                         </div>
                         <article-form-button
                             :label="'Пряма ссилка'"
-                            :id="'is-article-link'"
-                            :name="'is-article-link'"
-                            :text_button="link"
+                            :text_button="article.action"
                             @update="linkStore"
                         />
                     </div>
@@ -266,7 +262,15 @@ import ArticleFormSelect from "./templates/article/form/select"
 import VButton from "./templates/inputs/button"
 import ArticleFormButton from "./templates/article/form/button"
 import Multiselect from "vue-multiselect";
-import {ARTICLE, USER, USER_CREATE_NAME, ARTICLE_COVER, TOKEN, ARTICLE_TAGS, USER_LIST} from "../api/endpoints";
+import {
+    ARTICLE,
+    ARTICLE_UPDATE,
+    USER_CREATE_NAME,
+    ARTICLE_COVER,
+    TOKEN,
+    ARTICLE_TAGS,
+    USER_LIST
+} from "../api/endpoints";
 import FragmentFormText from "./fragmets/text";
 import ArticleSidebar from "./templates/article/sidebar";
 import ArticleMultiple from "./templates/article/form/multiple"
@@ -298,6 +302,7 @@ export default {
     },
     data() {
         return {
+            articleId: 0,
             new_user: '',
             errorArticleCover: '',
             addUserError: '',
@@ -335,12 +340,15 @@ export default {
                 recommended: [],
                 featured_images: [],
                 user_id: 0,
+                user: {
+                    id: 0,
+                    name: ''
+                },
                 button: '',
                 action: ''
             }
         }
     },
-
     methods: {
         getTextInsert() {
             this.textLocale = 1;
@@ -354,7 +362,7 @@ export default {
             this.chosenRecommended.push(tag)
         },
         selectAuthor() {
-            this.article.user_id = this.user.id
+            this.article.user_id = this.article.user.id
         },
         submitForm() {
             this.errorArticleCover = '';
@@ -378,21 +386,13 @@ export default {
             }
 
             if (!error) {
-                this.$post(ARTICLE, this.article
-                    // title: this.title,
-                    // articleType: this.articleType,
-                    // text: this.text,
-                    // button: this.button,
-                    // action: this.link,
-                    // insert: this.insert,
-                    // user: this.user_id,
-                    // gallery: this.multiples,
-                    // tags: this.chosenTags,
-                    // recommended: this.chosenRecommended
-                // }
-            ).then((res) => {
-                     //   this.$router.push({name: 'articleList'});
-                    })
+                let url = ARTICLE;
+                if (this.articleId) {
+                    url = ARTICLE_UPDATE + '/' + this.articleId;
+                }
+                this.$post(url, this.article).then((res) => {
+                    this.$router.push({name: 'articleList'});
+                })
                     .catch((error) => {
                         console.log(error)
                     }).finally(() => {
@@ -474,9 +474,8 @@ export default {
             ).then((file) => {
                 let obj = {
                     itemId: 'article-' + getRandomId(),
-                    file: file.data.data.id,
-                    name: event.target.files[0].name,
-                    data: file.data,
+                    id: file.data.data.id,
+                    file_name: file.data.data.file_name,
                     path: file.data.data.path
                 };
                 this.article.featured_images.push(obj)
@@ -485,15 +484,22 @@ export default {
         },
     },
     mounted() {
+        this.articleId = this.$route.params.articleId;
+        if (this.articleId) {
+            this.$get(ARTICLE + '/' + this.articleId).then(response => {
+                this.article = response.data[0] || this.article;
+                this.textLocale = !!this.article.content[0].content
+            });
+        }
         this.$get(ARTICLE + '?count=12&type=1').then(response => {
             this.recommended = response.data.data
-        })
+        });
         this.$get(USER_LIST + '?count=12').then(response => {
             this.authors = response.data
-        })
+        });
         this.$get(ARTICLE_TAGS).then(response => {
             this.tags = response.data
-        })
+        });
     }
 }
 </script>

@@ -24,6 +24,6 @@ class PostTag extends Model
      */
     public function tag()
     {
-        return $this->hasOne('App\Models\Tag', 'id', 'tag_id');
+        return $this->hasOne(Tag::class, 'id', 'tag_id');
     }
 }

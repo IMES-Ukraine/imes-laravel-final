@@ -36,15 +36,6 @@ class Articles extends Post {
 
 
     /**
-     * Recomended articles
-     * @return mixed
-     */
-    public function recommended()
-    {
-        return $this->hasMany(Recommended::class, 'parent_id', 'id')->with('post');
-    }
-
-    /**
      * Image in list
      * @return mixed
      */
@@ -79,15 +70,6 @@ class Articles extends Post {
     public function gallery()
     {
         return $this->hasMany('App\Models\PostGallery', 'post_id', 'id');
-    }
-
-    /**
-     * Tags articles
-     * @return mixed
-     */
-    public function tags()
-    {
-        return $this->hasMany('App\Models\PostTag', 'post_id', 'id')->with('tag');
     }
 
 }
