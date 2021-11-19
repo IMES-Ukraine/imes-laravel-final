@@ -83,4 +83,12 @@ class ArticleService
         }
     }
 
+    /**
+     * Return pluck ID for Article
+     * @param $content_id
+     * @return array
+     */
+    public static function pluckIDArticles($content_id) {
+        return Articles::select('id')->where('research_id', $content_id)->pluck('id')->toArray();
+    }
 }

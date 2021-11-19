@@ -86,7 +86,7 @@ class TestsController extends Controller
     public function showAgreement($id)
     {
 
-        $data = TestQuestions::where('id', '=', $id)->get();
+        $data = TestQuestions::where('id', '=', $id)->get()->makeVisible('agreement');
 
         if (!$data) {
             return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
@@ -104,7 +104,7 @@ class TestsController extends Controller
     {
 
         //$apiUser = Auth::getUser();
-        $apiUser = Auth::user();
+        $apiUser = auth()->user();
 
         $model = new TestOpened();
         $model->user_id = $apiUser->id;
