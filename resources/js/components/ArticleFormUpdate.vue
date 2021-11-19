@@ -361,7 +361,7 @@
 
                 if (!error) {
                     this.$post(ARTICLE_UPDATE, {
-                        post_id: this.article.post_id,
+                        post_id: this.article.id,
                         title: this.article.title,
                         articleType: this.article.type,
                         text: this.article.content_html,
@@ -480,7 +480,7 @@
                 this.recommended = response.data.data
             })
             this.$get(USER + '?count=12').then( response => {
-                this.authors = response.data
+                this.authors = response.data.data
             })
             this.$get(ARTICLE_TAGS).then( response => {
                 this.tags = response.data
