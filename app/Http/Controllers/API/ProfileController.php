@@ -70,12 +70,7 @@ class ProfileController extends Controller
      */
     public function verify(Request $request){
 
-        $apiUser = Auth::user();
-
-        $userId = $apiUser->id;
-
-
-        $userModel = User::find($userId);
+        $userModel = auth()->user();
 
         if ( $request->post('basic_information')){
             if ( !is_array( $userModel->basic_information)) $userModel->basic_information = [];
@@ -96,15 +91,12 @@ class ProfileController extends Controller
             return $this->helpers->apiArrayResponseBuilder(401, 'error', $userModel->messages()->all());
         }
 
-        $data = $userModel->toArray();
+        $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
 
-        foreach (['permissions', 'deleted_at', 'updated_at', 'activated_at'] as $v) {
-            unset($data[$v]);
-        }
 
         //$data['is_verified'] = 1;
         $verificationRequest = new AccountVerificationRequests;
-        $verificationRequest->user_id = $userId;
+        $verificationRequest->user_id = $userModel->id;
         $verificationRequest->save();
 
         //$data['basic_information'] = post('basic_information');
@@ -124,17 +116,18 @@ class ProfileController extends Controller
         $file->data = request()->file('file');
         $file->is_public = true;
         $file->field = 'cover_image';
-        $file->attachment_type = 'App\Models\TestQuestions';
+        $file->attachment_type = User::class;
         $data = $file->beforeSave();
 
-        /*$apiUser = Auth::user();
+        /** @var User $apiUser */
+        $apiUser = auth()->user();
 
         $helper = new ImageHelper( $apiUser);
         $response = $helper->uploadImage( $type, $data);
 
         if( !$response){
             return $this->helpers->apiArrayResponseBuilder(401, 'error', []);
-        }*/
+        }
 
         $arr = [
             'status_code' => 200,
