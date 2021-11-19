@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers;
 use App\Models\Projects;
+use App\Models\Tags;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -38,5 +39,15 @@ class ProjectsController extends Controller
         $model->delete();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success');
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function tags(): JsonResponse
+    {
+        $data = Tags::all();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 }

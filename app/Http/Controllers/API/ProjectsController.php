@@ -71,16 +71,6 @@ class ProjectsController extends Controller
     }
 
     /**
-     * @return JsonResponse
-     */
-    public function tags(): JsonResponse
-    {
-        $data = Tags::all();
-
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
-    }
-
-    /**
      * @param Request $request
      * @return JsonResponse
      */
