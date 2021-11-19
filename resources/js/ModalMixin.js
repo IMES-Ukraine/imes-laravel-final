@@ -30,9 +30,9 @@ export default {
                 page = 1;
             }
             this.$get(CLIENTS, {page: page}).then( response => {
-                this.$store.commit('setClients',  response.data || {} );
+                this.$store.commit('setClients',  response.data.data || {} );
                 this.$store.commit('setResponseData',  response || {} );
-                this.responseData = response;
+                this.responseData = response.data;
             });
         },
         loadCards(page) {
