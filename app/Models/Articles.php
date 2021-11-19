@@ -18,6 +18,9 @@ class Articles extends Post {
     const IS_INSTANT = 0;
     const IS_SCHEDULED = 1;
 
+
+
+
     public function scopeIsArticle($query) {
         return $query->where('type', self::ARTICLE);
     }
@@ -38,7 +41,7 @@ class Articles extends Post {
      */
     public function recommended()
     {
-        return $this->hasMany('App\Models\Recommended', 'parent_id', 'id')->with('post');
+        return $this->hasMany(Recommended::class, 'parent_id', 'id')->with('post');
     }
 
     /**

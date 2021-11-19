@@ -180,12 +180,13 @@ import ProjectMixin from "../../../ProjectMixin";
 import {ValidationProvider} from "vee-validate";
 import VCheckbox from "../../templates/inputs/checkbox"
 import {
-  ARTICLE_COVER,
-  ARTICLE_LIST,
-  PROJECT_IMAGE,
-  TOKEN,
-  USER_CREATE_NAME,
-  USER_LIST
+    ARTICLE,
+    ARTICLE_COVER,
+    ARTICLE_LIST, ARTICLE_TAGS,
+    PROJECT_IMAGE,
+    TOKEN,
+    USER_CREATE_NAME,
+    USER_LIST
 } from "../../../api/endpoints";
 import SimpleTestMedia from "../SimpleTestMedia";
 import Multiselect from "vue-multiselect";
@@ -225,12 +226,18 @@ export default {
     }
   },
   mounted() {
+      this.$get(ARTICLE + '?count=12&type=1').then( response => {
+          this.article = response.data.data
+      });
     axios.get(USER_LIST, {params: {count: 12}}).then(response => {
       this.authors = response.data.data;
     });
     axios.get(ARTICLE_LIST, {params: {count: 12, type: 1}}).then(response => {
       this.recommended = response.data.data;
     });
+      this.$get(ARTICLE_TAGS).then( response => {
+          this.tags = response.data
+      })
 
   },
   computed: {
