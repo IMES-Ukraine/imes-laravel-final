@@ -82,25 +82,25 @@
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">0% выполненых</p>
+                                <p class="dashboard_main__status-description">{{ content.test_status_active }}% выполненых</p>
                                 <div class="dashboard_main__status-line">
-                                    <span style="width:0%;"></span>
+                                    <span :style="'width:'+content.test_status_active+'%;'"></span>
                                 </div>
-                                <p class="dashboard_main__status-description">0 активностей</p>
+                                <p class="dashboard_main__status-description">{{ content.test_status_active }} активностей</p>
                             </div>
                         </div>
                         <div class="dashboard_study__info">
                             <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">0</p>
-                                <!--<button class="dashboard_study__info-button">Смотреть</button>-->
+                                <p class="dashboard_study__info-data">{{ content.test_status_active }}</p>
+                                <button class="dashboard_study__info-button" v-if="content.test_status_active" type="button">Смотреть</button>
                             </div>
                             <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">0</p>
-                                <!--<button class="dashboard_study__info-button">Смотреть</button>-->
+                                <p class="dashboard_study__info-data">{{ content.test_status_not_active }}</p>
+                                <button class="dashboard_study__info-button" v-if="content.test_status_not_active" type="button">Смотреть</button>
                             </div>
                             <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">0</p>
-                                <!--<button class="dashboard_study__info-button">Смотреть</button>-->
+                                <p class="dashboard_study__info-data">{{ content.test_status_not_participate }}</p>
+                                <button class="dashboard_study__info-button" v-if="content.test_status_not_participate" type="button">Смотреть</button>
                             </div>
                         </div>
                     </div>
@@ -111,25 +111,25 @@
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">0% выполненых</p>
+                                <p class="dashboard_main__status-description">{{ content.article_status_active }}% выполненых</p>
                                 <div class="dashboard_main__status-line">
-                                    <span style="width:0%;"></span>
+                                    <span :style="'width:'+content.article_status_active+'%;'"></span>
                                 </div>
-                                <p class="dashboard_main__status-description">0 активностей</p>
+                                <p class="dashboard_main__status-description">{{ content.article_status_active }} активностей</p>
                             </div>
                         </div>
                         <div class="dashboard_study__info">
                             <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">0</p>
-                                <!--<button class="dashboard_study__info-button">Смотреть</button>-->
+                                <p class="dashboard_study__info-data">{{ content.article_status_active }}</p>
+                                <button class="dashboard_study__info-button" v-if="content.article_status_active" type="button">Смотреть</button>
                             </div>
                             <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">0</p>
-                                <!--<button class="dashboard_study__info-button">Смотреть</button>-->
+                                <p class="dashboard_study__info-data">{{ content.article_status_not_active }}</p>
+                                <button class="dashboard_study__info-button" v-if="content.article_status_not_active" type="button">Смотреть</button>
                             </div>
                             <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">0</p>
-                                <!--<button class="dashboard_study__info-button">Смотреть</button>-->
+                                <p class="dashboard_study__info-data">{{ content.article_status_not_participate }}</p>
+                                <button class="dashboard_study__info-button" v-if="content.article_status_not_participate" type="button">Смотреть</button>
                             </div>
                         </div>
                     </div>

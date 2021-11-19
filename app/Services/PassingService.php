@@ -60,4 +60,30 @@ class PassingService
             ->count();
     }
 
+    /**
+     * @param $content_id
+     * @param $status
+     * @return mixed
+     */
+    public static function getPassingTotalStatusTest($content_id, $status) {
+        $test_ids = TestService::pluckIDArticles($content_id);
+
+        return Passing::where('status', $status)
+            ->whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
+            ->count();
+    }
+
+    /**
+     * @param $content_id
+     * @param $status
+     * @return mixed
+     */
+    public static function getPassingTotalStatusArticle($content_id, $status) {
+        $articles_ids = ArticleService::pluckIDArticles($content_id);
+
+        return Passing::where('status', $status)
+            ->whereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')
+            ->count();
+    }
+
 }
