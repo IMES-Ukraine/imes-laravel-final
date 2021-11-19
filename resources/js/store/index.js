@@ -22,8 +22,12 @@ export default new Vuex.Store({
                     region: 1
                 },
                 files: {
-                    cover: null,
-                    audience: null,
+                    cover: {
+                        file_name: ''
+                    },
+                    audience: {
+                        file_name: ''
+                    },
                 }
             },
             tag: '',

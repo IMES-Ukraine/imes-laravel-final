@@ -349,6 +349,7 @@ export default {
     },
     methods: {
         newContent() {
+            this.$store.dispatch("storeProject", this.project);
             this.errorContent = '';
             this.$store.dispatch('setCurrentAction', 'create');
             this.$store.dispatch('setCurrentContentTitle', '');
@@ -430,21 +431,10 @@ export default {
             this.$emit('update', value);
         },
 
-
-        // handleUpload(fileName) {
-        //     if (event.target.files[0].size <= 1024 * 1024 * 1024) {
-        //         this.project.options.files.cover = event.target.files[0].name;
-        //         this.errorCover = '';
-        //     } else {
-        //         //this.$set(this.errorFile, 'cover', 'Изображение слишком большое')
-        //         this.errorFile = 'Изображение слишком большое';
-        //     }
-        //     //}
-        // },
     },
     mounted() {
         if (sessionStorage.project) {
-            this.$store.state.project = JSON.parse(sessionStorage.project);
+            this.$store.dispatch("storeProject", JSON.parse(sessionStorage.project) );
         }
     },
     /*validations: {
