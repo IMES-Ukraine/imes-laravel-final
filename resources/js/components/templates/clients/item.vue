@@ -7,8 +7,8 @@
         <td class="db__td is-id">
             {{ request.id }}
         </td>
-        <td class="db__td is-account" v-if="request.basic_information">
-            {{ request.basic_information.name }} {{ request.basic_information.surname }}
+        <td class="db__td is-account" v-if="request.name">
+            {{ request.name }}
         </td>
         <td class="db__td is-account" v-else>
             {{ request.username}}
