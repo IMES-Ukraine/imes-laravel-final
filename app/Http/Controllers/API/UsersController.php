@@ -30,7 +30,7 @@ class UsersController extends Controller
 
     public function index()
     {
-        $users = $this->User->paginate();
+        $users = $this->User->orderBy('id','desc')->paginate();
         $data = json_decode($users->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
@@ -59,9 +59,18 @@ class UsersController extends Controller
 
     public function create(Request $request)
     {
-        $phone = substr(filter_var($request->post('phone'), FILTER_SANITIZE_NUMBER_INT), 3);
-
+        $phone = filter_var($request->post('phone'), FILTER_SANITIZE_NUMBER_INT);
         $email = $request->post('email');
+
+        if (User::find(['phone' => $phone])->first() ){
+            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'phone', 'error' => 'phone exist']);
+        }
+
+        if (User::findByEmail($email) ){
+            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'email', 'error' => 'email exist']);
+        }
+
+
 
 //        $number = mt_rand(1, 4294967294);
         $password = Hash::make($request->post('password'));
@@ -71,14 +80,14 @@ class UsersController extends Controller
             'name' => $request->post('name'),
             'phone' => $phone,
             'email' => $email,
-            'username' => Str::slug($request->post('name') ),
+            'username' => $phone . '@imes.pro',
             'password' => $password,
             'messaging_token' => 'eUpQSLg0fkqLqK8o7T5bD4:APA91bGfNkJ5cr8DXcLubsBlqBz7fSgz_BogwAC5muytt8jOF4VEk6_Vj9D_NMff0owflTvA9TFnEV-DneQJeUGshLktOjC2PUFsmSS4Gz_qTU7ycUh8Fbxi28i0h8pa28fL3jiuJ2g5'
         ]);
 
         $user->save();
 
-        return Redirect::to('/clients');
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $user);
     }
 
 

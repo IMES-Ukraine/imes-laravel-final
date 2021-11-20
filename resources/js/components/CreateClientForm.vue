@@ -8,12 +8,7 @@
             <div class="db__block">
                 <div class="db-edit card is-form">
                     <div class="card-body is-form">
-                        <form
-                            id="app"
-                            @submit="checkForm"
-                            :action="create()"
-                            method="post"
-                        >
+                        <form>
                             <!--<div v-if="errors" class="errors">
                                 <ul>
                                     <li v-for="error in errors">{{ error }}</li>
@@ -30,7 +25,8 @@
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label class="form-control__label">Email</label>
-                                    <input class="form-control db-edit-modal__input" name="email" type="email" v-model="email">
+                                    <input class="form-control db-edit-modal__input" name="email" type="email"
+                                           v-model="email">
                                     <div v-if="errors && errors.email" class="errors">{{ errors.email }}</div>
                                 </div>
                             </div>
@@ -38,7 +34,8 @@
                                 <div class="form-group col-12">
                                     <label class="form-control__label">Телефон</label>
                                     <input class="form-control db-edit-modal__input js-input-phone-mask"
-                                           ref="phone-input" name="phone" type="tel" value="" placeholder="+380 (**) *** ** **"
+                                           ref="phone-input" name="phone" type="tel" value=""
+                                           placeholder="+380 (**) *** ** **"
                                            maxlength="19">
                                     <div v-if="errors && errors.phone" class="errors">{{ errors.phone }}</div>
                                 </div>
@@ -74,10 +71,12 @@
                             <div class="row">
                                 <div class="col-12 text-center">
                                     <!-- js обработчик в файле /admin/front/js/main.js - new account -->
-                                    <button type="submit" class="btn btn-outline-primary js-send-new-account"
-                                            data-attach-loading="">
+
+                                    <button @click="checkForm" type="button"
+                                            class="btn btn-outline-primary js-send-new-account">
                                         Отправить запрос <span class="icon-is-arrow icon-is-right"></span>
                                     </button>
+
                                     <!-- modal new user -->
                                     <div class="modal db-modal fade" id="new-account" tabindex="-1" role="dialog"
                                          aria-hidden="true"><!-- --2 -->
@@ -110,12 +109,14 @@ import SidebarUsers from "./templates/SidebarUsers"
 import ClientsTable from './templates/clients/table-user'
 import {USER} from "../api/endpoints"
 import VPreloader from "./fragmets/preloader"
+import ModalMixin from "../ModalMixin";
 
 export default {
     name: "createClient",
     components: {
         VContent, SidebarUsers, ClientsTable, VPreloader
     },
+    mixins: [ModalMixin],
     data() {
         return {
             errors: {
@@ -141,19 +142,33 @@ export default {
             this.phone = this.$refs['phone-input'].value;
             if (!this.phone) {
                 this.errors.phone = 'Укажите телефон';
-            } /*else if (!this.validEmail(this.email)) {
-                    this.errors.push('Укажите корректный адрес электронной почты.');
-                }*/
-
+            }
             if (!this.password) {
                 this.errors.password = 'Укажите пароль';
             }
 
             if (!Object.keys(this.errors).length) {
-                return true;
+
+                axios.post(USER, {
+                    name: this.name,
+                    email: this.email,
+                    phone: this.phone,
+                    password: this.password
+                }).then((resp) => {
+                    if (resp.status === 200) {
+                        this.$bvModal.msgBoxOk('Пользователь успешно создан')
+                            .then(value => {
+                                this.$router.push({name: 'clients'});
+                            });
+                    }
+                    console.log('Mess: ', resp.data.data);
+                    this.$bvModal.msgBoxOk("Возникла ошибка: " + resp.data.data.error);
+                }).catch(resp => {
+                    this.$bvModal.msgBoxOk("Возникла ошибка: " + resp.data.data.error);
+                });
             }
 
-            e.preventDefault();
+            // e.preventDefault();
         },
         validEmail: function (email) {
             var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
