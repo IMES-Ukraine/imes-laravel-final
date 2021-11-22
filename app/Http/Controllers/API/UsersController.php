@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Classes\UserBasicInfo;
+use App\Classes\UserFinancialInfo;
+use App\Classes\UserSpecializedInfo;
 use App\Exports\ExportUserView;
 use App\Http\Controllers\Controller;
 use App\Models\AccountVerificationRequests;
@@ -82,10 +85,15 @@ class UsersController extends Controller
             'email' => $email,
             'username' => $phone . '@imes.pro',
             'password' => $password,
+            'basic_information' => (new UserBasicInfo([
+                'email' => $email,
+                'phone' => $phone,
+                'name' => $request->post('name')
+            ]) )->toArray(),
+            'specialized_information' => (new UserSpecializedInfo() )->toArray(),
+            'financial_information' => (new UserFinancialInfo() )->toArray(),
             'messaging_token' => 'eUpQSLg0fkqLqK8o7T5bD4:APA91bGfNkJ5cr8DXcLubsBlqBz7fSgz_BogwAC5muytt8jOF4VEk6_Vj9D_NMff0owflTvA9TFnEV-DneQJeUGshLktOjC2PUFsmSS4Gz_qTU7ycUh8Fbxi28i0h8pa28fL3jiuJ2g5'
         ]);
-
-        $user->save();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $user);
     }
