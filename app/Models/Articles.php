@@ -72,4 +72,22 @@ class Articles extends Post {
         return $this->hasMany('App\Models\PostGallery', 'post_id', 'id');
     }
 
+    /**
+     * Tags
+     * @return mixed
+     */
+    public function tags()
+    {
+        return $this->hasOne(PostTag::class, 'post_id', 'id')->with('tags');
+    }
+
+    /**
+     * Recomended articles
+     * @return mixed
+     */
+    public function recommended()
+    {
+        return $this->hasMany(Recommended::class, 'parent_id', 'id')->with('post');
+    }
+
 }
