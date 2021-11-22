@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -20,7 +19,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'registration']]);
+        $this->middleware('auth:api', ['except' => ['login', 'registration', 'sms']]);
     }
 
     /**
@@ -118,11 +117,12 @@ class AuthController extends Controller
     /**
      * Get sms
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function sms()
+    public function sms(Request $request)
     {
-        $phone = request('phone');
+        $phone = $request->phone;
         $code = substr(str_shuffle("0123456789"), 0, 6);
         $sended = TurboSMS::sendMessages($phone, 'Enter ' . $code . ' in application', 'sms');
         Session::push('sms', [
