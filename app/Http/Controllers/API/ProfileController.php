@@ -123,7 +123,7 @@ class ProfileController extends Controller
         $apiUser = auth()->user();
 
         $helper = new ImageHelper( $apiUser);
-        $response = $helper->uploadImage( $type, $data);
+        $response = $helper->uploadImage( $type, $file);
 
         if( !$response){
             return $this->helpers->apiArrayResponseBuilder(401, 'error', []);
