@@ -17,4 +17,5 @@ Route::group([
     'prefix' => 'api',
 ], function () {
     Route::post('auth', [AuthController::class, 'sms']);
+    Route::post('verify', [AuthController::class, 'verify']);
 });
