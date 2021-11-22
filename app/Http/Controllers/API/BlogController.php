@@ -51,7 +51,7 @@ class BlogController extends Controller
         if ($type == Articles::ARTICLE) {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
-                ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
+                //->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
                 //->where( 'published_at', '<=', Carbon::now()
                 //->toDateTimeString())
                 ->isArticle()
