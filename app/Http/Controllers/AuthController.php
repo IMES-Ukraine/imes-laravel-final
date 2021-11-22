@@ -115,7 +115,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Get sms
+     * Get sms code
      *
      * @param Request $request
      * @return JsonResponse
@@ -125,11 +125,44 @@ class AuthController extends Controller
         $phone = $request->phone;
         $code = substr(str_shuffle("0123456789"), 0, 6);
         $sended = TurboSMS::sendMessages($phone, 'Enter ' . $code . ' in application', 'sms');
-        Session::push('sms', [
-            'pnone' => $phone,
-            'code' => $code
-        ]);
+        Session::put('phone', $phone);
+        Session::put('code', $code);
 
-        return response()->json([/*'result' => $sended, */'code' => $code]);
+        return response()->json(['code' => $code]);
+    }
+
+    /**
+     * POST verify
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function verify(Request $request)
+    {
+        $phone = $request->phone;
+        $code = $request->code;
+        $token = false;
+
+        if (Session::has('phone') && Session::has('code')) {
+            if ($phone == Session::get('phone') && $code == Session::get('code')) {
+                $password = Hash::make($phone);
+
+                $user = new User();
+                $user->phone = $phone;
+                $user->username = $phone . '@imes.pro';
+                $user->email = $phone . '@imes.pro';
+                $user->password = $password;
+                $user->save();
+
+                if (!$token = auth()->attempt(['username' => $phone . '@imes.pro', 'password' => $phone])) {
+                    return response()->json(['error' => 'Unauthorized'], 401);
+                }
+
+                Session::remove('phone');
+                Session::remove('code');
+            }
+        }
+
+        return response()->json(['token' => $token]);
     }
 }
