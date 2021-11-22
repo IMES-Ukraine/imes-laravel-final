@@ -146,8 +146,8 @@ class AuthController extends Controller
         if (Session::has('phone') && Session::has('code')) {
             if ($phone == Session::get('phone') && $code == Session::get('code')) {
 
-                if (User::find(['email' => $phone . '@imes.pro'])->first()){
-                    return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'mail', 'error' => 'unique email']);
+                if (User::where('email', $phone . '@imes.pro')->first()) {
+                    return response()->json(['error' => 'unique email'], 201);
                 }
 
                 $password = Hash::make($phone);
