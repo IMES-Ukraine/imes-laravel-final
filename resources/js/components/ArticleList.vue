@@ -16,9 +16,9 @@
                     :callbacks="article.callbacks"
                     @update="UpdateList"
                 />
-                <div class="articles_pagination center">
-                    <pagination :data="articles" @pagination-change-page="getResults"></pagination>
-                </div>
+            </div>
+            <div class="articles_pagination center">
+                <pagination :data="articles" @pagination-change-page="getResults"></pagination>
             </div>
             <!--<v-preloader v-else />-->
         </div>
