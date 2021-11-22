@@ -44,15 +44,16 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    public function passing($status)
+    public function passing($project_id, $status)
     {
-
         $data = $this
             ->User
             ->select('id', 'name', 'email', 'phone')
             ->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
             ->where('ulogic_projects_passing.status', $status)
             ->paginate();
+
+        $data = json_decode($data->toJSON());
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
