@@ -77,7 +77,7 @@ Route::group(
             function () {
                 Route::get ('/',  [UsersController::class, 'index'])->middleware('auth:api');
                 Route::get ('/list',  [UsersController::class, 'list']);
-                Route::get ('/passing/{status}',  [UsersController::class, 'passing']);
+                Route::get ('/passing/{project_id}/{status}',  [UsersController::class, 'passing']);
                 //Route::get('/{id}', [UsersController::class, 'show']);
                 Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
                 Route::post('/balance', [UsersController::class, 'balance']);

@@ -28,7 +28,6 @@ use App\Http\Controllers\API\ProjectsController as ProjectsApiController;
 */
 Route::group(
     [
-
         'prefix' => 'api/v1'
     ],
     function () {
@@ -121,7 +120,7 @@ Route::group(
                 Route::get('/', [BlogController::class, 'index']);
                 Route::get('/list', [BlogController::class, 'list']);
 
-                Route::post('/update/{id}', [BlogController::class, 'update']);
+                Route::post('/update', [BlogController::class, 'update']);
                 Route::post('/', [BlogController::class, 'store']);
 
                 Route::get('/tags', [BlogController::class, 'tags']);
@@ -173,12 +172,11 @@ Route::group(
             function () {
                 Route::get ('/',  [UsersController::class, 'index']);
                 Route::get ('/list',  [UsersController::class, 'list']);
-                Route::get ('/passing/{status}',  [UsersController::class, 'passing']);
+                Route::get ('/passing/{project_id}/{status}',  [UsersController::class, 'passing']);
                 //Route::get('/{id}', [UsersController::class, 'show']);
                 Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
                 Route::post('/balance', [UsersController::class, 'balance']);
                 Route::get('/create-name/{name}', [UsersController::class, 'createName']);
-
                 Route::post('/', [UsersController::class, 'create']);
                 Route::post('/{id}', [UsersController::class, 'update']);
                 Route::get('/block/{id}', [UsersController::class, 'block']);

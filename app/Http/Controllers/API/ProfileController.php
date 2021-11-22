@@ -141,10 +141,9 @@ class ProfileController extends Controller
 
     /**
      * Do set User profile password
-     * @param Illuminate\Http\Request $request
      * @return JsonResponse
      */
-    public function setPassword(\Illuminate\Http\Request $request){
+    public function setPassword(Request $request){
 
         //$apiUser = Auth::getUser();
         $apiUser = Auth::user();

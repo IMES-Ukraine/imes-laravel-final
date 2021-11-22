@@ -70,6 +70,10 @@
             index: {
                 type: Number,
                 default: 0
+            },
+            project_id: {
+                type: Number,
+                default: 0
             }
         },
         data () {
@@ -86,7 +90,7 @@
                 this.$router.push({ path: '/' })
             },
             loadUsers () {
-                this.$get(USER_PASSING + '/' + this.index).then(response => {
+                this.$get(USER_PASSING + '/' + this.project_id + '/' + this.index).then(response => {
                     if (response.data) {
                         this.users = response.data.data
                     }
