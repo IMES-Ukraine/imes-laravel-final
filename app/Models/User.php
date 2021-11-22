@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Traits\JWT;
-use Google\Cloud\Core\JsonTrait;
+use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Carbon;
@@ -79,7 +79,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, JWT, JsonTrait;
+    use HasFactory, JWT, JsonFieldTrait;
 
     /**
      * The attributes that are mass assignable.

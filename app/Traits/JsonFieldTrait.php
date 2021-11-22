@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-class JsonTrait
+trait JsonFieldTrait
 {
     protected function asJson($value)
     {
