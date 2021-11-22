@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Daaner\TurboSMS\Facades\TurboSMS;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -110,5 +113,23 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ] ));
+    }
+
+    /**
+     * Get sms
+     *
+     * @return JsonResponse
+     */
+    public function sms()
+    {
+        $phone = request('phone');
+        $code = substr(str_shuffle("0123456789"), 0, 6);
+        $sended = TurboSMS::sendMessages($phone, 'Enter ' . $code . ' in application', 'sms');
+        Session::push('sms', [
+            'pnone' => $phone,
+            'code' => $code
+        ]);
+
+        return response()->json([/*'result' => $sended, */'code' => $code]);
     }
 }
