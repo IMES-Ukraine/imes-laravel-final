@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\Controller;
+use Google\Cloud\Core\JsonTrait;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Mail\Markdown;
@@ -19,6 +20,7 @@ use Nette\Utils\Html;
  */
 class Post extends Model
 {
+    use JsonTrait;
 
     public $table = 'rainlab_blog_posts';
     public $implement = ['@RainLab.Translate.Behaviors.TranslatableModel'];
@@ -52,10 +54,7 @@ class Post extends Model
      */
     protected $jsonable = ['metadata'];
 
-    protected function asJson($value)
-    {
-        return json_encode($value, JSON_UNESCAPED_UNICODE);
-    }
+
 
     protected $casts = [
         'content' => 'object',

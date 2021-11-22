@@ -476,7 +476,6 @@ class File extends EloquentModel
         /*
          * Process the data property
          */
-        $data = [];
         if ($this->data !== null) {
             if ($this->data instanceof UploadedFile) {
                 $this->fromPost($this->data);
@@ -485,11 +484,10 @@ class File extends EloquentModel
                 $this->fromFile($this->data);
             }
 
-            $data = $this->data;
             $this->save();
         }
 
-        return $data;
+        return $this->attributes;
     }
 
     /**

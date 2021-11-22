@@ -12,7 +12,6 @@ class ImageHelper
     }
 
     public function uploadImage( $type, $file){
-
         $result = false;
 
         switch ( $type) {
