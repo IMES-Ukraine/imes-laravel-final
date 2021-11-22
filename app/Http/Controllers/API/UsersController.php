@@ -21,19 +21,19 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class UsersController extends Controller
 {
-    protected $User;
+    protected $user;
 
     protected $helpers;
 
-    public function __construct(User $User, Helpers $helpers)
+    public function __construct(User $user, Helpers $helpers)
     {
-        $this->User = $User;
+        $this->user = $user;
         $this->helpers = $helpers;
     }
 
     public function index()
     {
-        $users = $this->User->orderBy('id','desc')->paginate();
+        $users = $this->user->orderBy('id','desc')->paginate();
         $data = json_decode($users->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
@@ -42,20 +42,21 @@ class UsersController extends Controller
     public function list()
     {
 
-        $data = $this->User->select('id', 'name')->get()->toArray();
+        $data = $this->user->select('id', 'name')->get()->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    public function passing($status)
+    public function passing($project_id, $status)
     {
-
         $data = $this
-            ->User
+            ->user
             ->select('id', 'name', 'email', 'phone')
             ->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
             ->where('ulogic_projects_passing.status', $status)
             ->paginate();
+
+        $data = json_decode($data->toJSON());
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
@@ -73,9 +74,6 @@ class UsersController extends Controller
             return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'email', 'error' => 'email exist']);
         }
 
-
-
-//        $number = mt_rand(1, 4294967294);
         $password = Hash::make($request->post('password'));
 
         // create a user
@@ -99,7 +97,6 @@ class UsersController extends Controller
     }
 
 
-    // ЧТО ЭТО ??
     public function createName($name)
     {
         $number = mt_rand(1, 4294967294);
@@ -117,7 +114,7 @@ class UsersController extends Controller
 
         $user->save();
 
-        $data = $this->User->all()->toArray();
+        $data = $this->user->all()->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
@@ -129,15 +126,11 @@ class UsersController extends Controller
 
     public function show($id)
     {
-
-        $data = $this->User->where('id', $id)->first();
-
-        if (count($data) > 0) {
-
-            return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+        $data = $this->user->where('id', $id)->first();
+        if (!$data) {
+            return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
         }
-
-        return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
     public function store(Request $request)
@@ -146,15 +139,15 @@ class UsersController extends Controller
         $arr = $request->all();
 
         while ($data = current($arr)) {
-            $this->User->{key($arr)} = $data;
+            $this->user->{key($arr)} = $data;
             next($arr);
         }
 
-        $validation = Validator::make($request->all(), $this->User->rules);
+        $validation = Validator::make($request->all(), $this->user->rules);
 
         if ($validation->passes()) {
-            $this->User->save();
-            return $this->helpers->apiArrayResponseBuilder(201, 'created', ['id' => $this->User->id]);
+            $this->user->save();
+            return $this->helpers->apiArrayResponseBuilder(201, 'created', ['id' => $this->user->id]);
         } else {
             return $this->helpers->apiArrayResponseBuilder(400, 'fail', $validation->errors());
         }
@@ -166,7 +159,7 @@ class UsersController extends Controller
 
         $data = $request->input('data');
 
-        $status = $this->User->where('id', $id)->update( $data);
+        $status = $this->user->where('id', $id)->update( $data);
 
         if ($status) {
 
@@ -183,7 +176,7 @@ class UsersController extends Controller
     function delete($id)
     {
 
-        $this->User->where('id', $id)->delete();
+        $this->user->where('id', $id)->delete();
 
         $request = AccountVerificationRequests::where('user_id', $id);
         $request->delete();
@@ -195,7 +188,7 @@ class UsersController extends Controller
     function destroy($id)
     {
 
-        $this->User->where('id', $id)->delete();
+        $this->user->where('id', $id)->delete();
         //return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
     }
 
