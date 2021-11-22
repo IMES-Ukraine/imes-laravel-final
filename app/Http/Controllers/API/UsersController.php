@@ -77,6 +77,7 @@ class UsersController extends Controller
         $password = Hash::make($request->post('password'));
 
         // create a user
+        /** @var User $user */
         $user = User::create([
             'name' => $request->post('name'),
             'phone' => $phone,
@@ -93,7 +94,7 @@ class UsersController extends Controller
             'messaging_token' => 'eUpQSLg0fkqLqK8o7T5bD4:APA91bGfNkJ5cr8DXcLubsBlqBz7fSgz_BogwAC5muytt8jOF4VEk6_Vj9D_NMff0owflTvA9TFnEV-DneQJeUGshLktOjC2PUFsmSS4Gz_qTU7ycUh8Fbxi28i0h8pa28fL3jiuJ2g5'
         ]);
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $user);
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $user->getAttributes() );
     }
 
 

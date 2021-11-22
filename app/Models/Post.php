@@ -3,9 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\Controller;
-use Google\Cloud\Core\JsonTrait;
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\JsonFieldTrait;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -20,7 +18,7 @@ use Nette\Utils\Html;
  */
 class Post extends Model
 {
-    use JsonTrait;
+    use JsonFieldTrait;
 
     public $table = 'rainlab_blog_posts';
     public $implement = ['@RainLab.Translate.Behaviors.TranslatableModel'];
