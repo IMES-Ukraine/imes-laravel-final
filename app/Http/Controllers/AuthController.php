@@ -131,6 +131,7 @@ class AuthController extends Controller
         $expiredAt = now()->addMinutes(180);
         Cache::put($phone, ['code' => $code], $expiredAt);
 
+        //TODO убрать код из выдачи после отладки
         return response()->json(['code' => $code, 'expired_at' => $expiredAt]);
     }
 
