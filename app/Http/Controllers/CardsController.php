@@ -34,7 +34,9 @@ class CardsController extends Controller
             }else {
                 $page = Cards::query()->paginate($perPage);
             }
-            return response()->json($page);
+            $page = json_decode($page->toJSON());
+            return $this->helpers->apiArrayResponseBuilder(200, 'success', $page);
+
         }
 
 
