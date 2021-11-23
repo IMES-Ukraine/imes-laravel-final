@@ -48,7 +48,6 @@ class Kernel extends HttpKernel
         'service' => [
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Illuminate\Session\Middleware\StartSession::class,
         ],
     ];
 
