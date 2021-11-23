@@ -19,10 +19,10 @@
                             <div class="articles_create__item">
                                 <p class="articles_create__item-title">Обложка</p>
                                 <div class="articles_create__item-content direction-column">
-                                    <div class="articles_create__item-file delete-style-2 width-auto buttonAddFile">
+                                    <div :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: image} ]">
                                         <input type="file" name="image" accept="image/*" @change="handleUploadBanner">
-                                        <p><span data-placeholder="Загрузить изображение">{{image.name || "Загрузить изображение"}}</span></p>
-                                        <button class="delete_file deleteFile" type="button" @change="removeImage"></button>
+                                        <p><span>{{image || "Загрузить изображение"}}</span></p>
+                                        <button class="delete_file deleteFile" type="button" @click="image={}"></button>
                                         <!--<p class="note">до 5 kb</p>-->
                                     </div>
                                     <div class="errors">{{ errorFile }}</div>
