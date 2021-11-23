@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\ProfileController;
+use App\Http\Helpers;
 use App\Models\User;
 use Daaner\TurboSMS\Facades\TurboSMS;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
@@ -17,9 +20,10 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Helpers $helpers)
     {
         $this->middleware('auth:api', ['except' => ['login', 'registration', 'sms', 'verify']]);
+        $this->helpers      = $helpers;
     }
 
     /**
@@ -35,12 +39,12 @@ class AuthController extends Controller
 
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 //var_dump(User::find(auth()->user()->id) );
 //        die;
-        return $this->respondWithToken($token, ['user' =>auth()->user()]);
+        return $this->respondWithToken($token, ['user' => auth()->user()]);
     }
 
     /**
@@ -49,21 +53,19 @@ class AuthController extends Controller
     public function registration(): JsonResponse
     {
         $name = request('name');
-        $email = request('email');
+        $phone = request('phone');
         $password = request('password');
 
-        if (User::findByEmail($email)) {
-            return response()->json(['message' => 'Email already registered'], 401);
+        $username = $this->helpers->generateUserName($phone);
+
+        if (User::findByUserName($username)) {
+            return response()->json(['message' => 'такой пользователь уже зарегистрирован'], 401);
         }
 
-        $user = new User();
-        $user->name = $name;
-        $user->email = $email;
-        $user->username = request('login') ?? $email;
-        $user->password = Hash::make($password);
-        $user->save();
+        $user = User::createNewUser($phone, $password, $name, $email);
 
-        return response()->json(['message' => 'Successfully registration!']);
+
+        return response()->json(['message' => 'Пользователь успешно зарегистрирован', 'user' => $user]);
     }
 
     /**
@@ -105,13 +107,13 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-    protected function respondWithToken(string $token, $data=[]): JsonResponse
+    protected function respondWithToken(string $token, $data = []): JsonResponse
     {
         return response()->json(array_merge($data, [
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
-        ] ));
+        ]));
     }
 
     /**
@@ -125,10 +127,11 @@ class AuthController extends Controller
         $phone = $request->phone;
         $code = substr(str_shuffle("0123456789"), 0, 6);
         $sended = TurboSMS::sendMessages($phone, 'Enter ' . $code . ' in application', 'sms');
-        Session::put('phone', $phone);
-        Session::put('code', $code);
 
-        return response()->json(['code' => $code]);
+        $expiredAt = now()->addMinutes(180);
+        Cache::put($phone, ['code' => $code], $expiredAt);
+
+        return response()->json(['code' => $code, 'expired_at' => $expiredAt]);
     }
 
     /**
@@ -143,31 +146,30 @@ class AuthController extends Controller
         $code = $request->code;
         $token = false;
 
-        if (Session::has('phone') && Session::has('code')) {
-            if ($phone == Session::get('phone') && $code == Session::get('code')) {
-
-                if (User::where('email', $phone . '@imes.pro')->first()) {
-                    return response()->json(['error' => 'unique email'], 201);
-                }
-
-                $password = Hash::make($phone);
-
-                $user = new User();
-                $user->phone = $phone;
-                $user->username = $phone . '@imes.pro';
-                $user->email = $phone . '@imes.pro';
-                $user->password = $password;
-                $user->save();
-
-                if (!$token = auth()->attempt(['username' => $phone . '@imes.pro', 'password' => $phone])) {
-                    return response()->json(['error' => 'Unauthorized'], 401);
-                }
-
-                Session::remove('phone');
-                Session::remove('code');
-            }
+        $verifyData = Cache::get($phone);
+        if (!$verifyData) {
+            return response()->json(['error' => 'Код подтверждения истек'], 401);
         }
 
+        if (!hash_equals((string)$verifyData['code'], (string)$code)) {
+            return response()->json(['error' => 'Неверный код подтверждения'], 401);
+        }
+
+        $username = $this->helpers->generateUserName($phone);
+
+        if (User::where('username', $username)->first()) {
+            return response()->json(['error' => 'Такой телефон уже зарегистрирован'], 401);
+        }
+
+        $user = User::createNewUser($phone);
+
+        if (!$user) {
+            return response()->json(['error' => 'Регистрация завершилась ошибкой'], 401);
+        }
+        if (!$token = auth()->attempt(['username' => $user->username, 'password' => $user->username])) {
+            return response()->json(['error' => 'Не удалось получить токен'], 401);
+        }
         return response()->json(['token' => $token]);
+
     }
 }

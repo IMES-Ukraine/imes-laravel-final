@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use App\Classes\UserBasicInfo;
+use App\Classes\UserFinancialInfo;
+use App\Classes\UserSpecializedInfo;
+use App\Http\Helpers;
 use App\Traits\JWT;
 use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -132,12 +137,55 @@ class User extends Authenticatable implements JWTSubject
         if (!$email) {
             return null;
         }
-
         return self::where('email', $email)->first();
     }
+
+    /**
+     * Looks up a user by their phone.
+     * @return self|null
+     */
+    public static function findByPhone($phone)
+    {
+        if (!$phone) {
+            return null;
+        }
+        return self::where('phone', $phone)->first();
+    }
+
+    /**
+     * Looks up a user by their username.
+     * @return self|null
+     */
+    public static function findByUserName($username)
+    {
+        if (!$username) {
+            return null;
+        }
+        return self::where('username', $username)->first();
+    }
+
+
 
     public function city_info()
     {
         return $this->hasOne(City::class, 'id', 'city');
+    }
+
+    public static function createNewUser($phone, $password = null, $name = null, $email = null)
+    {
+        $username = (new Helpers())->generateUserName($phone);
+        $passwordHash = Hash::make($password ?? $username);
+
+        return self::create([
+            'phone' => $phone,
+            'name' => $name ?? $phone,
+            'username' => $username,
+            'email' => $email ?? $username,
+            'password' => $passwordHash,
+            'basic_information' => new UserBasicInfo(),
+            'specialized_information' => new UserSpecializedInfo(),
+            'financial_information' => new UserFinancialInfo(),
+            'messaging_token' => env('MESSAGING_TOKEN')
+        ]);
     }
 }
