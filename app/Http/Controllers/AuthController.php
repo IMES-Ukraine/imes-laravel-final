@@ -169,7 +169,7 @@ class AuthController extends Controller
         if (!$token = auth()->attempt(['username' => $user->username, 'password' => $user->username])) {
             return response()->json(['error' => 'Не удалось получить токен'], 401);
         }
-        return response()->json(['token' => $token]);
+        return response()->json(['token' => $token, 'user' => $user]);
 
     }
 }
