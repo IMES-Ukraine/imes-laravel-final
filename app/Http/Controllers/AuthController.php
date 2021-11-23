@@ -37,14 +37,13 @@ class AuthController extends Controller
 //        $hash = Hash::make($pass);
 //        return response()->json([$pass, $hash] );
 
-        $credentials = request(['email', 'password']);
+        $credentials = request(['username', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-//var_dump(User::find(auth()->user()->id) );
-//        die;
-        return $this->respondWithToken($token, ['user' => auth()->user()]);
+        $data = User::where(['id' => auth()->user()->id])->get()->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
+        return $this->respondWithToken($token, ['user' => $data]);
     }
 
     /**
@@ -128,7 +127,7 @@ class AuthController extends Controller
         $code = substr(str_shuffle("0123456789"), 0, 6);
         $sended = TurboSMS::sendMessages($phone, 'Enter ' . $code . ' in application', 'sms');
 
-        $expiredAt = now()->addMinutes(180);
+        $expiredAt = now()->addMinutes(env('SMS_CODE_TIMEOUT'));
         Cache::put($phone, ['code' => $code], $expiredAt);
 
         //TODO убрать код из выдачи после отладки
