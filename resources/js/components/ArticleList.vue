@@ -57,12 +57,7 @@ export default {
         },
         UpdateList (id) {
             this.$delete(ARTICLE_DESTROY + id).then()
-
-            for (const [index, value] of Object.entries(this.posts)) {
-                if (value.id == id) {
-                    this.posts.splice(index, 1)
-                }
-            }
+            this.getResults();
         }
     },
     created () {
