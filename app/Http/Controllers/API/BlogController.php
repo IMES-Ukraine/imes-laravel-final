@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Article;
 use App\Models\File;
-use App\Models\PostGallery;
 use App\Models\PostTag;
 use App\Models\PostTimes;
 use App\Models\Recommended;
@@ -15,7 +13,6 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Post;
 use Auth;
 use App\Models\Articles;
@@ -100,26 +97,36 @@ class BlogController extends Controller
     {
         $data = Articles::select(
             'rainlab_blog_posts.id',
-            'rainlab_blog_posts.user_id',
             'rainlab_blog_posts.title',
+            'rainlab_blog_posts.slug',
+            'rainlab_blog_posts.excerpt',
             'rainlab_blog_posts.content',
+            'rainlab_blog_posts.published_at',
+            'rainlab_blog_posts.published',
+            'rainlab_blog_posts.created_at',
+            'rainlab_blog_posts.updated_at',
+            'rainlab_blog_posts.user_id',
             'rainlab_blog_posts.content_html',
             'rainlab_blog_posts.action',
             'rainlab_blog_posts.button',
             'rainlab_blog_posts.type',
+            'rainlab_blog_posts.learning_bonus',
+            'rainlab_blog_posts.cover_image_id',
             'rainlab_blog_posts_times.date',
             'rainlab_blog_posts_times.time',
-        )
+            )
             ->with('cover_image')
-            ->with('gallery')
-            ->with('tags')
-            ->with('user')
-            ->with('recommended')
+            ->with('is_opened')
+//            ->with('gallery')
+            ->with('featured_images')
             ->leftJoin('rainlab_blog_posts_times', 'rainlab_blog_posts_times.post_id', '=', 'rainlab_blog_posts.id')
             ->whereNotNull('rainlab_blog_posts_times.date')
             ->get();
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+        $data = $data->toArray();
+        $user = User::where(['id' => $data[0]['user_id']])->select('id', 'name')->first();
+        $data[0]['user'] = $user;
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
     /**
@@ -262,6 +269,7 @@ class BlogController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @param int $id
      * @param Request $request
      * @return JsonResponse
      */
@@ -295,30 +303,36 @@ class BlogController extends Controller
         if ($saveStatus) {
             //Пока у нас изображения в галерее не удаляются
 //            File::where('attachment_id', $model->id)->delete();
-            foreach ($request->featured_images as $image) {
-                $fileImage = File::find($image['id']);
-                $fileImage->attachment_id = $model->id;
-                $fileImage->save();
+            if ($request->featured_images) {
+                foreach ($request->featured_images as $image) {
+                    $fileImage = File::find($image['id']);
+                    $fileImage->attachment_id = $model->id;
+                    $fileImage->save();
 //                $model_gallery = new PostGallery();
 //                $model_gallery->post_id = $model->id;
 //                $model_gallery->cover_image = $value['path'];
 //                $model_gallery->save();
+                }
             }
 
             PostTag::where('post_id', $model->id)->delete();
-            foreach ($request->tags as $tag) {
-                $model_tags = new PostTag();
-                $model_tags->post_id = $model->id;
-                $model_tags->tag_id = $tag['id'];
-                $model_tags->save();
+            if ($request->tags) {
+                foreach ($request->tags as $tag) {
+                    $model_tags = new PostTag();
+                    $model_tags->post_id = $model->id;
+                    $model_tags->tag_id = $tag['id'];
+                    $model_tags->save();
+                }
             }
 
             Recommended::where('parent_id', $model->id)->delete();
-            foreach ($request->recommended as $rec) {
-                Recommended::create([
-                    'parent_id' => $model->id,
-                    'recommended_id' => $rec['id']
-                ]);
+            if ($request->recommended) {
+                foreach ($request->recommended as $rec) {
+                    Recommended::create([
+                        'parent_id' => $model->id,
+                        'recommended_id' => $rec['id']
+                    ]);
+                }
             }
 
             if (isset($request->date) && isset($request->time)) {

@@ -120,7 +120,7 @@ Route::group(
                 Route::get('/', [BlogController::class, 'index']);
                 Route::get('/list', [BlogController::class, 'list']);
 
-                Route::post('/update', [BlogController::class, 'update']);
+                Route::post('/update/{id}', [BlogController::class, 'update']);
                 Route::post('/', [BlogController::class, 'store']);
 
                 Route::get('/tags', [BlogController::class, 'tags']);
