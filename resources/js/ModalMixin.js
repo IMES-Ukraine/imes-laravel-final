@@ -40,9 +40,9 @@ export default {
                 page = 1;
             }
             this.$get(CARDS, {page: page}).then( response => {
-                this.$store.commit('setCards',  response.data || {} );
+                this.$store.commit('setCards',  response.data.data || {} );
                 this.$store.commit('setResponseData',  response || {} );
-                this.responseData = response;
+                this.responseData = response.data;
             });
         },
     }
