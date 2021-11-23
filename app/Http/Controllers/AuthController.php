@@ -42,7 +42,7 @@ class AuthController extends Controller
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        $data = User::where(['id' => auth()->user()->id])->get()->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
+        $data = User::where(['id' => auth()->user()->id])->get()->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at']);
         return $this->respondWithToken($token, ['user' => $data]);
     }
 
