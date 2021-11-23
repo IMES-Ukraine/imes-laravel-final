@@ -146,7 +146,7 @@ class ProfileController extends Controller
     public function setPassword(Request $request){
 
         //$apiUser = Auth::getUser();
-        $apiUser = Auth::user();
+        $apiUser = auth()->user();
 
         $toValidate = [
             'password' => $request->post('password'),
@@ -155,42 +155,15 @@ class ProfileController extends Controller
             'password' => 'string|min:4',
         ];
 
-        if ( $request->post('oldPassword')) {
-
-            $isAuthenticated = false;
-            try {
-                $isAuthenticated = Auth::authenticate([
-                    'login' => $apiUser->email,
-                    'password' => $request->post('oldPassword'),
-                ]);
-            } catch(AuthenticationException $e) {
-                return $this->helpers->apiArrayResponseBuilder(401, 'error', ['password_not_match']);
-            }
-
-            $authenticateStatus = $isAuthenticated ? 'yes' : 'no';
-
-            $toValidate['isAuthenticated'] = $authenticateStatus;
-            $rules['isAuthenticated'] = 'accepted';
-
-        }
-
         $validator = Validator::make($toValidate, $rules);
 
         if( $validator->fails()){
-            return $this->helpers->apiArrayResponseBuilder(401, 'error', $validator->messages()->all());
+            return $this->helpers->apiArrayResponseBuilder(401, $validator->getMessageBag());
         }
 
-        $userId = $apiUser->id;
+        $apiUser->update(['password' => Hash::make($request->post('password') )]);
 
-        $user = User::find($userId);
-        $user->password =Hash::make($request->post('password'));
-        $user->save();
-
-        $data = User::find($userId)->toArray();
-
-        foreach (['permissions', 'deleted_at', 'updated_at', 'activated_at'] as $v) {
-            unset($data[$v]);
-        }
+        $data = User::where(['id' => $apiUser->id])->get()->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', ['user' => $data]);
     }
