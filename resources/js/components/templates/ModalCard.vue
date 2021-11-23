@@ -27,7 +27,9 @@
                             <input type="text" name="name" v-model="data.name">
                             <p class="articles_create__name-note">50 символов</p>
                         </div>
-                        <div class="errors"></div>
+                        <div class="errors" v-if="error_title">
+                            Название обязательное
+                        </div>
                     </div>
                 </div>
                 <div class="articles_create__item">
@@ -35,7 +37,9 @@
                     <div class="articles_create__item-content">
                         <div class="articles_create__item-field">
                             <input type="number" name="name" v-model="data.cost"/>
-                            <div class="errors"></div>
+                            <div class="errors" v-if="error_cost">
+                                Стоимость обязательна
+                            </div>
                         </div>
                         <i class="token-icon">
                             <!-- <img src="img/token-icon.svg" alt=""> -->
@@ -299,7 +303,9 @@
                             <textarea class="height-72" v-model="data.short_description"/>
                             <p class="articles_create__name-note bottom">150 символов</p>
                         </div>
-                        <div class="errors"></div>
+                        <div class="errors" v-if="error_short_description">
+                            Описание обязательное
+                        </div>
                     </div>
                 </div>
                 <div class="articles_create-line"></div>
@@ -389,6 +395,9 @@ export default {
     data() {
         return {
             category: [{text: 'ВСЕ', value: 1}, {text: 'Дерматология', value: 2}, {text: 'Кардиология',value: 3}, {text: 'Гастроэнтерология', value: 4}],
+            error_title: false,
+            error_cost: false,
+            error_short_description: false
         }
     },
     computed: {
@@ -404,18 +413,40 @@ export default {
     },
     methods: {
         saveData() {
-            if (this.id) {
-                axios.put(CARDS + '/' + this.id, this.data).then((res) => {
-                    this.closeModal();
-                    this.loadCards();
-                    this.showMsgBox(res.data.status ? 'Дані картки оновлено' : 'Під час збереження даних виникла помилка');
-                });
-            } else {
-                axios.post(CARDS, this.data).then((res) => {
-                    this.loadCards();
-                    this.closeModal();
-                    this.showMsgBox(res.data.status ? 'Картку створено' : 'Під час збереження даних виникла помилка');
-                });
+            this.error_title = false;
+            this.error_cost = false;
+            this.error_short_description = false;
+            let errors = false
+
+            if (this.data.name == '' || typeof this.data.name == 'undefined') {
+                this.error_title = true;
+                errors = true
+            }
+
+            if (this.data.cost == '' || typeof this.data.cost == 'undefined') {
+                this.error_cost = true;
+                errors = true
+            }
+
+            if (this.data.short_description == '' || typeof this.data.short_description == 'undefined') {
+                this.error_short_description = true;
+                errors = true
+            }
+
+            if (!errors) {
+                if (this.id) {
+                    axios.put(CARDS + '/' + this.id, this.data).then((res) => {
+                        this.closeModal();
+                        this.loadCards();
+                        this.showMsgBox(res.data.status ? 'Дані картки оновлено' : 'Під час збереження даних виникла помилка');
+                    });
+                } else {
+                    axios.post(CARDS, this.data).then((res) => {
+                        this.loadCards();
+                        this.closeModal();
+                        this.showMsgBox(res.data.status ? 'Картку створено' : 'Під час збереження даних виникла помилка');
+                    });
+                }
             }
         },
 
