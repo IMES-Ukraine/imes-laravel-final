@@ -7,7 +7,7 @@
                     Чати
                 </button>
                 <div class="input-group input-group mt-5 mb-4">
-                    <input type="text" id="filterId" class="form-control input-is-small input-has-append"
+                    <input type="text" id="filterId" v-on:keyup.enter="findChat()" class="form-control input-is-small input-has-append"
                            placeholder="пошук по № аккаунта"
                            v-model="filterId"
                            aria-label="пошук по № аккаунта" >
