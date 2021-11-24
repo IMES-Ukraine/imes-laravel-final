@@ -390,7 +390,11 @@ export default {
                 if (this.articleId) {
                     url = ARTICLE_UPDATE + '/' + this.articleId;
                 }
-                this.$post(url, this.article).then((res) => {
+                this.$post(url, this.article, {
+                    params: {
+                        access_token: TOKEN
+                    },
+                }).then((res) => {
                     this.$router.push({name: 'articleList'});
                 })
                     .catch((error) => {
