@@ -50,7 +50,11 @@
                 </div>
                 <div class="articles_create__item-content">
                     <div class="articles_create__media">
-                        <SimpleTestMedia :media="variant.media"></SimpleTestMedia>
+                        <div v-for="file in variant.media" v-bind:key="file.itemId" class="articles_create__media-item">
+                            <div class="articles_create__media-img">
+                                <img :src="file.path" alt="">
+                            </div>
+                        </div>
                         <div class="articles_create__media-add">
                             <input type="file" name="file" :id="'file-'+variant.itemId"
                                    :disabled=" localType != 'media'"
@@ -133,14 +137,10 @@
 <script>
 import {required} from 'vuelidate/lib/validators'
 import {PROJECT_IMAGE, TOKEN, ARTICLE_COVER} from "../../api/endpoints";
-import SimpleTestMedia from "../fragmets/SimpleTestMedia"
 import {getRandomId} from '../../utils'
 
 export default {
     name: 'SimpleTestVariantsArray',
-    components: {
-        SimpleTestMedia
-    },
     props: {
         test: Object,
         errors: Object

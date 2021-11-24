@@ -17,21 +17,16 @@ class BannersController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $item = Banners::query()->findOrFail(1);
-        $image = '';
+        $model = Banners::query()->findOrFail(1);
+        $post = $request->post();
 
-        if ($request->hasFile('image')) {
-            $image = $request->file('image')->store('banners', 'public');
-        }
+        $model->image_id = $post['image']['id'];
+        $model->url = $post['url'];
+        $model->save();
 
-        $status = $item->update([
-            'image' => Storage::url($image),
-            'url' => $request->url
-        ]);
+        $item = Banners::query()->with('image')->where(['type' => $model->type])->get();
 
-        $item = Banners::query()->where(['type' => $item->type])->get();
-
-        return response()->json(compact('item', 'status') );
+        return response()->json(compact('item') );
     }
 
     /**
@@ -42,7 +37,7 @@ class BannersController extends Controller
      */
     public function show(string $type): JsonResponse
     {
-        $item = Banners::query()->where(['type' => $type])->get();
+        $item = Banners::query()->with('image')->where(['type' => $type])->get();
         return response()->json(compact('item'));
     }
 }

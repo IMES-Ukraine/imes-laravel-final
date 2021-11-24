@@ -26,4 +26,13 @@ class PostTag extends Model
     {
         return $this->hasOne(Tag::class, 'id', 'tag_id');
     }
+
+    /**
+     * Tags
+     * @return mixed
+     */
+    public function tags()
+    {
+        return $this->hasMany(Tag::class, 'id', 'tag_id');
+    }
 }

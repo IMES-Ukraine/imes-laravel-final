@@ -86,5 +86,14 @@ class Banners extends Model
 
     ];
 
+    /**
+     * Image in list
+     * @return mixed
+     */
+    public function image()
+    {
+        return $this->belongsTo(File::class, 'image_id', 'id');
+    }
+
 
 }

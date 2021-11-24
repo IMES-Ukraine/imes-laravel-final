@@ -30,7 +30,6 @@
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Время</p>
                                     <div class="articles_create__item-content">
-                                        <!--<input type="time" class="date_time" v-model="item.time">-->
                                         <date-picker
                                             v-model="item.time"
                                             format="HH:mm"
@@ -44,7 +43,6 @@
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Дата</p>
                                     <div class="articles_create__item-content">
-                                        <!--<input type="date" class="date_time" v-model="item.date" value-type="format" format="YYYY-MM-DD">-->
                                         <date-picker v-model="item.date" value-type="format" format="DD-MM-YYYY"></date-picker>
                                         <div class="errors" v-if="item.date_error">{{ item.date_error }}</div>
                                     </div>
@@ -62,20 +60,34 @@
                                         </div>
                                         <div class="articles_create__radio_circle">
                                             <div class="articles_create__radio_circle-block">
-                                                <v-radio
-                                                    :id="name+item.id+'_1'"
-                                                    :name="name+item.id"
-                                                    :value="1"
-                                                    :checked="(item.type == 1)?true:false"
-                                                >Новости</v-radio>
+                                                <div class="article-edit__radio form-check form-check-inline">
+                                                    <input
+                                                        type="radio"
+                                                        :id="name+item.id+'_1'"
+                                                        :name="name+item.id"
+                                                        :value="1"
+                                                        :checked="(item.type == 1)?true:false"
+                                                        @click="articleTypeStore(1, key)"
+                                                    >
+                                                    <label class="article-edit__label article-edit__radio form-check-label"
+                                                           :for="name+item.id+'_1'"
+                                                    >Новости</label>
+                                                </div>
                                             </div>
                                             <div class="articles_create__radio_circle-block">
-                                                <v-radio
-                                                    :id="name+item.id+'_2'"
-                                                    :name="name+item.id"
-                                                    :value="2"
-                                                    :checked="(item.type == 2)?true:false"
-                                                >Информация</v-radio>
+                                                <div class="article-edit__radio form-check form-check-inline">
+                                                    <input
+                                                        type="radio"
+                                                        :id="name+item.id+'_2'"
+                                                        :name="name+item.id"
+                                                        :value="2"
+                                                        :checked="(item.type == 2)?true:false"
+                                                        @click="articleTypeStore(2, key)"
+                                                    >
+                                                    <label class="article-edit__label article-edit__radio form-check-label"
+                                                        :for="name+item.id+'_2'"
+                                                    >Информация</label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -83,14 +95,14 @@
                                 <div class="articles_create__item half">
                                     <p class="articles_create__item-title">Обложка</p>
                                     <div class="articles_create__item-content">
-                                        <div :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: !!(image[key] ? image[key].image_id : 0)}]" :id="'inputFile'+item.id">
+                                        <div :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: item.cover_image.path} ]" :id="'inputFile'+item.id">
                                             <input
                                                 type="file"
                                                 class="input-file-hidden"
-                                                v-on:change="handleUploadArticle($event, item.id)"
+                                                v-on:change="handleUploadArticle($event, key)"
                                                 role="button" />
-                                            <p><span >{{image[key] ? image[key].image_id : 'Загрузить'}}</span></p>
-                                            <button class="delete_file deleteFile" @click="removeImage(key)"></button>
+                                            <p><span >{{ item.cover_image.file_name || 'Загрузить' }}</span></p>
+                                            <button class="delete_file deleteFile" @click="item.cover_image={}"></button>
                                         </div>
                                         <div v-if="item.image_error" class="errors">{{ item.image_error }}</div>
                                     </div>
@@ -99,7 +111,11 @@
                                     <p class="articles_create__item-title">Галерея</p>
                                     <div class="articles_create__item-content">
                                         <div class="articles_create__media">
-                                            <SimpleTestMedia :media="item.multiples"></SimpleTestMedia>
+                                            <div v-for="file in item.featured_images" v-bind:key="file.itemId" class="articles_create__media-item">
+                                                <div class="articles_create__media-img">
+                                                    <img :src="file.path" alt="">
+                                                </div>
+                                            </div>
                                             <div class="articles_create__media-add">
                                                 <input type="file" @change="addMedia($event, key)">
                                             </div>
@@ -112,7 +128,7 @@
                                         <textarea
                                             class="form-control"
                                             rows="4"
-                                            v-model="item.text"
+                                            v-model="item.excerpt"
                                         ></textarea>
                                     </div>
                                     <div class="errors" v-if="item.text_error">{{item.text_error}}</div>
@@ -132,17 +148,19 @@
                                             <p>Вставка в тексте</p>
                                         </div>
                                         <div class="articles_create__item-content direction-column" v-if="item.textLocale">
-                                            <input
-                                                type="text"
-                                                v-model="item.content_title"
+                                            <v-input-text
+                                                v-on:update:value="updateInsertTitle($event, key)"
                                                 placeholder="Заголовок"
-                                                class="mb20"
-                                            >
-                                            <textarea
-                                                rows="4"
-                                                v-model="item.content_text"
+                                                :value="item.content[0].title"
+                                                :text="''"
+                                                :classes="'mb20'"
+                                            />
+                                            <v-textarea
+                                                :rows="4"
+                                                :text="item.content[0].content"
+                                                v-on:update:text="updateInsertContent($event, key)"
                                                 placeholder="Текст"
-                                            ></textarea>
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +170,8 @@
                                         <div class="articles_create__name-block">
                                             <div class="field_wrap_for_tags">
                                                 <multiselect
-                                                    v-model="item.chosenTags"
+                                                    v-model="item.tags"
+                                                    :value="item.tags"
                                                     tag-placeholder="Добавить тег"
                                                     placeholder="Выбрать тег"
                                                     label="name"
@@ -162,8 +181,6 @@
                                                     :taggable="true"
                                                     :show-labels="false"
                                                     :close-on-select="false"
-                                                    :value="item.chosenTags"
-                                                    @tag="addTag"
                                                 />
                                             </div>
                                         </div>
@@ -222,8 +239,9 @@
                                             <div class="articles_create__addition-block width-194">
                                                 <div class="articles_create-multiselect">
                                                     <multiselect
-                                                        v-model="item.user_id"
-                                                        :value="item.user_id"
+                                                        v-model="item.user"
+                                                        :value="item.user"
+                                                        @input="selectAuthor($event, key)"
                                                         tag-placeholder="Обрати автора"
                                                         placeholder="Обрати автора"
                                                         label="name"
@@ -233,7 +251,6 @@
                                                         :show-labels="false"
                                                         :options="authors"
                                                     />
-                                                    <input type="hidden" v-model="item.active_user_id" />
                                                 </div>
                                             </div>
                                             <div class="articles_create__addition-block">
@@ -251,14 +268,14 @@
                                     :name="'is-article-button'"
                                     v-model="item.button"
                                     :text_button="item.button"
-                                    @update="buttonStore"
+                                    @update="buttonStore($event, key)"
                                 />
                                 <div class="articles_create__item">
                                     <p class="articles_create__item-title">Реком. статьи</p>
                                     <div class="articles_create__item-content">
                                         <multiselect
-                                            v-model="item.chosenRecommended"
-                                            :value="item.chosenRecommended"
+                                            v-model="item.recommended"
+                                            :value="item.recommended"
                                             tag-placeholder="Додати статтю"
                                             placeholder="Вибрати статтю"
                                             label="title"
@@ -277,7 +294,7 @@
                                     :name="'is-article-link'"
                                     v-model="item.action"
                                     :text_button="item.action"
-                                    @update="linkStore"
+                                    @update="linkStore($event, key)"
                                 />
                             </div>
                         </div>
@@ -342,7 +359,6 @@ import {
 } from "../api/endpoints";
 import FragmentFormText from "./fragmets/text"
 import ArticleMultiple from "./templates/article/form/multiple"
-import SimpleTestMedia from "./fragmets/SimpleTestMedia"
 import { getRandomId, currentDate, changeFormatDate } from './../utils'
 import VRadio from "./templates/inputs/radio"
 import VTextarea from "./templates/inputs/textarea"
@@ -369,7 +385,6 @@ export default {
         Multiselect,
         FragmentFormText,
         ArticleMultiple,
-        SimpleTestMedia,
         VRadio,
         VTextarea,
         VInputText,
@@ -377,7 +392,7 @@ export default {
     },
     data() {
         return {
-            items: [],//12,
+            items: [],
             swiperOption: {
                 spaceBetween: 22,
                 slidesPerView: 'auto',
@@ -400,7 +415,7 @@ export default {
             button: '',
             textInsert: '',
             insert: [],
-            multiples: [],
+            featured_images: [],
             articleType: 1,
             type: 1,
             textLocale: 0,
@@ -419,29 +434,25 @@ export default {
     },
 
     methods: {
-        removeImage(key) {
-            this.image[key] = null;
-            this.itemsKey = Math.random();
+        updateInsertTitle(value, key) {
+            this.items[key].content[0].title = value
         },
-        updateInsertTitle(value) {
-            this.insert.push({title:value})
-        },
-        updateInsertContent(value) {
-            this.insert.push({content:value})
+        updateInsertContent(value, key) {
+            this.items[key].content[0].content = value
         },
         getTextInsert() {
             this.textLocale = 1;
         },
-        addTag (newTag) {
+        addTag (newTag, key) {
             const tag = {
                 name: newTag,
                 code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
             }
-            this.recommended.push(tag)
-            this.chosenRecommended.push(tag)
+            this.items[key].recommended.push(tag)
+            this.items[key].chosenRecommended.push(tag)
         },
-        selectAuthor (user_id) {
-            this.user_id = [user_id]
+        selectAuthor (value, key) {
+            this.items[key].user_id = this.items[key].user.id
         },
         submitForm(id) {
             let error = false
@@ -459,21 +470,12 @@ export default {
                     let block = field.parents(".buttonAddFile");
                     let text = block.find("p span");
 
-                    let image_id = null;
-                    for (const [indexIm, itemIm] of Object.entries(this.image)) {
-                        if (itemIm.id == id) {
-                            image_id = itemIm.image_id;
-                        }
-                    }
-
-                    if ((image_id == null && text.text() == '') || (image_id == null && text.text() == 'Загрузить')) {
-                        this.items[index].image_error = 'Обложка обязательна';
+                    if (!item.cover_image.file_name) {
+                        this.errorArticleCover = 'Обложка обязательна'
                         error = true;
-                    } else {
-                        this.items[index].image_error = '';
                     }
 
-                    if (item.text == '') {
+                    if (item.excerpt == '') {
                         this.items[index].text_error = 'Описание обязательно';
                         error = true;
                     } else {
@@ -481,24 +483,15 @@ export default {
                     }
 
                     if (!error) {
-                        let URL = (item.post_id)?ARTICLE_UPDATE:ARTICLE;
-                        this.$post(URL, {
-                            post_id: item.post_id,
-                            title: item.title,
-                            articleType: item.type,
-                            text: item.text,
-                            button: item.button,
-                            action: item.action,
-                            content_title: item.content_title,
-                            content_text: item.content_text,
-                            user: (item.user_id[0])?item.user_id[0]['id']:0,
-                            active_user_id: item.active_user_id,
-                            cover_image: image_id,
-                            gallery: item.multiples,
-                            tags: item.chosenTags,
-                            recommended: item.chosenRecommended,
-                            time: item.time + ':00',
-                            date: item.date
+                        let url = ARTICLE;
+                        if (item.id) {
+                            url = ARTICLE_UPDATE + '/' + item.id;
+                        }
+
+                        this.$post(url, item, {
+                            params: {
+                                access_token: TOKEN
+                            },
                         })
                             .then((res) => {
                                 document.location.reload();
@@ -517,20 +510,20 @@ export default {
                 this.authors = response.data
             })
         },
-        buttonStore(value) {
-            this.button = value
+        buttonStore(value, key) {
+            this.items[key].button = value
         },
         insertStore(value) {
             this.insert = value
         },
-        linkStore(value) {
-            this.link = value
+        linkStore(value, key) {
+            this.items[key].action = value
         },
-        articleTypeStore(value) {
-            this.articleType = value
+        articleTypeStore(value, key) {
+            this.items[key].type = value;
         },
         multiplesStore(value) {
-            this.multiples = value
+            this.featured_images = value
         },
         handleUploadArticle(event, id) {
             let imageForm = new FormData()
@@ -548,10 +541,8 @@ export default {
                     },
                 }
             ).then((file) => {
-                this.name = file.data.data.file_name
-                //this.articles[0].imeges.push(file.data)
-                //this.image[id] = file.data.data.id
-                this.image.push({id: id, image_id: file.data.data.path})
+                this.items[id].cover_image = file.data.data
+                //this.image.push({id: id, image_id: file.data.data/*file.data.data.path*/})
             })
         },
         addMedia(event, id) {
@@ -571,15 +562,12 @@ export default {
                 }
             ).then((file) => {
                 let obj = {
-                    id: id,
-                    itemId: 'plan-' + getRandomId(),
-                    file: file.data.data.id,
-                    name: event.target.files[0].name,
-                    data: file.data,
+                    itemId: 'article-' + getRandomId(),
+                    id: file.data.data.id,
+                    file_name: file.data.data.file_name,
                     path: file.data.data.path
                 };
-                //this.multiples.push(obj)
-                this.items[id].multiples.push(obj);
+                this.items[id].featured_images.push(obj)
                 $('#article_multiples').val(null);
             })
         },
@@ -604,54 +592,16 @@ export default {
             if (response.data.length > 0) {
                 for (const [index, item] of Object.entries(response.data)) {
 
-                    setTimeout(() => {
-                        let field = $('#inputFile'+item.id+' input');
-                        let block = field.parents(".buttonAddFile");
-                        let text = block.find("p span");
-                        let fileName = item.cover_image;
-                        block.addClass("has_file");
-                        text.text(fileName);
-                    }, 3000);
-                    this.image.push({
-                        id : item.id,
-                        image_id: item.cover_image
-                    });
-
-                    let gallery = [];
-                    if (item.gallery) {
-                        for (const [indexG, itemG] of Object.entries(item.gallery)) {
-                            let obj = {
-                                itemId: 'gallery-' + getRandomId(),
-                                path: itemG.cover_image
-                            };
-                            gallery.push(obj)
-                        }
-                    }
-
-                    let tags = [];
-                    if (item.tags) {
-                        for (const [indexT, itemT] of Object.entries(item.tags)) {
-                            let obj = {
-                                id: itemT.tag.id,
-                                name: itemT.tag.name
-                            };
-                            tags.push(obj)
-                        }
-                    }
-
-                    let recommended = [];
-                    if (item.recommended) {
-                        for (const [indexR, itemR] of Object.entries(item.recommended)) {
-                            let obj = {
-                                id: itemR.recommended_id,
-                                title: itemR.post.title
-                            };
-                            recommended.push(obj)
-                        }
-                    }
-
                     this.items.push({
                         id: item.id,
+                        cover_image: item.cover_image,
+                        content: [
+                            {
+                                type: 'text',
+                                title: (item.content)?item.content[0].title:'',
+                                content: (item.content)?item.content[0].content:''
+                            }
+                        ],
                         post_id: item.id,
                         real: true,
                         active: false,
@@ -661,18 +611,17 @@ export default {
                         title_error: '',
                         time_error: '',
                         image_error: '',
+                        excerpt: item.excerpt,
                         text_error: '',
                         type: item.type,
                         text: item.content_html,
-                        content_title: (item.content[0])?item.content[0].title:'',
-                        content_text: (item.content[0])?item.content[0].content:'',
                         textLocale: (item.content)?1:0,
-                        chosenTags: tags,
-                        user_id: (item.user)?[{id: item.user.id, name: item.user.name}]:0,
+                        tags: item.tags,
+                        user: (item.user)?[{id: item.user.id, name: item.user.name}]:0,
                         active_user_id: (item.user)?[{id: item.user.id, name: item.user.name}]:0,
-                        chosenRecommended: recommended,
+                        recommended: item.recommended,
                         action: item.action,
-                        multiples: gallery,
+                        featured_images: item.featured_images,//gallery,
                         button: item.button,
                     });
                 }
@@ -684,6 +633,16 @@ export default {
                     for (let i = 0; i < count; i++) {
                         this.items.push({
                             id: i,
+                            cover_image: {
+                                file_name: ''
+                            },
+                            content: [
+                                {
+                                    type: 'text',
+                                    title: '',
+                                    content: ''
+                                }
+                            ],
                             post_id: 0,
                             real: false,
                             active: false,
@@ -693,19 +652,23 @@ export default {
                             title_error: '',
                             time_error: '',
                             image_error: '',
+                            excerpt: '',
                             text_error: '',
                             type: 1,
                             text: '',
                             content_title: '',
                             content_text: '',
                             textLocale: 0,
-                            chosenTags: [],
-                            user_id: 0,
+                            tags: [],
+                            user: {
+                                id: 0,
+                                name: ''
+                            },
                             active_user_id: 0,
                             button: '',
-                            chosenRecommended: [],
+                            recommended: [],
                             action: '',
-                            multiples: []
+                            featured_images: []
                         });
                     }
                 }
@@ -713,6 +676,16 @@ export default {
                 for (let i = 0; i < 12; i++) {
                     this.items.push({
                         id: i,
+                        cover_image: {
+                            file_name: ''
+                        },
+                        content: [
+                            {
+                                type: 'text',
+                                title: '',
+                                content: ''
+                            }
+                        ],
                         post_id: 0,
                         real: false,
                         active: true,
@@ -722,19 +695,21 @@ export default {
                         title_error: '',
                         time_error: '',
                         image_error: '',
+                        excerpt: '',
                         text_error: '',
                         type: 1,
                         text: '',
-                        content_title: '',
-                        content_text: '',
                         textLocale: 0,
-                        chosenTags: [],
-                        user_id: 0,
+                        tags: [],
+                        user: {
+                            id: 0,
+                            name: ''
+                        },
                         active_user_id: 0,
                         button: '',
-                        chosenRecommended: [],
+                        recommended: [],
                         action: '',
-                        multiples: []
+                        featured_images: []
                     });
                 }
             }

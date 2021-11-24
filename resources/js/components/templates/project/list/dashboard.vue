@@ -5,9 +5,7 @@
             <a class="sidebar_nav-button" :href="'/admin/api/v1/export-users/' + project_id"><span class="icon-download">Скачать отчёт</span></a>
         </div>
         <div class="sidebar_nav gap-10">
-            <template v-if="(options.status && options.status == 'inactive')">
-                <project-start/>
-            </template>
+            <project-start v-if="(status && status == 'inactive')"/>
             <project-stop v-else/>
             <project-remove/>
         </div>
@@ -37,6 +35,10 @@
                 type: Number,
                 default: 0
             },
+            status: {
+                type: String,
+                default: ''
+            }
         }
     }
 </script>

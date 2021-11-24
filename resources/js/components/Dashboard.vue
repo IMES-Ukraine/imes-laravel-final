@@ -1,7 +1,7 @@
 <template>
     <v-content v-if="isLoaded">
         <template v-slot:sidebar>
-            <project-list-sidebar :options="project.project.options" :project_id="project.project.id" />
+            <project-list-sidebar :options="project.project.options" :status="project.project.status" :project_id="project.project.id" />
         </template>
 
         <div class="dashboard">
