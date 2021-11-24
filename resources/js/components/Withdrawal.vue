@@ -40,7 +40,7 @@ export default {
         async loadWithdrawals() {
 
             this.$get(WITHDRAWAL).then( response => {
-                this.requests = response.data
+                this.requests = response.data.data
             });
         },
         hasRequests() {
