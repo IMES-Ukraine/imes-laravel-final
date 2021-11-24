@@ -6,10 +6,12 @@
         <template #modal-header-close>
             <!-- Emulate built in modal header close button action -->
             <b-button size="sm" variant="outline-danger" @click="closeModal()" class="articles_create-close"></b-button>
-            <h5>Особисті дані користувача {{request.id}}</h5>
         </template>
         <template #modal-title>
-            <button class="button-border" @click="saveData()" >Зберегти</button>
+            <div class="space-between">
+                <button class="button-border" @click="saveData()" >Зберегти</button>
+                <h5>Особисті дані користувача {{request.id}}</h5>
+            </div>
         </template>
         <template #modal-footer><p></p></template>
                 <div class="modal-body p-0">
@@ -134,5 +136,15 @@ export default {
 </script>
 
 <style scoped>
+    .space-between {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 15px;
+    }
 
+    .space-between button {
+        margin-right: 20px;
+    }
 </style>
