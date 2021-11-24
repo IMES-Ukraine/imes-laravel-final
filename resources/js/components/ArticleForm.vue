@@ -56,10 +56,16 @@
                             <p class="articles_create__item-title">Галерея</p>
                             <div class="articles_create__item-content">
                                 <div class="articles_create__media">
-                                    <SimpleTestMedia :media="article.featured_images"></SimpleTestMedia>
-                                    <div class="articles_create__media-add">
-                                        <input type="file" name="file" id="article_multiples"
-                                               @change="addMedia($event)">
+                                    <div class="articles_create__media-list">
+                                        <div v-for="file in article.featured_images" v-bind:key="file.itemId" class="articles_create__media-item">
+                                            <div class="articles_create__media-img">
+                                                <img :src="file.path" alt="">
+                                            </div>
+                                        </div>
+                                        <div class="articles_create__media-add">
+                                            <input type="file" name="file" id="article_multiples"
+                                                   @change="addMedia($event)">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -274,7 +280,6 @@ import {
 import FragmentFormText from "./fragmets/text";
 import ArticleSidebar from "./templates/article/sidebar";
 import ArticleMultiple from "./templates/article/form/multiple"
-import SimpleTestMedia from "./fragmets/SimpleTestMedia"
 import {getRandomId} from './../utils'
 import VTextarea from "./templates/inputs/textarea"
 import VInputText from "./templates/inputs/text"
@@ -296,7 +301,6 @@ export default {
         VContent,
         Multiselect,
         ArticleMultiple,
-        SimpleTestMedia,
         VTextarea,
         VInputText
     },

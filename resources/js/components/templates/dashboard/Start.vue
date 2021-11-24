@@ -21,7 +21,7 @@
 
 <script>
     import FragmentCloseItem from "../../fragmets/close-item"
-    import { PROJECT_START } from "../../../api/endpoints"
+    import { PROJECT_START, TOKEN } from "../../../api/endpoints"
 
     export default {
         name: "project-start",
@@ -47,6 +47,10 @@
             start () {
                 this.$post(PROJECT_START, {
                     id: this.$route.params.projectId
+                }, {
+                    params: {
+                        access_token: TOKEN
+                    },
                 }).then(response => {
                     //this.project.options.status = response.message.status
                 })
