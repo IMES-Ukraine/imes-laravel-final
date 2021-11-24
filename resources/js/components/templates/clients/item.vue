@@ -85,8 +85,10 @@ import  ModalMixin from "../../../ModalMixin";
         },
         methods: {
             activeTextBlockUser (status) {
-                return this.$store.state.checkbox[status];
+                let state = 0;
+                if (status) state = 1;
 
+                return this.$store.state.checkbox[state];
             },
         }
     }
