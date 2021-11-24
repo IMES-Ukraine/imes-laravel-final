@@ -80,7 +80,6 @@ export default new Router({
         {
             path: '/article/:articleId',
             name: "articleById",
-            // component: () => import("../components/ArticleFormUpdate.vue")
             component: () => import("../components/ArticleForm.vue")
         },
         {

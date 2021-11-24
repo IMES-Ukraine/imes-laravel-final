@@ -111,7 +111,11 @@
                                     <p class="articles_create__item-title">Галерея</p>
                                     <div class="articles_create__item-content">
                                         <div class="articles_create__media">
-                                            <SimpleTestMedia :media="item.featured_images"></SimpleTestMedia>
+                                            <div v-for="file in item.featured_images" v-bind:key="file.itemId" class="articles_create__media-item">
+                                                <div class="articles_create__media-img">
+                                                    <img :src="file.path" alt="">
+                                                </div>
+                                            </div>
                                             <div class="articles_create__media-add">
                                                 <input type="file" @change="addMedia($event, key)">
                                             </div>
@@ -355,7 +359,6 @@ import {
 } from "../api/endpoints";
 import FragmentFormText from "./fragmets/text"
 import ArticleMultiple from "./templates/article/form/multiple"
-import SimpleTestMedia from "./fragmets/SimpleTestMedia"
 import { getRandomId, currentDate, changeFormatDate } from './../utils'
 import VRadio from "./templates/inputs/radio"
 import VTextarea from "./templates/inputs/textarea"
@@ -382,7 +385,6 @@ export default {
         Multiselect,
         FragmentFormText,
         ArticleMultiple,
-        SimpleTestMedia,
         VRadio,
         VTextarea,
         VInputText,

@@ -30,7 +30,11 @@
             <p class="articles_create__item-title">Галерея</p>
             <div class="articles_create__item-content">
                 <div class="articles_create__media">
-                    <SimpleTestMedia :media="article.multiples"></SimpleTestMedia>
+                    <div v-for="file in article.multiples" v-bind:key="file.itemId" class="articles_create__media-item">
+                        <div class="articles_create__media-img">
+                            <img :src="file.path" alt="">
+                        </div>
+                    </div>
                     <div class="articles_create__media-add">
                         <input type="file" name="file" id="article_multiples"
                                @change="addMedia($event)">
@@ -188,7 +192,6 @@ import {
     USER_CREATE_NAME,
     USER_LIST
 } from "../../../api/endpoints";
-import SimpleTestMedia from "../SimpleTestMedia";
 import Multiselect from "vue-multiselect";
 import ArticleFormInsert from "../../templates/article/form/insert";
 import ArticleFormButton from "../../templates/article/form/button";
@@ -205,7 +208,6 @@ export default {
     components: {
         ValidationProvider,
         VCheckbox,
-        SimpleTestMedia,
         Multiselect,
         ArticleFormInsert,
         ArticleFormButton,
