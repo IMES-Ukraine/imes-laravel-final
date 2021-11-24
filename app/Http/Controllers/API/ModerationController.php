@@ -24,6 +24,7 @@ class ModerationController extends Controller
 
         //$data = $this->QuestionModeration->all()->toArray();
         $data = QuestionModeration::with('question')->get();
+        $data = json_decode($data->toJSON());
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
