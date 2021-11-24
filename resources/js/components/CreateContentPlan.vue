@@ -101,7 +101,7 @@
                                                 class="input-file-hidden"
                                                 v-on:change="handleUploadArticle($event, key)"
                                                 role="button" />
-                                            <p><span >{{ item.cover_image.file_name || 'Загрузить' }}</span></p>
+                                            <p><span >{{ item.cover_image.disk_name || 'Загрузить' }}</span></p>
                                             <button class="delete_file deleteFile" @click="item.cover_image={}"></button>
                                         </div>
                                         <div v-if="item.image_error" class="errors">{{ item.image_error }}</div>
