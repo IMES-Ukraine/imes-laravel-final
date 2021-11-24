@@ -30,10 +30,12 @@ class UserCardsController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(2);
 
+        $data = json_decode($withdraws->toJSON());
+
         return $this->helpers->apiArrayResponseBuilder(
             200,
             'success',
-            $withdraws);
+            $data);
 
     }
 
