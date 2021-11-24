@@ -162,7 +162,6 @@ export default {
                             });
                     }
                     console.log('Mess: ', resp.data.data);
-                    this.$bvModal.msgBoxOk("Возникла ошибка: " + resp.data.data.error);
                 }).catch(resp => {
                     this.$bvModal.msgBoxOk("Возникла ошибка: " + resp.data.data.error);
                 });
