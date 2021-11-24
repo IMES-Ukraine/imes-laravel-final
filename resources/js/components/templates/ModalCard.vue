@@ -321,30 +321,28 @@
                         </div>
                     </div>
                 </div>
-                <span v-if="data.detailed">
-                <div class="articles_create__item">
+                <div v-if="data.detailed" class="articles_create__item">
                     <p class="articles_create__item-title">Обложка</p>
                     <div class="articles_create__item-content direction-column">
-                        <div class="articles_create__item-file delete-style-2 width-auto buttonAddFile">
+                        <div :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: data.cover} ] ">
                             <input type="file" name="name">
-                            <p><span data-placeholder="Загрузить изображение"></span></p>
+                            <p><span>{{ data.cover || 'Загрузить' }}</span></p>
                             <button class="delete_file deleteFile"></button>
                             <p class="note">до 5 kb</p>
                         </div>
                         <div class="errors"></div>
                     </div>
                 </div>
-                <div class="articles_create__item">
-                    <p class="articles_create__item-title">Описание</p>
-                    <div class="articles_create__item-content direction-column">
-                        <div class="articles_create-has_note">
-                            <textarea class="height-130" v-model="data.description"/>
-                            <p class="articles_create__name-note bottom">2000 символов</p>
+                <div v-if="data.detailed" class="articles_create__item">
+                        <p class="articles_create__item-title">Описание</p>
+                        <div class="articles_create__item-content direction-column">
+                            <div class="articles_create-has_note">
+                                <textarea class="height-130" v-model="data.description"/>
+                                <p class="articles_create__name-note bottom">2000 символов</p>
+                            </div>
+                            <div class="errors"></div>
                         </div>
-                        <div class="errors"></div>
                     </div>
-                </div>
-                </span>
                 <div class="articles_create-line"></div>
                 <div class="articles_create__item">
                     <p class="articles_create__item-title height-auto"></p>
