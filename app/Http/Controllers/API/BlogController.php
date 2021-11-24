@@ -119,13 +119,12 @@ class BlogController extends Controller
             ->with('is_opened')
 //            ->with('gallery')
             ->with('featured_images')
+            ->with('user')
             ->leftJoin('rainlab_blog_posts_times', 'rainlab_blog_posts_times.post_id', '=', 'rainlab_blog_posts.id')
             ->whereNotNull('rainlab_blog_posts_times.date')
             ->get();
 
         $data = $data->toArray();
-        $user = User::where(['id' => $data[0]['user_id']])->select('id', 'name')->first();
-        $data[0]['user'] = $user;
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
