@@ -23,6 +23,7 @@ class ProjectsController extends Controller
     const ATTACHMENT_TYPE_ARTICLES = 'App\Models\Articles';
     const ATTACHMENT_TYPE_TEST_QUESTIONS = 'App\Models\TestQuestions';
     const ATTACHMENT_TYPE_PROJECT = 'App\Models\Projects';
+    const ATTACHMENT_TYPE_BANNERS = 'App\Models\Banners';
 
     protected $helpers;
     protected $project;
@@ -185,6 +186,9 @@ class ProjectsController extends Controller
         elseif ($type == 'project') {
             $attachment_type = self::ATTACHMENT_TYPE_PROJECT;
         }
+        elseif ($type == 'banners') {
+            $attachment_type = self::ATTACHMENT_TYPE_BANNERS;
+        }
 
         $file = new File;
         $file->data = \Illuminate\Support\Facades\Request::file('file');
@@ -254,10 +258,16 @@ class ProjectsController extends Controller
      */
     public function stop($id)
     {
-        $model = Projects::findOrFail($id);
+        /*$model = Projects::findOrFail($id);
         $model->update(['status' => Projects::STATUS_INACTIVE]);
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success');
+        return $this->helpers->apiArrayResponseBuilder(200, 'success');*/
+        $model = Projects::findOrFail($id);
+        $model->options->status = Projects::STATUS_INACTIVE;
+        $model->status = Projects::STATUS_INACTIVE;
+        $model->save();
+
+        return $this->helpers->apiArrayResponseBuilder(200, ['status' => Projects::STATUS_INACTIVE]);
     }
 
 }

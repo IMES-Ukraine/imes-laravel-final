@@ -19,10 +19,10 @@
                             <div class="articles_create__item">
                                 <p class="articles_create__item-title">Обложка</p>
                                 <div class="articles_create__item-content direction-column">
-                                    <div :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: image} ]">
+                                    <div :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: (banner.image)?banner.image.path:false} ]">
                                         <input type="file" name="image" accept="image/*" @change="handleUploadBanner">
-                                        <p><span>{{image || "Загрузить изображение"}}</span></p>
-                                        <button class="delete_file deleteFile" type="button" @click="image={}"></button>
+                                        <p><span>{{(banner.image?banner.image.file_name:false) || "Загрузить изображение"}}</span></p>
+                                        <button class="delete_file deleteFile" type="button" @click="banner.image={}"></button>
                                         <!--<p class="note">до 5 kb</p>-->
                                     </div>
                                     <div class="errors">{{ errorFile }}</div>
@@ -32,7 +32,7 @@
                                 <p class="articles_create__item-title">Ссылка</p>
                                 <div class="articles_create__item-content direction-column">
                                     <ValidationProvider rules="required" v-slot="{ errors }" class="width-full">
-                                        <input class="p-13" type="text" v-model="url" placeholder="https://">
+                                        <input class="p-13" type="text" v-model="banner.url" placeholder="https://">
                                         <div class="errors">{{ errors[0] }}</div>
                                     </ValidationProvider>
                                 </div>
@@ -52,7 +52,7 @@
     import RouterButton from "./fragmets/router-button"
     import BannerClose from "./templates/banner/Close"
     import { ValidationProvider, ValidationObserver } from 'vee-validate'
-    import {BANNERS} from "./../api/endpoints"
+    import { BANNERS, ARTICLE_COVER, TOKEN } from "./../api/endpoints"
 
     export default {
         name: 'BannerForm',
@@ -67,38 +67,38 @@
             url: '',
             image: '',
             errorFile: '',
-            succesPost: ''
+            succesPost: '',
+            banner: {
+                url: '',
+                image: {}
+            }
         }),
         methods: {
             loadBanner() {
                 this.$get(BANNERS + '/card').then((res) => {
                     if (res) {
-                        this.url = res.item[0].url
-                        this.image = res.item[0].image
+                        this.banner.url = res.item[0].url
+                        this.banner.image = res.item[0].image
                     }
                 })
             },
             submitForm() {
                 this.$refs.form.validate().then( success => {
-                    if (this.image == "") {
+                    if (this.banner.image == {}) {
                         this.errorFile = 'Поле обязательно';
                     } else {
                         this.errorFile = '';
                     }
 
-                    if( !success || this.errorFile != "" || this.url == "") {
+                    if( !success || this.errorFile != "" || this.banner.url == "") {
                         return;
                     }
 
                     let imageForm = new FormData()
-                    imageForm.append('image', this.image)
-                    imageForm.append('url', this.url)
+                    imageForm.append('image', this.banner.image)
+                    imageForm.append('url', this.banner.url)
 
-                    axios.post(BANNERS, imageForm, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }).then((res) => {
+                    this.$post(BANNERS, this.banner).then((res) => {
                         this.succesPost = 'Банер успешно сохранен'
                     });
                 })
@@ -109,10 +109,24 @@
                 } else {
                     this.errorFile = 'Изображение слишком большое';
                 }*/
-                this.image = event.target.files[0]
-            },
-            removeImage() {
-                this.image = '';
+                //this.image = event.target.files[0]
+                let imageForm = new FormData()
+                imageForm.append('file', event.target.files[0])
+
+                axios.post(
+                    ARTICLE_COVER + '/banners',
+                    imageForm,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        },
+                        params: {
+                            access_token: TOKEN
+                        },
+                    }
+                ).then((file) => {
+                    this.banner.image = file.data.data
+                })
             }
         },
         mounted() {
