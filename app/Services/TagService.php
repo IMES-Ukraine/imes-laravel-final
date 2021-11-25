@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\ProjectTags;
 use App\Models\Tags;
+use Illuminate\Support\Str;
 
 class TagService
 {
@@ -13,7 +14,7 @@ class TagService
         } else {
             $model_tag = new Tags();
             $model_tag->name = $tag;
-            $model_tag->slug = str_slug($tag);
+            $model_tag->slug = Str::slug($tag, '-');
             $model_tag->save();
             $tag_id = $model_tag->id;
         }
