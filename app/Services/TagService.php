@@ -13,6 +13,7 @@ class TagService
         } else {
             $model_tag = new Tags();
             $model_tag->name = $tag;
+            $model_tag->slug = str_slug($tag);
             $model_tag->save();
             $tag_id = $model_tag->id;
         }
