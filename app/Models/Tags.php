@@ -20,4 +20,24 @@ class Tags extends Model
         'name',
         'slug',
     ];
+
+    /**
+     * Before create.
+     *
+     * @return void
+     */
+    public function beforeCreate()
+    {
+        $this->setInitialSlug();
+    }
+
+    /**
+     * Set the initial slug.
+     *
+     * @return void
+     */
+    protected function setInitialSlug()
+    {
+        $this->slug = str_slug($this->name);
+    }
 }

@@ -13,6 +13,12 @@ class ProjectTags extends Model
      */
     public $table = 'ulogic_projects_tags';
 
+    /*
+     * Disable timestamps by default.
+     * Remove this line if timestamps are defined in the database table.
+     */
+    public $timestamps = false;
+
     /**
      * Tags
      * @return mixed
