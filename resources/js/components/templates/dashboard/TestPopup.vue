@@ -204,10 +204,10 @@
             },
             tests: {
                 type: Array,
-                default: {}
+                default: []
             },
             passing_tests: {
-                type: Array,
+                type: Object,
                 default: {}
             },
             content_id: {

@@ -27,18 +27,18 @@
                                             <p class="study__table-title">Детальная информация</p>
                                         </div>
                                     </div>
-                                    <div class="study__table-block" v-for="(user, key) in users" v-if="user" :key="key">
+                                    <div class="study__table-block" v-for="(result, key) in results" v-if="result" :key="key">
                                         <div class="study__table-item">
                                             <p class="study__table-number">{{ key + 1 }}</p>
                                         </div>
                                         <div class="study__table-item">
-                                            <p class="study__table-id">{{ user.id }}</p>
+                                            <p class="study__table-id">{{ result.user.id }}</p>
                                         </div>
                                         <div class="study__table-item">
-                                            <p class="study__table-title">{{ user.name }}</p>
+                                            <p class="study__table-title">{{ result.user.name }}</p>
                                         </div>
                                         <div class="study__table-item">
-                                            <p class="study__table-description">{{ user.email }} {{ (user.phone)?','+user.phone:'' }}</p>
+                                            <p class="study__table-description">{{ result.user.email }} {{ (result.user.phone)?','+result.user.phone:'' }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -68,8 +68,8 @@
                 default: ''
             },
             index: {
-                type: Number,
-                default: 0
+                type: String,
+                default: ''
             },
             project_id: {
                 type: Number,
@@ -79,7 +79,7 @@
         data () {
             return {
                 isOpen: false,
-                users: []
+                results: []
             }
         },
         methods: {
@@ -92,7 +92,7 @@
             loadUsers () {
                 this.$get(USER_PASSING + '/' + this.project_id + '/' + this.index).then(response => {
                     if (response.data) {
-                        this.users = response.data.data
+                        this.results = response.data.data
                     }
                 });
             }
