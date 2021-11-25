@@ -45,14 +45,14 @@
                 this.$router.push({ path: '/' })
             },
             start () {
-                this.$post(PROJECT_START, {
+                this.$post(PROJECT_START + this.$route.params.projectId, {
                     id: this.$route.params.projectId
                 }, {
                     params: {
                         access_token: TOKEN
                     },
                 }).then(response => {
-                    //this.project.options.status = response.message.status
+                    this.$emit('update', response.message.status);
                 })
                 $('#db-start-project').modal('hide')
             }

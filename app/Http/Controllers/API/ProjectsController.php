@@ -227,25 +227,9 @@ class ProjectsController extends Controller
      */
     public function start(Request $request)
     {
-
         $model = Projects::findOrFail($request->id);
-        $model->options->status = Projects::STATUS_ACTIVE;
         $model->status = Projects::STATUS_ACTIVE;
         $model->save();
-
-        /*$model->options->status = Projects::STATUS_ACTIVE;*/
-        //$model->options->status = Projects::STATUS_ACTIVE;
-        /*$model->forceFill([
-            'options->status' => 'dd'
-        ])->save();*/
-        //print_r($model->options->status);
-        //$result = $model->save();
-
-        /*DB::table('ulogic_projects_settings')
-            ->where('id', $request->id)
-            ->update([
-                'options->status' => Projects::STATUS_ACTIVE
-            ]);*/
 
         return $this->helpers->apiArrayResponseBuilder(200, ['status' => Projects::STATUS_ACTIVE]);
     }
@@ -258,12 +242,7 @@ class ProjectsController extends Controller
      */
     public function stop($id)
     {
-        /*$model = Projects::findOrFail($id);
-        $model->update(['status' => Projects::STATUS_INACTIVE]);
-
-        return $this->helpers->apiArrayResponseBuilder(200, 'success');*/
         $model = Projects::findOrFail($id);
-        $model->options->status = Projects::STATUS_INACTIVE;
         $model->status = Projects::STATUS_INACTIVE;
         $model->save();
 
