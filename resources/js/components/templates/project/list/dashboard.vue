@@ -5,8 +5,8 @@
             <a class="sidebar_nav-button" :href="'/admin/api/v1/export-users/' + project_id"><span class="icon-download">Скачать отчёт</span></a>
         </div>
         <div class="sidebar_nav gap-10">
-            <project-start v-if="(status && status == 'inactive')"/>
-            <project-stop v-else/>
+            <project-start v-if="(status && status == 'inactive')" @update="setStatus" />
+            <project-stop v-else @update="setStatus" />
             <project-remove/>
         </div>
     </div>
@@ -38,6 +38,11 @@
             status: {
                 type: String,
                 default: ''
+            }
+        },
+        methods: {
+            setStatus (value) {
+                this.status = value;
             }
         }
     }

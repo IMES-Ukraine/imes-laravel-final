@@ -91,7 +91,7 @@ Route::group(
                 'prefix' => 'project'
             ],
             function () {
-                Route::post('/start', [ProjectsApiController::class, 'start']);
+                Route::post('/start/{id}', [ProjectsApiController::class, 'start']);
                 Route::post('/stop/{id}', [ProjectsApiController::class, 'stop']);
                 Route::get('/tags', [ProjectsApiController::class, 'tags']);
                 Route::get('/tests/{id?}', [ProjectsApiController::class, 'getTests']);

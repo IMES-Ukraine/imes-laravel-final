@@ -25,7 +25,7 @@
 
 <script>
     import FragmentCloseItem from "../../fragmets/close-item"
-    import { PROJECT_STOP } from "../../../api/endpoints"
+    import { PROJECT_STOP, TOKEN } from "../../../api/endpoints"
 
     export default {
         name: "project-stop",
@@ -49,8 +49,16 @@
                 this.$router.push({ path: '/' })
             },
             stopped () {
-                this.$post(PROJECT_STOP + this.$route.params.projectId).then()
-                this.isOpen = this.isOpen === false;
+                this.$post(PROJECT_STOP + this.$route.params.projectId, {
+                    id: this.$route.params.projectId
+                }, {
+                    params: {
+                        access_token: TOKEN
+                    },
+                }).then(response => {
+                    this.$emit('update', response.message.status);
+                })
+                $('#db-start-project').modal('hide')
             }
         }
     }
