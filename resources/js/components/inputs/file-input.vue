@@ -2,7 +2,7 @@
     <div class="articles_create__item-content">
         <div :class = "['articles_create__item-file', 'width-auto buttonAddFile', {fileDisabled: disabled}, {has_file: haveImage}]">
             <input type="file" v-on:change="handleUpload" :name="type">
-            <p><span>{{ haveImage ? entity.media[type].file_name : 'Загрузить' }}</span>
+            <p><span>{{ haveImage ? entity.media[type].disk_name : 'Загрузить' }}</span>
             </p>
             <button @click="entity.media[type]={}" type="button" class="delete_file deleteFile"></button>
         </div>
