@@ -13,6 +13,7 @@ use App\Models\QuestionModeration;
 use App\Models\Test;
 use App\Models\TestQuestions;
 use App\Services\PassingService;
+use App\Services\TagService;
 use Illuminate\Http\Request;
 use App\Models\ProjectItems;
 use App\Models\Projects;
@@ -45,6 +46,8 @@ class ProjectRepository
         $project->options = $projectTotal['options'];
         $project->status = Projects::STATUS_ACTIVE;
         $isProjectSaved = $project->save();
+
+        TagService::addProjectTag($project->id, $projectTotal['tag']);
 
 
 //------------- content block
