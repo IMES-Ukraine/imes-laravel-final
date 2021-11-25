@@ -23,7 +23,7 @@
                                             <p><span data-placeholder="Загрузить">{{ project.options.files.cover.file_name }}</span></p>
                                             <button class="delete_file deleteFile" type="button"></button>
                                         </div>
-                                        <span class="errors">{{ errorCover }}</span>
+                                        <span class="errors" v-if="errorCover">{{ errorCover }}</span>
                                 </div>
                             </div>
                             <div class="articles_create__item">
@@ -371,7 +371,7 @@ export default {
             if (!Object.keys(this.project.content).length) {
                 this.errorContent = 'Потрібно створити контент';
             }
-            if (! this.project.options.files.cover) {
+            if (this.project.options.files.cover.file_name == '') {
                 this.errorCover = 'Виберіть обкладинку';
             }
             const valTitle = await this.$refs['title'].validate();
