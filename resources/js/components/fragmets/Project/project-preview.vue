@@ -4,7 +4,7 @@
         <div class="preview-box">
             <div class="preview__block preview__block--title">
                 <div class="preview__title">
-                    <img :src="cover" class="preview__title-img" alt="">
+                    <img :src="cover.path" class="preview__title-img" alt="">
                     <p class="preview__title-title">Проект:</p>
                     <p class="preview__title-data">{{ project.options.title }}</p>
                 </div>

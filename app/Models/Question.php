@@ -115,16 +115,9 @@ class Question
                 'data' => $question['question']['link'] ?? '',
             ];
 
-        if (isset($question['question']['media']['cover']) && $question['question']['media']['cover']['id']) {
+        if (isset($question['question']['video']) && isset($question['question']['video']['id'])) {
 
-//            $coverImage = File::find($question['question']['media']['cover']['id']);
-//            $this->cover_image = $question['question']['media']['cover']['id'];
-            $this->cover_image = $question['question']['media']['cover'];
-        }
-
-        if (isset($question['question']['media']['video']) && isset($question['question']['media']['video']['id'])) {
-
-            $videoId = $question['question']['media']['video']['id'];
+            $videoId = $question['question']['video']['id'];
             $videoFile = File::find($videoId);
             $options[] =
                 [

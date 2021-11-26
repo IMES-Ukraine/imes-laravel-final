@@ -64,15 +64,13 @@
 
             <div v-if="test.type === 'complex'">
                 <div>
-                    <TestComplex :test.sync="test"
+                    <TestComplex :test="test"
                                  :variants="test.variants"
                                  :errors="testErrors"
+                                 @input="storeTest($event)"
                                  :toValidate="toValidate"/>
                 </div>
-                <div class="mb20"></div>
-                <button class="articles_create-submit button-gradient" type="button"
-                        @click="storeTest">сохранить
-                </button>
+
             </div>
         </div>
 
@@ -113,36 +111,37 @@ export default {
     },
     methods: {
 
-        storeTest() {
+        storeTest(data) {
+            if (data){
+                this.$store.commit('storeTest', data);
+            }
             this.testErrors = {};
 
             //триггер для запуска валидации в дочерних компонентах сложного теста
             this.$store.commit('setTestError', false);
             this.toValidate = !this.toValidate;
 
-            //валидация простого теста или опроса
-            if (this.test.type === 'easy' || this.test.picked === 'survey') {
+            if (!this.test.title) {
+                this.testErrors.title = 'Назва обовʼязкова'
+            }
 
-                if (!this.test.title) {
-                    this.testErrors.title = 'Назва обовʼязкова'
-                }
+            if (!this.test.text) {
+                this.testErrors.text = 'Питання обовʼязкове'
+            }
 
-                if (!this.test.text) {
-                    this.testErrors.text = 'Питання обовʼязкове'
-                }
-
-                if(this.test.picked === 'survey') {
-                    for (const [index, value] of Object.entries(this.test.question.variants)) {
-                        if (value.text == '') {
-                            $('#variant-' + value.title).css('border', '1px solid red');
-                            this.$store.commit('setTestError', true);
-                        }
+            if (this.test.picked === 'survey') {
+                for (const [index, value] of Object.entries(this.test.question.variants)) {
+                    if (value.text == '') {
+                        $('#variant-' + value.title).css('border', '1px solid red');
+                        this.$store.commit('setTestError', true);
                     }
                 }
-                else if (!this.test.question.correct.length) {
+            } else if (this.test == 'easy'){
+                if(!this.test.question.correct.length) {
                     this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
                 }
             }
+
             if (!Object.keys(this.testErrors).length && !this.$store.state.testErrors) {
                 this.$store.commit('saveTest', this.test);
                 this.setStep(2);

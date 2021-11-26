@@ -68,7 +68,7 @@ class TestQuestions extends Model
      * @return mixed
      */
     public function featured_images() {
-        return $this->hasMany('App\Models\File', 'attachment_id', 'id');
+        return $this->hasMany('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_FEATURED ]);
     }
 
     /**
@@ -76,7 +76,23 @@ class TestQuestions extends Model
      * @return mixed
      */
     public function cover_image() {
-        return $this->hasOne('App\Models\File', 'attachment_id', 'id');
+        return $this->hasOne('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_COVER ]);
+    }
+
+    /**
+     * Cover images
+     * @return mixed
+     */
+    public function image() {
+        return $this->hasOne('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_IMAGE ]);
+    }
+
+    /**
+     * Cover images
+     * @return mixed
+     */
+    public function video() {
+        return $this->hasOne('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_VIDEO ]);
     }
 
     /**

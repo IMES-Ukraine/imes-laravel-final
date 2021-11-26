@@ -24,7 +24,12 @@
         </div>
         <div class="articles_create__item half">
             <p class="articles_create__item-title">Обложка*</p>
-            <file-input :key="article.title + '-img'" :entity="article" :error="errorArticleCover" type="cover"/>
+            <file-input :key="article.title + '-img'"
+                        :value="article.cover"
+                        @fileInput="article.cover = $event"
+                        :error="errorArticleCover"
+                        type="cover"
+                        attachment="articles"/>
         </div>
         <div class="articles_create__item half">
             <p class="articles_create__item-title">Галерея</p>
@@ -289,7 +294,7 @@ export default {
                 error = true;
             }
 
-            if (!this.article.media.cover.file_name) {
+            if (!this.article.cover.file_name) {
                 this.errorArticleCover = this.requiredErrorText;
                 error = true;
             }
@@ -326,56 +331,6 @@ export default {
                 $('#article_multiples').val(null);
             })
         },
-        coverField(event) {
-            this.errorArticleCover = '';
-            let imageForm = new FormData();
-            let input = event.target
-            let type = input.getAttribute('img_type');
-            if (!checkIsImage(input.value)) {
-                this.errorArticleCover = this.notImageText;
-                return;
-            }
-            imageForm.append('file', input.files[0]);
-            this.$post(PROJECT_IMAGE + 'cover',
-                imageForm,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            ).then((file) => {
-                this.article.media.cover = file.data;
-                this.article.cover = file.data.file_name;
-
-            })
-
-
-            // if (! checkIsImage(event.target.files[0]) ) {
-            //     this.errorArticleCover = this.notImageText;
-            //     return;
-            // }
-            //
-            // let imageForm = new FormData()
-            // imageForm.append('file', event.target.files[0])
-            // await axios.post(
-            //     ARTICLE_COVER + '/articles',
-            //     imageForm,
-            //     {
-            //         headers: {
-            //             'Content-Type': 'multipart/form-data'
-            //         },
-            //         params: {
-            //             access_token: TOKEN
-            //         },
-            //     }
-            // ).then((file) => {
-            //     let article = this.$store.state.content.article;
-            //     article.cover = file.data.data.path;
-            //     this.$store.dispatch('storeArticle', article);
-            // })
-
-        },
-
     },
 
 }

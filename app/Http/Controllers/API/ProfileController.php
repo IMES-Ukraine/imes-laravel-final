@@ -115,7 +115,7 @@ class ProfileController extends Controller
         $file = new File;
         $file->data = request()->file('file');
         $file->is_public = true;
-        $file->field = 'cover_image';
+        $file->field = $type;
         $file->attachment_type = User::class;
         $data = $file->beforeSave();
 

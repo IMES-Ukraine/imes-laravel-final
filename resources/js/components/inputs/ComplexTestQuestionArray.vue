@@ -19,7 +19,10 @@
                         </div>
                         <div class="articles_create__item half">
                             <p class="articles_create__item-title">Обложка</p>
-                            <file-input :key="question.itemId + '-cover'" :entity.sync="question" type="cover"/>
+                            <file-input :key="question.itemId + '-cover'"
+                                        :value="question.cover"
+                                        @fileInput="question.cover = $event"
+                                        type="cover"/>
 
                         </div>
                     </div>
@@ -33,23 +36,31 @@
                         </div>
                         <div class="articles_create__item half">
                             <div class="articles_create__item-title has_radio">
-                                <input type="checkbox" name="checkbox_file" @change="checkboxChange">
+                                <input type="checkbox" name="checkbox_file" v-model="isCheckedFile">
                                 <i></i>
                                 <p>Изображения</p>
                             </div>
                             <div class="articles_create__item-content">
-                                <file-input :key="question.itemId + '-img'" :entity.sync="question" type="img" :disabled="!isCheckedFile" />
+                                <file-input :key="question.itemId + '-img'"
+                                            :value="question.img"
+                                            type="img"
+                                            @fileInput="question.img = $event"
+                                            :disabled="!isCheckedFile" />
                             </div>
                         </div>
                         <div class="articles_create__item half"></div>
                         <div class="articles_create__item half">
                             <div class="articles_create__item-title has_radio">
-                                <input type="checkbox" name="checkbox_video" @change="checkboxChangeVideo">
+                                <input type="checkbox" name="checkbox_video" v-model="isCheckedVideo">
                                 <i></i>
                                 <p>Видео</p>
                             </div>
                             <div class="articles_create__item-content">
-                                <file-input :key="question.itemId + '-video'" :entity.sync="question" type="video" :disabled="!isCheckedVideo" />
+                                <file-input :key="question.itemId + '-video'"
+                                            :value="question.video"
+                                            type="video"
+                                            @fileInput="question.video = $event"
+                                            :disabled="!isCheckedVideo" />
                             </div>
                         </div>
                     </div>
@@ -150,20 +161,6 @@ export default {
                 }
             }
         },
-        checkboxChange() {
-            if (this.isCheckedFile) {
-                this.isCheckedFile = false
-            } else {
-                this.isCheckedFile = true
-            }
-        },
-        checkboxChangeVideo() {
-            if (this.isCheckedVideo) {
-                this.isCheckedVideo = false
-            } else {
-                this.isCheckedVideo = true
-            }
-        }
     },
     validations: {
         text: {

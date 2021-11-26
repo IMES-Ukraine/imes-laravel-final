@@ -8,7 +8,11 @@ use App\Classes\UserSpecializedInfo;
 use App\Exports\ExportUserView;
 use App\Http\Controllers\Controller;
 use App\Models\AccountVerificationRequests;
+use App\Models\Passing;
+use App\Models\ProjectResearches;
 use App\Models\UserCards;
+use App\Services\ArticleService;
+use App\Services\TestService;
 use App\Services\UsersService;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
@@ -49,14 +53,17 @@ class UsersController extends Controller
 
     public function passing($project_id, $status)
     {
-        $data = $this
-            ->user
-            ->select('id', 'name', 'email', 'phone')
-            ->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
-            ->where('ulogic_projects_passing.status', $status)
-            ->paginate();
+        $research = ProjectResearches::select('id')->where('project_id', $project_id)->first();
+        $articles_ids = ArticleService::pluckIDArticles($research->id);
+        $test_ids = TestService::pluckIDArticles($research->id);
 
-        $data = json_decode($data->toJSON());
+        $results = Passing::with('user')
+            ->with('withdraw')
+            ->whereRaw('(status = '.$status.' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+            ->orWhereRaw('(status = '.$status.' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
+            ->paginate(15);
+
+        $data = json_decode($results->toJSON());
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }

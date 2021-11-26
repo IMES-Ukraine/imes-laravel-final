@@ -54,9 +54,8 @@ class PassingService
         $articles_ids = ArticleService::pluckIDArticles($content_id);
         $test_ids = TestService::pluckIDArticles($content_id);
 
-        return Passing::where('status', $status)
-            ->whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
-            ->orWhereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')
+        return Passing::whereRaw('(`status` = '.$status.' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+            ->orWhereRaw('(`status` = '.$status.' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
             ->count();
     }
 
