@@ -217,8 +217,10 @@ class ProjectRepository
                 $passing = Passing::where('entity_type', 'TestQuestions')->where('entity_id', $test_id)->get();
 
                 foreach ($passing as $pass) {
-                    foreach ($pass['answer'] as $answer) {
-                        $passing_tests[$test_id][$answer][] = $pass->user_id;
+                    if ($pass['answer']) {
+                        foreach ($pass['answer'] as $answer) {
+                            $passing_tests[$test_id][$answer][] = $pass->user_id;
+                        }
                     }
                 }
 
@@ -240,6 +242,9 @@ class ProjectRepository
                 $content[$key]->offsetSet('test_status_not_participate', PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_NOT_PARTICIPATE));
                 $content[$key]->offsetSet('article_status_not_participate', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_NOT_PARTICIPATE));
 
+                //total
+                $content[$key]->offsetSet('test_total', PassingService::getPassingTotalTest($item->id));
+                $content[$key]->offsetSet('article_total', PassingService::getPassingTotalArticle($item->id));
                 $total += PassingService::getPassingTotal($item->id);
             }
         }

@@ -82,9 +82,9 @@
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">{{ content.test_status_active }}% выполненых</p>
+                                <p class="dashboard_main__status-description">{{ percentActive(content.test_status_active, content.test_total) }}% выполненых</p>
                                 <div class="dashboard_main__status-line">
-                                    <span :style="'width:'+content.test_status_active+'%;'"></span>
+                                    <span :style="'width:'+percentActive(content.test_status_active, content.test_total)+'%;'"></span>
                                 </div>
                                 <p class="dashboard_main__status-description">{{ content.test_status_active }} активностей</p>
                             </div>
@@ -92,15 +92,39 @@
                         <div class="dashboard_study__info">
                             <div class="dashboard_study__info-block">
                                 <p class="dashboard_study__info-data">{{ content.test_status_active }}</p>
-                                <button class="dashboard_study__info-button" v-if="content.test_status_active" type="button">Смотреть</button>
+                                <users-popup
+                                    :title="'Выполнили активности'"
+                                    classButton="dashboard_study__info-button"
+                                    id="test_status_active"
+                                    index="2"
+                                    v-if="content.test_status_active"
+                                    :project_id="project.project.id"
+                                    is_test="1"
+                                    :content_id="content.id"/>
                             </div>
                             <div class="dashboard_study__info-block">
                                 <p class="dashboard_study__info-data">{{ content.test_status_not_active }}</p>
-                                <button class="dashboard_study__info-button" v-if="content.test_status_not_active" type="button">Смотреть</button>
+                                <users-popup
+                                    :title="'Не выполнили активности'"
+                                    classButton="dashboard_study__info-button"
+                                    id="test_status_not_active"
+                                    index="1"
+                                    v-if="content.test_status_not_active"
+                                    :project_id="project.project.id"
+                                    is_test="1"
+                                    :content_id="content.id"/>
                             </div>
                             <div class="dashboard_study__info-block">
                                 <p class="dashboard_study__info-data">{{ content.test_status_not_participate }}</p>
-                                <button class="dashboard_study__info-button" v-if="content.test_status_not_participate" type="button">Смотреть</button>
+                                <users-popup
+                                    :title="'Не участвовали'"
+                                    classButton="dashboard_study__info-button"
+                                    id="test_status_not_participate"
+                                    index="0"
+                                    v-if="content.test_status_not_participate"
+                                    :project_id="project.project.id"
+                                    is_test="1"
+                                    :content_id="content.id"/>
                             </div>
                         </div>
                     </div>
@@ -111,9 +135,9 @@
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">{{ content.article_status_active }}% выполненых</p>
+                                <p class="dashboard_main__status-description">{{ percentActive(content.article_status_active, content.article_total) }}% выполненых</p>
                                 <div class="dashboard_main__status-line">
-                                    <span :style="'width:'+content.article_status_active+'%;'"></span>
+                                    <span :style="'width:'+percentActive(content.article_status_active, content.article_total)+'%;'"></span>
                                 </div>
                                 <p class="dashboard_main__status-description">{{ content.article_status_active }} активностей</p>
                             </div>
@@ -121,15 +145,39 @@
                         <div class="dashboard_study__info">
                             <div class="dashboard_study__info-block">
                                 <p class="dashboard_study__info-data">{{ content.article_status_active }}</p>
-                                <button class="dashboard_study__info-button" v-if="content.article_status_active" type="button">Смотреть</button>
+                                <users-popup
+                                    :title="'Выполнили активности'"
+                                    classButton="dashboard_study__info-button"
+                                    id="article_status_active"
+                                    index="2"
+                                    v-if="content.article_status_active"
+                                    :project_id="project.project.id"
+                                    is_article="1"
+                                    :content_id="content.id"/>
                             </div>
                             <div class="dashboard_study__info-block">
                                 <p class="dashboard_study__info-data">{{ content.article_status_not_active }}</p>
-                                <button class="dashboard_study__info-button" v-if="content.article_status_not_active" type="button">Смотреть</button>
+                                <users-popup
+                                    :title="'Не выполнили активности'"
+                                    classButton="dashboard_study__info-button"
+                                    id="article_status_not_active"
+                                    index="1"
+                                    v-if="content.article_status_not_active"
+                                    :project_id="project.project.id"
+                                    is_article="1"
+                                    :content_id="content.id"/>
                             </div>
                             <div class="dashboard_study__info-block">
                                 <p class="dashboard_study__info-data">{{ content.article_status_not_participate }}</p>
-                                <button class="dashboard_study__info-button" v-if="content.article_status_not_participate" type="button">Смотреть</button>
+                                <users-popup
+                                    :title="'Не участвовали'"
+                                    classButton="dashboard_study__info-button"
+                                    id="article_status_not_participate"
+                                    index="0"
+                                    v-if="content.article_status_not_participate"
+                                    :project_id="project.project.id"
+                                    is_article="1"
+                                    :content_id="content.id"/>
                             </div>
                         </div>
                     </div>

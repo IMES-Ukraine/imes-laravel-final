@@ -17,7 +17,7 @@
         </router-button>
 
         <div style="margin-top: 150px;">
-            <popup-button>
+            <popup-button @update="changeBalance">
                 Отправить баллы
             </popup-button>
         </div>
@@ -55,6 +55,14 @@
         methods: {
             findUser(id) {
                 this.$store.dispatch('setFilter',  id);
+            },
+            changeBalance(user_id, count) {
+                for (const [index, value] of Object.entries(this.$store.state.clients)) {
+                    if (value.id == user_id) {
+                        let balance = this.$store.state.clients[index].balance;
+                        this.$store.state.clients[index].balance = parseInt(balance) + parseInt(count);
+                    }
+                }
             }
         }
     }
