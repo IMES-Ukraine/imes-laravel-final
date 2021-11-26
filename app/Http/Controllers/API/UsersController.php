@@ -68,6 +68,48 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
+    public function passingTestAll($content_id, $status)
+    {
+        $test_ids = TestService::pluckIDArticles($content_id);
+
+        $results = Passing::with('user')
+            ->with('withdraw')
+            ->whereRaw('(status = '.$status.' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+            ->paginate(15);
+
+        $data = json_decode($results->toJSON());
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
+    public function passingArticleAll($content_id, $status)
+    {
+        $articles_ids = ArticleService::pluckIDArticles($content_id);
+
+        $results = Passing::with('user')
+            ->with('withdraw')
+            ->whereRaw('(status = '.$status.' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
+            ->paginate(15);
+
+        $data = json_decode($results->toJSON());
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
+    public function passingTest($test_id, $variant)
+    {
+        $results = Passing::with('user')
+            ->with('withdraw')
+            ->where('entity_type', 'TestQuestions')
+            ->where('entity_id', $test_id)
+            ->where('answer','LIKE','%'.$variant.'%')
+            ->paginate(15);
+
+        $data = json_decode($results->toJSON());
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
     public function create(Request $request)
     {
         $phone = filter_var($request->post('phone'), FILTER_SANITIZE_NUMBER_INT);

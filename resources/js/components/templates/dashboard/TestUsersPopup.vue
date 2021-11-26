@@ -1,14 +1,13 @@
 <template>
     <div>
-
-        <button :class="classButton" type="button" data-toggle="modal" @click="showResults" :data-target="'#db-users-popup-'+id">Смотреть</button>
+        <button class="study__item-button" type="button" data-toggle="modal" @click="showResults" :data-target="'#db-users-popup-'+id">Смотреть</button>
 
         <!-- modal -->
-        <div class="modal fade" tabindex="-1" role="dialog" :id="'db-users-popup-'+id" aria-hidden="true">
+        <div class="modal fade" tabindex="-1" role="dialog" :id="'db-users-popup-'+id" aria-hidden="true" >
             <div class="modal-dialog modal-dialog-centered db-modal__dialog full-width" role="document">
                 <div class="study template_box modal-content margin-auto">
                     <p class="template_title">{{ title }}</p>
-                    <button class="template_close" type="button" data-dismiss="modal"></button>
+                    <button class="template_close" type="button" @click="hidePopup(id)"></button>
                     <div class="study-box">
                         <div class="study__block">
                             <div class="study__block-content" v-if="results.data">
@@ -57,11 +56,11 @@
 
 <script>
     import FragmentCloseItem from "../../fragmets/close-item"
-    import { USER_PASSING, USER_PASSING_TEST_ALL, USER_PASSING_ARTICLE_ALL } from "../../../api/endpoints"
+    import { USER_PASSING_TEST } from "../../../api/endpoints"
     import VPreloader from "../../fragmets/preloader"
 
     export default {
-        name: "users-popup",
+        name: "test-users-popup",
         components: {FragmentCloseItem, VPreloader},
         props: {
             title: {
@@ -69,30 +68,10 @@
                 default: ''
             },
             id: {
-                type: String,
-                default: ''
-            },
-            index: {
-                type: String,
-                default: ''
-            },
-            project_id: {
                 type: Number,
                 default: 0
             },
-            classButton: {
-                type: String,
-                default: 'dashboard_main__item-button'
-            },
-            content_id: {
-                type: Number,
-                default: 0
-            },
-            is_test: {
-                type: String,
-                default: ''
-            },
-            is_article: {
+            variant: {
                 type: String,
                 default: ''
             }
@@ -110,6 +89,9 @@
             close () {
                 this.$router.push({ path: '/' })
             },
+            hidePopup (id) {
+                $('#db-users-popup-'+id).modal('hide')
+            },
             showResults () {
                 this.getResults();
             },
@@ -118,16 +100,7 @@
                     page = 1;
                 }
 
-                let url = USER_PASSING + '/' + this.project_id + '/' + this.index;
-
-                if (this.is_test) {
-                    url = USER_PASSING_TEST_ALL + '/' + this.content_id + '/' + this.index;
-                }
-
-                if (this.is_article) {
-                    url = USER_PASSING_ARTICLE_ALL + '/' + this.content_id + '/' + this.index;
-                }
-
+                let url = USER_PASSING_TEST + '/' + this.id + '/' + this.variant;
                 this.$get(url + '?page=' + page)
                     .then(response => {
                         this.results = response.data

@@ -82,6 +82,7 @@
                             </template>
 
                             <template v-if="test.picked == 'survey'">
+                                {{ totalQuestionVariants(test.question.variants, tests[0]['id']) }}
                                 <p class="study__block-title">Вопрос: <b>{{ test.text }}</b></p>
                                 <div class="study__block-content" v-if="test.question.variants">
                                     <div class="study__item" v-for="variant in test.question.variants">
@@ -92,15 +93,19 @@
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
-                                                    <p class="study__info-data">{{ getStaticTest(variant.title, tests[0]['id']) }}%</p>
+                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.title, tests[0]['id']), total_test[tests[0]['id']]) }}%</p>
                                                     <div class="dashboard_main__status-line">
-                                                        <span :style="'width:'+getStaticTest(variant.title, tests[0]['id'])+'%;'"></span>
+                                                        <span :style="'width:'+percent(getStaticTest(variant.title, tests[0]['id']), total_test[tests[0]['id']])+'%;'"></span>
                                                     </div>
                                                 </div>
                                                 <p class="study__info-quantity">{{ getStaticTest(variant.title, tests[0]['id']) }}</p>
                                             </div>
                                         </div>
-                                        <button class="study__item-button" type="button" v-if="getStaticTest(variant.title, tests[0]['id'])">Смотреть</button>
+                                        <test-users-popup
+                                            :title="test.text + ' - ' + variant.title"
+                                            :id="tests[0]['id']"
+                                            :variant="variant.title"
+                                            v-if="getStaticTest(variant.title, tests[0]['id'])"/>
                                     </div>
                                 </div>
                             </template>
@@ -189,10 +194,11 @@
 <script>
     import FragmentCloseItem from "../../fragmets/close-item"
     import {TEST, MODERATION} from "../../../api/endpoints"
+    import TestUsersPopup from "../../templates/dashboard/TestUsersPopup"
 
     export default {
         name: "test-popup",
-        components: {FragmentCloseItem},
+        components: {FragmentCloseItem, TestUsersPopup},
         props: {
             id: {
                 type: Number,
@@ -224,7 +230,8 @@
                 correct_answer: [],
                 test_type: '',
                 type: '',
-                moderations: []
+                moderations: [],
+                total_test: {}
             }
         },
         methods: {
@@ -241,22 +248,25 @@
             close () {
                 this.$router.push({ path: '/' })
             },
-            /*loadTest () {
-                this.$get(TEST + '/' + this.id).then(response => {
-                    console.log(response)
-                    let data = response.data[0].items.data
-                    this.title = data.title
-                    this.question = data.text
-                    this.variants = data.variants
-                    this.test_type = data.test_type
-                    this.type = data.question.type
-                });
-            },*/
             getModerations (test_id) {
                 this.$get(MODERATION + '/' + test_id).then(response => {
-                    console.log(response.data);
                     return response.data
                 });
+            },
+            totalQuestionVariants (variants, test_id) {
+                let total = 0;
+                if (variants) {
+                    for (let variant in variants) {
+                        total = this.getStaticTest(variants[variant].title, test_id);
+
+                        if (total) {
+                            this.total_test[test_id] += total;
+                        }
+                    }
+                }
+            },
+            percent(status, total) {
+                return status?parseInt(status * 100 / total):0
             }
         },
     }

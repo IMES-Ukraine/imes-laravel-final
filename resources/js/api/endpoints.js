@@ -15,6 +15,9 @@ export const NOTIFICATION = 'notification'
 export const USER = V1_ADMIN + 'users'
 export const USER_LIST = V1_ADMIN + 'users/list'
 export const USER_PASSING = V1_ADMIN + 'users/passing'
+export const USER_PASSING_TEST_ALL = V1_ADMIN + 'users/passing-test-all'
+export const USER_PASSING_ARTICLE_ALL = V1_ADMIN + 'users/passing-article-all'
+export const USER_PASSING_TEST = V1_ADMIN + 'users/passing-test'
 export const TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZWNoby5teWZ0cC5vcmdcL2FwaVwvdjJcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjE3NDc0NTMxLCJleHAiOjIyMTc0NzQ0NzEsIm5iZiI6MTYxNzQ3NDUzMSwianRpIjoibXptaWRwNVFDVnZGcndqWiIsInN1YiI6IjFvclZ4OHV2QzJucVJFN1BNS2c5S1lOZ0dHaSIsInBydiI6IjQxMWM5MTdhMGZiNTFlMGE0MjdhN2UzZGVhYTVhNDllMjkyZGRiOWIifQ.8eXEvSuykIXrbBpV_tf7LUBv8rLcUoTZdsQjiBXcDkk'
 
 export const WITHDRAWAL = V1_ADMIN + 'withdraw';

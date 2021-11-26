@@ -85,4 +85,24 @@ class PassingService
             ->count();
     }
 
+    /**
+     * @param $content_id
+     * @return mixed
+     */
+    public static function getPassingTotalTest($content_id) {
+        $test_ids = TestService::pluckIDArticles($content_id);
+
+        return Passing::whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')->count();
+    }
+
+    /**
+     * @param $content_id
+     * @return mixed
+     */
+    public static function getPassingTotalArticle($content_id) {
+        $articles_ids = ArticleService::pluckIDArticles($content_id);
+
+        return Passing::whereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')->count();
+    }
+
 }
