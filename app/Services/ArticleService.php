@@ -51,7 +51,7 @@ class ArticleService
 
         // !!!
 
-        $model->cover_image_id = $article['media']['cover']['id'];
+        $model->cover_image_id = $article['cover']['id'];
 
         //plugins_path() . '/ulogic/news/updates/news-featured.png';
         //$model->featured_images = $file;
@@ -59,11 +59,14 @@ class ArticleService
         $model->published_at = time();
         $result = $model->save();
 
+        $file = File::find($article['cover']['id']);
         if ( $result ){
             $this->attachRecommended( $recommended, $model);
-            $file = File::find($article['media']['cover']['id'])->first();
-            $file->attachment_id = $model->id;
-            $model->save();
+            $file = File::find($article['cover']['id']);
+            if ($file) {
+                $file->attachment_id = $model->id;
+                $file->save();
+            }
         }
 
         return $model;

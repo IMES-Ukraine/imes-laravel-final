@@ -13,7 +13,11 @@
                 </div>
                 <div class="articles_create__item half">
                     <p class="articles_create__item-title">Обложка</p>
-                    <file-input :key="test.title + '-cover'" :entity="test.question" :error="coverError" type="cover"/>
+                    <file-input :key="test.title + '-cover'"
+                                :value="test.cover"
+                                :error="coverError"
+                                @fileInput="test.cover = $event"
+                                type="cover"/>
                 </div>
             </div>
             <div class="articles_create-block">
@@ -32,7 +36,11 @@
                         <p>Изображения</p>
                     </div>
                     <div class="articles_create__item-content">
-                        <file-input :key="test.title + '-img'" :entity="test.question" type="img" :disabled="!isCheckedFile"/>
+                        <file-input :key="test.title + '-img'"
+                                    :value="test.question.img"
+                                    @fileInput="test.question.img = $event"
+                                    type="img"
+                                    :disabled="!isCheckedFile"/>
                     </div>
                 </div>
                 <div class="articles_create__item half"></div>
@@ -43,7 +51,11 @@
                         <p>Видео</p>
                     </div>
                     <div class="articles_create__item-content">
-                        <file-input :key="test.title + '-video'" :entity="test.question" type="video" :disabled="!isCheckedVideo"/>
+                        <file-input :key="test.title + '-video'"
+                                    :value="test.question.video"
+                                    @fileInput="test.question.video = $event"
+                                    type="video"
+                                    :disabled="!isCheckedVideo"/>
                     </div>
                 </div>
             </div>

@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Services;
 
 
+use App\Models\File;
 use App\Models\TestQuestions as TestModel;
 use App\Models\TestQuestions;
 
@@ -12,10 +14,11 @@ class TestService
      * @param $question
      * @return mixed
      */
-    public function addQuestion( $question) {
+    public function addQuestion($question)
+    {
 
         $complexTestParentModel = new TestModel();
-        $complexTestParentModel->fill( (array) $question);
+        $complexTestParentModel->fill((array)$question);
         //$complexTestParentModel->test_type = $test->getTestType();
 
         $complexTestParentModel->save();
@@ -23,17 +26,46 @@ class TestService
         return $complexTestParentModel;
     }
 
-    public function updateQuestion() {
-
-    }
 
     /**
      * Return pluck ID for Test
      * @param $content_id
      * @return array
      */
-    public static function pluckIDArticles($content_id) {
+    public static function pluckIDArticles($content_id)
+    {
         return TestQuestions::select('id')->where('research_id', $content_id)->pluck('id')->toArray();
+    }
+
+    public static function setAttachment($model, $testId)
+    {
+//        dd($model, $testId);
+        if ($testId) {
+            if (isset($model['cover']['id'])) {
+                $img = File::find($model['cover']['id']);
+                if($img) {
+                    $img->attachment_id = $testId;
+                    $img->field = File::FIELD_COVER;
+                    $img->save();
+                }
+            }
+            if (isset($model['img']['id'])) {
+                $img = File::find($model['img']['id']);
+                if($img) {
+                    $img->attachment_id = $testId;
+                    $img->field = File::FIELD_IMAGE;
+                    $img->save();
+                }
+            }
+            if (isset($model['video']['id'])) {
+                $img = File::find($model['video']['id']);
+                if($img) {
+                    $img->attachment_id = $testId;
+                    $img->field = File::FIELD_VIDEO;
+                    $img->save();
+                }
+            }
+        }
     }
 
 }

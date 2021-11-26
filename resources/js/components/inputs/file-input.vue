@@ -2,9 +2,9 @@
     <div class="articles_create__item-content">
         <div :class = "['articles_create__item-file', 'width-auto buttonAddFile', {fileDisabled: disabled}, {has_file: haveImage}]">
             <input type="file" v-on:change="handleUpload" :name="type">
-            <p><span>{{ haveImage ? entity.media[type].disk_name : 'Загрузить' }}</span>
+            <p><span>{{ haveImage ? model.file_name : 'Загрузить' }}</span>
             </p>
-            <button @click="entity.media[type]={}" type="button" class="delete_file deleteFile"></button>
+            <button @click="model=null; $emit('fileInput', null)" type="button" class="delete_file deleteFile"></button>
         </div>
         <div v-if="error" class="errors">{{ error }}</div>
     </div>
@@ -20,13 +20,19 @@ export default {
     mixins: [ProjectMixin],
     props: {
         disabled: Boolean,
-        entity: Object,
+        value: Object,
         error: String,
-        type: String
+        type: String,
+        attachment: String
+    },
+    data() {
+      return {
+        model: this.value
+      }
     },
     computed: {
       haveImage() {
-          return !!this.entity.media[this.type] &&  !!Object.keys(this.entity.media[this.type]).length
+          return !!this.model &&  !!Object.keys(this.model).length
       },
     },
     methods: {
@@ -43,7 +49,7 @@ export default {
                 return;
             }
             imageForm.append('file', input.files[0]);
-            this.$post(PROJECT_IMAGE + this.type,
+            this.$post(PROJECT_IMAGE + this.type + '/' + (this.attachment ? this.attachment : 'test'),
                 imageForm,
                 {
                     headers: {
@@ -51,7 +57,8 @@ export default {
                     }
                 }
             ).then((file) => {
-                this.entity.media[this.type] = file.data;
+                this.model = file.data;
+                this.$emit('fileInput', this.model)
             })
         },
     }

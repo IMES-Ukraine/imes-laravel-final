@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 
@@ -34,7 +35,8 @@ class ProjectsController extends Controller
      * ProjectsController constructor.
      * @param Helpers $helpers
      */
-    public function __construct(Helpers $helpers, Projects $project, ProjectItems $projectItems, ProjectRepository $projectRepository) {
+    public function __construct(Helpers $helpers, Projects $project, ProjectItems $projectItems, ProjectRepository $projectRepository)
+    {
         $this->helpers = $helpers;
         $this->project = $project;
         $this->projectItems = $projectItems;
@@ -47,10 +49,11 @@ class ProjectsController extends Controller
     /**
      * @return JsonResponse
      */
-    public function index() {
+    public function index()
+    {
         $countOnPage = 15;
         $data = Projects::with('tags')->with('items')->whereNull('deleted_at')->with('items')->orderBy('created_at', 'DESC')->paginate($countOnPage);
-        $data = json_decode($data->toJSON() );
+        $data = json_decode($data->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
@@ -85,12 +88,12 @@ class ProjectsController extends Controller
         if ($id) {
             $query->where(['project_id' => $id]);
         }
-        if (! request()->input('all_items', 0)){
-            $query->where('schedule', '<=', date('Y-m-d H:i:s') );
+        if (!request()->input('all_items', 0)) {
+            $query->where('schedule', '<=', date('Y-m-d H:i:s'));
         }
 
         $projectItems = $query->get();
-        foreach ($projectItems as $key => $item){
+        foreach ($projectItems as $key => $item) {
             $data[$key] = (array)$item->test;
             $data[$key]['id'] = $item->id;
             $data[$key]['project_id'] = $item->project_id;
@@ -104,22 +107,23 @@ class ProjectsController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function update( Request $request ) {
+    public function update(Request $request)
+    {
 
         $rules = [
             'options' => 'required',
             'options.title' => 'required',
             'articles' => 'required',
             'articles.*.images.cover.id' => 'required',
-            'tests'    => 'required',
+            'tests' => 'required',
         ];
         $validation = Validator::make($request->all(), $rules);
 
-        if ( !$validation->passes() ) {
-            return $this->helpers->apiArrayResponseBuilder(400, 'validation_failed', $validation->errors() );
+        if (!$validation->passes()) {
+            return $this->helpers->apiArrayResponseBuilder(400, 'validation_failed', $validation->errors());
         }
 
-        $project = $this->projectRepository->update( $request);
+        $project = $this->projectRepository->update($request);
 
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $project->data);
@@ -129,7 +133,8 @@ class ProjectsController extends Controller
      * @param $id
      * @return JsonResponse
      */
-    public function show($id) {
+    public function show($id)
+    {
 
         $project = $this->projectRepository->find($id);
 
@@ -153,14 +158,14 @@ class ProjectsController extends Controller
         ];
         $validation = Validator::make($request->all(), $rules);
 
-        if ( !$validation->passes() ) {
-            return $this->helpers->apiArrayResponseBuilder(400, 'validation_failed', $validation->errors() );
+        if (!$validation->passes()) {
+            return $this->helpers->apiArrayResponseBuilder(400, 'validation_failed', $validation->errors());
         }
 
 
-        $project = $this->projectRepository->create( $request);
+        $project = $this->projectRepository->create($request);
 
-        if ( !$project->saved ) {
+        if (!$project->saved) {
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'saving_error']);
         }
 
@@ -175,25 +180,24 @@ class ProjectsController extends Controller
     /**
      * Set cover articles and license image
      */
-    public function setImage($type){
+    public function setImage($field, $type = 'articles')
+    {
+        $attachment_type = self::ATTACHMENT_TYPE_ARTICLES;
 
-        if ($type == 'articles') {
-            $attachment_type = self::ATTACHMENT_TYPE_ARTICLES;
-        }
-        elseif ($type == 'test') {
+        if ($type == 'test') {
             $attachment_type = self::ATTACHMENT_TYPE_TEST_QUESTIONS;
-        }
-        elseif ($type == 'project') {
+        } elseif
+        ($type == 'project') {
             $attachment_type = self::ATTACHMENT_TYPE_PROJECT;
-        }
-        elseif ($type == 'banners') {
+        } elseif
+        ($type == 'banners') {
             $attachment_type = self::ATTACHMENT_TYPE_BANNERS;
         }
 
         $file = new File;
         $file->data = \Illuminate\Support\Facades\Request::file('file');
         $file->is_public = true;
-        $file->field = 'cover_image';
+        $file->field = $field;
         $file->attachment_type = $attachment_type;
         $data = $file->beforeSave();
 

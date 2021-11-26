@@ -163,8 +163,8 @@ export default {
         },
         toValidate() {
             this.errors.correct = '';
-            console.log('answer correct: ', this.question.answer.correct, this.question.answer.correct.length);
-            if (!this.question.answer.correct.length) {
+            console.log('answer correct: ', this.question.correct, this.question.correct.length);
+            if (!this.question.correct.length) {
                 this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
                 this.$store.dispatch('setTestError', true);
             }

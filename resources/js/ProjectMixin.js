@@ -23,9 +23,9 @@ export default {
                     recommended: [],
                     user_id: [],
                     chosenRecommended: [],
-                    cover: '',
+                    cover: null,
                     media: {
-                        cover: {}
+                        cover: null
                     },
                     content: [
                         {
@@ -63,9 +63,11 @@ export default {
                         button: null,
                         count: null,
                         points: null,
+                        img: null,
+                        cover: null,
+                        video: null,
                         media: {
                             img: null,
-                            cover: null,
                             video: null,
                         },
                         type: 'variants',
@@ -74,7 +76,7 @@ export default {
                         agreement: null,
                         variants: [],
                     },
-                    cover: '',
+                    cover: null,
                     complex_question: [],
                     picked: 'test',
                     type: 'easy',
@@ -89,13 +91,14 @@ export default {
                 itemId: '',
                 title: '',
                 text: '',
-                cover: '',
+                cover: null,
+                img: null,
+                video: null,
                 type: 'variants',
                 correct: [],
                 variants: [],
                 media: {
                     img: null,
-                    cover: null,
                     video: null,
                 },
             },

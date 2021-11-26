@@ -407,7 +407,7 @@ export default {
             imageForm.append('file', event.target.files[0])
 
             axios.post(
-                PROJECT_IMAGE + 'project',
+                PROJECT_IMAGE + 'cover/project',
                 imageForm,
                 {
                     headers: {

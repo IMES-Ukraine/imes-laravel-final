@@ -127,7 +127,7 @@ class TestsController extends Controller
     public function show($id)
     {
 
-        $data = TestQuestions::with(['cover_image', 'complex', 'featured_images'])->where('id', '=', $id)->get();
+        $data = TestQuestions::with(['cover_image', 'image', 'video', 'complex', 'featured_images'])->where(['id' => $id])->get();
         //     $data->makeHidden(['agreement']);
 
         if (!empty($data)) {
