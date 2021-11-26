@@ -24,6 +24,9 @@
             <button class="articles_create-submit button-border" type="button" @click="addSurvey">добавить ответ</button>
 
         </div>
+        <button class="articles_create-submit button-gradient" type="button"
+                @click="$emit('input', test)">сохранить
+        </button>
     </div>
 </template>
 <script>
