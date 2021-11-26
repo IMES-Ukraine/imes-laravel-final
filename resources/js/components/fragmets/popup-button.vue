@@ -42,7 +42,7 @@
 
 <script>
     import ItemTemplate from '../templates/project/form/ItemTemplate.vue'
-    import { SEARCH_USER, CLIENT_CHANGE_BALANCE } from "../../api/endpoints"
+    import { SEARCH_USER, CLIENT_CHANGE_BALANCE, TOKEN } from "../../api/endpoints"
     import ModalMixin from "../../ModalMixin";
 
     export default {
@@ -96,11 +96,16 @@
                 }
 
                 if (!error) {
-                    this.$post(CLIENT_CHANGE_BALANCE, {id: user_id, count: count}).then(
+                    this.$post(CLIENT_CHANGE_BALANCE, {id: user_id, count: count},
+                        {
+                            params: {
+                                access_token: TOKEN
+                            },
+                        }).then(
                         response => {
-                            this.loadClients();
                             $('#db-balance').modal('hide');
                             this.showMsgBox('Бали нараховано');
+                            this.$emit('update', user_id, count);
                         }
                     )
                 }
