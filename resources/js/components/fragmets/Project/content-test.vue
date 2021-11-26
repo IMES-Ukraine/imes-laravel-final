@@ -54,12 +54,11 @@
                 <div>
                     <Question
                         :test.sync="test"
+                        @input="storeTest($event)"
                         :errors="testErrors"/>
                 </div>
                 <div class="mb20"></div>
-                <button class="articles_create-submit button-gradient" type="button"
-                        @click="storeTest">сохранить
-                </button>
+
             </div>
 
             <div v-if="test.type === 'complex'">
@@ -77,13 +76,11 @@
         <div v-if="test.picked === 'survey'">
             <div>
                 <TestSurvey :test.sync="test"
+                            @input="storeTest($event)"
                             :errorTestSurveyTitle="testErrors.title"
                             :errorTestSurveyText="testErrors.text"/>
             </div>
             <div class="mb20"></div>
-            <button class="articles_create-submit button-gradient" type="button"
-                    @click="storeTest">сохранить
-            </button>
         </div>
     </div>
 </template>
