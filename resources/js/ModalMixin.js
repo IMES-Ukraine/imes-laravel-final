@@ -9,7 +9,10 @@ export default {
     methods: {
         showMsgBox(text) {
             this.boxOne = ''
-            this.$bvModal.msgBoxOk(text)
+            this.$bvModal.msgBoxOk(text, {
+                footerClass: 'my-modal-footer',
+                bodyClass: 'my-modal-body'
+            })
                 .then(value => {
                     this.boxOne = value
                 })
