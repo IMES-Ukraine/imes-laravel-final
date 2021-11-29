@@ -294,7 +294,7 @@ export default {
                 error = true;
             }
 
-            if (!this.article.cover.file_name) {
+            if (!this.article.cover || (!this.article.cover.file_name) ) {
                 this.errorArticleCover = this.requiredErrorText;
                 error = true;
             }

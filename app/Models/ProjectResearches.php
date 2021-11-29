@@ -94,9 +94,9 @@ class ProjectResearches extends Model
     ];
 
 
-    public function ulogic_projects_settings(): BelongsTo
+    public function project(): BelongsTo
     {
-        return $this->belongsTo(Projects::class);
+        return $this->belongsTo(Projects::class, 'project_id', 'id');
     }
 
     /**

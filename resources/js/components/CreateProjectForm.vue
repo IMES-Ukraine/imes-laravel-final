@@ -196,6 +196,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="articles_create__item">
+                            <div class="articles_create__item-title has_radio">
+                                <input type="checkbox" name="checkbox_file" v-model="hasAgreement">
+                                <i></i>
+                                <p>Соглашение</p>
+                            </div>
+                            <div class="articles_create__item-content">
+                                <textarea   v-model="project.options.agreement"
+                                            :disabled="!hasAgreement"/>
+                            </div>
+                        </div>
 
                         <div class="articles_create__item">
                             <p class="articles_create__item-title">Статус запуска проекта</p>
@@ -325,6 +336,7 @@ export default {
     },
     data() {
         return {
+            hasAgreement: false,
             isValidated: false,
             isComplex: false,
             picked: 'test',
@@ -436,6 +448,7 @@ export default {
         if (sessionStorage.project) {
             this.$store.dispatch("storeProject", JSON.parse(sessionStorage.project) );
         }
+        this.hasAgreement = !!this.project.agreement;
     },
     /*validations: {
         title: {
