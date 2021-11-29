@@ -42,7 +42,8 @@ class BlogController extends Controller
 
         $type = Articles::ARTICLE;//get('type', Articles::ARTICLE);
 
-        $relations = [/*'user', 'featured_images','content_images',*/ 'cover_image' /*, 'recommended.post', 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/];
+        $relations = [/*'user', 'featured_images','content_images',*/
+            'cover_image' /*, 'recommended.post', 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/];
         //if (!isset($apiUser->id)) unset($relations['is_opened']);
 
         if ($type == Articles::ARTICLE) {
@@ -114,7 +115,7 @@ class BlogController extends Controller
             'rainlab_blog_posts.cover_image_id',
             'rainlab_blog_posts_times.date',
             'rainlab_blog_posts_times.time',
-            )
+        )
             ->with('cover_image')
             ->with('is_opened')
 //            ->with('gallery')
@@ -136,10 +137,14 @@ class BlogController extends Controller
 
     public function callback($id)
     {
+        $post = Post::findOrFail($id);
+        $post->increment('callbacks');
 
-        Post::find($id)->increment('callbacks');
+        $tracking = new TrackingProvider(auth()->user());
+        $tracking->startReading($id);
 
-        $post = Post::find($id);
+
+
         $images = $post->featured_images;
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [$post->toArray()] + [$images]);
@@ -294,8 +299,7 @@ class BlogController extends Controller
 
         $saveStatus = $model->save();
 
-        if (!$saveStatus)
-        {
+        if (!$saveStatus) {
             return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
         }
 
@@ -376,6 +380,9 @@ class BlogController extends Controller
             ->where(['id' => $id])
             ->get();
         $data = $data->toArray();
+        if (empty($data)) {
+            return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);
+        }
         $user = User::where(['id' => $data[0]['user_id']])->select('id', 'name')->first();
         $data[0]['user'] = $user;
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);

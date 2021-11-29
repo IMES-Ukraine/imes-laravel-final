@@ -14,6 +14,15 @@ class TrackingProvider
         $this->user = $user;
     }
 
+    public function startReading($articleId)
+    {
+        $model = new NewsTracking();
+        $model->user_id = $this->user->id;
+        $model->position = null;
+        $model->news_id = $articleId;
+        $model->save();
+    }
+
     public function setBlockReaded($articleId, $blockId = NULL)
     {
         $model = new NewsTracking();
@@ -53,7 +62,8 @@ class TrackingProvider
                 ->where('user_id', $this->user->id)
                 ->orderBy('created_at', 'asc')
                 ->skip(0)
-                ->take($blockCount)->get();
+                ->take($blockCount)
+                ->get();
 
             $trackStarted = NewsTracking::where('news_id', $articleId)
                 ->where('user_id', $this->user->id)
@@ -69,7 +79,6 @@ class TrackingProvider
                 //->orderBy('position', 'asc')
                 ->limit(1)
                 ->get();
-
 
 
             $totalReadingTimeSpent = 0;
