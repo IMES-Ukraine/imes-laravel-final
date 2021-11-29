@@ -9,9 +9,9 @@ namespace App\Models;
 
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Database\Query\Builder;
 
 class Articles extends Post {
-
     const ARTICLE = 1;
     const INFORMATION = 2;
 
@@ -29,10 +29,22 @@ class Articles extends Post {
         return $query->where('type', self::INFORMATION);
     }
 
-    public function scopeNotTimes($query) {
+    public function scopeIsNotPassed( $query, $userId)
+    {
+        return $query->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.entity_id',  '=', 'rainlab_blog_posts.id')
+            ->whereNotExists(function ($q) use ($userId){
+                $q->select('ulogic_projects_passing.answer')
+                    ->where('ulogic_projects_passing.entity_type', Post::class)
+                  ->where('ulogic_projects_passing.user_id', $userId);
+                });
+    }
+
+    public function scopeNotTimes( $query) {
         return $query->leftJoin('rainlab_blog_posts_times', 'rainlab_blog_posts_times.post_id', '=', 'rainlab_blog_posts.id')
             ->whereNull('rainlab_blog_posts_times.date');
     }
+
+
 
 
     /**
