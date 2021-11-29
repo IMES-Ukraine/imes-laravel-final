@@ -478,4 +478,19 @@ export default {
     .close:hover {
         opacity: 1;
     }
+    .my-modal-body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 16px;
+        padding-top: 20px;
+        margin-bottom: 10px;
+    }
+    .my-modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
 </style>
