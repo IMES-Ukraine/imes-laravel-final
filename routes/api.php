@@ -111,11 +111,12 @@ Route::group(
 
         Route::group(
             [
+                'middleware' => 'auth:api',
                 'prefix' => 'blog'
             ],
             function () {
 
-                Route::get('/', [BlogController::class, 'index'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                Route::get('/', [BlogController::class, 'index']);
                 Route::get('/list', [BlogController::class, 'list']);
 
                 Route::post('/', [BlogController::class, 'store']);
@@ -125,14 +126,14 @@ Route::group(
 
                 Route::get('/times', [BlogController::class, 'times']);
 
-                Route::get('/{id}', [BlogController::class, 'show']);//->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                Route::get('/{id}', [BlogController::class, 'show']);
 
-                Route::get('/{id}/callback', [BlogController::class, 'callback'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                Route::get('/{id}/callback', [BlogController::class, 'callback']);
 
-                Route::get('/{articleId}/read/{blockId}', [BlogController::class, 'read'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                Route::get('/{articleId}/read/{blockId}', [BlogController::class, 'read']);
 
                 Route::post('/filter/export',
-                    [Filter::class, 'onExport'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                    [Filter::class, 'onExport']);
 
                 Route::delete('/destroy/{id}', [BlogController::class, 'destroy']);
             }
