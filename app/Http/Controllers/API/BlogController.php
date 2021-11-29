@@ -33,7 +33,7 @@ class BlogController extends Controller
 
     /**
      * Return posts
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index()
     {
@@ -84,7 +84,7 @@ class BlogController extends Controller
     /**
      * @return JsonResponse
      */
-    public function tags()
+    public function tags(): JsonResponse
     {
         $data = Tag::all();
 
@@ -94,7 +94,7 @@ class BlogController extends Controller
     /**
      * @return JsonResponse
      */
-    public function times()
+    public function times(): JsonResponse
     {
         $data = Articles::select(
             'rainlab_blog_posts.id',
@@ -132,10 +132,10 @@ class BlogController extends Controller
     /**
      * Counting of actions
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
 
-    public function callback($id)
+    public function callback($id): JsonResponse
     {
         $post = Post::findOrFail($id);
         $post->increment('callbacks');
@@ -152,11 +152,12 @@ class BlogController extends Controller
 
     /**
      * Counting of readed blocks
-     * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param $articleId
+     * @param $blockId
+     * @return JsonResponse
      */
 
-    public function read($articleId, $blockId)
+    public function read($articleId, $blockId): JsonResponse
     {
 
         $userModel = auth()->user();
@@ -351,7 +352,7 @@ class BlogController extends Controller
     /**
      * Shows post by id
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show($id)
     {
