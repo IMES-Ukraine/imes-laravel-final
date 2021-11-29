@@ -48,8 +48,6 @@ class TestQuestions extends Model
         'variants' => 'array',
     ];
 
-    protected $hidden = ['agreement'];
-
     /**
      * @var string The database table used by the model.
      */
@@ -93,6 +91,14 @@ class TestQuestions extends Model
      */
     public function video() {
         return $this->hasOne('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_VIDEO ]);
+    }
+
+    /**
+     * Cover images
+     * @return mixed
+     */
+    public function research() {
+        return $this->hasOne(ProjectResearches::class, 'id', 'research_id');
     }
 
     /**

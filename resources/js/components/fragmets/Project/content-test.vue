@@ -48,14 +48,7 @@
                         </div>
                     </div>
                 </div>
-<!--                <div class="articles_create__item">-->
-<!--                    <p class="articles_create__item-title">Соглашение</p>-->
-<!--                    <div class="articles_create__item-content">-->
-<!--                        <div class="articles_create__name-block">-->
-<!--                            <textarea type="text" name="agreement"  v-model="test.agreement" />-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
+
             </div>
 
             <div v-if="test.type === 'easy'">

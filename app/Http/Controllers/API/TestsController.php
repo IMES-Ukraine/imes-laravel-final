@@ -86,12 +86,16 @@ class TestsController extends Controller
     public function showAgreement($id)
     {
 
-        $data = TestQuestions::find($id)->get()->makeVisible('agreement');
+        $data = TestQuestions::where('id', $id)->get()->makeVisible('agreement')->first();
 
         if (!$data) {
             return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
         }
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+
+        $agreement = $data->research->project->options['agreement'] ?? '';
+        $data = $data->toArray();
+        $data['agreement'] = $agreement;
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
     }
 

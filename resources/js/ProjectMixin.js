@@ -58,7 +58,6 @@ export default {
                 test: {
                     title: '',
                     text: '',
-                    agreement: '',
                     question: {
                         link: '',
                         button: null,
