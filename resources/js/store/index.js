@@ -165,6 +165,7 @@ export default new Vuex.Store({
         },
         saveTest(state, test) {
             state.content.test = test;
+            state.currentAction = null;
             state.numberTest = 1;
         },
         storeContent(state, content) {

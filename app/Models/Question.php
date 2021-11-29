@@ -78,21 +78,28 @@ class Question
             $fields = [
                 'itemId' => $variant['itemId'],
                 'variant' => $variant['text'],
+                'description' => $variant['variant'],
                 'title' => $variant['title'],
+                'cover_image' => $variant['media'][0]['path'] ?? null,
             ];
-            $mediaFields = [];
-
-            if (isset($variant['file']) && isset($variant['file']['id']) && $attachmentId = $variant['file']['id']) {
-                $mediaFields = [
-                    'description' => $variant['variant'],
-                    'file' => File::find($attachmentId)
-                ];
-            }
 
 
-            if ($this->buttonsType == self::BUTTONS_CARD) {
-                $fields = array_merge($fields, $mediaFields);
-            }
+            //АПИ Не предусмотрено более 1 картинки в вариантах ответа
+//            $mediaFields = [];
+//
+//            if (isset($variant['file']['id']) && $attachmentId = $variant['file']['id']) {
+//                $mediaFields = [
+//                    'description' => $variant['variant'],
+//                    'file' => File::find($attachmentId)
+//                ];
+//            }
+//
+//
+//            if ($this->buttonsType == self::BUTTONS_CARD) {
+//                $fields = array_merge($fields, $mediaFields);
+//            }
+
+
             $buttons[] = $fields;
         }
 

@@ -202,7 +202,7 @@ export default {
             imageForm.append('file', event.target.files[0])
 
             axios.post(
-                ARTICLE_COVER + '/test',
+                PROJECT_IMAGE + 'img/test',
                 imageForm,
                 {
                     headers: {
@@ -222,7 +222,7 @@ export default {
                     path: file.data.data.path
                 };
               let q = [...this.test.question.variants[index].media];
-              q.push(obj);
+              q.push(file.data.data);
               this.test.question.variants[index].media = [...q];
                 $('#file-' + id).val(null);
             })

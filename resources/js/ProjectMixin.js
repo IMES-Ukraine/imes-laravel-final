@@ -66,14 +66,10 @@ export default {
                         img: null,
                         cover: null,
                         video: null,
-                        media: {
-                            img: null,
-                            video: null,
-                        },
+                        media: [],
                         type: 'variants',
                         correct: [],
                         isComplex: this.isComplex,
-                        agreement: null,
                         variants: [],
                     },
                     cover: null,
@@ -83,9 +79,7 @@ export default {
                     count: null,
                     points: null,
                     canRetake: false,
-
                 },
-
             },
             complex_questionTemplate: {
                 itemId: '',

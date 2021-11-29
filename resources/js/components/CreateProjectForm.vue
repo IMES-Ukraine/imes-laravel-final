@@ -448,7 +448,7 @@ export default {
         if (sessionStorage.project) {
             this.$store.dispatch("storeProject", JSON.parse(sessionStorage.project) );
         }
-        this.hasAgreement = !!this.project.agreement;
+        this.hasAgreement = !!this.project.options.agreement;
     },
     /*validations: {
         title: {

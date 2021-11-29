@@ -199,7 +199,7 @@ export default {
     components: {ValidationProvider, VCheckbox},
     data() {
         return {
-            content: {...this.contentTemplate},
+            content: {},
             loaded: false,
             showFull: false
         }
