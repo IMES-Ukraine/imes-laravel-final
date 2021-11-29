@@ -86,7 +86,7 @@ class TestsController extends Controller
     public function showAgreement($id)
     {
 
-        $data = TestQuestions::where('id', '=', $id)->get()->makeVisible('agreement');
+        $data = TestQuestions::find($id)->get()->makeVisible('agreement');
 
         if (!$data) {
             return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);

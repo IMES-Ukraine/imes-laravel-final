@@ -22,6 +22,7 @@ use App\Models\TrackingProvider;
 
 class BlogController extends Controller
 {
+    const COUNT_PER_PAGE = 15;
     protected $Post;
     protected $helpers;
 
@@ -35,25 +36,28 @@ class BlogController extends Controller
      * Return posts
      * @return JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
+        $apiUser = auth()->user();
 
-        $countOnPage = 15;//get('count', 15);
 
-        $type = Articles::ARTICLE;//get('type', Articles::ARTICLE);
+        $countOnPage = $request->get('count', self::COUNT_PER_PAGE);
 
-        $relations = [/*'user', 'featured_images','content_images',*/
-            'cover_image' /*, 'recommended.post', 'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }*/];
+        $type =  $request->get('type', Articles::ARTICLE);
+
+        $relations = [ 'cover_image', /*'user', 'featured_images','content_images',*/
+            /*, 'recommended.post',  'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }n */
+        ];
         //if (!isset($apiUser->id)) unset($relations['is_opened']);
 
         if ($type == Articles::ARTICLE) {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
-                //->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
+                ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
                 //->where( 'published_at', '<=', Carbon::now()
                 //->toDateTimeString())
                 ->isArticle()
-                ->notTimes()
+                ->isNotPassed($apiUser->id)
                 ->orderBy('rainlab_blog_posts.id', 'desc')
                 ->paginate($countOnPage);
         } else {
