@@ -43,7 +43,7 @@ Route::group([
 });
 Route::group(
     [
-        'middleware' => 'api',
+        'middleware' => 'auth:api',
 
         'prefix' => 'v1'
     ],
@@ -111,7 +111,6 @@ Route::group(
 
         Route::group(
             [
-                'middleware' => 'auth:api',
                 'prefix' => 'blog'
             ],
             function () {
@@ -144,9 +143,9 @@ Route::group(
                 'prefix' => 'notifications'
             ],
             function () {
-                Route::get('/', [NotificationsController::class, 'index'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
-                Route::get('/{id}', [NotificationsController::class, 'show'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
-                Route::delete('/{id}', [NotificationsController::class, 'destroy'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware')->name('destroy');
+                Route::get('/', [NotificationsController::class, 'index']);
+                Route::get('/{id}', [NotificationsController::class, 'show']);
+                Route::delete('/{id}', [NotificationsController::class, 'destroy'])->name('destroy');
 
             }
         );
@@ -157,26 +156,26 @@ Route::group(
             ],
             function () {
                 Route::get('/',
-                    [ProfileController::class, 'index'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                    [ProfileController::class, 'index']);
 
                 Route::post('/password',
-                    [ProfileController::class, 'setPassword'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                    [ProfileController::class, 'setPassword']);
 
                 Route::post('/token',
-                    [ProfileController::class, 'token'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                    [ProfileController::class, 'token']);
 
                 Route::post('/withdraw',
                     [ProfileController::class, 'withdraw'])
-                    ->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                    ;
 
                 Route::post('/verify',
-                    [ProfileController::class, 'verify'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                    [ProfileController::class, 'verify']);
 
                 Route::post('/image/{type}',
                     [ProfileController::class, 'setImage']);
 
                 Route::get('/decline?id={id}',
-                    [ProfileController::class, 'decline'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check'/*, 'ULogic\Profile\Models\BanMiddleware'*/);
+                    [ProfileController::class, 'decline']);
 
                 Route::get('/confirm?id={id}',
                     [ProfileController::class, 'confirm']);
@@ -198,7 +197,7 @@ Route::group(
                 Route::resource('/',
                     WithdrawController::class,
                     ['except' => ['store', 'destroy', 'create', 'edit', 'show', 'update']])
-                    ->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                    ;
             }
         );
 
@@ -207,12 +206,12 @@ Route::group(
                 'prefix' => 'tests'
             ],
             function () {
-                Route::get ('/',  [TestsController::class, 'index'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
-                Route::get('/{id}', [TestsController::class, 'show'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
-                Route::delete('/{id}', [TestsController::class, 'destroy'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
-                Route::post('/', [TestsController::class, 'create'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
-                Route::post('/submit', [TestsController::class, 'submit'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
-                //Route::post('/{id}', [TestsController::class, 'update'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                Route::get ('/',  [TestsController::class, 'index']);
+                Route::get('/{id}', [TestsController::class, 'show']);
+                Route::delete('/{id}', [TestsController::class, 'destroy']);
+                Route::post('/', [TestsController::class, 'create']);
+                Route::post('/submit', [TestsController::class, 'submit']);
+                //Route::post('/{id}', [TestsController::class, 'update']);
             }
         );
 
@@ -222,7 +221,7 @@ Route::group(
             ],
             function () {
                 Route::post('/filter/export',
-                    [Filter::class, 'onExport'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                    [Filter::class, 'onExport']);
             }
         );
 
@@ -232,7 +231,7 @@ Route::group(
             ],
             function () {
                 Route::post('/export',
-                    [Filter::class, 'onExport'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                    [Filter::class, 'onExport']);
             }
         );
 
@@ -251,7 +250,7 @@ Route::group(
                 'prefix' => 'analytics'
             ],
             function () {
-                Route::get('/', [AnalyticsController::class, 'index'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check');
+                Route::get('/', [AnalyticsController::class, 'index']);
             }
         );
 
@@ -260,8 +259,8 @@ Route::group(
                 'prefix' => 'agreement'
             ],
             function () {
-                Route::get('/{id}', [TestsController::class, 'showAgreement'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
-                Route::post('/{id}', [TestsController::class, 'acceptAgreement'])->middleware('\Tymon\JWTAuth\Http\Middleware\Check', 'App\Models\BanMiddleware');
+                Route::get('/{id}', [TestsController::class, 'showAgreement']);
+                Route::post('/{id}', [TestsController::class, 'acceptAgreement']);
 
             }
         );
@@ -270,7 +269,6 @@ Route::group(
        /**  Запросы от внешних источников */
         Route::group(
             [
-                'middleware' => 'auth:api',
                 'prefix' => 'cards'
             ],
             function () {
@@ -281,7 +279,6 @@ Route::group(
 
         Route::group(
             [
-                'middleware' => 'auth:api',
                 'prefix' => 'banners'
             ],
             function () {
@@ -291,7 +288,6 @@ Route::group(
 
         Route::group(
             [
-                'middleware' => 'auth:api',
                 'prefix' => 'users'
             ],
             function () {
