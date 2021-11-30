@@ -17,7 +17,7 @@
             </div>
             <div class="dashboard_main">
                 <div class="dashboard_main-head">
-                    <p class="dashboard_main-total">Активностей <b>{{ project.total }}</b></p>
+                    <p class="dashboard_main-total">Активностей <b>{{ project.status_active }}</b></p>
                     <div class="dashboard_main__status">
                         <p class="dashboard_main__status-title">Статус активностей</p>
                         <div class="dashboard_main__status-content">
