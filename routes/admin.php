@@ -110,6 +110,8 @@ Route::group(
         );
 
         Route::get('/export-users/{project_id}', [UsersController::class, 'exportUsers'])->name('export-users');
+        Route::get('/export-users-article/{project_id}/{content_id}', [UsersController::class, 'exportUsersArticle'])->name('export-users-article');
+        Route::get('/export-users-test/{project_id}/{content_id}', [UsersController::class, 'exportUsersTest'])->name('export-users-test');
 
         Route::group(
             [

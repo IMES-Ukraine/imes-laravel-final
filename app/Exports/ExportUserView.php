@@ -13,23 +13,36 @@ use Maatwebsite\Excel\Concerns\FromView;
 class ExportUserView implements FromView
 {
     public $project_id;
+    public $content_id;
+    public $article;
+    public $test;
 
-    public function __construct($project_id)
+    public function __construct($project_id, $content_id = null, $article = false, $test = false)
     {
         $this->project_id = $project_id;
+        $this->content_id = $content_id;
+        $this->article = $article;
+        $this->test = $test;
     }
 
     public function view(): View
     {
         $research = ProjectResearches::select('id')->where('project_id', $this->project_id)->first();
-        $articles_ids = ArticleService::pluckIDArticles($research->id);
-        $test_ids = TestService::pluckIDArticles($research->id);
+        $articles_ids = ArticleService::pluckIDArticles($this->content_id??$research->id);
+        $test_ids = TestService::pluckIDArticles($this->content_id??$research->id);
 
-        $results = Passing::with('user')
-            ->with('withdraw')
-            ->whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
-            ->orWhereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')
-            ->get();
+        $query = Passing::with('user')->with('withdraw');
+
+        if ($this->article) {
+            $query->whereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+        } elseif ($this->test) {
+            $query->whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')');
+        } else {
+            $query->whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
+                ->orWhereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+        }
+
+        $results = $query->get();
 
         return view('exports.users', [
             'results' => $results

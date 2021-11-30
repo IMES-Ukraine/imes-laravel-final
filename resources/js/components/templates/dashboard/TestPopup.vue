@@ -8,7 +8,7 @@
                 <div class="study template_box modal-content margin-auto" v-if="test">
                     <p class="template_title">{{ test.title }}</p>
                     <button class="template_close" type="button" data-dismiss="modal"></button>
-                    <button class="study-download" type="button"><span>Скачать отчёт пакета</span></button>
+                    <a :href="'/admin/api/v1/export-users-test/' + project_id + '/' + content_id" class="study-download"><span>Скачать отчёт пакета</span></a>
                     <div class="study-box">
                         <div class="study__block">
                             <template v-if="(test.type == 'easy' && test.picked == 'test')">
@@ -216,6 +216,10 @@
                 default: {}
             },
             content_id: {
+                type: Number,
+                default: 0
+            },
+            project_id: {
                 type: Number,
                 default: 0
             }
