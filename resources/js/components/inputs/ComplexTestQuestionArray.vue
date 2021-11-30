@@ -128,31 +128,6 @@ export default {
     },
     methods: {
 
-        /**
-         * Handle changing of file input (cover, video, variants)
-         * @param event
-         */
-        handleUpload(index, event) {
-
-            let imageForm = new FormData();
-            let input = event.target
-            let type = input.getAttribute('img_type')
-
-
-            imageForm.append('file', input.files[0]);
-
-            this.$post(PROJECT_IMAGE + type,
-                imageForm,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            ).then((file) => {
-                this.complex_question.cover = file.data
-            })
-        },
-
         removeComplexTest(itemId) {
             for (const [index, value] of Object.entries(this.complex_question)) {
                 if (value.itemId === itemId) {

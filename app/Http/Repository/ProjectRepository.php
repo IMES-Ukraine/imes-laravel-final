@@ -108,7 +108,7 @@ class ProjectRepository
                     $questionModel = TestQuestions::create((array)new Question($content['test']));
                     $questionModel->research_id = $research->id;
                     $questionModel->save();
-                    TestService::setAttachment($content['test']['question'], $questionModel->id);
+                    TestService::setAttachment($content['test'], $questionModel->id);
 
                 }
             }

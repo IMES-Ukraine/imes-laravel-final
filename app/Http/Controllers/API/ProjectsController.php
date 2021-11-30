@@ -205,20 +205,8 @@ class ProjectsController extends Controller
         $file->is_public = true;
         $file->field = $field;
         $file->attachment_type = $attachment_type;
-        $data = $file->beforeSave();
+        $file->beforeSave();
 
-        //Storage::disk('public')->put('/project/', 'Contents');
-        //$model_file = new File();
-        //$model_file->fromPost($file->data);
-
-        //$apiUser = Auth::user();
-
-        /*$helper = new ImageHelper( $apiUser);
-        $response = $helper->uploadImage( $type, $data);
-
-        if( !$response){
-            return $this->helpers->apiArrayResponseBuilder(401, 'error', []);
-        }*/
 
         $arr = [
             'status_code' => 200,

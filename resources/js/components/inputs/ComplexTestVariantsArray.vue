@@ -192,7 +192,7 @@ export default {
         imageForm.append('file', event.target.files[0])
 
         axios.post(
-            ARTICLE_COVER + '/test',
+            PROJECT_IMAGE + 'variant-' + index +'/test',
             imageForm,
             {
               headers: {
@@ -209,31 +209,6 @@ export default {
           $('#file-' + id).val(null);
         })
       },
-
-        /**
-         * Handle changing of file input (cover, video, variants)
-         * @param event
-         */
-        handleUpload(index, event) {
-
-            let imageForm = new FormData();
-            let input = event.target
-            let type = input.getAttribute('img_type')
-
-
-            imageForm.append('file', input.files[0]);
-
-            this.$post(PROJECT_IMAGE + type,
-                imageForm,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            ).then((file) => {
-                this.question.variants[index].file = file.data
-            })
-        },
     },
     validations: {
         text: {

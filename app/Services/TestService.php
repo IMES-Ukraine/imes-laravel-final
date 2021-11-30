@@ -65,6 +65,7 @@ class TestService
                     $img->save();
                 }
             }
+//            foreach ($modelvariant)
         }
     }
 
