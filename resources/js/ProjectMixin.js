@@ -57,6 +57,7 @@ export default {
                 test: {
                     title: '',
                     text: '',
+                    external_learn_url: '',
                     question: {
                         link: '',
                         button: null,
@@ -146,7 +147,7 @@ export default {
     },
     mounted() {
         if (sessionStorage.project) {
-            this.$store.dispatch('storeProject', JSON.parse(sessionStorage.project) );
+            this.$store.dispatch('storeProject', JSON.parse(sessionStorage.project));
         }
         this.project = {...this.$store.state.project};
 
@@ -205,7 +206,7 @@ export default {
         addAnswerTest(varIndex, questionIndex) {
             let test = {...this.$store.state.test};
             let title = alphabet[varIndex];
-            let newItem = {... this.getNewVariant(title) };
+            let newItem = {...this.getNewVariant(title)};
             let q = [];
             if (!questionIndex) {
                 if (test.question.variants.length) {
@@ -213,8 +214,7 @@ export default {
                 }
                 q.push(newItem);
                 test.question.variants = [...q];
-            }
-            else {
+            } else {
                 questionIndex--;
                 if (test.complex_question.length) {
                     q = [...test.complex_question[questionIndex].variants];

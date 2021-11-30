@@ -2,6 +2,7 @@
 namespace App\Models;
 
 //imes-backend/plugins/ulogic/tests/models/Test.php
+use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TestQuestions extends Model
 {
+    use JsonFieldTrait;
     const STATUS_PASSED = 'passed';
     const STATUS_FAILED = 'failed';
     const STATUS_SUBMITTED = 'submitted';

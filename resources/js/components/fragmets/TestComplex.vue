@@ -11,17 +11,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="articles_create__item">
-                    <p class="articles_create__item-title">Категория</p>
-                    <div class="articles_create__item-content">
-                        <select class="my-ui-select articles_create-select">
-                            <option value="1">Категория 1</option>
-                            <option value="2">Категория 2</option>
-                            <option value="3">Категория 3</option>
-                            <option value="4">Категория 4</option>
-                        </select>
-                    </div>
-                </div>
+<!--                <div class="articles_create__item">-->
+<!--                    <p class="articles_create__item-title">Категория</p>-->
+<!--                    <div class="articles_create__item-content">-->
+<!--                        <select class="my-ui-select articles_create-select">-->
+<!--                            <option value="1">Категория 1</option>-->
+<!--                            <option value="2">Категория 2</option>-->
+<!--                            <option value="3">Категория 3</option>-->
+<!--                            <option value="4">Категория 4</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <div class="articles_create__item half">
                     <p class="articles_create__item-title">Обложка</p>
                     <file-input :value="test.cover"
@@ -42,13 +42,13 @@
             <div class="articles_create-block">
                 <div class="articles_create__item">
                     <div class="articles_create__item-title has_radio">
-                        <input type="radio" name="title_radio">
+                        <input type="checkbox" v-model="toLearn">
                         <i></i>
                         <p>Изучить</p>
                     </div>
                     <div class="articles_create__item-content">
                         <div class="articles_create__name-block">
-                            <input type="text" name="name" placeholder="http//">
+                            <input type="text" name="name" placeholder="http//" v-model="test.external_learn_url">
                         </div>
                     </div>
                 </div>
@@ -152,6 +152,7 @@ export default {
     data() {
         return {
             complexQ: [...this.test.complex_question],
+            toLearn: this.test.external_learn_url,
             files: {},
             cover: null,
             video: null,

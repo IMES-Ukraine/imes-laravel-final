@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\File;
-
 class Question
 {
+
     const BUTTONS_TEXT = 'text';
     const BUTTONS_CARD = 'card';
 
@@ -119,7 +118,7 @@ class Question
         $options[] =
             [
                 'type' => 'to_learn',
-                'data' => $question['question']['link'] ?? '',
+                'data' => $question['external_learn_url'] ?? '',
             ];
 
         if (isset($question['question']['video']) && isset($question['question']['video']['id'])) {
