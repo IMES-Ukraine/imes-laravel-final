@@ -9,6 +9,7 @@ use App\Models\PostTimes;
 use App\Models\Recommended;
 use App\Models\Tag;
 use App\Models\User;
+use App\Services\ArticleService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -44,9 +45,9 @@ class BlogController extends Controller
 
         $countOnPage = $request->get('count', self::COUNT_PER_PAGE);
 
-        $type =  $request->get('type', Articles::ARTICLE);
+        $type = $request->get('type', Articles::ARTICLE);
 
-        $relations = [ 'cover_image', /*'user', 'featured_images','content_images',*/
+        $relations = ['cover_image', /*'user', 'featured_images','content_images',*/
             /*, 'recommended.post',  'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }n */
         ];
         //if (!isset($apiUser->id)) unset($relations['is_opened']);
@@ -150,7 +151,6 @@ class BlogController extends Controller
         $tracking->startReading($id);
 
 
-
         $images = $post->featured_images;
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [$post->toArray()] + [$images]);
@@ -218,61 +218,46 @@ class BlogController extends Controller
     public function store(Request $request): JsonResponse
     {
         $model = new Articles();
-        $model->fill($request->post());
-
-        $model->content_html = $request->excerpt;
-        $model->cover_image_id = $request->cover_image['id'];
-        $model->published = true;
-        $model->learning_bonus = 0;
-        $model->is_popular = rand(0, 1);
-        $model->slug = uniqid();
-        $model->published_at = time();
-        if (!$model->button) {
-            $model->button = '';
-        }
-        if (!$model->action) {
-            $model->action = '';
-        }
-
+        $model = ArticleService::fillPost($model, $request);
         $saveStatus = $model->save();
 
 
-        if (!$saveStatus)
+        if (!$saveStatus) {
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
+        }
 
-        if ($saveStatus) {
-            foreach ($request->featured_images as $image) {
-                $fileImage = File::find($image['id']);
-                $fileImage->attachment_id = $model->id;
-                $fileImage->save();
+        foreach ($request->featured_images as $image) {
+            $fileImage = File::find($image['id']);
+            $fileImage->attachment_id = $model->id;
+            $fileImage->save();
 //                $model_gallery = new PostGallery();
 //                $model_gallery->post_id = $model->id;
 //                $model_gallery->cover_image = $value['path'];
 //                $model_gallery->save();
-            }
-
-            foreach ($request->tags as $tag) {
-                $model_tags = new PostTag();
-                $model_tags->post_id = $model->id;
-                $model_tags->tag_id = $tag['id'];
-                $model_tags->save();
-            }
-
-            foreach ($request->recommended as $rec) {
-                Recommended::create([
-                    'parent_id' => $model->id,
-                    'recommended_id' => $rec['id']
-                ]);
-            }
-
-            if (isset($request->date) && isset($request->time)) {
-                $model_times = new PostTimes();
-                $model_times->post_id = $model->id;
-                $model_times->date = date("Y-m-d", strtotime($request->date));
-                $model_times->time = $request->time;
-                $model_times->save();
-            }
         }
+
+        foreach ($request->tags as $tag) {
+            $model_tags = new PostTag();
+            $model_tags->post_id = $model->id;
+            $model_tags->tag_id = $tag['id'];
+            $model_tags->save();
+        }
+
+        foreach ($request->recommended as $rec) {
+            Recommended::create([
+                'parent_id' => $model->id,
+                'recommended_id' => $rec['id']
+            ]);
+        }
+
+        if (isset($request->date) && isset($request->time)) {
+            $model_times = new PostTimes();
+            $model_times->post_id = $model->id;
+            $model_times->date = date("Y-m-d", strtotime($request->date));
+            $model_times->time = $request->time;
+            $model_times->save();
+        }
+
 
         return response()->json(compact('saveStatus'));
     }
@@ -288,22 +273,7 @@ class BlogController extends Controller
     {
         $model = Post::findOrFail($id);
 
-        $model->fill($request->post());
-
-        $model->content_html = $request->excerpt;
-        $model->cover_image_id = $request->cover_image['id'];
-        $model->published = true;
-        $model->learning_bonus = 0;
-        $model->is_popular = rand(0, 1);
-        $model->slug = uniqid();
-        $model->published_at = time();
-        if (!$model->button) {
-            $model->button = '';
-        }
-        if (!$model->action) {
-            $model->action = '';
-        }
-
+        $model = ArticleService::fillPost($model, $request);
         $saveStatus = $model->save();
 
         if (!$saveStatus) {
@@ -408,5 +378,7 @@ class BlogController extends Controller
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success');
     }
+
+
 
 }
