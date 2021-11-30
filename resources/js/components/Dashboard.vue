@@ -78,7 +78,7 @@
                     <div class="dashboard_study__block">
                         <div class="dashboard_study__block-head">
                             <p class="dashboard_study__block-title">Тесты</p>
-                            <test-popup :id="key" :content_id="content.id" :test="content.test" :tests="content.tests" :passing_tests="project.passing_tests" />
+                            <test-popup :id="key" :content_id="content.id" :project_id="project.project.id" :test="content.test" :tests="content.tests" :passing_tests="project.passing_tests" />
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
@@ -131,7 +131,7 @@
                     <div class="dashboard_study__block width-full">
                         <div class="dashboard_study__block-head space-between">
                             <p class="dashboard_study__block-title">Статьи</p>
-                            <button class="dashboard_study__block-download"><span>Скачать отчёт пакета</span></button>
+                            <a :href="'/admin/api/v1/export-users-article/' + project.project.id + '/' + content.id" class="dashboard_study__block-download"><span>Скачать отчёт пакета</span></a>
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
@@ -182,144 +182,6 @@
                         </div>
                     </div>
                 </div>
-                <!--<div class="dashboard_study-box">
-                    <div class="dashboard_study__head">
-                        <p class="dashboard_study-title">Исследование 1.2</p>
-                        <div class="dashboard_study__head-list">
-                            <p class="status">Статус активностей</p>
-                            <p>Выполнили активности</p>
-                            <p>Не выполнили активности</p>
-                            <p>Не участвовали</p>
-                        </div>
-                    </div>
-                    <div class="dashboard_study__block">
-                        <div class="dashboard_study__block-head">
-                            <p class="dashboard_study__block-title">Тесты</p>
-                            <button class="dashboard_study__block-more">Подробней</button>
-                        </div>
-                        <div class="dashboard_study__status">
-                            <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">30% выполненых</p>
-                                <div class="dashboard_main__status-line">
-                                    <span style="width:30%;"></span>
-                                </div>
-                                <p class="dashboard_main__status-description">210 активностей</p>
-                            </div>
-                        </div>
-                        <div class="dashboard_study__info">
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">210</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">23</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">73</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dashboard_study__block width-full">
-                        <div class="dashboard_study__block-head space-between">
-                            <p class="dashboard_study__block-title">Статьи</p>
-                            <button class="dashboard_study__block-download"><span>Скачать отчёт пакета</span></button>
-                        </div>
-                        <div class="dashboard_study__status">
-                            <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">30% выполненых</p>
-                                <div class="dashboard_main__status-line">
-                                    <span style="width:30%;"></span>
-                                </div>
-                                <p class="dashboard_main__status-description">210 активностей</p>
-                            </div>
-                        </div>
-                        <div class="dashboard_study__info">
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">210</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">23</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">73</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="dashboard_study-box">
-                    <div class="dashboard_study__head">
-                        <p class="dashboard_study-title">Исследование 1.3</p>
-                        <div class="dashboard_study__head-list">
-                            <p class="status">Статус активностей</p>
-                            <p>Выполнили активности</p>
-                            <p>Не выполнили активности</p>
-                            <p>Не участвовали</p>
-                        </div>
-                    </div>
-                    <div class="dashboard_study__block">
-                        <div class="dashboard_study__block-head">
-                            <p class="dashboard_study__block-title">Тесты</p>
-                            <button class="dashboard_study__block-moderation">Модерация</button>
-                        </div>
-                        <div class="dashboard_study__status">
-                            <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">30% выполненых</p>
-                                <div class="dashboard_main__status-line">
-                                    <span style="width:30%;"></span>
-                                </div>
-                                <p class="dashboard_main__status-description">210 активностей</p>
-                            </div>
-                        </div>
-                        <div class="dashboard_study__info">
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">210</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">23</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">73</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dashboard_study__block width-full">
-                        <div class="dashboard_study__block-head space-between">
-                            <p class="dashboard_study__block-title">Статьи</p>
-                            <button class="dashboard_study__block-download"><span>Скачать отчёт пакета</span></button>
-                        </div>
-                        <div class="dashboard_study__status">
-                            <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">30% выполненых</p>
-                                <div class="dashboard_main__status-line">
-                                    <span style="width:30%;"></span>
-                                </div>
-                                <p class="dashboard_main__status-description">210 активностей</p>
-                            </div>
-                        </div>
-                        <div class="dashboard_study__info">
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">210</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">23</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                            <div class="dashboard_study__info-block">
-                                <p class="dashboard_study__info-data">73</p>
-                                <button class="dashboard_study__info-button">Смотреть</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
             </div>
         </div>
     </v-content>

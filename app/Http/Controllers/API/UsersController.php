@@ -298,4 +298,14 @@ class UsersController extends Controller
         return Excel::download(new ExportUserView($project_id), 'users.xlsx');
     }
 
+    public function exportUsersArticle($project_id, $content_id)
+    {
+        return Excel::download(new ExportUserView($project_id, $content_id, true), 'users.xlsx');
+    }
+
+    public function exportUsersTest($project_id, $content_id)
+    {
+        return Excel::download(new ExportUserView($project_id, $content_id, false, true), 'users.xlsx');
+    }
+
 }
