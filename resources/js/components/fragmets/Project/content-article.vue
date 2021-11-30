@@ -14,7 +14,8 @@
                     </div>
 
                     <b-form-group v-slot="{ ariaDescribedby }">
-                        <b-form-radio-group v-model="article.type" :aria-describedby="ariaDescribedby"
+                        <b-form-radio-group v-model="article.type"
+                                            :aria-describedby="ariaDescribedby"
                                             class="articles_create__radio_circle-bloc"
                                             :options="articleTypes">
                         </b-form-radio-group>
@@ -300,8 +301,9 @@ export default {
             }
 
             if (!error) {
-                this.$store.commit('saveArticle', this.article);
-                this.setStep(2);
+                this.$store.dispatch('saveArticle', this.article).then(() => {
+                    this.setStep(2);
+                });
             }
         },
         addMedia(event) {

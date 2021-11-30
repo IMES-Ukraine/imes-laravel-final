@@ -161,6 +161,7 @@ export default new Vuex.Store({
 
         saveArticle(state, article) {
             state.content.article = article;
+            state.currentAction = null;
             state.numberArticle = 1;
         },
         saveTest(state, test) {
@@ -292,6 +293,10 @@ export default new Vuex.Store({
                 {options: project}).then((resp) => {
                 context.commit('saveProject', project)
             })
+        },
+
+        saveArticle(context, article){
+            context.commit('saveArticle', article);
         },
 
 
