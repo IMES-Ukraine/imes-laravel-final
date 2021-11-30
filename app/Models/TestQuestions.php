@@ -117,4 +117,11 @@ class TestQuestions extends Model
     {
         return $this->hasMany(TestOpened::class, 'test_id', 'id');
     }
+
+    public function scopeIsProjectActive( $query)
+    {
+        return $query->leftJoin('project_researches', 'project_researches.id',  '=', 'ulogic_tests_questions.research_id')
+            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
+            ->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
+    }
 }
