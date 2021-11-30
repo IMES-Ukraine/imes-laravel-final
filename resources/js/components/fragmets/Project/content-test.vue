@@ -134,7 +134,7 @@ export default {
                         this.$store.commit('setTestError', true);
                     }
                 }
-            } else if (this.test == 'easy'){
+            } else if (this.test.type == 'easy'){
                 if(!this.test.question.correct.length) {
                     this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
                 }
