@@ -66,6 +66,12 @@ class ProjectsController extends Controller
     public function destroy($id)
     {
         $model = Projects::findOrFail($id);
+//        foreach ($model->items as $item) {
+//            $item->destroyData();
+//            $item->delete();
+//        }
+
+        $model->update(['status' => Projects::STATUS_INACTIVE]);
         $model->delete();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success');

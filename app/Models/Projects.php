@@ -44,29 +44,6 @@ class Projects extends Model
 
 
 
-//    public function tests() {
-//        //return $this->hasMany(ProjectItems::class, 'project_id')->where('item_type', Test::class);
-//        return $this->hasManyThrough(
-//            TestQuestions::class,
-//            ProjectItems::class,
-//            'project_id',
-//            'id',
-//            'id',
-//            'item_id'
-//        )->where('item_type', TestQuestions::class);
-//    }
-
-//    public function articles() {
-//        return $this->hasManyThrough(
-//            Articles::class,
-//            ProjectItems::class,
-//            'project_id',
-//            'id',
-//            'id',
-//            'item_id'
-//        )->where('item_type', Articles::class);
-//        //return $this->hasMany(ProjectItems::class, 'project_id')->where('item_type', Articles::class);
-//    }
 
     /**
      * Tags
