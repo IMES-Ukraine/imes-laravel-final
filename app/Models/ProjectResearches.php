@@ -117,4 +117,17 @@ class ProjectResearches extends Model
         return $this->hasMany(Articles::class, 'research_id', 'id');
     }
 
+//    public function destroyData()
+//    {
+//        $tests = $this->tests;
+//        foreach ($tests as $item) {
+//            $item->delete();
+//        }
+//
+//        $articles = $this->articles;
+//        foreach ($articles as $item) {
+//            $item->delete();
+//        }
+//    }
+
 }

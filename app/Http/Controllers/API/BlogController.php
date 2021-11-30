@@ -19,6 +19,7 @@ use App\Models\Articles;
 use App\Models\Opened;
 use App\Models\PassingProvider;
 use App\Models\TrackingProvider;
+use Illuminate\Http\Response;
 
 class BlogController extends Controller
 {
@@ -398,9 +399,9 @@ class BlogController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         $model = Post::findOrFail($id);
         $model->delete();
