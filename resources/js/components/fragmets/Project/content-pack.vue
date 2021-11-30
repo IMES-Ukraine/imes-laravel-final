@@ -234,9 +234,14 @@ export default {
             }
         },
         is_points() {
-            return this.haveTest && this.content.test.count && this.content.test.points
-                && this.haveArticle && this.content.article.title && this.content.article.count
-                && this.content.article.points && this.content.article.frequency;
+            // Сохраняться можно если есть тест или статья
+            return (this.haveTest && this.content.test.count && this.content.test.points)
+                || (this.haveArticle && this.content.article.title && this.content.article.count
+                && this.content.article.points && this.content.article.frequency);
+
+            // return this.haveTest && this.content.test.count && this.content.test.points
+            //     && this.haveArticle && this.content.article.title && this.content.article.count
+            //     && this.content.article.points && this.content.article.frequency;
 
         }
 
@@ -282,15 +287,15 @@ export default {
             this.errorNewArticle = '';
             let error = false;
 
-            if (!this.content.test.title) {
-                this.errorNewTest = 'Тест обовʼязковий';
-                error = true;
-            }
-
-            if (!this.content.article.title) {
-                this.errorNewArticle = 'Статья обовʼязкова';
-                error = true;
-            }
+            // if (!this.content.test.title) {
+            //     this.errorNewTest = 'Тест обовʼязковий';
+            //     error = true;
+            // }
+            //
+            // if (!this.content.article.title) {
+            //     this.errorNewArticle = 'Статья обовʼязкова';
+            //     error = true;
+            // }
             if ( ! error ) {
                 this.$store.dispatch('saveContent', this.content);
                 this.setStep(1)

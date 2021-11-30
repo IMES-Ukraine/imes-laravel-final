@@ -11,7 +11,6 @@ export default {
                 scheduled_time: '',
                 article: {
                     title: null,
-                    articleType: 1,
                     type: 1,
                     text: null,
                     tags: [],
