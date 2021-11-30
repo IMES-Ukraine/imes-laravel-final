@@ -149,6 +149,7 @@ class User extends Authenticatable implements JWTSubject
         if (!$phone) {
             return null;
         }
+        $phone = str_replace('+', '', $phone);
         return self::where('phone', $phone)->first();
     }
 

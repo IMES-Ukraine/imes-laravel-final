@@ -34,7 +34,7 @@
     import Item from './item'
 
     export default {
-        name: "table",
+        name: "tableRequest",
         components: {Item},
         props: {
             requests: {

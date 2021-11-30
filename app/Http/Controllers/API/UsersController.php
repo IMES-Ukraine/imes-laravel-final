@@ -113,14 +113,16 @@ class UsersController extends Controller
     public function create(Request $request)
     {
         $phone = filter_var($request->post('phone'), FILTER_SANITIZE_NUMBER_INT);
+        $phone = str_replace('+', '', $phone);
         $email = $request->post('email');
 
-        if (User::find(['phone' => $phone])->first() ){
-            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'phone', 'error' => 'phone exist']);
+//        Проверяем наличие такого телефона. Плюс вначале игнорируем
+        if (User::findByPhone($phone) ){
+            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'phone', 'error' => 'Такой телефон уже зарегистрирован']);
         }
 
         if (User::findByEmail($email) ){
-            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'email', 'error' => 'email exist']);
+            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'email', 'error' => 'Такой email уже зарегистрирован']);
         }
 
         $password = Hash::make($request->post('password'));

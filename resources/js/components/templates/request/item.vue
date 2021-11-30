@@ -84,7 +84,7 @@
             },
             index: Number,
             request: {
-                type: Array,
+                type: Object,
                 require: true
             },
         },

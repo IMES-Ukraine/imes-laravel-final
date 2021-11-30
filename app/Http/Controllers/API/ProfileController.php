@@ -270,7 +270,7 @@ class ProfileController extends Controller
         $requests = AccountRequests::with('userCity')
             ->with('userWork')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(
             200,

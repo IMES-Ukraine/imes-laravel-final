@@ -35,7 +35,7 @@
 import Item from './item'
 
 export default {
-    name: "table",
+    name: "tableVerify",
     components: {Item},
     props: {
         requests: {

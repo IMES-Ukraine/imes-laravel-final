@@ -180,6 +180,7 @@ Route::group(
                 Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
                 Route::post('/balance', [UsersController::class, 'balance']);
                 Route::get('/create-name/{name}', [UsersController::class, 'createName']);
+
                 Route::post('/', [UsersController::class, 'create']);
                 Route::post('/{id}', [UsersController::class, 'update']);
                 Route::get('/block/{id}', [UsersController::class, 'block']);
