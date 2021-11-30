@@ -39,6 +39,13 @@ class Articles extends Post {
                 });
     }
 
+    public function scopeIsProjectActive( $query)
+    {
+        return $query->leftJoin('project_researches', 'project_researches.id',  '=', 'rainlab_blog_posts.research_id')
+            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
+            ->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
+    }
+
     public function scopeNotTimes( $query) {
         return $query->leftJoin('rainlab_blog_posts_times', 'rainlab_blog_posts_times.post_id', '=', 'rainlab_blog_posts.id')
             ->whereNull('rainlab_blog_posts_times.date');
