@@ -229,20 +229,24 @@ class ProjectRepository
                 //Status passing active
                 $status_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_ACTIVE);
                 $total_status_active += $status_active;
-                $content[$key]->offsetSet('test_status_active', PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_ACTIVE));
+                $test_status_active = PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_ACTIVE);
+                $content[$key]->offsetSet('test_status_active', $test_status_active);
+                $article_status_active = PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE);
                 $content[$key]->offsetSet('article_status_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE));
 
                 //Status passing not active
                 $status_not_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_NOT_ACTIVE);
                 $total_status_not_active += $status_not_active;
-                $content[$key]->offsetSet('test_status_not_active', PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_NOT_ACTIVE));
-                $content[$key]->offsetSet('article_status_not_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_NOT_ACTIVE));
+                $test_status_not_active = PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_NOT_ACTIVE);
+                $content[$key]->offsetSet('test_status_not_active', $test_status_not_active);
+                $article_status_not_active = PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_NOT_ACTIVE);
+                $content[$key]->offsetSet('article_status_not_active', $article_status_not_active);
 
                 //Status passing not participate
-                $status_not_participate = PassingService::getPassingTotalStatus($item->id, 3);
+                $status_not_participate = PassingService::getNotUsersPassingTotal($item->id);
                 $total_status_not_participate += $status_not_participate;
-                $content[$key]->offsetSet('test_status_not_participate', PassingService::getPassingTotalStatusTest($item->id, 3));
-                $content[$key]->offsetSet('article_status_not_participate', PassingService::getPassingTotalStatusArticle($item->id, 3));
+                $content[$key]->offsetSet('test_status_not_participate', $status_not_participate - ($test_status_active + $test_status_not_active));
+                $content[$key]->offsetSet('article_status_not_participate', $status_not_participate - ($article_status_active + $article_status_not_active));
 
                 //total
                 $content[$key]->offsetSet('test_total', PassingService::getPassingTotalTest($item->id));

@@ -25,6 +25,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class UsersController extends Controller
 {
+    const COUNT_PER_PAGE = 15;
+    const STATUS_NOT_PARTICIPATE = 2;
     protected $user;
 
     protected $helpers;
@@ -57,11 +59,19 @@ class UsersController extends Controller
         $articles_ids = ArticleService::pluckIDArticles($research->id);
         $test_ids = TestService::pluckIDArticles($research->id);
 
-        $results = Passing::with('user')
-            ->with('withdraw')
-            ->whereRaw('(status = '.$status.' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
-            ->orWhereRaw('(status = '.$status.' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
-            ->paginate(15);
+        if ($status == self::STATUS_NOT_PARTICIPATE) {
+            $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
+                ->whereNull('ulogic_projects_passing.user_id')
+                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))')
+                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
+                ->paginate(self::COUNT_PER_PAGE);
+        } else {
+            $results = Passing::with('user')
+                ->with('withdraw')
+                ->whereRaw('(status = ' . $status . ' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+                ->orWhereRaw('(status = ' . $status . ' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
+                ->paginate(self::COUNT_PER_PAGE);
+        }
 
         $data = json_decode($results->toJSON());
 
@@ -72,10 +82,17 @@ class UsersController extends Controller
     {
         $test_ids = TestService::pluckIDArticles($content_id);
 
-        $results = Passing::with('user')
-            ->with('withdraw')
-            ->whereRaw('(status = '.$status.' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
-            ->paginate(15);
+        if ($status == self::STATUS_NOT_PARTICIPATE) {
+            $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
+                ->whereNull('ulogic_projects_passing.user_id')
+                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
+                ->paginate(self::COUNT_PER_PAGE);
+        } else {
+            $results = Passing::with('user')
+                ->with('withdraw')
+                ->whereRaw('(status = ' . $status . ' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+                ->paginate(self::COUNT_PER_PAGE);
+        }
 
         $data = json_decode($results->toJSON());
 
@@ -86,10 +103,17 @@ class UsersController extends Controller
     {
         $articles_ids = ArticleService::pluckIDArticles($content_id);
 
-        $results = Passing::with('user')
-            ->with('withdraw')
-            ->whereRaw('(status = '.$status.' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
-            ->paginate(15);
+        if ($status == self::STATUS_NOT_PARTICIPATE) {
+            $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
+                ->whereNull('ulogic_projects_passing.user_id')
+                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
+                ->paginate(self::COUNT_PER_PAGE);
+        } else {
+            $results = Passing::with('user')
+                ->with('withdraw')
+                ->whereRaw('(status = '.$status.' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
+                ->paginate(self::COUNT_PER_PAGE);
+        }
 
         $data = json_decode($results->toJSON());
 
@@ -103,7 +127,7 @@ class UsersController extends Controller
             ->where('entity_type', 'TestQuestions')
             ->where('entity_id', $test_id)
             ->where('answer','LIKE','%'.$variant.'%')
-            ->paginate(15);
+            ->paginate(self::COUNT_PER_PAGE);
 
         $data = json_decode($results->toJSON());
 
