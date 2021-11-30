@@ -33,16 +33,16 @@ class BlogController extends Controller
             /*, 'recommended.post',  'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }n */
         ];
 
-        if ($type == Articles::ARTICLE) {
+        //if ($type == Articles::ARTICLE) {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
                 ->whereNull('research_id')
                 //->where( 'published_at', '<=', Carbon::now()
                 //->toDateTimeString())
-                ->isArticle()
+                //->isArticle()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
                 ->paginate($countOnPage);
-        } else {
+        /*} else {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
                 ->whereNull('research_id')
@@ -52,7 +52,7 @@ class BlogController extends Controller
                 ->notTimes()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
                 ->paginate($countOnPage);
-        }
+        }*/
 
 //        $data->makeHidden(['content']);
         $data = json_decode($data->toJSON());
