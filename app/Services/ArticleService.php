@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\File;
 use App\Models\Articles;
 use App\Models\Recommended;
+use Illuminate\Http\Request;
 
 class ArticleService
 {
@@ -93,5 +94,31 @@ class ArticleService
      */
     public static function pluckIDArticles($content_id) {
         return Articles::select('id')->where('research_id', $content_id)->pluck('id')->toArray();
+    }
+
+    /**
+     * @param $model
+     * @param Request $request
+     * @return mixed
+     */
+    public static function fillPost($model, Request $request)
+    {
+        $model->fill($request->post());
+
+        $model->content_html = $request->excerpt;
+        $model->cover_image_id = $request->cover_image['id'];
+        $model->published = true;
+        $model->learning_bonus = 0;
+        $model->is_popular = rand(0, 1);
+        $model->slug = uniqid();
+        $model->published_at = time();
+        if (!$model->button) {
+            $model->button = '';
+        }
+        if (!$model->action) {
+            $model->action = '';
+        }
+
+        return $model;
     }
 }

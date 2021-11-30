@@ -31,22 +31,7 @@ class Recommended extends Model
     public function article()
     {
         return $this->hasOne('App\Models\Post', 'id', 'recommended_id');
-        /* return $this->hasManyThrough(
-            'App\Models\Post',
-            'ULogic\News\Models\Recommended',
-            'recommended_id',
-            'id',
-            'parent_id',
-            'recommended_id'
-            /* 'parent_id',
-            'recommended_id' */
-        /* 'App\Post',
-        'App\User',
-        'country_id', // Foreign key on users table...
-        'user_id', // Foreign key on posts table...
-        'id', // Local key on countries table...
-        'id' // Local key on users table...
-    ); */
+
     }
 
     public function post()
