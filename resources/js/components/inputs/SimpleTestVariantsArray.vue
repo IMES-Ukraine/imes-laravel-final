@@ -213,14 +213,6 @@ export default {
                     },
                 }
             ).then((file) => {
-
-                let obj = {
-                    itemId: 'media-' + getRandomId(),
-                    file: file.data.data.id,
-                    name: event.target.files[0].name,
-                    data: file.data,
-                    path: file.data.data.path
-                };
               let q = [...this.test.question.variants[index].media];
               q.push(file.data.data);
               this.test.question.variants[index].media = [...q];
