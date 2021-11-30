@@ -75,7 +75,7 @@
                     </div>
                     <div v-if="toLearn" class="articles_create__item-content">
                         <div class="articles_create__name-block">
-                            <input type="text" name="name" placeholder="http//">
+                            <input type="text" name="name" placeholder="http//" v-model="test.external_learn_url">
                         </div>
                     </div>
                 </div>
@@ -225,7 +225,7 @@ export default {
         return {
             files: {},
             video: null,
-            toLearn: false,
+            toLearn: !!this.test.external_learn_url,
 
             isCheckedFile: false,
             isCheckedVideo: false,
