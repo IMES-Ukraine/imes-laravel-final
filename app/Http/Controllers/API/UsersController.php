@@ -60,17 +60,31 @@ class UsersController extends Controller
         $test_ids = TestService::pluckIDArticles($research->id);
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
-                ->whereNull('ulogic_projects_passing.user_id')
-                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))')
-                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
-                ->paginate(self::COUNT_PER_PAGE);
+            $query = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
+                ->whereNull('ulogic_projects_passing.user_id');
+
+            if ($articles_ids) {
+                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
+            }
+
+            if ($test_ids) {
+                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
+            }
+
+            $results = $query->paginate(self::COUNT_PER_PAGE);
         } else {
-            $results = Passing::with('user')
-                ->with('withdraw')
-                ->whereRaw('(status = ' . $status . ' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
-                ->orWhereRaw('(status = ' . $status . ' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
-                ->paginate(self::COUNT_PER_PAGE);
+            $query = Passing::with('user')
+                ->with('withdraw');
+
+            if ($articles_ids) {
+                $query->orWhereRaw('(status = ' . $status . ' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))');
+            }
+
+            if ($test_ids) {
+                $query->whereRaw('(status = ' . $status . ' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))');
+            }
+
+            $results = $query->paginate(self::COUNT_PER_PAGE);
         }
 
         $data = json_decode($results->toJSON());
