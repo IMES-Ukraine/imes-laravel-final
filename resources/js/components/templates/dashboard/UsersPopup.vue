@@ -32,13 +32,13 @@
                                             <p class="study__table-number">{{ key + 1 }}</p>
                                         </div>
                                         <div class="study__table-item">
-                                            <p class="study__table-id">{{ result.user.id }}</p>
+                                            <p class="study__table-id">{{ (result.user)?result.user.id:result.id }}</p>
                                         </div>
                                         <div class="study__table-item">
-                                            <p class="study__table-title">{{ result.user.name }}</p>
+                                            <p class="study__table-title">{{ (result.user)?result.user.name:result.name }}</p>
                                         </div>
                                         <div class="study__table-item">
-                                            <p class="study__table-description">{{ result.user.email }} {{ (result.user.phone)?','+result.user.phone:'' }}</p>
+                                            <p class="study__table-description">{{ (result.user)?result.user.email:result.email }} {{ (result.user || result.phone)?','+((result.user)?result.user.phone:result.phone):'' }}</p>
                                         </div>
                                     </div>
                                 </div>
