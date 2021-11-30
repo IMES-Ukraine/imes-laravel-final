@@ -66,11 +66,19 @@ class ProfileController extends Controller
 
 
     /**
-     * Make profile verified
+     * send request for verifying profile
      */
     public function verify(Request $request){
 
         $userModel = auth()->user();
+
+        if ($userModel->is_verified){
+            return $this->helpers->apiArrayResponseBuilder(201, 'Пользователь уже верифицирован');
+        }
+
+        if (AccountVerificationRequests::where('user_id', $userModel->id)->first() ){
+            return $this->helpers->apiArrayResponseBuilder(201, 'Заявка от этого пользователя уже подана');
+        }
 
         if ( $request->post('basic_information')){
             if ( !is_array( $userModel->basic_information)) $userModel->basic_information = [];
@@ -94,16 +102,9 @@ class ProfileController extends Controller
         $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
 
 
-        //$data['is_verified'] = 1;
         $verificationRequest = new AccountVerificationRequests;
         $verificationRequest->user_id = $userModel->id;
         $verificationRequest->save();
-
-        //$data['basic_information'] = post('basic_information');
-        /*$data['specialized_information'] = post('specialized_information');
-        $data['financial_information'] = post('financial_information');*/
-
-
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', ['user' => $data]);
     }
