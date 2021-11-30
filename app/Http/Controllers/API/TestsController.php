@@ -64,10 +64,11 @@ class TestsController extends Controller
                 $q->where('user_id', '=', $userModel->id);
             }
         ])->where('test_type', '!=', 'child')
-            ->orderBy('id', 'desc')
-            ->whereNotIn('id', $passedIds);
+            ->orderBy('project_researches.id', 'desc')
+            ->whereNotIn('project_researches.id', $passedIds)
+            ->isProjectActive();
         if (!\request()->input('all_items')) {
-            $query->where('schedule', '<=', date('Y-m-d H:i:s'));
+            $query->where('project_researches.schedule', '<=', date('Y-m-d H:i:s'));
         }
 
         $data = $query->paginate($countOnPage);
