@@ -76,7 +76,7 @@ class AdminController extends BaseController
 
     public function verificationsList()
     {
-        $requests  = AccountVerificationRequests::with('user')->get();
+        $requests  = AccountVerificationRequests::with('user')->get()->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(
             200,
