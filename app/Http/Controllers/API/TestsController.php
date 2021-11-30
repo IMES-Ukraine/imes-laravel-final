@@ -45,12 +45,9 @@ class TestsController extends Controller
     public function index()
     {
         $userModel = Auth::user();
-        if (!$userModel) {
-            return $this->helpers->apiArrayResponseBuilder(400, 'no_user', []);
-        }
 
         if (!$userModel->is_verified) {
-            return $this->helpers->apiArrayResponseBuilder(400, 'user_not_verified', []);
+            return $this->helpers->apiArrayResponseBuilder(403, 'Пользователь не верифицирован', []);
         }
 
         $countOnPage = request()->get('count', 15);
