@@ -3,6 +3,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 
+use App\Services\TestService;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
 use Illuminate\Support\Facades\Validator;
@@ -41,15 +42,19 @@ class ModerationController extends Controller
     }
 
     /**
-     * @param $test_id
+     * @param $research_id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function test( $test_id ) {
+    public function test( $research_id )
+    {
+        $test_ids = TestService::pluckIDArticles($research_id);
 
-        $data = $this->QuestionModeration
-            ->where('question_id', $test_id)
+        $results = $this->QuestionModeration
+            ->where('question_id', $test_ids[0])
             ->with('user')
-            ->get();
+            ->paginate(15);
+
+        $data = json_decode($results->toJSON());
 
         return $this->helpers
             ->apiArrayResponseBuilder(200, 'success', $data);

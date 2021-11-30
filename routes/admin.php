@@ -154,7 +154,7 @@ Route::group(
             ],
             function () {
                 Route::get('/', [ModerationController::class, 'index']);
-                Route::get('/{test_id}', [ModerationController::class, 'test']);
+                Route::get('/{research_id}', [ModerationController::class, 'test']);
             }
         );
 

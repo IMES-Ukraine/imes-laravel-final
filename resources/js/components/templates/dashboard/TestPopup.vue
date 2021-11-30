@@ -19,7 +19,10 @@
                                         <div class="study__item-content">
                                             <div :class="(variant.right)?'study__answer active':'study__answer'">
                                                 <p class="study__answer-letter">{{ variant.title }}</p>
-                                                <p class="study__answer-text">{{ (variant.type=='media')?variant.variants[0].media[0]['path']:variant.text }}</p>
+                                                <div class="study__answer-text" v-if="variant.media[0]">
+                                                    <img :src="variant.media[0].path" alt="" />
+                                                </div>
+                                                <p class="study__answer-text" v-else>{{ variant.text }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
@@ -253,7 +256,8 @@
             },
             getModerations (test_id) {
                 this.$get(MODERATION + '/' + test_id).then(response => {
-                    return response.data
+                    console.log(response.data.data);
+                    return response.data.data
                 });
             },
             totalQuestionVariants (variants, test_id) {
