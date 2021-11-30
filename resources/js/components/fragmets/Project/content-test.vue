@@ -139,6 +139,11 @@ export default {
                     this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
                 }
             }
+            else {
+                if (!this.test.complex_question.count){
+                    this.testErrors.complex = 'Має бути вказаний принаймні один блок з питаннями';
+                }
+            }
 
             if (!Object.keys(this.testErrors).length && !this.$store.state.testErrors) {
                 this.$store.commit('saveTest', this.test);

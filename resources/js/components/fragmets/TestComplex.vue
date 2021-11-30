@@ -117,6 +117,7 @@
                 :toValidate="toValidate"
                 :complex_question.sync="test.complex_question"/>
             <div class="mb20"></div>
+            <div v-if="errors.complex" class="errors mb20">{{ errors.complex }}</div>
             <button class="articles_create-submit button-border" type="button" @click="addBlockComplex">Добавить блок
             </button>
         </div>
