@@ -224,23 +224,23 @@ class ProjectRepository
                     }
                 }
 
-                //Status passing active - 2
+                //Status passing active
                 $status_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_ACTIVE);
                 $total_status_active += $status_active;
                 $content[$key]->offsetSet('test_status_active', PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_ACTIVE));
                 $content[$key]->offsetSet('article_status_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE));
 
-                //Status passing not active - 1
+                //Status passing not active
                 $status_not_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_NOT_ACTIVE);
                 $total_status_not_active += $status_not_active;
                 $content[$key]->offsetSet('test_status_not_active', PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_NOT_ACTIVE));
                 $content[$key]->offsetSet('article_status_not_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_NOT_ACTIVE));
 
-                //Status passing not participate - 0
-                $status_not_participate = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_NOT_PARTICIPATE);
+                //Status passing not participate
+                $status_not_participate = PassingService::getPassingTotalStatus($item->id, 3);
                 $total_status_not_participate += $status_not_participate;
-                $content[$key]->offsetSet('test_status_not_participate', PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_NOT_PARTICIPATE));
-                $content[$key]->offsetSet('article_status_not_participate', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_NOT_PARTICIPATE));
+                $content[$key]->offsetSet('test_status_not_participate', PassingService::getPassingTotalStatusTest($item->id, 3));
+                $content[$key]->offsetSet('article_status_not_participate', PassingService::getPassingTotalStatusArticle($item->id, 3));
 
                 //total
                 $content[$key]->offsetSet('test_total', PassingService::getPassingTotalTest($item->id));
@@ -258,128 +258,6 @@ class ProjectRepository
             'status_not_active' => $total_status_not_active,
             'status_not_participate' => $total_status_not_participate,
         ]];
-
-        $projects_items = [];
-        /*
-                foreach ($content as $item) {
-                        $test_not_participate = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_NOT_PARTICIPATE);
-                        $test_active = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_ACTIVE);
-                        $test_not_active = PassingService::getPassingTypeStatusAllUsers('TestQuestions', $item['item_id'], Passing::PASSING_NOT_ACTIVE);
-
-                        $status_active += count($test_active);
-                        $status_not_active += count($test_not_active);
-                        $status_not_participate += count($test_not_participate);
-
-                        $projects_items[$item['item_key']]['test'] = [
-                            'data' => $item['data'],
-                            'item_id' => $item['item_id'],
-                            'not_participate' => $test_not_participate,
-                            'active' => $test_active,
-                            'not_active' => $test_not_active
-                        ];
-                    } else {
-                        $article_not_participate = PassingService::getPassingTypeStatusAllUsers('Post', $item['item_id'], Passing::PASSING_NOT_PARTICIPATE);
-                        $article_active = PassingService::getPassingTypeStatusAllUsers('Post', $item['item_id'], Passing::PASSING_ACTIVE);
-                        $article_not_active = PassingService::getPassingTypeStatusAllUsers('Post', $item['item_id'], Passing::PASSING_NOT_ACTIVE);
-
-                        $status_active += count($article_active);
-                        $status_not_active += count($article_not_active);
-                        $status_not_participate += count($article_not_participate);
-
-                        $projects_items[$item['item_key']]['article'] = [
-                            'data' => $item['data'],
-                            'item_id' => $item['item_id'],
-                            'not_participate' => $article_not_participate,
-                            'active' => $article_active,
-                            'not_active' => $article_not_active
-                        ];
-                    }
-                    $projects_items[$item['item_key']]['schedule'] = $item->schedule;
-                }
-
-                $total = $status_active + $status_not_active + $status_not_participate;
-
-                $article = [];
-                foreach ($project->articles as $value) {
-                    //$contentArray = (array)$article['content']; print_r($article['content']); exit;
-                    //$text = array_shift($contentArray);
-
-                    $article['link'] = null;
-                    $article['text'] = $value['content'];
-                    $article['insert'] = $value['content'];
-                    $article['textInsert'] = true;
-                    $article['category'] = null;
-                    $article['images'] = [
-                        'cover' => $value->cover_image
-                    ];
-                    $article['headings'] = null;
-                    $article['author'] = null;
-                    $article['authors'] = [];
-                    $article['button'] = null;
-                    $article['recommended'] = [];
-                    $article['chosenRecommended'] = [];
-                }
-
-
-                $questionsState = [];
-
-                foreach ($project->tests as $question) {
-
-                    $options = $question->options;
-                    $variants = $question->variants;
-                    $cover = $question->cover_image;
-
-                    foreach ($options as $o) {
-                        $media[$o->type] = $o;
-                    }
-
-                    $q = [
-                        'question' => [
-                            'title' => $question['title'],
-                            'text' => $question['question'],
-                            'description' => '',
-                            'link' => '',
-                            'button' => NULL,
-                            'count' => NULL,
-                            'points' => $question['passing_bonus'],
-                            'media' => [
-                                'cover' => $cover,
-                                'video' => isset($media['video']) && isset($media['video']['file']) ? $media['video']['file'] : NULL,
-                            ],
-                            'isComplex' => 'this.isComplex',
-                            'agreement' => $question['agreement'],
-                        ],
-                        'variants' => $variants->buttons,
-                        'answer' => [
-                            'correct' => $variants->correct_answer,
-                            'type' => $variants->type,
-                        ],
-                    ];
-                    $questionsState[] = $q;
-
-                }
-                $data = [
-                    'options' => $project->options,
-                    'content' => $projects_items,//$content,
-                    'status_active' => $status_active,
-                    'status_not_active' => $status_not_active,
-                    'status_not_participate' => $status_not_participate,
-                    'total' => $total,
-                    'articles' => [
-                        $article
-                    ],
-                    'tests' => $questionsState,
-                    'current' => [
-                        'projectId' => $project->id
-                    ],
-                    'item' => $project
-                ];
-                $data['options']['status'] = $project->status;
-
-                return (object)[
-                    'data' => $data
-                ];
-        */
     }
 
 }
