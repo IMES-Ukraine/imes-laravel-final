@@ -89,7 +89,7 @@ class AdminController extends BaseController
 
     public function acceptVerification($id): JsonResponse
     {
-        $user = User::find( $id )->whereNull('deleted_at')->first();
+        $user = User::find( $id );
         $user->is_verified = 1;
         $user->save();
 
@@ -101,7 +101,7 @@ class AdminController extends BaseController
 
     public function declineVerification($id)
     {
-        $request = AccountVerificationRequests::where( ['user_id' =>  $id])->delete();
+        AccountVerificationRequests::where( ['user_id' =>  $id])->delete();
     }
 
 }

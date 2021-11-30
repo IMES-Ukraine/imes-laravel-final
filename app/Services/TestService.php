@@ -65,7 +65,15 @@ class TestService
                     $img->save();
                 }
             }
-//            foreach ($modelvariant)
+            if (isset($model['variants'])) {
+                foreach ($model['variants'] as $key => $variant) {
+                    if (isset($variant['media'][0])) {
+                        $img = File::find($variant['media'][0]['id']);
+                        $img->attachment_id = $testId;
+                        $img->save();
+                    }
+                }
+            }
         }
     }
 
