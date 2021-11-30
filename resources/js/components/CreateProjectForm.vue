@@ -383,9 +383,9 @@ export default {
             if (!Object.keys(this.project.content).length) {
                 this.errorContent = 'Потрібно створити контент';
             }
-            /*if (this.project.options.files.cover.file_name == '') {
+            if (this.project.options.files.cover.file_name == '') {
                 this.errorCover = 'Виберіть обкладинку';
-            }*/
+            }
             const valTitle = await this.$refs['title'].validate();
             this.isValidated = !this.errorContent.length && !this.errorCover.length && valTitle.valid;
 
