@@ -47,9 +47,9 @@ Route::group(
         ],
             function () {
                 Route::get('/verification', [AdminController::class, 'verificationsList']);
-                Route::post('/verification/accept', [AdminController::class, 'acceptVerification']);
+                Route::post('/verification/accept/{id}', [AdminController::class, 'acceptVerification']);
 
-                Route::post('/verification/decline', [AdminController::class, 'declineVerification']);
+                Route::post('/verification/decline{id}', [AdminController::class, 'declineVerification']);
             });
 
         Route::group([

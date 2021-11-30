@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use League\Flysystem\Exception;
 use Illuminate\Support\Facades\Session;
@@ -86,23 +87,21 @@ class AdminController extends BaseController
 
     }
 
-    public function acceptVerification(Request $request)
+    public function acceptVerification($id): JsonResponse
     {
-        $user = User::find( $request->post('id') );
+        $user = User::find( $id )->whereNull('deleted_at')->first();
         $user->is_verified = 1;
         $user->save();
 
-        $this->declineVerification($request);
-        return;
+        // после подтверждения удаляем заявку из таблицы заявок
+        $this->declineVerification($id);
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $user->toArray() );
 
     }
 
-    public function declineVerification(Request $request)
+    public function declineVerification($id)
     {
-        $request = AccountVerificationRequests::withTrashed()->where( 'user_id', $request->post('id'));
-        $request->forceDelete();
-
-        return;
+        $request = AccountVerificationRequests::where( ['user_id' =>  $id])->delete();
     }
 
 }

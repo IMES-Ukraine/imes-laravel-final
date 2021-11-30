@@ -69,7 +69,7 @@ name: "Verification",
         },
         async onAcceptVerification(id) {
 
-            this.$get(PROFILE_ACCEPT_VERIFICATION + '/' + id).then()
+            this.$post(PROFILE_ACCEPT_VERIFICATION + '/' + id).then()
 
             for (const [index, value] of Object.entries(this.requests)) {
                 if (value.user_id === id) {
@@ -80,7 +80,7 @@ name: "Verification",
         },
         async onDeclineVerification(id) {
 
-            this.$get(PROFILE_DECLINE_VERIFICATION + '/' + id).then()
+            this.$post(PROFILE_DECLINE_VERIFICATION + '/' + id).then()
 
             for (const [index, value] of Object.entries(this.requests)) {
                 if (value.user_id === id) {

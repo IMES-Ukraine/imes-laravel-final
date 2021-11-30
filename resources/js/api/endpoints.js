@@ -44,8 +44,8 @@ export const NOTIFICATION_TO = V1_ADMIN + NOTIFICATION + '/to'
 
 export const PROFILE_VERIFICATION_LIST = V1_ADMIN + 'profile/verification'
 export const PROFILE_VERIFICATION = PROFILE_VERIFICATION_LIST + '/'
-export const PROFILE_ACCEPT_VERIFICATION = PROFILE + 'accept'
-export const PROFILE_DECLINE_VERIFICATION = PROFILE + 'decline'
+export const PROFILE_ACCEPT_VERIFICATION = PROFILE_VERIFICATION + 'accept'
+export const PROFILE_DECLINE_VERIFICATION = PROFILE_VERIFICATION + 'decline'
 
 export const CARDS = V1_ADMIN + 'cards'
 export const CARD_DISABLE = CARDS + '/disable'

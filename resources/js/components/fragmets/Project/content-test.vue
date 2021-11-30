@@ -140,7 +140,7 @@ export default {
                 }
             }
             else {
-                if (!this.test.complex_question.count){
+                if (!this.test.complex_question.length){
                     this.testErrors.complex = 'Має бути вказаний принаймні один блок з питаннями';
                 }
             }
