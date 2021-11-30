@@ -1,5 +1,5 @@
 <template>
-    <div class="articles_create-box" >
+    <div class="articles_create-box">
         <div class="articles_create-block">
             <div class="articles_create__item">
                 <p class="articles_create__item-title">Выбор шаблона</p>
@@ -154,7 +154,7 @@
                                                 class="form-control"
                                                 type="number"
                                                 name="name"
-                                                v-model="content.test.points" />
+                                                v-model="content.test.points"/>
 
                                             <span class="errors">{{ errors[0] }}</span>
                                         </validation-provider>
@@ -162,7 +162,7 @@
                                 </div>
                                 <div class="articles_create__grid-block">
                                     <div class="articles_create__field_with_label">
-                                        <v-checkbox :value.sync="content.test.canRetake" />
+                                        <v-checkbox :value.sync="content.test.canRetake"/>
                                     </div>
                                 </div>
                         </div>
@@ -208,13 +208,12 @@ export default {
     mounted() {
         if (this.$store.state.currentAction === 'create') {
             this.content = this.contentTemplate;
-        } else if (this.$store.state.currentAction === 'edit'){
+        } else if (this.$store.state.currentAction === 'edit') {
             this.$store.dispatch('setCurrentContent', this.$store.state.currentContentTitle).then(() => {
                 this.content = this.$store.state.content;
                 this.showFull = true;
             });
-        }
-        else {
+        } else {
             this.content = this.$store.state.content;
             this.content.title = this.$store.state.currentContentTitle;
             this.showFull = true;
@@ -223,21 +222,34 @@ export default {
     },
     computed: {
         haveArticle() {
-            return this.content ? this.content.article ? this.content.article.title : false : false;
+            return this.content ? this.content.article ? !!this.content.article.title : false : false;
         },
         haveTest() {
-            return this.content ? this.content.test ? this.content.test.title : false : false;
+            return this.content ? this.content.test ? !!this.content.test.title : false : false;
         },
         pointsSum() {
-            if (this.content.article && this.content.test) {
-                return parseInt(this.content.article.points) + parseInt(this.content.test.points);
+            let sum = 0;
+            if (this.content.article) {
+                sum += parseInt(this.content.article.points ) || 0;
             }
+            if (this.content.test) {
+                sum += parseInt(this.content.test.points) || 0;
+            }
+            return sum;
         },
         is_points() {
-            // Сохраняться можно если есть тест или статья
-            return (this.haveTest && this.content.test.count && this.content.test.points)
-                || (this.haveArticle && this.content.article.title && this.content.article.count
-                && this.content.article.points && this.content.article.frequency);
+            // Сохраняться можно если есть тест или статья - причем с данными
+            let resArticle = this.haveArticle;
+            let resTest = this.haveTest;
+            if (this.haveTest) {
+                resTest = !this.content.test.count || !this.content.test.points;
+            }
+            if (this.haveArticle) {
+                resArticle = !this.content.article.count || !this.content.article.points || !this.content.article.frequency;
+            }
+            console.log(resTest, resArticle);
+            return !resTest && !resArticle;
+
 
             // return this.haveTest && this.content.test.count && this.content.test.points
             //     && this.haveArticle && this.content.article.title && this.content.article.count
@@ -296,7 +308,7 @@ export default {
             //     this.errorNewArticle = 'Статья обовʼязкова';
             //     error = true;
             // }
-            if ( ! error ) {
+            if (!error) {
                 this.$store.dispatch('saveContent', this.content);
                 this.setStep(1)
             }
