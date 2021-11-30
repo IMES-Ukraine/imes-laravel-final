@@ -1,13 +1,13 @@
 <template>
     <div>
-        <button class="study__item-button" type="button" data-toggle="modal" @click="showResults" :data-target="'#db-users-popup-'+id">Смотреть</button>
+        <button class="study__item-button" type="button" data-toggle="modal" @click="showResults" :data-target="'#db-users-popup-'+id+'-'+variant">Смотреть</button>
 
         <!-- modal -->
-        <div class="modal fade" tabindex="-1" role="dialog" :id="'db-users-popup-'+id" aria-hidden="true" >
+        <div class="modal fade" tabindex="-1" role="dialog" :id="'db-users-popup-'+id+'-'+variant" aria-hidden="true" >
             <div class="modal-dialog modal-dialog-centered db-modal__dialog full-width" role="document">
                 <div class="study template_box modal-content margin-auto">
                     <p class="template_title">{{ title }}</p>
-                    <button class="template_close" type="button" @click="hidePopup(id)"></button>
+                    <button class="template_close" type="button" @click="hidePopup(id+'-'+variant)"></button>
                     <div class="study-box">
                         <div class="study__block">
                             <div class="study__block-content" v-if="results.data">
