@@ -53,22 +53,19 @@ class TestsController extends Controller
             return $this->helpers->apiArrayResponseBuilder(400, 'user_not_verified', []);
         }
 
-        $passed = new PassingProvider($userModel);
-        $passedIds = $passed->getIds(TestQuestions::class);
-
-
         $countOnPage = request()->get('count', 15);
 
-        $query = TestQuestions::with(['cover_image', 'featured_images',
+        $query = TestQuestions::select('ulogic_tests_questions.*')
+        ->with(['cover_image', 'featured_images',
             'agreementAccepted' => function ($q) use ($userModel) {
                 $q->where('user_id', '=', $userModel->id);
             }
-        ])->where('test_type', '!=', 'child')
-            ->orderBy('project_researches.id', 'desc')
-            ->whereNotIn('project_researches.id', $passedIds)
+        ])->where('ulogic_tests_questions.test_type', '!=', 'child')
+            ->orderBy('ulogic_tests_questions.id', 'desc')
+            ->isNotPassed($userModel)
             ->isProjectActive();
         if (!\request()->input('all_items')) {
-            $query->where('project_researches.schedule', '<=', date('Y-m-d H:i:s'));
+            $query->where('ulogic_tests_questions.schedule', '<=', date('Y-m-d H:i:s'));
         }
 
         $data = $query->paginate($countOnPage);

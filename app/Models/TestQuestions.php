@@ -66,7 +66,7 @@ class TestQuestions extends Model
      * @return mixed
      */
     public function featured_images() {
-        return $this->hasMany('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_FEATURED ]);
+        return $this->hasMany('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_IMAGE ]);
     }
 
     /**
@@ -123,5 +123,15 @@ class TestQuestions extends Model
         return $query->leftJoin('project_researches', 'project_researches.id',  '=', 'ulogic_tests_questions.research_id')
             ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
             ->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
+    }
+
+    public function scopeIsNotPassed( $query, $userId)
+    {
+        return $query->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.entity_id',  '=', 'ulogic_tests_questions.id')
+            ->whereNotExists(function ($q) use ($userId){
+                $q->select('ulogic_projects_passing.answer')
+                    ->where('ulogic_projects_passing.entity_type', self::class)
+                    ->where('ulogic_projects_passing.user_id', $userId);
+            });
     }
 }
