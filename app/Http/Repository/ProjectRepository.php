@@ -244,7 +244,7 @@ class ProjectRepository
 
                 //Status passing not participate
                 $status_not_participate = PassingService::getNotUsersPassingTotal($item->id);
-                $total_status_not_participate += $status_not_participate;
+                //$total_status_not_participate += $status_not_participate;
                 $content[$key]->offsetSet('test_status_not_participate', $status_not_participate - ($test_status_active + $test_status_not_active));
                 $content[$key]->offsetSet('article_status_not_participate', $status_not_participate - ($article_status_active + $article_status_not_active));
 
@@ -254,6 +254,8 @@ class ProjectRepository
                 $total += PassingService::getPassingTotal($item->id);
             }
         }
+
+        $total_status_not_participate = PassingService::getNotUsersPassingTotalAll($id);
 
         return (object)['data' => [
             'project' => $project,
