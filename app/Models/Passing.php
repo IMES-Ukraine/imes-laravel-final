@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Passing extends Model
 {
-    const PASSING_ACTIVE = 2;
-    const PASSING_NOT_ACTIVE = 1;
-    const PASSING_NOT_PARTICIPATE = 0;
+    const PASSING_ACTIVE = 1;
+    const PASSING_NOT_ACTIVE = 0;
 
     protected $dates = ['deleted_at'];
 
