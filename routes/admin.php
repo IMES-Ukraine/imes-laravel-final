@@ -117,7 +117,7 @@ Route::group(
             ],
             function () {
 
-                Route::get('/', [BlogController::class, 'index']);
+                Route::get('/', [\App\Http\Controllers\BlogController::class, 'index']);
                 Route::get('/list', [BlogController::class, 'list']);
 
                 Route::post('/update/{id}', [BlogController::class, 'update']);
