@@ -57,6 +57,7 @@ class BlogController extends Controller
                 //->where( 'published_at', '<=', Carbon::now()
                 //->toDateTimeString())
                 ->isArticle()
+                ->isProjectActive()
                 ->isNotPassed($apiUser->id)
                 ->orderBy('rainlab_blog_posts.id', 'desc')
                 ->paginate($countOnPage);
