@@ -64,51 +64,53 @@ class ProjectRepository
             $research = ProjectResearches::create($content);
 
 
-
             //------------  article
             $article = $content['article'];
-            $articleModel = $this->articleService->addArticle($article);
-            $articleModel->research_id = $research->id;
-            $articleModel->scheduled = $scheduled;
-            $articleModel->save();
-            TestService::setAttachment($content['article'], $articleModel->id);
+            if ($article['title']) {
+                $articleModel = $this->articleService->addArticle($article);
+                $articleModel->research_id = $research->id;
+                $articleModel->scheduled = $scheduled;
+                $articleModel->save();
+                TestService::setAttachment($content['article'], $articleModel->id);
+            }
 
 
 //------------  test
-
-            //если сложный вопрос - пишем все части отдельно
-            if ($content['test']['type'] == 'complex') {
-                //Сначала записываем весь сложный вопрос в качестве родителя
-                $questionModel = TestQuestions::create((array)new Question($content['test']));
-                $questionModel->research_id = $research->id;
-                $questionModel->save();
-                TestService::setAttachment($content['test'], $questionModel->id);
-
-                $parentID = $questionModel->id;
-                $complex = $content['test']['complex_question'];
-
-                //потом пишем подвопросы как потомков
-                foreach ($complex as $question) {
-
-                    $test = $content['test'];
-                    $test['question'] = $question;
-                    $test['type'] = 'child';
-
-                    $questionModel = TestQuestions::create((array)new Question($test));
-                    $questionModel->parent_id = $parentID;
+            if ($content['test']['title']) {
+                //если сложный вопрос - пишем все части отдельно
+                if ($content['test']['type'] == 'complex') {
+                    //Сначала записываем весь сложный вопрос в качестве родителя
+                    $questionModel = TestQuestions::create((array)new Question($content['test']));
                     $questionModel->research_id = $research->id;
                     $questionModel->save();
-                    TestService::setAttachment($question, $questionModel->id);
+                    TestService::setAttachment($content['test'], $questionModel->id);
 
+                    $parentID = $questionModel->id;
+                    $complex = $content['test']['complex_question'];
+
+                    //потом пишем подвопросы как потомков
+                    foreach ($complex as $question) {
+
+                        $test = $content['test'];
+                        $test['question'] = $question;
+                        $test['type'] = 'child';
+
+                        $questionModel = TestQuestions::create((array)new Question($test));
+                        $questionModel->parent_id = $parentID;
+                        $questionModel->research_id = $research->id;
+                        $questionModel->save();
+                        TestService::setAttachment($question, $questionModel->id);
+
+
+                    }
+                } //если простой - все проще
+                else {
+                    $questionModel = TestQuestions::create((array)new Question($content['test']));
+                    $questionModel->research_id = $research->id;
+                    $questionModel->save();
+                    TestService::setAttachment($content['test']['question'], $questionModel->id);
 
                 }
-            } //если простой - все проще
-            else {
-                $questionModel = TestQuestions::create((array)new Question($content['test']));
-                $questionModel->research_id = $research->id;
-                $questionModel->save();
-                TestService::setAttachment($content['test']['question'], $questionModel->id);
-
             }
 //------------ end test
 

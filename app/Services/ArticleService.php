@@ -52,7 +52,7 @@ class ArticleService
 
         // !!!
 
-        $model->cover_image_id = $article['cover']['id'];
+        $model->cover_image_id = $article['cover']['id'] ?? null;
 
         //plugins_path() . '/ulogic/news/updates/news-featured.png';
         //$model->featured_images = $file;

@@ -137,11 +137,6 @@ class Question
         $this->options = $options;
         $this->is_popular = rand(0, 1);
 
-        //$saveStatus = $model->save();
-
-        //
-
-
     }
 
     public function setType(string $type)
