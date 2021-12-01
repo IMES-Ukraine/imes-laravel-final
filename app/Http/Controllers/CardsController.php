@@ -50,7 +50,7 @@ class CardsController extends Controller
 
         $user = Auth::user();
 
-        $card = Cards::find($id)->first();
+        $card = Cards::findOrFail($id);
         if (!$card) {
             return $this->helpers->apiArrayResponseBuilder(404, 'Немає такої карти', $id);
         }
@@ -71,7 +71,7 @@ class CardsController extends Controller
 
         UsersService::reduceBalance($user->id, $balance);
 
-        return UserCards::where('user_id', $user->id)->paginate();
+        return UserCards::where('user_id', $user->id)->with('card')->paginate();
 
     }
 
