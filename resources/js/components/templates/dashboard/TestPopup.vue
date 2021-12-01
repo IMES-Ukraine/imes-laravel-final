@@ -26,15 +26,19 @@
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
-                                                    <p class="study__info-data">0%</p>
+                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
                                                     <div class="dashboard_main__status-line">
-                                                        <span style="width:0%;"></span>
+                                                        <span :style="'width:'+percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
                                                     </div>
                                                 </div>
-                                                <p class="study__info-quantity">0</p>
+                                                <p class="study__info-quantity">{{ getStaticTest(variant.title, tests[0]['id']) }}</p>
                                             </div>
                                         </div>
-                                        <!--<button class="study__item-button" type="button">Смотреть</button>-->
+                                        <test-users-popup
+                                            :title="test.text + ' - ' + variant.title"
+                                            :id="tests[0]['id']"
+                                            :variant="variant.title"
+                                            v-if="getStaticTest(variant.title, tests[0]['id'])"/>
                                     </div>
                                 </div>
                                 <div class="study__block-content" v-else>
@@ -78,6 +82,9 @@
                                                     <button class="study__table-button study__table-button--minus" type="button"></button>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="articles_pagination center">
+                                            <pagination :data="articles" @pagination-change-page="getResults"></pagination>
                                         </div>
                                     </div>
                                 </div>
@@ -128,15 +135,19 @@
                                                 </div>
                                                 <div class="study__info">
                                                     <div class="study__info-block">
-                                                        <p class="study__info-data">0%</p>
+                                                        <p class="study__info-data">{{ percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
                                                         <div class="dashboard_main__status-line">
-                                                            <span style="width:0%;"></span>
+                                                            <span :style="'width:'+percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
                                                         </div>
                                                     </div>
-                                                    <p class="study__info-quantity">0</p>
+                                                    <p class="study__info-quantity">{{ getStaticTest(variant.title, tests[0]['id']) }}</p>
                                                 </div>
                                             </div>
-                                            <!--<button class="study__item-button" type="button">Смотреть</button>-->
+                                            <test-users-popup
+                                                :title="test.text + ' - ' + variant.title"
+                                                :id="tests[0]['id']"
+                                                :variant="variant.title"
+                                                v-if="getStaticTest(variant.title, tests[0]['id'])"/>
                                         </div>
                                     </div>
                                     <div class="study__block-content" v-else>
