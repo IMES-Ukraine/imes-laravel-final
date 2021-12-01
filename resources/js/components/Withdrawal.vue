@@ -8,11 +8,14 @@
 
         <div class="template_box style_for_table">
             <requests-table v-if="hasRequests()"
-                v-bind:requests="requests"
+                v-bind:requests="requests.data"
                 v-on:accept="accept"
                 v-on:decline="decline"
             ></requests-table>
-            <v-preloader v-else />
+            <div class="articles_pagination center">
+                <pagination :data="requests" @pagination-change-page="getResults"></pagination>
+            </div>
+            <!--<v-preloader v-else />-->
         </div>
     </v-content>
 
@@ -33,16 +36,16 @@ export default {
     },
     data() {
         return {
-            requests: []
+            requests: {}
         }
     },
     methods: {
-        async loadWithdrawals() {
+        /*async loadWithdrawals() {
 
             this.$get(WITHDRAWAL).then( response => {
                 this.requests = response.data.data
             });
-        },
+        },*/
         hasRequests() {
             return !!Object.keys(this.requests).length
         },
@@ -53,10 +56,20 @@ export default {
         async decline(id) {
 
             this.$get(WITHDRAWAL_DECLINE, {id: id}).then()
-        }
+        },
+        getResults(page) {
+            if (typeof page === 'undefined') {
+                page = 1;
+            }
+
+            this.$get(WITHDRAWAL + '?page=' + page)
+                .then(response => {
+                    this.requests = response.data;
+                });
+        },
     },
     mounted() {
-        this.loadWithdrawals();
+        this.getResults();
     }
 
 }
