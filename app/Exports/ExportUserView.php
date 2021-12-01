@@ -38,8 +38,16 @@ class ExportUserView implements FromView
         } elseif ($this->test) {
             $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')');
         } else {
-            $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
-                ->orWhereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+            if ($articles_ids && $test_ids) {
+                $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
+                    ->orWhereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+            } elseif ($test_ids) {
+                $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
+                    ->orWhereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IS NOT NULL');
+            } elseif ($articles_ids) {
+                $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IS NOT NULL')
+                    ->orWhereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+            }
         }
 
         $results = $query->get();
