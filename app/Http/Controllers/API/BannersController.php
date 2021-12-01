@@ -16,7 +16,12 @@ class BannersController extends Controller
 
     public function show($type)
     {
-        $data = Banners::where('type', $type)->with('image')->first()->toArray();
+        $result = Banners::where('type', $type)->with('image')->first()->toArray();
+
+        $data = [
+            'image' => ($result['image'])?$result['image']['path']:'',
+            'url' => $result['url']
+        ];
 
         if (count($data) > 0) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
