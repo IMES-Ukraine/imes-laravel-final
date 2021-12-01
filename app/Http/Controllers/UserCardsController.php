@@ -10,6 +10,7 @@ class UserCardsController extends Controller
 {
     protected $routePath = 'user_cards';
     protected $viewPath = 'user_cards';
+    const COUNT_PER_PAGE = 15;
 
     protected $helpers;
 
@@ -28,7 +29,7 @@ class UserCardsController extends Controller
         $withdraws = UserCards::with('user')
             ->with('card')
             ->orderBy('created_at', 'desc')
-            ->paginate(2);
+            ->paginate(self::COUNT_PER_PAGE);
 
         $data = json_decode($withdraws->toJSON());
 
