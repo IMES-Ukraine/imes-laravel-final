@@ -42,15 +42,13 @@ class ModerationController extends Controller
     }
 
     /**
-     * @param $research_id
+     * @param $test_id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function test( $research_id )
+    public function test( $test_id )
     {
-        $test_ids = TestService::pluckIDArticles($research_id);
-
         $results = $this->QuestionModeration
-            ->where('question_id', $test_ids[0])
+            ->where('question_id', $test_id)
             ->with('user')
             ->paginate(15);
 

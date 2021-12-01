@@ -63,29 +63,31 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="study__table-block" v-for="(moderation, key) in getModerations(content_id)">
-                                            <div class="study__table-item">
-                                                <p class="study__table-number">{{key}}</p>
-                                            </div>
-                                            <div class="study__table-item">
-                                                <p class="study__table-id">{{(moderation.user)?moderation.user.id:0}}</p>
-                                            </div>
-                                            <div class="study__table-item">
-                                                <p class="study__table-name">{{(moderation.user)?moderation.user.name:'Уже нет такого пользователя'}}</p>
-                                            </div>
-                                            <div class="study__table-item">
-                                                <p class="study__table-description">{{moderation.answer}}</p>
-                                            </div>
-                                            <div class="study__table-item">
-                                                <div class="study__table-controls">
-                                                    <button class="study__table-button study__table-button--plus" type="button"></button>
-                                                    <button class="study__table-button study__table-button--minus" type="button"></button>
+                                        <template v-if="getModerations(1, tests[0]['id'])">
+                                            <div class="study__table-block" v-for="(moderation, key) in getModerations(1, tests[0]['id'])">
+                                                <div class="study__table-item">
+                                                    <p class="study__table-number">{{key}}</p>
+                                                </div>
+                                                <div class="study__table-item">
+                                                    <p class="study__table-id">{{(moderation.user)?moderation.user.id:0}}</p>
+                                                </div>
+                                                <div class="study__table-item">
+                                                    <p class="study__table-name">{{(moderation.user)?moderation.user.name:'Уже нет такого пользователя'}}</p>
+                                                </div>
+                                                <div class="study__table-item">
+                                                    <p class="study__table-description">{{moderation.answer}}</p>
+                                                </div>
+                                                <div class="study__table-item">
+                                                    <div class="study__table-controls">
+                                                        <button class="study__table-button study__table-button--plus" type="button"></button>
+                                                        <button class="study__table-button study__table-button--minus" type="button"></button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="articles_pagination center">
-                                            <pagination :data="articles" @pagination-change-page="getResults"></pagination>
-                                        </div>
+                                            <div class="articles_pagination center">
+                                                <pagination :data="moderations[tests[0]['id']]" @pagination-change-page="getModerations(1, tests[0]['id'])"></pagination>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
 
@@ -172,7 +174,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="study__table-block" v-for="(moderation, key) in getModerations(content_id)">
+                                            {{ getModerations(tests[0]['id']) }}
+                                            <div class="study__table-block" v-for="(moderation, key) in moderations[tests[0]['id']].data">
                                                 <div class="study__table-item">
                                                     <p class="study__table-number">{{key}}</p>
                                                 </div>
@@ -247,7 +250,7 @@
                 correct_answer: [],
                 test_type: '',
                 type: '',
-                moderations: [],
+                moderations: {},
                 total_test: {}
             }
         },
@@ -265,11 +268,18 @@
             close () {
                 this.$router.push({ path: '/' })
             },
-            getModerations (test_id) {
-                this.$get(MODERATION + '/' + test_id).then(response => {
-                    console.log(response.data.data);
-                    return response.data.data
-                });
+            getModerations (page, test_id) {
+                if (typeof page === 'undefined') {
+                    page = 1;
+                }
+
+                this.$get(MODERATION + '/' + test_id + '?page=' + page)
+                    .then(response => {
+                        this.moderations[test_id] = response.data;
+                        return response.data;
+                    });
+                console.log(this.moderations[test_id])
+                return (this.moderations[test_id])?this.moderations[test_id].data:{};
             },
             totalQuestionVariants (variants, test_id) {
                 let total = 0;
@@ -288,7 +298,7 @@
             },
             percent(status, total) {
                 return status?parseInt(status * 100 / total):0
-            }
+            },
         },
     }
 </script>

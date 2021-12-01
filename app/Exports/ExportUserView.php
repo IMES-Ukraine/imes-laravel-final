@@ -34,12 +34,12 @@ class ExportUserView implements FromView
         $query = Passing::with('user')->with('withdraw');
 
         if ($this->article) {
-            $query->whereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+            $query->whereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
         } elseif ($this->test) {
-            $query->whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')');
+            $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')');
         } else {
-            $query->whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
-                ->orWhereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+            $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
+                ->orWhereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
         }
 
         $results = $query->get();
