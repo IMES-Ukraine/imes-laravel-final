@@ -216,7 +216,7 @@ class ProjectRepository
         foreach ($content as $key => $item) {
             if (isset($item->tests[0])) {
                 $test_id = $item->tests[0]['id'];
-                $passing = Passing::where('entity_type', 'TestQuestions')->where('entity_id', $test_id)->get();
+                $passing = Passing::where('entity_type', 'App\Models\TestQuestions')->where('entity_id', $test_id)->get();
 
                 foreach ($passing as $pass) {
                     if ($pass['answer']) {

@@ -19,13 +19,13 @@ class PassingService
         $test_ids = TestService::pluckIDArticles($content_id);
 
         if ($articles_ids && $test_ids) {
-            return Passing::whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
-                ->orWhereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')
+            return Passing::whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
+                ->orWhereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')
                 ->count();
         } elseif ($articles_ids) {
-            return Passing::whereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')->count();
+            return Passing::whereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')->count();
         } elseif ($test_ids) {
-            return Passing::whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')->count();
+            return Passing::whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')->count();
         }
 
         return 0;
@@ -41,13 +41,13 @@ class PassingService
         $test_ids = TestService::pluckIDArticles($content_id);
 
         if ($articles_ids && $test_ids) {
-            return Passing::whereRaw('(`status` = ' . $status . ' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
-                ->orWhereRaw('(`status` = ' . $status . ' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
+            return Passing::whereRaw('(`status` = ' . $status . ' AND `entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+                ->orWhereRaw('(`status` = ' . $status . ' AND `entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
                 ->count();
         } elseif ($articles_ids) {
-            return Passing::whereRaw('(`status` = ' . $status . ' AND `entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')->count();
+            return Passing::whereRaw('(`status` = ' . $status . ' AND `entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')->count();
         } elseif ($test_ids) {
-            return Passing::whereRaw('(`status` = ' . $status . ' AND `entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')->count();
+            return Passing::whereRaw('(`status` = ' . $status . ' AND `entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')->count();
         }
 
         return 0;
@@ -65,14 +65,14 @@ class PassingService
             ->whereNull('ulogic_projects_passing.user_id');
 
         if ($test_ids && $articles_ids) {
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
         } elseif ($test_ids) {
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
         } elseif ($articles_ids) {
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "TestQuestions" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
         }
 
         return $query->count();
@@ -91,14 +91,14 @@ class PassingService
             ->whereNull('ulogic_projects_passing.user_id');
 
         if ($test_ids && $articles_ids) {
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
         } elseif ($test_ids) {
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
         } elseif ($articles_ids) {
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "TestQuestions" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
+            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
         }
 
         return $query->count();
@@ -113,7 +113,7 @@ class PassingService
         $test_ids = TestService::pluckIDArticles($content_id);
 
         return Passing::where('status', $status)
-            ->whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
+            ->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
             ->count();
     }
 
@@ -127,7 +127,7 @@ class PassingService
 
         if ($articles_ids) {
             return Passing::where('status', $status)
-                ->whereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')
+                ->whereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')
                 ->count();
         }
 
@@ -141,7 +141,7 @@ class PassingService
     public static function getPassingTotalTest($content_id) {
         $test_ids = TestService::pluckIDArticles($content_id);
 
-        return Passing::whereRaw('`entity_type` = "TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')->count();
+        return Passing::whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')->count();
     }
 
     /**
@@ -152,7 +152,7 @@ class PassingService
         $articles_ids = ArticleService::pluckIDArticles($content_id);
 
         if ($articles_ids) {
-            return Passing::whereRaw('`entity_type` = "Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')->count();
+            return Passing::whereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')')->count();
         }
 
         return 0;
