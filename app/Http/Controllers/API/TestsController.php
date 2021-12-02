@@ -486,7 +486,8 @@ class TestsController extends Controller
         if ($submittedTest->test_type == TestQuestions::TYPE_CHILD) {
 
             $parentId = $submittedTest->parent_id;
-            $rootTest = Test::find($parentId);
+            //$rootTest = Test::find($parentId);
+            $rootTest = TestQuestions::find($parentId);
             $fullPassingBonus = $rootTest->passing_bonus;
             $testClass = $rootTest;
             $testID = $parentId;
