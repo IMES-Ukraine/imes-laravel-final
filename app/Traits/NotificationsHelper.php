@@ -77,13 +77,13 @@ trait NotificationsHelper
         return $token->toString();
     }
 
-    protected function sendNotificationToUser( User $user, $type, $text, $extraFields = []) {
+    protected function sendNotificationToUser( User $user, $type, $text, $extraFields = [], $title = '') {
 
         $notification = new Notifications();
         $notification->user_id = $user->id;
         $notification->type = $type;
         $notification->text = [
-            'title' => $text,
+            'title' => $title??$text,
             'content' => $text,
         ];
         if(isset( $extraFields['action'])) {
