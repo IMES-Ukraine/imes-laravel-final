@@ -28,12 +28,19 @@ class AdminController extends BaseController
     {
         $users = User::all();
         $body = $request->post('body');
+        $title = $request->post('title');
+        $action = $request->post('action');
+        $extraFields = [];
+
+        if ($action) {
+            $extraFields['action'] = $action;
+        }
 
         try {
 
             if ($body) {
                 foreach ($users as $user) {
-                    $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body);
+                    $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body, $extraFields, $title);
                 }
 
                 Session::flash('success', 'Вiдправлено успiшно!');
@@ -51,6 +58,13 @@ class AdminController extends BaseController
 
         $to = $request->post('to');
         $body = $request->post('body');
+        $title = $request->post('title');
+        $action = $request->post('action');
+        $extraFields = [];
+
+        if ($action) {
+            $extraFields['action'] = $action;
+        }
 
         try {
 
@@ -59,7 +73,7 @@ class AdminController extends BaseController
                 $user = User::find( $to );
                 //$user = User::where('username', $to)->first();
 
-                $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body);
+                $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body, $extraFields, $title);
 
 
                 //Flash::success('Вiдправлено успiшно!');
