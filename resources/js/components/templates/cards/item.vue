@@ -46,15 +46,15 @@
                 </button>
 
                 <!-- modal remove -->
-                <div class="modal db-modal fade" :id="'db-remove--' +request.id" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered db-modal__dialog" role="document">
-                        <div class="db-modal__content modal-content">
-                            <div class="modal-header db-modal__header">
-                                <h5 class="modal-title db-modal__title">Видалити картку?</h5>
+                <div class="modal fade" :id="'db-remove--' +request.id" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog max-width-500 modal-dialog-centered" role="document">
+                        <div class="modal_delete modal-content">
+                            <div class="modal_delete-title_wrap">
+                                <p class="modal_delete-title">Видалити картку?</p>
                             </div>
-                            <div class="modal-body db-modal__body is-remove">
-                                <button type="button" class="db-modal__button is-close" data-dismiss="modal" aria-label="Close">Ні</button>
-                                <button class="db-modal__button is-remove" @click="$emit('onDeleteCard', request.id)">Так</button>
+                            <div class="modal_delete-controls">
+                                <button type="button" class="modal_delete-btn is-close" data-dismiss="modal" aria-label="Close">Ні</button>
+                                <button class="modal_delete-btn is-remove" @click="$emit('onDeleteCard', request.id)">Так</button>
                             </div>
                         </div>
                     </div>
@@ -94,5 +94,7 @@ import  ModalMixin from "../../../ModalMixin";
 </script>
 
 <style scoped>
-
+    .max-width-500 {
+        max-width: 500px;
+    }
 </style>
