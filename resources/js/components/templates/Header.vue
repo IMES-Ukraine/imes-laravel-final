@@ -38,7 +38,7 @@
                     { name: 'Перекази', path: '/withdrawal' },
                     { name: 'Картки', path: '/cards' },
                     //{ name: 'Користувачi', path: '/user' },
-                    { name: 'Модерувати вiдповiдь', path: '/moderation' },
+                    //{ name: 'Модерувати вiдповiдь', path: '/moderation' },
                     //{ name: 'Підтримка', path: '/support' },
                 ],
             }
