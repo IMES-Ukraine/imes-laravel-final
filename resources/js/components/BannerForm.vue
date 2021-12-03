@@ -22,7 +22,7 @@
                                     <div :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: (banner.image)?banner.image.path:false} ]">
                                         <input type="file" name="image" accept="image/*" @change="handleUploadBanner">
                                         <p><span>{{(banner.image?banner.image.file_name:false) || "Загрузить изображение"}}</span></p>
-                                        <button class="delete_file deleteFile" type="button" @click="banner.image={}"></button>
+                                        <button class="delete_file deleteFile" type="button" @click="banner.image=null"></button>
                                         <!--<p class="note">до 5 kb</p>-->
                                     </div>
                                     <div class="errors">{{ errorFile }}</div>
@@ -84,13 +84,12 @@
             },
             submitForm() {
                 this.$refs.form.validate().then( success => {
-                    if (this.banner.image == {}) {
+                    this.errorFile = ''
+                    if (!this.banner.image) {
                         this.errorFile = 'Поле обязательно';
-                    } else {
-                        this.errorFile = '';
                     }
 
-                    if( !success || this.errorFile != "" || this.banner.url == "") {
+                    if( !success || this.errorFile || !this.banner.url) {
                         return;
                     }
 
