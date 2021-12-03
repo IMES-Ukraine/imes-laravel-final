@@ -84,24 +84,27 @@ class PassingService
      */
     public static function getNotUsersPassingTotalAll($project_id) {
         $research = ProjectResearches::select('id')->where('project_id', $project_id)->first();
-        $articles_ids = ArticleService::pluckIDArticles($research->id);
-        $test_ids = TestService::pluckIDArticles($research->id);
+        if ($research) {
+            $articles_ids = ArticleService::pluckIDArticles($research->id);
+            $test_ids = TestService::pluckIDArticles($research->id);
 
-        $query = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
-            ->whereNull('ulogic_projects_passing.user_id');
+            $query = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
+                ->whereNull('ulogic_projects_passing.user_id');
 
-        if ($test_ids && $articles_ids) {
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
-        } elseif ($test_ids) {
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
-        } elseif ($articles_ids) {
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
-            $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
+            if ($test_ids && $articles_ids) {
+                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
+                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
+            } elseif ($test_ids) {
+                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
+                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
+            } elseif ($articles_ids) {
+                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` IS NOT NULL)');
+                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
+            }
+
+            return $query->count();
         }
-
-        return $query->count();
+        return 0;
     }
 
     /**
