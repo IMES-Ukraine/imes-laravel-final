@@ -249,7 +249,7 @@ import Multiselect from 'vue-multiselect'
 import VContent from "./templates/Content"
 import axios from 'axios'
 import VueUploadMultipleImage from 'vue-upload-multiple-image'
-import {ARTICLE, V1} from "../api/endpoints";
+import {ARTICLE, ARTICLE_LIST, USER_LIST, V1} from "../api/endpoints";
 
 export default {
     name: 'CreateArticleForm',
@@ -324,11 +324,11 @@ export default {
         }
     },
     mounted() {
-        axios.get(ARTICLE, {count:12, type: 1}).then(
+        axios.get(ARTICLE_LIST, {count:12}).then(
             response => {
                 this.recommended = response.data.data.data
             })
-        axios.get(USER, {count: 12}).then(
+        axios.get(USER_LIST, {count: 12}).then(
             response => {
                 this.authors = response.data.data
             })

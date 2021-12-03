@@ -275,7 +275,7 @@ import {
     ARTICLE_COVER,
     TOKEN,
     ARTICLE_TAGS,
-    USER_LIST
+    USER_LIST, ARTICLE_LIST
 } from "../api/endpoints";
 import FragmentFormText from "./fragmets/text";
 import ArticleSidebar from "./templates/article/sidebar";
@@ -499,10 +499,11 @@ export default {
                 this.textLocale = !!this.article.content[0].content
             });
         }
-        this.$get(ARTICLE + '?count=12&type=1').then(response => {
-            this.recommended = response.data.data
+        this.$get(ARTICLE_LIST, {count: 12}).then(response => {
+            console.log(response.data.data.data, response.data.data);
+            this.recommended = response.data.data || {}
         });
-        this.$get(USER_LIST + '?count=12').then(response => {
+        this.$get(USER_LIST, {count: 12}).then(response => {
             this.authors = response.data
         });
         this.$get(ARTICLE_TAGS).then(response => {
