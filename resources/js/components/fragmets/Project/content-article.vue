@@ -284,13 +284,13 @@ export default {
             this.errorArticleCover = '';
             this.errorArticleText = '';
             let error = false;
-
-            if (!this.article.title) {
+console.log(this.article.title.trim());
+            if (!this.article.title || !this.article.title.trim()) {
                 this.errorArticleTitle = this.requiredErrorText;
                 error = true;
             }
 
-            if (!this.article.text) {
+            if (!this.article.text || !this.article.text.trim()) {
                 this.errorArticleText = this.requiredErrorText;
                 error = true;
             }
