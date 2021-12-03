@@ -69,6 +69,7 @@
                                     <validation-provider rules="required" v-slot="{ errors }">
                                         <input
                                             type="number"
+                                            @keypress="isNumber($event)"
                                             class="form-control"
                                             name="name"
                                             v-model="content.article.count">
@@ -84,6 +85,7 @@
                                         v-slot="{ errors }">
                                         <input
                                             type="number"
+                                            @keypress="isNumber($event)"
                                             class="form-control"
                                             name="name"
                                             v-model="content.article.points">
@@ -100,6 +102,7 @@
                                         <input
                                             class="form-control"
                                             type="number"
+                                            @keypress="isNumber($event)"
                                             name="name"
                                             v-model="content.article.frequency">
                                         <span class="errors">{{ errors[0] }}</span>
@@ -140,6 +143,7 @@
                                             <input
                                                 class="form-control"
                                                 type="number"
+                                                @keypress="isNumber($event)"
                                                 name="name"
                                                 v-model="content.test.count">
                                             <span class="errors">{{ errors[0] }}</span>
@@ -153,6 +157,7 @@
                                             <input
                                                 class="form-control"
                                                 type="number"
+                                                @keypress="isNumber($event)"
                                                 name="name"
                                                 v-model="content.test.points"/>
 
@@ -230,7 +235,7 @@ export default {
         pointsSum() {
             let sum = 0;
             if (this.content.article) {
-                sum += parseInt(this.content.article.points ) || 0;
+                sum += parseInt(this.content.article.points) || 0;
             }
             if (this.content.test) {
                 sum += parseInt(this.content.test.points) || 0;
@@ -239,16 +244,17 @@ export default {
         },
         is_points() {
             // Сохраняться можно если есть тест или статья - причем с данными
-            let resArticle = this.haveArticle;
-            let resTest = this.haveTest;
+            let res = this.haveArticle && this.haveTest;
             if (this.haveTest) {
-                resTest = !this.content.test.count || !this.content.test.points;
+                res &= !!(parseInt(this.content.test.count))
+                    && !!(parseInt(this.content.test.points))
             }
             if (this.haveArticle) {
-                resArticle = !this.content.article.count || !this.content.article.points || !this.content.article.frequency;
+                res = !!(parseInt(this.content.article.count))
+                    && !!(parseInt(this.content.article.points))
+                    && !!(parseInt(this.content.article.frequency));
             }
-            console.log(resTest, resArticle);
-            return !resTest && !resArticle;
+            return res;
 
 
             // return this.haveTest && this.content.test.count && this.content.test.points
