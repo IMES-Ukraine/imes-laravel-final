@@ -5,16 +5,14 @@
             <div class="notifications template_box">
                 <p class="notifications-title">Уведомления</p>
                 <div class="notifications-box">
-                    <ValidationObserver ref="form" v-slot="{ handleSubmit }" class="notifications-block">
-                        <form>
+                    <ValidationObserver ref="formAll" v-slot="{ handleSubmit }" class="notifications-block">
+                        <form style="width: 100%;">
                             <div v-if="successNotificationAll">
                                 <div style="background: #a5d794; padding: 15px; margin-bottom: 10px; color: #fff;">{{ successNotificationAll }}</div>
                             </div>
                             <div class="notifications__item">
                                 <div class="notifications__item-head">
-                                    <div class="notifications__item-checkbox">
-                                        <p>Заголовок</p>
-                                    </div>
+                                    <p class="notifications__item-title">Заголовок</p>
                                 </div>
                                 <div class="notifications__item-body">
                                     <ValidationProvider rules="required" v-slot="{ errors }">
@@ -25,10 +23,10 @@
                             </div>
                             <div class="notifications__item">
                                 <div class="notifications__item-head">
-                                    <p class="notifications__item-title">Все пользователи</p>
+                                    <p class="notifications__item-title for_textarea">Все пользователи</p>
                                 </div>
                                 <div class="notifications__item-body">
-                                    <ValidationProvider rules="required" v-slot="{ errors }">
+                                    <ValidationProvider rules="required" v-slot="{ errors }" class="f-d">
                                         <textarea class="notifications__item-field" v-model="all.body" placeholder="Текст"></textarea>
                                         <div class="errors">{{ errors[0] }}</div>
                                     </ValidationProvider>
@@ -50,14 +48,14 @@
                         </form>
                     </ValidationObserver>
                     <ValidationObserver ref="form" v-slot="{ handleSubmit }" class="notifications-block">
-                        <form>
+                        <form style="width: 100%;">
                             <div v-if="successNotification">
                                 <div style="background: #a5d794; padding: 15px; margin-bottom: 10px; color: #fff;">{{ successNotification }}</div>
                             </div>
                             <div class="notifications__item">
                                 <div class="notifications__item-head">
                                     <div class="notifications__item-checkbox">
-                                        <p>Заголовок</p>
+                                        <p class="notifications__item-title">Заголовок</p>
                                     </div>
                                 </div>
                                 <div class="notifications__item-body">
@@ -69,16 +67,16 @@
                             </div>
                             <div class="notifications__item">
                                 <div class="notifications__item-head">
-                                    <div class="notifications__item-number">
-                                        <i>№</i>
-                                        <ValidationProvider rules="required" v-slot="{ errors }">
+                                    <ValidationProvider rules="required" v-slot="{ errors }">
+                                        <div class="notifications__item-number">
+                                            <i>№</i>
                                             <input type="number" v-model="one.to">
-                                            <div class="errors">{{ errors[0] }}</div>
-                                        </ValidationProvider>
-                                    </div>
+                                        </div>
+                                        <div class="errors">{{ errors[0] }}</div>
+                                    </ValidationProvider>
                                 </div>
                                 <div class="notifications__item-body">
-                                    <ValidationProvider rules="required" v-slot="{ errors }">
+                                    <ValidationProvider rules="required" v-slot="{ errors }" class="f-d">
                                         <textarea class="notifications__item-field" v-model="one.body" placeholder="Текст"></textarea>
                                         <div class="errors">{{ errors[0] }}</div>
                                     </ValidationProvider>
@@ -145,7 +143,7 @@
         },
         methods: {
             submitFormAll(values) {
-                this.$refs.form.validate().then( success => {
+                this.$refs.formAll.validate().then( success => {
                     if (!success) {
                         return;
                     }
