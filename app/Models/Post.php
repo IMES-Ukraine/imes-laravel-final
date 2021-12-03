@@ -102,7 +102,6 @@ class Post extends Model
 
     public $attachMany = [
         'featured_images' => [\App\Models\File::class, 'order' => 'sort_order'],
-        'content_images' => \App\Models\File::class
     ];
 
 
@@ -119,10 +118,10 @@ class Post extends Model
      * File file
      * @return mixed
      */
-    public function content_images()
-    {
-        return $this->hasMany('App\Models\File', 'attachment_id', 'id');
-    }
+//    public function content_images()
+//    {
+//        return $this->hasMany('App\Models\File', 'attachment_id', 'id');
+//    }
 
     /**
      * @var array The accessors to append to the model's array form.
@@ -146,19 +145,16 @@ class Post extends Model
         $recList = Recommended::where(['parent_id' => $this->id])->get();
         $recommended = [];
         foreach ($recList as $recItem) {
-            $recommended[] = $recItem->post;
+            if ($recItem->post) {
+                $recommended[] = [
+                    'id' => $recItem->post->id,
+                    'title' => $recItem->post->title
+                ];
+            }
         }
         return $recommended;
     }
 
-//    /**
-//     * Recomended articles
-//     * @return mixed
-//     */
-//    public function recommended()
-//    {
-//        return $this->hasMany(Recommended::class, 'parent_id', 'id')->with('post');
-//    }
 
     /**
      * Limit visibility of the published-button
@@ -294,7 +290,7 @@ class Post extends Model
      * @param array $options Display options
      * @return Post
      */
-    public function scopeListFrontEnd($query, $options)
+    public function scopeListFrontEnd($query, $options = [])
     {
         /*
          * Default options

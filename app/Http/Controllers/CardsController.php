@@ -60,6 +60,8 @@ class CardsController extends Controller
             return $this->helpers->apiArrayResponseBuilder(402, 'Не вистачає балів', $id);
         }
 
+
+
         $balance = $user->balance - $card->cost;
 
         $model = new UserCards();

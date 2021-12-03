@@ -327,24 +327,7 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        $data = Articles::select(
-            'rainlab_blog_posts.id',
-            'rainlab_blog_posts.title',
-            'rainlab_blog_posts.slug',
-            'rainlab_blog_posts.excerpt',
-            'rainlab_blog_posts.content',
-            'rainlab_blog_posts.published_at',
-            'rainlab_blog_posts.published',
-            'rainlab_blog_posts.created_at',
-            'rainlab_blog_posts.updated_at',
-            'rainlab_blog_posts.user_id',
-            'rainlab_blog_posts.content_html',
-            'rainlab_blog_posts.action',
-            'rainlab_blog_posts.button',
-            'rainlab_blog_posts.type',
-            'rainlab_blog_posts.learning_bonus',
-            'rainlab_blog_posts.cover_image_id',
-        )
+        $data = Articles::select('rainlab_blog_posts.*')
             ->with('cover_image')
             ->with('is_opened')
 //            ->with('gallery')
