@@ -53,7 +53,6 @@ class Articles extends Post {
 
 
 
-
     /**
      * Image in list
      * @return mixed
@@ -104,9 +103,9 @@ class Articles extends Post {
      * Recomended articles
      * @return mixed
      */
-    public function recommended()
-    {
-        return $this->hasMany(Recommended::class, 'parent_id', 'id')->with('post');
-    }
+//    public function recommended()
+//    {
+//        return $this->hasMany(Recommended::class, 'parent_id', 'id')->with('post');
+//    }
 
 }

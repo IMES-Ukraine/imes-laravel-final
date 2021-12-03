@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Helpers;
@@ -17,6 +18,7 @@ class BlogController extends Controller
     {
         $this->Post = $Post;
         $this->helpers = $helpers;
+        parent::__construct($helpers);
     }
 
     /**
@@ -27,35 +29,20 @@ class BlogController extends Controller
     {
         $countOnPage = $request->get('count', self::COUNT_PER_PAGE);
 
-        $type =  $request->get('type', Articles::ARTICLE);
+        $relations = ['cover_image'];
 
-        $relations = [ 'cover_image', /*'user', 'featured_images','content_images',*/
-            /*, 'recommended.post',  'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }n */
-        ];
+        $data = Articles::with($relations)
+            ->select('rainlab_blog_posts.*')
+            ->whereNull('research_id')
+            //->where( 'published_at', '<=', Carbon::now()
+            //->toDateTimeString())
+            ->orderBy('rainlab_blog_posts.id', 'desc')
+            ->paginate($countOnPage);
 
-        //if ($type == Articles::ARTICLE) {
-            $data = Articles::with($relations)
-                ->select('rainlab_blog_posts.*')
-                ->whereNull('research_id')
-                //->where( 'published_at', '<=', Carbon::now()
-                //->toDateTimeString())
-                //->isArticle()
-                ->orderBy('rainlab_blog_posts.id', 'desc')
-                ->paginate($countOnPage);
-        /*} else {
-            $data = Articles::with($relations)
-                ->select('rainlab_blog_posts.*')
-                ->whereNull('research_id')
-                //->where( 'published_at', '<=', Carbon::now()
-                //->toDateTimeString())
-                ->isInformation()
-                ->notTimes()
-                ->orderBy('rainlab_blog_posts.id', 'desc')
-                ->paginate($countOnPage);
-        }*/
 
 //        $data->makeHidden(['content']);
         $data = json_decode($data->toJSON());
+//        dd($data);
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
