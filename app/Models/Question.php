@@ -77,7 +77,6 @@ class Question
             $fields = [
                 'itemId' => $variant['itemId'],
                 'variant' => $variant['text'],
-                'description' => $variant['variant'],
                 'title' => $variant['title'],
                 'cover_image' => $variant['media'][0]['path'] ?? null,
             ];
