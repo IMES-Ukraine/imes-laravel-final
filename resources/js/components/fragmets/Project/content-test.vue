@@ -78,8 +78,7 @@
             <div>
                 <TestSurvey :test.sync="test"
                             @input="storeTest($event)"
-                            :errorTestSurveyTitle="testErrors.title"
-                            :errorTestSurveyText="testErrors.text"/>
+                            :errors="testErrors" />
             </div>
             <div class="mb20"></div>
         </div>
@@ -128,6 +127,10 @@ export default {
             }
 
             if (this.test.picked === 'survey') {
+                if(this.test.question.variants.length < 2){
+                    this.testErrors.variants = 'Должно быть не менее двух вариантов ответа';
+                    this.$store.commit('setTestError', true);
+                }
                 for (const [index, value] of Object.entries(this.test.question.variants)) {
                     if (value.text == '') {
                         $('#variant-' + value.title).css('border', '1px solid red');

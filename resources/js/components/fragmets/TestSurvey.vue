@@ -4,7 +4,7 @@
 
             <fragment-form-text>
                 <input class="form-control" type="text" id="survey_question_title" name="title" v-model="test.title">
-                <div v-if="errorTestSurveyTitle" class="errors">{{ errorTestSurveyTitle }}</div>
+                <div v-if="errors.title" class="errors">{{ errors.title }}</div>
             </fragment-form-text>
 
 
@@ -13,14 +13,14 @@
                     <p class="articles_create__item-title">Вопрос</p>
                     <div class="articles_create__item-content direction-column">
                         <textarea class="form-control" rows="4" v-model="test.text"></textarea>
-                        <div v-if="errorTestSurveyText" class="errors">{{ errorTestSurveyText }}</div>
+                        <div v-if="errors.text" class="errors">{{ errors.text }}</div>
                     </div>
                 </div>
             </div>
 
             <SurveyTestVariants :variants="test.question.variants"></SurveyTestVariants>
             <div class="mb20"></div>
-
+            <div v-if="errors.variants" class="errors mb20">{{ errors.variants }}</div>
             <button class="articles_create-submit button-border" type="button" @click="addSurvey">добавить ответ</button>
 
         </div>
@@ -40,7 +40,7 @@
 
     export default {
         name: 'TestQuestion',
-        props: [ 'test', 'errorTestSurveyTitle', 'errorTestSurveyText'],
+        props: [ 'test', 'errors'],
         mixins: [ProjectMixin],
         components: {
             FragmentFormText,
