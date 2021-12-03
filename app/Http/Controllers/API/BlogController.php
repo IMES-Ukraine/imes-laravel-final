@@ -82,12 +82,6 @@ class BlogController extends Controller
         //if ($apiUser && $apiUser->hasAccess('news.access_news'))
     }
 
-    public function list(): JsonResponse
-    {
-        $data = Articles::select('id', 'title')->get()->toArray();
-
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
-    }
 
     /**
      * @return JsonResponse

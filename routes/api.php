@@ -116,7 +116,7 @@ Route::group(
             function () {
 
                 Route::get('/', [BlogController::class, 'index']);
-                Route::get('/list', [BlogController::class, 'list']);
+//                Route::get('/list', [BlogController::class, 'list']);
 
                 Route::post('/', [BlogController::class, 'store']);
                 Route::post('/update', [BlogController::class, 'update']);

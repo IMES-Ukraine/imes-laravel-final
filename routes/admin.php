@@ -120,7 +120,7 @@ Route::group(
             function () {
 
                 Route::get('/', [\App\Http\Controllers\BlogController::class, 'index']);
-                Route::get('/list', [BlogController::class, 'list']);
+                Route::get('/list', [\App\Http\Controllers\BlogController::class, 'list']);
 
                 Route::post('/update/{id}', [BlogController::class, 'update']);
                 Route::post('/', [BlogController::class, 'store']);
@@ -129,7 +129,7 @@ Route::group(
 
                 Route::get('/times', [BlogController::class, 'times']);
 
-                Route::get('/{id}', [BlogController::class, 'show']);;
+                Route::get('/{id}', [BlogController::class, 'show']);
 
                 Route::delete('/destroy/{id}', [BlogController::class, 'destroy']);
             }
