@@ -58,4 +58,12 @@ class BlogController extends Controller
         $data = json_decode($data->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
+
+    public function list(Request $request): JsonResponse
+    {
+
+        $data = Post::select('id', 'title')->paginate($request->get('count'))->toArray();
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
 }

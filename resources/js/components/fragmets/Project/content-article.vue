@@ -243,7 +243,7 @@ export default {
             this.authors = response.data.data;
         });
         axios.get(ARTICLE_LIST, {params: {count: 12, type: 1}}).then(response => {
-            this.recommended = response.data.data;
+            this.recommended = response.data.data.data;
         });
         this.$get(ARTICLE_TAGS).then(response => {
             this.tags = response.data
