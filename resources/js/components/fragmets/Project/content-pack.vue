@@ -244,7 +244,7 @@ export default {
         },
         is_points() {
             // Сохраняться можно если есть тест или статья - причем с данными
-            let res = this.haveArticle && this.haveTest;
+            let res = this.haveArticle || this.haveTest;
             if (this.haveTest) {
                 res &= !!(parseInt(this.content.test.count))
                     && !!(parseInt(this.content.test.points))
