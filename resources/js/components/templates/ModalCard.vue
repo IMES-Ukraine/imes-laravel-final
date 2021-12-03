@@ -418,17 +418,17 @@ export default {
             this.error_short_description = false;
             let errors = false
 
-            if (this.data.name == '' || typeof this.data.name == 'undefined') {
+            if (!this.data.name || !this.data.name.trim()) {
                 this.error_title = true;
                 errors = true
             }
 
-            if (this.data.cost == '' || typeof this.data.cost == 'undefined') {
+            if (!this.data.cost  || !this.data.cost.trim()) {
                 this.error_cost = true;
                 errors = true
             }
 
-            if (this.data.short_description == '' || typeof this.data.short_description == 'undefined') {
+            if (!this.data.short_description || !this.data.short_description.trim()) {
                 this.error_short_description = true;
                 errors = true
             }
