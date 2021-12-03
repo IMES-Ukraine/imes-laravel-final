@@ -59,7 +59,8 @@
                     </div>
                 </div>
             </div>
-            <SimpleTestVariants :test.sync="test" :errors="errors"></SimpleTestVariants>
+            <SimpleTestVariants :test.sync="test"
+                                :errors="errors" />
 
             <button class="articles_create-submit button-border mtb20" type="button"
                     @click="addAnswerTest(test.question.variants.length)">добавить ответ
@@ -212,7 +213,7 @@ import FileInput from "../inputs/file-input";
 
 export default {
     name: 'TestQuestion',
-    props: ['test', 'errors'],
+    props: ['test', 'errors', 'toValidate'],
     mixins: [ProjectMixin],
     components: {
         FragmentFormText,

@@ -56,6 +56,7 @@
                     <Question
                         :test.sync="test"
                         @input="storeTest($event)"
+                        :toValidate="toValidate"
                         :errors="testErrors"/>
                 </div>
                 <div class="mb20"></div>
@@ -118,11 +119,11 @@ export default {
             this.$store.commit('setTestError', false);
             this.toValidate = !this.toValidate;
 
-            if (!this.test.title) {
+            if (!this.test.title || !this.test.title.trim()) {
                 this.testErrors.title = 'Назва обовʼязкова'
             }
 
-            if (!this.test.text) {
+            if (!this.test.text || !this.test.title.trim()) {
                 this.testErrors.text = 'Питання обовʼязкове'
             }
 
@@ -138,6 +139,12 @@ export default {
                     }
                 }
             } else if (this.test.type == 'easy'){
+                this.testErrors.variants = [];
+                for (const [index, value] of  Object.entries(this.test.question.variants) ) {
+                    if (!value.text || !value.title.trim()){
+                        this.testErrors.variants[index] = 'Текст вопроса обязателен';
+                    }
+                }
                 if(!this.test.question.correct.length) {
                     this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
                 }

@@ -18,7 +18,7 @@
                         <input :id="'text-'+variant.itemId" type="text" v-model="variant.text">
                         <div class="articles_create-checkbox">
                             <input type="checkbox" v-model="variant.right"
-                                   @click="setCorrect(variant.title, variant.right)">
+                                   @click="setCorrect(variant.title, variant.right)" />
                             <i></i>
                             <p>Правильный ответ</p>
                         </div>
@@ -26,6 +26,9 @@
                 </div>
                 <p class="errors">{{ errors.correct }}</p>
             </div>
+            <div v-if="errors.variants" class="errors">{{ errors.variants[index] }}</div>
+            <div v-if="errors.variants" class="h20 mb20"> </div>
+
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
                     <input type="radio" :name="'answer_'+variant.itemId"
@@ -36,7 +39,7 @@
                     <p>Поле ввода ответа</p>
                 </div>
                 <div class="articles_create__item-content">
-                    <textarea v-model.lazy="variant.variant"></textarea>
+                    <textarea v-model.lazy="variant.description"></textarea>
                 </div>
             </div>
             <div class="articles_create__item">
@@ -143,7 +146,7 @@ export default {
     name: 'SimpleTestVariantsArray',
     props: {
         test: Object,
-        errors: Object
+        errors: Object,
     },
     data() {
         return {
@@ -156,7 +159,7 @@ export default {
     watch: {
         localType() {
             this.test.question.type = this.localType;
-        }
+        },
     },
     methods: {
         setCorrect(id, data) {
@@ -173,30 +176,7 @@ export default {
             }
         },
 
-        /**
-         * Handle changing of file input (cover, video, variants)
-         * @param event
-         */
-        handleUpload(index, event) {
 
-            let imageForm = new FormData();
-            let input = event.target
-            let type = input.getAttribute('img_type')
-
-
-            imageForm.append('file', input.files[0]);
-
-            this.$post(PROJECT_IMAGE + type,
-                imageForm,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            ).then((file) => {
-                this.test.question.variants[index].file = file.data
-            })
-        },
         addMedia(index, id, event) {
             let imageForm = new FormData()
             imageForm.append('file', event.target.files[0])

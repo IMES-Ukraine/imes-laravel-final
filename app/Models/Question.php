@@ -76,6 +76,7 @@ class Question
         foreach ($question['question']['variants'] as $variant) {
             $fields = [
                 'itemId' => $variant['itemId'],
+                'description' => $variant['description'],
                 'variant' => $variant['text'],
                 'title' => $variant['title'],
                 'cover_image' => $variant['media'][0]['path'] ?? null,

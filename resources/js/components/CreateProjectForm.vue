@@ -16,15 +16,21 @@
                         <div class="articles_create-block">
                             <div class="articles_create__item">
                                 <p class="articles_create__item-title">Обложка</p>
-                                <div class="articles_create__item-content">
-                                        <div class="articles_create__item-file width-auto buttonAddFile">
-                                            <input type="file" name="cover"
-                                                   @change="handleUpload($event, 'cover')">
-                                            <p><span data-placeholder="Загрузить">{{ project.options.files.cover.file_name }}</span></p>
-                                            <button class="delete_file deleteFile" type="button"></button>
-                                        </div>
-                                        <span class="errors" v-if="errorCover">{{ errorCover }}</span>
-                                </div>
+                                <file-input
+                                            :value="project.options.files.cover"
+                                            @fileInput="project.options.files.cover = $event"
+                                            :error="errorCover"
+                                            type="cover"
+                                            attachment="project"/>
+<!--                                <div class="articles_create__item-content">-->
+<!--                                        <div class="articles_create__item-file width-auto buttonAddFile">-->
+<!--                                            <input type="file" name="cover"-->
+<!--                                                   @change="handleUpload($event, 'cover')">-->
+<!--                                            <p><span data-placeholder="Загрузить">{{ project.options.files.cover.file_name }}</span></p>-->
+<!--                                            <button class="delete_file deleteFile" type="button"></button>-->
+<!--                                        </div>-->
+<!--                                        <span class="errors" v-if="errorCover">{{ errorCover }}</span>-->
+<!--                                </div>-->
                             </div>
                             <div class="articles_create__item">
                                 <p class="articles_create__item-title">Название</p>
@@ -301,6 +307,7 @@ import ProjectMixin from "../ProjectMixin";
 import ModalMixin from "../ModalMixin";
 
 import store from "../store/index"
+import FileInput from "./inputs/file-input";
 
 export default {
     name: 'CreateProjectForm',
@@ -330,7 +337,7 @@ export default {
         ArticleInputTitle,
         ProjectPreview,
         Schedule,
-
+        FileInput,
         VRadio,
         VTextarea,
     },
@@ -460,5 +467,8 @@ export default {
     },*/
 }
 </script>
-<style scoped>
+<style >
+.h20 {
+    height: 20px;
+}
 </style>
