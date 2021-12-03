@@ -10,6 +10,8 @@ class Passing extends Model
 {
     const PASSING_ACTIVE = 1;
     const PASSING_NOT_ACTIVE = 0;
+    const PASSING_ENTITY_TYPE_POST = '%Post';
+    const PASSING_ENTITY_TYPE_TEST = '%TestQuestions';
 
     protected $dates = ['deleted_at'];
 

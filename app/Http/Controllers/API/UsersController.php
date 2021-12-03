@@ -60,31 +60,9 @@ class UsersController extends Controller
         $test_ids = TestService::pluckIDArticles($research->id);
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $query = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
-                ->whereNull('ulogic_projects_passing.user_id');
-
-            if ($articles_ids) {
-                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))');
-            }
-
-            if ($test_ids) {
-                $query->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\TestQuestions" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $test_ids) . '))');
-            }
-
-            $results = $query->paginate(self::COUNT_PER_PAGE);
+            $results = User::isNotPassed($articles_ids, $test_ids)->paginate(self::COUNT_PER_PAGE);
         } else {
-            $query = Passing::with('user')
-                ->with('withdraw');
-
-            if ($articles_ids) {
-                $query->orWhereRaw('(status = ' . $status . ' AND `entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))');
-            }
-
-            if ($test_ids) {
-                $query->whereRaw('(status = ' . $status . ' AND `entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))');
-            }
-
-            $results = $query->paginate(self::COUNT_PER_PAGE);
+            $results = User::isPassed($articles_ids, $test_ids, $status)->paginate(self::COUNT_PER_PAGE);
         }
 
         $data = json_decode($results->toJSON());
@@ -99,12 +77,12 @@ class UsersController extends Controller
         if ($status == self::STATUS_NOT_PARTICIPATE) {
             $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
                 ->whereNull('ulogic_projects_passing.user_id')
-                ->orWhereRaw('(status = ' . $status . ' AND `entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+                ->orWhereRaw('(status = ' . $status . ' AND `entity_type` LIKE "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
                 ->paginate(self::COUNT_PER_PAGE);
         } else {
             $results = Passing::with('user')
                 ->with('withdraw')
-                ->whereRaw('(status = ' . $status . ' AND `entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+                ->whereRaw('(status = ' . $status . ' AND `entity_type` LIKE "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
                 ->paginate(self::COUNT_PER_PAGE);
         }
 
@@ -120,12 +98,12 @@ class UsersController extends Controller
         if ($status == self::STATUS_NOT_PARTICIPATE) {
             $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
                 ->whereNull('ulogic_projects_passing.user_id')
-                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` = "App\Models\Post" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
+                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` LIKE "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
                 ->paginate(self::COUNT_PER_PAGE);
         } else {
             $results = Passing::with('user')
                 ->with('withdraw')
-                ->whereRaw('(status = '.$status.' AND `entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
+                ->whereRaw('(status = '.$status.' AND `entity_type` LIKE "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
                 ->paginate(self::COUNT_PER_PAGE);
         }
 
@@ -138,7 +116,7 @@ class UsersController extends Controller
     {
         $results = Passing::with('user')
             ->with('withdraw')
-            ->where('entity_type', 'App\Models\TestQuestions')
+            ->where('entity_type', 'LIKE', Passing::PASSING_ENTITY_TYPE_TEST)
             ->where('entity_id', $test_id)
             ->where('answer','LIKE','%'.$variant.'%')
             ->paginate(self::COUNT_PER_PAGE);

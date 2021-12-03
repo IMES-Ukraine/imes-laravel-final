@@ -128,6 +128,52 @@ class User extends Authenticatable implements JWTSubject
         'financial_information' => 'array',
     ];
 
+    public function scopeIsNotPassed($query, $articles_ids, $test_ids)
+    {
+        if ($articles_ids) {
+            $in_articles = Passing::select('user_id')
+                ->where('ulogic_projects_passing.entity_type', Post::class)
+                ->whereIn('ulogic_projects_passing.entity_id', $articles_ids)
+                ->distinct();
+
+            $query->whereNotIn('id', $in_articles);
+        }
+
+        if ($test_ids) {
+            $in_tests = Passing::select('user_id')
+                ->where('ulogic_projects_passing.entity_type', TestQuestions::class)
+                ->whereIn('ulogic_projects_passing.entity_id', $test_ids)
+                ->distinct();
+
+            $query->whereNotIn('id', $in_tests);
+        }
+    }
+
+    public function scopeIsPassed($query, $articles_ids, $test_ids, $status)
+    {
+        if ($articles_ids) {
+            $query_article = Passing::select('user_id')
+                ->where('ulogic_projects_passing.entity_type', Post::class)
+                ->whereIn('ulogic_projects_passing.entity_id', $articles_ids);
+
+            if ($status) $query_article->where('status', $status);
+
+            $in_articles = $query_article->distinct();
+            $query->whereIn('id', $in_articles);
+        }
+
+        if ($test_ids) {
+            $query_test = Passing::select('user_id')
+                ->where('ulogic_projects_passing.entity_type', TestQuestions::class)
+                ->whereIn('ulogic_projects_passing.entity_id', $test_ids);
+
+            if ($status) $query_test->where('status', $status);
+
+            $in_tests = $query_test->distinct();
+            $query->orWhereIn('id', $in_tests);
+        }
+    }
+
     /**
      * Looks up a user by their email address.
      * @return self|null
