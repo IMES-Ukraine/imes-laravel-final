@@ -32,7 +32,7 @@ export default {
     },
     computed: {
       haveImage() {
-          return !!this.model &&  !!Object.keys(this.model).length
+          return !!this.model &&  !!Object.keys(this.model).length && !!this.model.file_name
       },
     },
     methods: {
