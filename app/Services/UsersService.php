@@ -25,4 +25,8 @@ class UsersService
         $user->save();
     }
 
+    public static function getTotal() {
+        return User::count();
+    }
+
 }

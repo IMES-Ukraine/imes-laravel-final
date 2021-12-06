@@ -34,19 +34,19 @@ class ExportUserView implements FromView
         $query = Passing::with('user')->with('withdraw');
 
         if ($this->article && $articles_ids) {
-            $query->whereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+            $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
         } elseif ($this->test && $test_ids) {
-            $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')');
+            $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . ')');
         } else {
             if ($articles_ids && $test_ids) {
-                $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
-                    ->orWhereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+                $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
+                    ->orWhereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
             } elseif ($test_ids) {
-                $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
-                    ->orWhereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IS NOT NULL');
+                $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
+                    ->orWhereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IS NOT NULL');
             } elseif ($articles_ids) {
-                $query->whereRaw('`entity_type` = "App\Models\TestQuestions" AND `entity_id` IS NOT NULL')
-                    ->orWhereRaw('`entity_type` = "App\Models\Post" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
+                $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IS NOT NULL')
+                    ->orWhereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
             }
         }
 

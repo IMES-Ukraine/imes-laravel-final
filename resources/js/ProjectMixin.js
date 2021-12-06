@@ -136,8 +136,10 @@ export default {
             add_new_article: false,
             index_article: 0,
             index_test: 0,
+            isText: false,
             requiredErrorText: "Поле обязательное",
-            notImageText: "Файл должен иметь одно из расширений  'jpg', 'jpeg', 'png', 'tiff', 'gif' "
+            notImageText: "Файл должен иметь одно из расширений  'jpg', 'jpeg', 'png', 'tiff', 'gif' ",
+            notCorrectAnswer: "Должен быть указан по крайней мере один правильный ответ"
         }
     },
     computed: {
@@ -161,6 +163,18 @@ export default {
                 evt.preventDefault();;
             } else {
                 return true;
+            }
+        },
+        typeAnswerText(variants) {
+            for (const index in variants) {
+                if (index > 0) {
+                    document.getElementById('block-' + index).classList.add('hide');
+                }
+            }
+        },
+        typeAnswerOther(variants) {
+            for (const index in variants) {
+                document.getElementById('block-' + index).classList.remove('hide');
             }
         },
 

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="articles_create-block" v-for="(variant, index) in question.variants" v-bind:key="variant.itemId"
-             :id="'block-'+variant.itemId">
+             :id="'block-'+index">
             <div class="articles_create-line"></div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
@@ -10,9 +10,9 @@
                     <p>Готовый <br>ответ</p>
                 </div>
                 <div class="articles_create__item-content">
-                    <div class="articles_create__ready_answer">
+                    <div v-if="!isText" class="articles_create__ready_answer">
                         <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
-                        <input type="text" name="text" v-model="variant.text">
+                        <input v-if="localType === 'variants'" type="text" name="text" v-model="variant.text">
                         <div class="articles_create-checkbox">
                             <input type="checkbox" :id="'right_answer_' + variant.itemId"
                                    v-model="variant.right"
@@ -22,15 +22,18 @@
                         </div>
                     </div>
                 </div>
-                <p :key="errKey" class="errors" >{{ errors.correct }}</p>
+                <p :key="errKey" class="errors" >{{ errorsLocal.correct }}</p>
             </div>
+            <div v-if="errorsLocal.variants" class="errors">{{ errorsLocal.variants[index] }}</div>
+            <div v-if="errorsLocal.variants" class="h20 mb20"></div>
+
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
                     <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="text">
                     <i></i>
                     <p>Поле ввода ответа</p>
                 </div>
-                <div class="articles_create__item-content">
+                <div  v-if="isText" class="articles_create__item-content">
                     <textarea v-model.lazy="variant.variant"></textarea>
                 </div>
             </div>
@@ -40,7 +43,7 @@
                     <i></i>
                     <p>Медиа</p>
                 </div>
-                <div class="articles_create__item-content">
+                <div v-if="localType === 'media'" class="articles_create__item-content">
                     <div class="articles_create__media">
                         <div v-for="file in variant.media" v-bind:key="file.itemId" class="articles_create__media-item">
                             <div class="articles_create__media-img">
@@ -53,6 +56,8 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="errorsLocal.media" class="errors">{{ errorsLocal.media[index] }}</div>
+                <div v-if="errorsLocal.media" class="h20 mb20"></div>
             </div>
         </div>
 
@@ -141,32 +146,70 @@
 
 <script>
 import {required} from 'vuelidate/lib/validators'
-import {ARTICLE_COVER, PROJECT_IMAGE, TOKEN} from "../../api/endpoints"
-import {getRandomId} from "../../utils";
+import {PROJECT_IMAGE, TOKEN} from "../../api/endpoints"
+import ProjectMixin from "../../ProjectMixin";
 
 export default {
     name: 'ComplexTestVariantsArray',
-    props: ['question', 'toValidate'],
+    mixins: [ProjectMixin],
+    props: ['question', 'toValidate', 'errors', 'i'],
     data() {
         return {
             localType: 'variants',
             errKey: Math.random(),
-            errors: {}
         }
     },
     mounted() {
         this.localType = this.question.type;
     },
+    computed: {
+        errorsLocal: {
+            get: function () {
+                return this.errors;
+            },
+            set: function (newValue) {
+                this.$store.commit('setErrors', newValue);
+            }
+        }
+    },
     watch: {
         localType() {
             this.question.type = this.localType;
+            this.errorsLocal = [];
+            if (this.localType === 'text') {
+                this.isText = true;
+                this.typeAnswerText(this.question.variants);
+            } else {
+                this.isText = false;
+                this.typeAnswerOther(this.question.variants);
+            }
         },
         toValidate() {
-            this.errors.correct = '';
-            console.log('answer correct: ', this.question.correct, this.question.correct.length);
-            if (!this.question.correct.length) {
-                this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
+            if (this.question.type === 'variants') {
+                this.errorsLocal.variants = [];
+                for (const [index, value] of Object.entries(this.question.variants)) {
+                    if (!value.text || !value.text.trim()) {
+                        this.errorsLocal.variants[index] = 'Текст ответа обязателен';
+                    }
+                }
+            }
+            else if (this.question.type === 'media') {
+                this.errorsLocal.media = [];
+                for (const [index, value] of Object.entries(this.question.variants)) {
+                    if (!value.media.length) {
+                        this.errorsLocal.media[index] = 'Изображение для  ответа обязательно';
+                    }
+                }
+            }
+            this.errorsLocal.correct = '';
+            if ((this.question.type !== 'text') && !this.question.correct.length) {
+                this.errorsLocal.correct = this.notCorrectAnswer;
+            }
+            if (this.errorsLocal.length){
                 this.$store.dispatch('setTestError', true);
+            }
+            else {
+                this.$store.dispatch('setTestError', false);
             }
             this.errKey = Math.random();
         }
@@ -175,13 +218,13 @@ export default {
         setCorrect(id, data) {
             if (!data) {
                 this.question.correct.push(id);
-                this.errors.correct = '';
+                this.errorsLocal.correct = '';
             } else {
                 this.question.correct = this.question.correct.filter((item) => {
                     return item !== id;
                 });
                 if (!this.question.correct.length) {
-                    this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
+                    this.errorsLocal.correct = this.notCorrectAnswer;
                     this.$store.dispatch('setTestError', true);
                 }
             }

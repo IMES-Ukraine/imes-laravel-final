@@ -128,7 +128,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="dashboard_study__block width-full">
+                    <div class="dashboard_study__block width-full" v-if="content.articles[0]">
                         <div class="dashboard_study__block-head space-between">
                             <p class="dashboard_study__block-title">Статьи</p>
                             <a :href="'/admin/api/v1/export-users-article/' + project.project.id + '/' + content.id" class="dashboard_study__block-download"><span>Скачать отчёт пакета</span></a>

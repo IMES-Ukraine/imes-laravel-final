@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="articles_create-block" v-for="(variant, index) in test.question.variants" :key="variant.itemId"
-             :id="'block-'+variant.itemId">
+             :id="'block-'+index">
             <div class="articles_create-line"></div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
@@ -13,21 +13,23 @@
                     <p>Готовый <br>ответ</p>
                 </div>
                 <div class="articles_create__item-content">
-                    <div class="articles_create__ready_answer">
+                    <div v-if="!isText" class="articles_create__ready_answer">
+
                         <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
-                        <input :id="'text-'+variant.itemId" type="text" v-model="variant.text">
+                        <input v-if="localType === 'variants'" type="text" v-model="variant.text">
+
                         <div class="articles_create-checkbox">
                             <input type="checkbox" v-model="variant.right"
-                                   @click="setCorrect(variant.title, variant.right)" />
+                                   @change="setCorrect(variant.title, variant.right)"/>
                             <i></i>
                             <p>Правильный ответ</p>
                         </div>
                     </div>
                 </div>
-                <p class="errors">{{ errors.correct }}</p>
+                <p class="errors">{{ errorsLocal.correct }}</p>
             </div>
-            <div v-if="errors.variants" class="errors">{{ errors.variants[index] }}</div>
-            <div v-if="errors.variants" class="h20 mb20"> </div>
+            <div v-if="errorsLocal.variants" class="errors">{{ errorsLocal.variants[index] }}</div>
+            <div v-if="errorsLocal.variants" class="h20 mb20"></div>
 
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
@@ -38,8 +40,9 @@
                     <i></i>
                     <p>Поле ввода ответа</p>
                 </div>
-                <div class="articles_create__item-content">
-                    <textarea v-model.lazy="variant.description"></textarea>
+                <div v-if="isText" class="articles_create__item-content">
+                    <textarea v-model.lazy="variant.description"
+                              placeholder="Текст правильного ответа для проверки"></textarea>
                 </div>
             </div>
             <div class="articles_create__item">
@@ -51,7 +54,7 @@
                     <i></i>
                     <p>Медиа</p>
                 </div>
-                <div class="articles_create__item-content">
+                <div v-if="localType === 'media'" class="articles_create__item-content">
                     <div class="articles_create__media">
                         <div v-for="file in variant.media" v-bind:key="file.itemId" class="articles_create__media-item">
                             <div class="articles_create__media-img">
@@ -65,6 +68,8 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="errorsLocal.media" class="errors">{{ errorsLocal.media[index] }}</div>
+                <div v-if="errorsLocal.media" class="h20 mb20"></div>
             </div>
         </div>
         <!--<div v-for="(variant, index) in variants" v-bind:key="variant.itemId">
@@ -138,40 +143,56 @@
 </template>
 
 <script>
-import {required} from 'vuelidate/lib/validators'
-import {PROJECT_IMAGE, TOKEN, ARTICLE_COVER} from "../../api/endpoints";
-import {getRandomId} from '../../utils'
+import {PROJECT_IMAGE, TOKEN} from "../../api/endpoints";
+import store from "../../store";
+import ProjectMixin from "../../ProjectMixin";
 
 export default {
     name: 'SimpleTestVariantsArray',
-    props: {
-        test: Object,
-        errors: Object,
-    },
+    mixins: [ProjectMixin],
+    props: ['test', 'errors'],
     data() {
         return {
-            localType: 'variants'
+            localType: 'variants',
         }
+    },
+    computed: {
+      errorsLocal: {
+          get: function() { return this.errors },
+          set: function (newValue) {
+              this.$store.commit('setErrors', newValue);
+          }
+      }
     },
     mounted() {
         this.localType = this.test.question.type;
     },
     watch: {
         localType() {
+            this.errorsLocal = [];
             this.test.question.type = this.localType;
+            if (this.localType === 'text') {
+                this.isText = true;
+                this.typeAnswerText(this.test.question.variants);
+            } else {
+                this.isText = false;
+                this.typeAnswerOther(this.test.question.variants);
+            }
         },
     },
     methods: {
+
         setCorrect(id, data) {
-            if (!data) {
+            if (data) {
                 this.test.question.correct.push(id);
-                this.errors.correct = '';
+                this.errorsLocal.correct = '';
             } else {
-                this.test.question.correct = this.test.question.correct.filter( (item)=> {
-                    return item !== data;
+                let correct = [...this.test.question.correct];
+                this.test.question.correct = correct.filter((item) => {
+                    return item !== id;
                 });
-                if (!this.test.question.correct.length) {
-                    this.errors.correct = 'Має бути вказана принаймні одна правильна відповідь';
+                if ((this.test.question.type !== 'text') && !this.test.question.correct.length) {
+                    this.errorsLocal.correct = this.notCorrectAnswer;
                 }
             }
         },
@@ -193,20 +214,21 @@ export default {
                     },
                 }
             ).then((file) => {
-              let q = [...this.test.question.variants[index].media];
-              q.push(file.data.data);
-              this.test.question.variants[index].media = [...q];
+                let q = [...this.test.question.variants[index].media];
+                q.push(file.data.data);
+                this.test.question.variants[index].media = [...q];
                 $('#file-' + id).val(null);
             })
         }
-    },
-    validations: {
-        text: {}
     },
 }
 </script>
 
 <style>
+.hide {
+    display: none;
+}
+
 .custom-checkbox__input {
     margin-right: 10px;
 }
