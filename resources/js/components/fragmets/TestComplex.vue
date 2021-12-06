@@ -115,6 +115,7 @@
             <div class="mb20"></div>
             <ComplexTestQuestion
                 :toValidate="toValidate"
+                :errorsParent="errors"
                 :complex_question.sync="test.complex_question"/>
             <div class="mb20"></div>
             <div v-if="errors.complex" class="errors mb20">{{ errors.complex }}</div>

@@ -57,6 +57,7 @@ export default new Vuex.Store({
         clients: {},
         cards: {},
 
+        errors: {},
         numberTest: 0,
         numberArticle: 0,
         testErrors: false,
@@ -183,6 +184,10 @@ export default new Vuex.Store({
 
         setTestError(state, error) {
             this.state.testErrors = error;
+        },
+
+        setErrors(state, error) {
+            this.state.errors = error;
         },
         setCurrentAction(state, action) {
             this.state.currentAction = action;
@@ -352,6 +357,9 @@ export default new Vuex.Store({
 
         setTestError(context, error) {
             context.commit('setTestError', error);
+        },
+        setErrors(context, error) {
+            context.commit('setErrors', error);
         },
 
         setCurrentAction(context, action) {

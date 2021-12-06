@@ -60,7 +60,7 @@
                 </div>
             </div>
             <SimpleTestVariants :test.sync="test"
-                                :errors="errors" />
+                                :errors.sync="errors" />
 
             <button class="articles_create-submit button-border mtb20" type="button"
                     @click="addAnswerTest(test.question.variants.length)">добавить ответ

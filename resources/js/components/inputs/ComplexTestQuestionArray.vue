@@ -64,7 +64,7 @@
                             </div>
                         </div>
                     </div>
-                    <ComplexTestVariants :toValidate="toValidate" :question.sync="question"/>
+                    <ComplexTestVariants :toValidate="toValidate" :errors="errorsParent" :i="index" :question.sync="question"/>
 
                     <button class="articles_create-submit button-border mtb20" type="button"
                             @click="addAnswerTest(question.variants.length, index + 1)">добавить ответ
@@ -90,7 +90,7 @@ export default {
         ComplexTestVariants,
         FileInput
     },
-    props: ['complex_question', 'toValidate'],
+    props: ['complex_question', 'errorsParent', 'toValidate'],
     data() {
         return {
             isCheckedFile: false,

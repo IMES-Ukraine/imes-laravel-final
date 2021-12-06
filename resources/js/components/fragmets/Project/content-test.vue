@@ -57,7 +57,7 @@
                         :test.sync="test"
                         @input="storeTest($event)"
                         :toValidate="toValidate"
-                        :errors="testErrors"/>
+                        :errors.sync="stateErrors"/>
                 </div>
                 <div class="mb20"></div>
 
@@ -67,7 +67,7 @@
                 <div>
                     <TestComplex :test="test"
                                  :variants="test.variants"
-                                 :errors="testErrors"
+                                 :errors="stateErrors"
                                  @input="storeTest($event)"
                                  :toValidate="toValidate"/>
                 </div>
@@ -79,7 +79,7 @@
             <div>
                 <TestSurvey :test.sync="test"
                             @input="storeTest($event)"
-                            :errors="testErrors" />
+                            :errors="stateErrors"/>
             </div>
             <div class="mb20"></div>
         </div>
@@ -105,57 +105,81 @@ export default {
     computed: {
         test() {
             return this.$store.state.test;
+        },
+        stateErrors() {
+            return this.$store.state.errors;
         }
     },
     methods: {
 
         storeTest(data) {
-            if (data){
+            if (data) {
                 this.$store.commit('storeTest', data);
             }
             this.testErrors = {};
+            let isLocalErrors = false;
 
             //триггер для запуска валидации в дочерних компонентах сложного теста
             this.$store.commit('setTestError', false);
             this.toValidate = !this.toValidate;
 
             if (!this.test.title || !this.test.title.trim()) {
-                this.testErrors.title = 'Назва обовʼязкова'
+                this.testErrors.title = 'Назва обовʼязкова';
+                isLocalErrors = true;
             }
 
             if (!this.test.text || !this.test.title.trim()) {
-                this.testErrors.text = 'Питання обовʼязкове'
+                this.testErrors.text = 'Питання обовʼязкове';
+                isLocalErrors = true;
             }
 
             if (this.test.picked === 'survey') {
-                if(this.test.question.variants.length < 2){
+                if (this.test.question.variants.length < 2) {
                     this.testErrors.variants = 'Должно быть не менее двух вариантов ответа';
+                    isLocalErrors = true;
                     this.$store.commit('setTestError', true);
                 }
                 for (const [index, value] of Object.entries(this.test.question.variants)) {
                     if (value.text == '') {
                         $('#variant-' + value.title).css('border', '1px solid red');
                         this.$store.commit('setTestError', true);
+                        isLocalErrors = true;
                     }
                 }
-            } else if (this.test.type == 'easy'){
-                this.testErrors.variants = [];
-                for (const [index, value] of  Object.entries(this.test.question.variants) ) {
-                    if (!value.text || !value.title.trim()){
-                        this.testErrors.variants[index] = 'Текст вопроса обязателен';
+            } else if (this.test.type == 'easy') {
+                if (this.test.question.type === 'variants') {
+                    this.testErrors.variants = [];
+                    for (const [index, value] of Object.entries(this.test.question.variants)) {
+                        if (!value.text || !value.text.trim()) {
+                            this.testErrors.variants[index] = 'Текст ответа обязателен';
+                            isLocalErrors = true;
+                        }
                     }
                 }
-                if(!this.test.question.correct.length) {
-                    this.testErrors.correct = 'Має бути вказана принаймні одна правильна відповідь';
+                if (this.test.question.type === 'media') {
+                    this.testErrors.media = [];
+                    isLocalErrors = false;
+                    for (const [index, value] of Object.entries(this.test.question.variants)) {
+                        if (!value.media.length) {
+                            this.testErrors.media[index] = 'Изображение для  ответа обязательно';
+                            isLocalErrors = true;
+                        }
+                    }
                 }
-            }
-            else {
-                if (!this.test.complex_question.length){
-                    this.testErrors.complex = 'Має бути вказаний принаймні один блок з питаннями';
-                }
-            }
 
-            if (!Object.keys(this.testErrors).length && !this.$store.state.testErrors) {
+                if ((this.test.question.type !== 'text') && !this.test.question.correct.length) {
+                    this.testErrors.correct = this.notCorrectAnswer;
+                    isLocalErrors = true;
+                }
+            } else {
+                if (!this.test.complex_question.length) {
+                    this.testErrors.complex = 'Має бути вказаний принаймні один блок з питаннями';
+                    isLocalErrors = true;
+                }
+            }
+            this.$store.commit('setErrors', this.testErrors);
+
+            if (!isLocalErrors && !this.$store.state.testErrors) {
                 this.$store.commit('saveTest', this.test);
                 this.setStep(2);
             }
