@@ -16,6 +16,7 @@ export default new Vuex.Store({
         project: {
             options: {
                 title: '',
+                agreement: '',
                 presentation_type: 'at_once',   // {'at_once', 'scheduled', 'series' }
                 selected: {
                     category: 1,
