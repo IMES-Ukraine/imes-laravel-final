@@ -194,7 +194,13 @@ class ProjectRepository
     {
 
         $project = Projects::with(['items'])
-            ->where('id', $id)->first()->toArray();
+            ->where('id', $id)->first();
+        if (empty($project) ) {
+            return (object)[
+                'data' => []
+            ];
+        }
+        $project = $project->toArray();
 
         $itemsQuery = ProjectResearches::with('tests')->with('articles')->where('project_id', $id);
         if (!request()->input('all_items', 0)) {
@@ -202,7 +208,7 @@ class ProjectRepository
         }
         $content = $itemsQuery->get();
 
-        if (empty($project) || empty($content)) {
+        if (empty($content)) {
             return (object)[
                 'data' => []
             ];
