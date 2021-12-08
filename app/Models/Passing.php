@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -8,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Passing extends Model
 {
+    use JsonFieldTrait;
+
     const PASSING_ACTIVE = 1;
     const PASSING_NOT_ACTIVE = 0;
     const PASSING_ENTITY_TYPE_POST = '%Post';
