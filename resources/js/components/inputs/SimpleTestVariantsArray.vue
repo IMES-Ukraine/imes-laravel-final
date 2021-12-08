@@ -15,8 +15,8 @@
                 <div class="articles_create__item-content">
                     <div v-if="!isText" class="articles_create__ready_answer">
 
-                        <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
-                        <input v-if="localType === 'variants'" type="text" v-model="variant.text">
+                        <p class="articles_create__ready_answer-letter">{{ variant.variant }}</p>
+                        <input v-if="localType === 'variants'" type="text" v-model="variant.title">
 
                         <div class="articles_create-checkbox">
                             <input type="checkbox" v-model="variant.right"

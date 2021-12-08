@@ -98,9 +98,8 @@ export default {
             },
             variantTemplate: {
                 itemId: '',
-                title: 'A',
-                text: '',
-                variant: '',
+                variant: 'A',
+                title: '',
                 description: '',
                 isCorrect: false,
                 right: false,
