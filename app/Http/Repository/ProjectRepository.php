@@ -225,7 +225,7 @@ class ProjectRepository
         foreach ($content as $key => $item) {
             if (isset($item->tests[0])) {
                 $test_id = $item->tests[0]['id'];
-                $article_id = ($item->articles[0])?$item->articles[0]['id']:0;
+                $article_id = isset($item->articles[0]) ? $item->articles[0]['id'] : 0;
                 $passing = Passing::where('entity_type', 'LIKE', Passing::PASSING_ENTITY_TYPE_TEST)->where('entity_id', $test_id)->get();
 
                 foreach ($passing as $pass) {
