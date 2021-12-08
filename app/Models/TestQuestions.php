@@ -4,6 +4,7 @@ namespace App\Models;
 //imes-backend/plugins/ulogic/tests/models/Test.php
 use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Model
@@ -122,18 +123,17 @@ class TestQuestions extends Model
 
     public function scopeIsProjectActive( $query)
     {
-        return $query->leftJoin('project_researches', 'project_researches.id',  '=', 'ulogic_tests_questions.research_id')
+        return $query->join('project_researches', 'project_researches.id',  '=', 'ulogic_tests_questions.research_id')
             ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
             ->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
     }
 
     public function scopeIsNotPassed( $query, $userId)
     {
-        return $query->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.entity_id',  '=', 'ulogic_tests_questions.id')
-            ->whereNotExists(function ($q) use ($userId){
-                $q->select('ulogic_projects_passing.answer')
-                    ->where('ulogic_projects_passing.entity_type', self::class)
-                    ->where('ulogic_projects_passing.user_id', $userId);
+        return $query->whereNotExists(function ($q) use ($userId){
+            $q->select(DB::raw(1))->from('ulogic_projects_passing')
+                    ->whereRaw('ulogic_projects_passing.entity_type = "' . quotemeta(self::class) . '"' )
+                    ->whereRaw('ulogic_projects_passing.user_id = ' . $userId);
             });
     }
 }

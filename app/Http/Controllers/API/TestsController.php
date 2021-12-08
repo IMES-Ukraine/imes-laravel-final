@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Models\TestQuestions;
 use Exception;
+use Illuminate\Database\Query\Expression;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\ProjectItems;
@@ -52,24 +55,31 @@ class TestsController extends Controller
 
         $countOnPage = request()->get('count', 15);
 
+//        DB::enableQueryLog();
+
         $query = TestQuestions::select('ulogic_tests_questions.*')
         ->with(['cover_image', 'featured_images',
             'agreementAccepted' => function ($q) use ($userModel) {
                 $q->where('user_id', '=', $userModel->id);
             }
         ])->where('ulogic_tests_questions.test_type', '!=', 'child')
-            ->orderBy('ulogic_tests_questions.id', 'desc')
-            ->isNotPassed($userModel)
-            ->isProjectActive();
+            ->isProjectActive()
+            ->isNotPassed($userModel->id)
+            ->orderBy('ulogic_tests_questions.id', 'desc');
         if (!\request()->input('all_items')) {
             $query->where('ulogic_tests_questions.schedule', '<=', date('Y-m-d H:i:s'));
         }
 
+//        $query->get();
+//        dd(DB::getQueryLog());
+
         $data = $query->paginate($countOnPage);
+
+
         $data = json_decode($data->toJSON());
 
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+        return $this->helpers->apiArrayResponseBuilder(200, 'success. ' . $userModel->id, $data);
 
     }
 
