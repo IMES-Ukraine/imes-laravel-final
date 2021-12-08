@@ -35,7 +35,7 @@
                     <p>Поле ввода ответа</p>
                 </div>
                 <div  v-if="isText" class="articles_create__item-content">
-                    <textarea v-model.lazy="variant.variant"></textarea>
+                    <textarea v-model.lazy="variant.description"></textarea>
                 </div>
             </div>
             <div class="articles_create__item">
