@@ -327,20 +327,32 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        $data = Articles::select('rainlab_blog_posts.*')
+        $authUser = auth()->user();
+        $article = Articles::select('rainlab_blog_posts.*')
             ->with('cover_image')
-            ->with('is_opened')
-//            ->with('gallery')
             ->with('featured_images')
             ->where(['id' => $id])
-            ->get();
-        $data = $data->toArray();
-        if (empty($data)) {
+            ->first();
+
+        if (!$article) {
             return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);
         }
-        $user = User::where(['id' => $data[0]['user_id']])->select('id', 'name')->first();
-        $data[0]['user'] = $user;
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+
+        $research = $article->getResearch();
+        $project = $article->getProject();
+
+        $data = $article->toArray();
+
+        $user = User::where(['id' => $article->user_id])->select('id', 'name')->first();
+        $data['user'] = $user;
+
+        $data['agreement'] = $project ? $project->options['agreement'] : '';
+        $data['isCommercial'] = !empty($research);
+        $data['isOpen'] = Opened::where(['user_id' => $authUser->id])->where(['news_id' => $id])->count();
+        $data['project_id'] = $research ? $research->project_id : null;
+
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,6 +25,7 @@ use Illuminate\Support\Carbon;
  */
 class ProjectResearches extends Model
 {
+    use JsonFieldTrait;
 
     /**
      * The table associated with the model.
@@ -116,6 +118,8 @@ class ProjectResearches extends Model
     {
         return $this->hasMany(Articles::class, 'research_id', 'id');
     }
+
+
 
 //    public function destroyData()
 //    {

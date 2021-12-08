@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Articles;
@@ -12,6 +13,7 @@ use App\Models\TestQuestions as Test;
 class Projects extends Model
 {
     use SoftDeletes;
+    use JsonFieldTrait;
 
     const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';

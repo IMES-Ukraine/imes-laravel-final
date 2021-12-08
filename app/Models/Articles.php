@@ -10,6 +10,7 @@ namespace App\Models;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Query\Builder;
+use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class Articles extends Post {
     const ARTICLE = 1;
@@ -98,6 +99,23 @@ class Articles extends Post {
     {
         return $this->hasOne(PostTag::class, 'post_id', 'id')->with('tags');
     }
+
+    /**
+     * Project
+     * @return mixed
+     */
+    public function getResearch()
+    {
+        return ProjectResearches::find($this->research_id);
+    }
+
+    public function getProject()
+    {
+        $research = $this->getResearch();
+        return $research ? Projects::find($research->project_id) : null;
+    }
+
+
 
     /**
      * Recomended articles

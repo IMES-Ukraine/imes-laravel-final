@@ -101,6 +101,7 @@ export default {
                 title: 'A',
                 text: '',
                 variant: '',
+                description: '',
                 isCorrect: false,
                 right: false,
                 media: []
