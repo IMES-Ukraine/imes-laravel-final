@@ -164,7 +164,7 @@ class ProfileController extends Controller
 
         $apiUser->update(['password' => Hash::make($request->post('password') )]);
 
-        $data = User::where(['id' => $apiUser->id])->get()->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
+        $data = User::where(['id' => $apiUser->id])->first()->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', ['user' => $data]);
     }
