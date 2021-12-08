@@ -144,11 +144,11 @@ class ProjectsController extends Controller
 
         $project = $this->projectRepository->find($id);
 
-        if (isset($project->data)) {
+        if (!empty($project->data)) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $project->data);
         }
 
-        return $this->helpers->apiArrayResponseBuilder(500, 'error');
+        return $this->helpers->apiArrayResponseBuilder(404, 'Нет такого проекта', ['id' => $id]);
     }
 
     /**
