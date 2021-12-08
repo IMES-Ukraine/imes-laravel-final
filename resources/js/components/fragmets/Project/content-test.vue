@@ -140,8 +140,8 @@ export default {
                     this.$store.commit('setTestError', true);
                 }
                 for (const [index, value] of Object.entries(this.test.question.variants)) {
-                    if (value.text == '') {
-                        $('#variant-' + value.title).css('border', '1px solid red');
+                    if (value.title == '') {
+                        $('#variant-' + value.variant).css('border', '1px solid red');
                         this.$store.commit('setTestError', true);
                         isLocalErrors = true;
                     }
@@ -150,8 +150,8 @@ export default {
                 if (this.test.question.type === 'variants') {
                     this.testErrors.variants = [];
                     for (const [index, value] of Object.entries(this.test.question.variants)) {
-                        if (!value.text || !value.text.trim()) {
-                            this.testErrors.variants[index] = 'Текст ответа обязателен';
+                        if (!value.title || !value.title.trim()) {
+                            this.testErrors.title[index] = 'Текст ответа обязателен';
                             isLocalErrors = true;
                         }
                     }

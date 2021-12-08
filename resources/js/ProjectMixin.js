@@ -200,11 +200,11 @@ export default {
             }
             return '';
         },
-        getNewVariant(title) {
-            let variant = this.variantTemplate;
-            variant.itemId = 'variant-' + getRandomId();
-            variant.title = title;
-            return variant;
+        getNewVariant(variant) {
+            let variantObject = this.variantTemplate;
+            variantObject.itemId = 'variant-' + getRandomId();
+            variantObject.variant = variant;
+            return variantObject;
         },
         getNewComplexQuestion() {
             let complex = this.complex_questionTemplate;
@@ -229,8 +229,8 @@ export default {
          */
         addAnswerTest(varIndex, questionIndex) {
             let test = {...this.$store.state.test};
-            let title = alphabet[varIndex];
-            let newItem = {...this.getNewVariant(title)};
+            let letter = alphabet[varIndex];
+            let newItem = {...this.getNewVariant(letter)};
             let q = [];
             if (!questionIndex) {
                 if (test.question.variants.length) {

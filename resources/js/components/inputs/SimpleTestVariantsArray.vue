@@ -20,7 +20,7 @@
 
                         <div class="articles_create-checkbox">
                             <input type="checkbox" v-model="variant.right"
-                                   @change="setCorrect(variant.title, variant.right)"/>
+                                   @change="setCorrect(variant.variant, variant.right)"/>
                             <i></i>
                             <p>Правильный ответ</p>
                         </div>
