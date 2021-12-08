@@ -95,6 +95,8 @@ class ProjectRepository
                         $test = $content['test'];
                         $test['question'] = $question;
                         $test['type'] = 'child';
+                        $test['title'] = $question['title'];
+                        $test['text'] = $question['text'];
 
                         $questionModel = TestQuestions::create((array)new Question($test));
                         $questionModel->parent_id = $parentID;

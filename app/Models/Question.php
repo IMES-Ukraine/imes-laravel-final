@@ -79,7 +79,7 @@ class Question
                 'description' => $variant['description'],
                 'variant' => $variant['variant'],
                 'title' => $variant['title'],
-                'cover_image' => $variant['media'][0]['path'] ?? null,
+                'cover_image' => $variant['media'][0] ?? null,
             ];
 
 
