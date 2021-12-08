@@ -250,7 +250,7 @@ export default {
                     && !!(parseInt(this.content.test.points))
             }
             if (this.haveArticle) {
-                res = !!(parseInt(this.content.article.count))
+                res &= !!(parseInt(this.content.article.count))
                     && !!(parseInt(this.content.article.points))
                     && !!(parseInt(this.content.article.frequency));
             }

@@ -4,7 +4,7 @@
             <p class="articles_create__item-title">Выбор</p>
             <div class="articles_create__item-content">
                 <div class="articles_create__ready_answer full_width">
-                    <p class="articles_create__ready_answer-letter">{{ variant.title }}</p>
+                    <p class="articles_create__ready_answer-letter">{{ variant.variant }}</p>
                     <input type="text" name="title" placeholder="" :id="'variant-' + variant.variant" v-model.lazy="variant.title">
                     <button class="articles_create__ready_answer-delete" type="button" @click="removeVariant(variant.itemId)"></button>
                 </div>
@@ -15,7 +15,6 @@
 
 <script>
     import {required} from 'vuelidate/lib/validators'
-    import {PROJECT_IMAGE} from "../../api/endpoints";
 
     export default {
         name: 'SimpleTestVariantsArray',

@@ -4,7 +4,7 @@
 
             <fragment-form-text>
                 <input class="form-control" type="text" id="survey_question_title" name="title" v-model="test.title">
-                <div v-if="errors.title" class="errors">{{ errors.title }}</div>
+                <div v-if="errors.testTitle" class="errors">{{ errors.testTitle }}</div>
             </fragment-form-text>
 
 
@@ -13,7 +13,7 @@
                     <p class="articles_create__item-title">Вопрос</p>
                     <div class="articles_create__item-content direction-column">
                         <textarea class="form-control" rows="4" v-model="test.text"></textarea>
-                        <div v-if="errors.text" class="errors">{{ errors.text }}</div>
+                        <div v-if="errors.testText" class="errors">{{ errors.testText }}</div>
                     </div>
                 </div>
             </div>
@@ -30,11 +30,9 @@
     </div>
 </template>
 <script>
-    import {required} from 'vuelidate/lib/validators'
     import SimpleTestVariants from './../inputs/SimpleTestVariantsArray.vue'
     import SurveyTestVariants from './../inputs/SurveyTestVariantsArray.vue'
     import VContent from "../templates/Content"
-    import { getRandomId } from '../../utils'
     import FragmentFormText from "./text";
     import ProjectMixin from "../../ProjectMixin";
 
@@ -44,7 +42,6 @@
         mixins: [ProjectMixin],
         components: {
             FragmentFormText,
-            //SimpleTestVariant,
             SimpleTestVariants,
             SurveyTestVariants,
             VContent,
@@ -66,18 +63,6 @@
              */
             addSurvey() {
                 this.addAnswerTest(this.test.question.variants.length);
-                // const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-                // let length = this.test.variants.length
-                // let obj = {
-                //     itemId: 'survey-' + getRandomId(),
-                //     title: alphabet[length],
-                //     variant: '',
-                //     isCorrect: false,
-                //     answer: {
-                //         type: 'text'
-                //     }
-                // };
-                // this.test.variants.push(obj)
             }
         }
     }
