@@ -124,12 +124,12 @@ export default {
             this.toValidate = !this.toValidate;
 
             if (!this.test.title || !this.test.title.trim()) {
-                this.testErrors.title = 'Назва обовʼязкова';
+                this.testErrors.testTitle = 'Назва обовʼязкова';
                 isLocalErrors = true;
             }
 
             if (!this.test.text || !this.test.title.trim()) {
-                this.testErrors.text = 'Питання обовʼязкове';
+                this.testErrors.testText = 'Питання обовʼязкове';
                 isLocalErrors = true;
             }
 
@@ -148,7 +148,7 @@ export default {
                 }
             } else if (this.test.type == 'easy') {
                 if (this.test.question.type === 'variants') {
-                    this.testErrors.variants = [];
+                    this.testErrors.title = [];
                     for (const [index, value] of Object.entries(this.test.question.variants)) {
                         if (!value.title || !value.title.trim()) {
                             this.testErrors.title[index] = 'Текст ответа обязателен';

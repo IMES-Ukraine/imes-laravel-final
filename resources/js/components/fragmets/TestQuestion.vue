@@ -7,7 +7,7 @@
                     <div class="articles_create__item-content">
                         <div class="articles_create__name-block">
                             <input type="text" name="title" id="question_title" v-model="test.title">
-                            <div v-if="errors.title" class="errors">{{ errors.title }}</div>
+                            <div v-if="errors.testTitle" class="errors">{{ errors.testTitle }}</div>
                         </div>
                     </div>
                 </div>
@@ -25,7 +25,7 @@
                     <p class="articles_create__item-title">Вопрос</p>
                     <div class="articles_create__item-content">
                         <textarea v-model="test.text"></textarea>
-                        <div v-if="errors.text" class="errors">{{ errors.text }}</div>
+                        <div v-if="errors.testText" class="errors">{{ errors.testText }}</div>
                     </div>
                 </div>
 

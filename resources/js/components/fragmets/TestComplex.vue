@@ -7,7 +7,7 @@
                     <div class="articles_create__item-content">
                         <div class="articles_create__name-block">
                             <input type="text" name="title" id="question_title" v-model="test.title">
-                            <div v-if="errors.text" class="errors">{{ errors.text }}</div>
+                            <div v-if="errors.testText" class="errors">{{ errors.testTitle }}</div>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                     <p class="articles_create__item-title">Описание</p>
                     <div class="articles_create__item-content">
                         <textarea v-model="test.text"></textarea>
-                        <div v-if="errors.text" class="errors">{{ errors.text }}</div>
+                        <div v-if="errors.testText" class="errors">{{ errors.testText }}</div>
                     </div>
                 </div>
             </div>
@@ -184,6 +184,7 @@ export default {
             let newBlock = {...this.complex_questionTemplate};
             let id = getRandomId();
             newBlock.itemId = 'complex-' + id;
+            newBlock.correct = [];
             this.complexQ.push(newBlock);
 
             this.test.complex_question = [...this.complexQ];

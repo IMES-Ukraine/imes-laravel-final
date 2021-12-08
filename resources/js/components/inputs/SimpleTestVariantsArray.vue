@@ -28,8 +28,8 @@
                 </div>
                 <p class="errors">{{ errorsLocal.correct }}</p>
             </div>
-            <div v-if="errorsLocal.variants" class="errors">{{ errorsLocal.variants[index] }}</div>
-            <div v-if="errorsLocal.variants" class="h20 mb20"></div>
+            <div v-if="errorsLocal.title" class="errors">{{ errorsLocal.title[index] }}</div>
+            <div v-if="errorsLocal.title" class="h20 mb20"></div>
 
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
