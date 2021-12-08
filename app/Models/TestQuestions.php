@@ -133,7 +133,8 @@ class TestQuestions extends Model
         return $query->whereNotExists(function ($q) use ($userId){
             $q->select(DB::raw(1))->from('ulogic_projects_passing')
                     ->whereRaw('ulogic_projects_passing.entity_type = "' . quotemeta(self::class) . '"' )
-                    ->whereRaw('ulogic_projects_passing.user_id = ' . $userId);
+                    ->whereRaw('ulogic_projects_passing.user_id = ' . $userId)
+                    ->whereColumn('ulogic_projects_passing.entity_id', 'ulogic_tests_questions.id');
             });
     }
 }
