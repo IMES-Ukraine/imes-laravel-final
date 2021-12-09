@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class QuestionModeration extends Model
 {
+    const TEST_MODERATION_PENDING = 'pending';
+    const TEST_MODERATION_ACCEPT = 'accept';
+    const TEST_MODERATION_CANCEL = 'cancel';
 
     protected $dates = ['deleted_at'];
 
