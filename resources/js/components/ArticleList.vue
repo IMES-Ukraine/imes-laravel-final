@@ -42,9 +42,6 @@ export default {
         }
     },
     methods: {
-        hasArticles () {
-            return !!Object.keys(this.posts).length;
-        },
         getResults(page) {
             if (typeof page === 'undefined') {
                 page = 1;
@@ -56,8 +53,11 @@ export default {
                 });
         },
         UpdateList (id) {
-            this.$delete(ARTICLE_DESTROY + id).then()
-            this.getResults();
+            this.$delete(ARTICLE_DESTROY + id).then(
+                response => {
+                    this.getResults();
+                }
+            )
         }
     },
     created () {
