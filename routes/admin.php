@@ -130,7 +130,7 @@ Route::group(
 
                 Route::get('/times', [BlogController::class, 'times']);
 
-                Route::get('/{id}', [BlogController::class, 'show']);
+                Route::get('/{id}', [\App\Http\Controllers\BlogController::class, 'show']);
 
                 Route::delete('/destroy/{id}', [BlogController::class, 'destroy']);
             }
