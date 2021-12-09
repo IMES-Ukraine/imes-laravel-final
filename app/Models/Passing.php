@@ -41,6 +41,29 @@ class Passing extends Model
         }
     }
 
+    public function scopeIsNotPassed($query, $articles_ids, $test_ids)
+    {
+        if ($articles_ids && $test_ids) {
+            $query->where(function($q) use($test_ids)
+            {
+                $q->where('ulogic_projects_passing.entity_type', TestQuestions::class)
+                    ->whereNotIn('ulogic_projects_passing.entity_id', $test_ids);
+
+            })->orWhere(function($q) use($articles_ids)
+            {
+                $q->where('ulogic_projects_passing.entity_type', Post::class)
+                    ->whereNotIn('ulogic_projects_passing.entity_id', $articles_ids);
+
+            });
+        } elseif ($articles_ids) {
+            $query->where('entity_type', Post::class)
+                ->whereNotIn('entity_id', $articles_ids);
+        } elseif ($test_ids) {
+            $query->where('entity_type', TestQuestions::class)
+                ->whereNotIn('entity_id', $test_ids);
+        }
+    }
+
     /**
      * @var string The database table used by the model.
      */
