@@ -527,7 +527,7 @@ class TestsController extends Controller
                 if (empty($correctAnswer)) {
                     $dummyAnswersCount++;
                 } else {
-                    //TODO разобраться, может ли быть несколько ответов к одному вопросу
+                    //TODO разобраться, может ли быть несколько правильных ответов к одному вопросу
                     foreach ($correctAnswer as $answ) {
                         if (in_array($answ, $userVariants)) {
                             $correctAnswersCount++;
@@ -562,7 +562,7 @@ class TestsController extends Controller
                 }
             } else {
                 //иначе - мы в опроснике и отдаём сразу всю сумму бонусов
-                $testStatus = TestQuestions::STATUS_SUBMITTED;
+                $testStatus = TestQuestions::STATUS_PASSED;
                 $userPassingBonus = $fullPassingBonus;
             }
 
