@@ -62,3 +62,6 @@ export const ARTICLE_TAGS = ARTICLE + '/tags'
 export const ARTICLE_TIMES = ARTICLE + '/times'
 export const ARTICLE_UPDATE = ARTICLE + '/update'
 
+export const TEST_CONFIRMATION = TEST + '/accept'
+export const TEST_DECLINE = TEST + '/decline'
+

@@ -15,6 +15,7 @@ use App\Http\Controllers\API\UsersController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\UserCardsController;
 use App\Http\Controllers\API\ProjectsController as ProjectsApiController;
+use App\Http\Controllers\TestModerationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -142,6 +143,8 @@ Route::group(
             function () {
                 Route::get ('/',  [TestsController::class, 'index']);
                 Route::get('/{id}', [TestsController::class, 'show']);
+                Route::get('/accept/{id}', [TestModerationController::class, 'accept']);
+                Route::get('/decline/{id}', [TestModerationController::class, 'decline']);
                 Route::delete('/{id}', [TestsController::class, 'destroy']);
                 Route::post('/', [TestsController::class, 'create']);
                 Route::post('/submit', [TestsController::class, 'submit']);
