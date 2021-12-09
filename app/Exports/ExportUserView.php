@@ -3,6 +3,7 @@ namespace App\Exports;
 
 use App\Models\Articles;
 use App\Models\Passing;
+use App\Models\Post;
 use App\Models\ProjectResearches;
 use App\Models\TestQuestions;
 use App\Services\ArticleService;
@@ -31,26 +32,7 @@ class ExportUserView implements FromView
         $articles_ids = ArticleService::pluckIDArticles($this->content_id??$research->id);
         $test_ids = TestService::pluckIDArticles($this->content_id??$research->id);
 
-        $query = Passing::with('user')->with('withdraw');
-
-        if ($this->article && $articles_ids) {
-            $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
-        } elseif ($this->test && $test_ids) {
-            $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . ')');
-        } else {
-            if ($articles_ids && $test_ids) {
-                $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
-                    ->orWhereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
-            } elseif ($test_ids) {
-                $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . ')')
-                    ->orWhereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IS NOT NULL');
-            } elseif ($articles_ids) {
-                $query->whereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IS NOT NULL')
-                    ->orWhereRaw('`entity_type` = "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IN(' . implode(",", $articles_ids) . ')');
-            }
-        }
-
-        $results = $query->get();
+        $results = Passing::with('user')->with('withdraw')->isPassed($articles_ids, $test_ids)->get();
 
         return view('exports.users', [
             'results' => $results
