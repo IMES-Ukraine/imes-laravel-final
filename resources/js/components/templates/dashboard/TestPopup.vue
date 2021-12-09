@@ -18,20 +18,20 @@
                                     <div class="study__item" v-for="variant in test.question.variants">
                                         <div class="study__item-content">
                                             <div :class="(variant.right)?'study__answer active':'study__answer'">
-                                                <p class="study__answer-letter">{{ variant.title }}</p>
+                                                <p class="study__answer-letter">{{ variant.variant }}</p>
                                                 <div class="study__answer-text" v-if="variant.media[0]">
                                                     <img :src="variant.media[0].path" alt="" />
                                                 </div>
-                                                <p class="study__answer-text" v-else>{{ variant.text }}</p>
+                                                <p class="study__answer-text" v-else>{{ variant.title }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
-                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
+                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
                                                     <div class="dashboard_main__status-line">
-                                                        <span :style="'width:'+percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
+                                                        <span :style="'width:'+percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
                                                     </div>
                                                 </div>
-                                                <p class="study__info-quantity">{{ getStaticTest(variant.title, tests[0]['id']) }}</p>
+                                                <p class="study__info-quantity">{{ getStaticTest(variant.variant, tests[0]['id']) }}</p>
                                             </div>
                                         </div>
                                         <test-users-popup
