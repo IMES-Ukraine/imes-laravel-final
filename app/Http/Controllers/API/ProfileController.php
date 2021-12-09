@@ -73,11 +73,7 @@ class ProfileController extends Controller
         $userModel = auth()->user();
 
         if ($userModel->is_verified){
-            return $this->helpers->apiArrayResponseBuilder(201, 'Пользователь уже верифицирован');
-        }
-
-        if (AccountVerificationRequests::where('user_id', $userModel->id)->first() ){
-            return $this->helpers->apiArrayResponseBuilder(201, 'Заявка от этого пользователя уже подана');
+            $userModel->is_verified = 0;
         }
 
         if ( $request->post('basic_information')){
@@ -101,10 +97,14 @@ class ProfileController extends Controller
 
         $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
 
+        // Если юзер уже подал заявку на верификацию - заявку не дублируем
+        if (!AccountVerificationRequests::where('user_id', $userModel->id)->first() ){
+            $verificationRequest = new AccountVerificationRequests;
+            $verificationRequest->user_id = $userModel->id;
+            $verificationRequest->save();
+        }
 
-        $verificationRequest = new AccountVerificationRequests;
-        $verificationRequest->user_id = $userModel->id;
-        $verificationRequest->save();
+
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', ['user' => $data]);
     }
