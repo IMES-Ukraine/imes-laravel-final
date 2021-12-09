@@ -2,10 +2,19 @@ const chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 
 const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
 
 const currentDate = () => {
-    var d = new Date();
-    var curr_date = d.getDate();
-    var curr_month = d.getMonth() + 1;
-    var curr_year = d.getFullYear();
+    let d = new Date();
+    let curr_date = d.getDate();
+    let curr_month = d.getMonth() + 1;
+    let curr_year = d.getFullYear();
+
+    if (curr_date <= 9) {
+        curr_date = "0" + curr_date;
+    }
+
+    if (curr_month <= 9) {
+        curr_month = "0" + curr_month;
+    }
+
     return curr_date + "-" + curr_month + "-" + curr_year;
 };
 const changeFormatDate = (date) => {

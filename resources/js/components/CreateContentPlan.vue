@@ -466,6 +466,13 @@ export default {
                         this.items[index].title_error = '';
                     }
 
+                    if (item.date == '') {
+                        this.items[index].date_error = 'Дата обязательна';
+                        error = true;
+                    } else {
+                        this.items[index].date_error = '';
+                    }
+
                     let field = $('#inputFile'+item.id+' input');
                     let block = field.parents(".buttonAddFile");
                     let text = block.find("p span");
@@ -610,6 +617,7 @@ export default {
                         title: item.title,
                         title_error: '',
                         time_error: '',
+                        date_error: '',
                         image_error: '',
                         excerpt: item.excerpt,
                         text_error: '',
@@ -651,6 +659,7 @@ export default {
                             title: '',
                             title_error: '',
                             time_error: '',
+                            date_error: '',
                             image_error: '',
                             excerpt: '',
                             text_error: '',
@@ -694,6 +703,7 @@ export default {
                         title: '',
                         title_error: '',
                         time_error: '',
+                        date_error: '',
                         image_error: '',
                         excerpt: '',
                         text_error: '',
