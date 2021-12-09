@@ -42,6 +42,7 @@
     import RouterButton from "../fragmets/router-button";
     import PopupButton from "../fragmets/popup-button";
     import ModalMixin from "../../ModalMixin";
+    import {USER} from "../../api/endpoints";
 
     export default {
         name: "withdrawal-form-sidebar",
@@ -54,7 +55,12 @@
         },
         methods: {
             findUser(id) {
-                this.$store.dispatch('setFilter',  id);
+                //this.$store.dispatch('setFilter',  id);
+                this.$get(USER + '/' + id).then(
+                    response => {
+                        this.showModal(response.data);
+                    }
+                )
             },
             changeBalance(user_id, count) {
                 for (const [index, value] of Object.entries(this.$store.state.clients)) {

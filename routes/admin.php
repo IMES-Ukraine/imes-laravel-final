@@ -181,7 +181,7 @@ Route::group(
                 Route::get ('/passing-test-all/{content_id}/{status}',  [UsersController::class, 'passingTestAll']);
                 Route::get ('/passing-article-all/{content_id}/{status}',  [UsersController::class, 'passingArticleAll']);
                 Route::get ('/passing-test/{test_id}/{variant}',  [UsersController::class, 'passingTest']);
-                //Route::get('/{id}', [UsersController::class, 'show']);
+                Route::get('/{id}', [UsersController::class, 'show']);
                 Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
                 Route::post('/balance', [UsersController::class, 'balance']);
                 Route::get('/create-name/{name}', [UsersController::class, 'createName']);
