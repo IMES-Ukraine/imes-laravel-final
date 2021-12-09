@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Helpers;
 use App\Models\Articles;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -52,5 +53,37 @@ class BlogController extends Controller
         $data = Post::select('id', 'title')->paginate($request->get('count'))->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
+    /**
+     * Shows post by id
+     * @param $id
+     * @return JsonResponse
+     */
+    public function show($id)
+    {
+        $article = Articles::select('rainlab_blog_posts.*')
+            ->with('cover_image')
+            ->with('featured_images')
+            ->where(['id' => $id])
+            ->first();
+
+        if (!$article) {
+            return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);
+        }
+
+        $research = $article->getResearch();
+        $project = $article->getProject();
+
+        $data = $article->toArray();
+
+        $user = User::where(['id' => $article->user_id])->select('id', 'name')->first();
+        $data['user'] = $user;
+
+        $data['agreement'] = $project ? $project->options['agreement'] : '';
+        $data['isCommercial'] = !empty($research);
+        $data['project_id'] = $research ? $research->project_id : null;
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
     }
 }
