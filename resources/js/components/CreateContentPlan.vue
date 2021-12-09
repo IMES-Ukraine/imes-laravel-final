@@ -477,9 +477,11 @@ export default {
                     let block = field.parents(".buttonAddFile");
                     let text = block.find("p span");
 
-                    if (!item.cover_image.file_name) {
-                        this.errorArticleCover = 'Обложка обязательна'
+                    if (!item.cover_image.disk_name) {
+                        this.items[index].image_error = 'Обложка обязательна'
                         error = true;
+                    } else {
+                        this.items[index].image_error = '';
                     }
 
                     if (item.excerpt == '') {
