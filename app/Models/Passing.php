@@ -13,18 +13,19 @@ class Passing extends Model
 
     const PASSING_NOT_ACTIVE = 0;
     const PASSING_ACTIVE = 1;
-    const PASSING_PASSED = 2;
+    const NO_STATUS = 9;
+
     const PASSING_ENTITY_TYPE_POST = '%Post';
     const PASSING_ENTITY_TYPE_TEST = '%TestQuestions';
 
     protected $dates = ['deleted_at'];
 
-    public function scopeIsPassed($query, $articles_ids, $test_ids, $status = 2)
+    public function scopeIsPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS)
     {
         if ($articles_ids && $test_ids) {
             $query->where(function($q) use($test_ids, $status)
             {
-                if ($status != self::PASSING_PASSED) {
+                if ($status != self::NO_STATUS) {
                     $q->where('ulogic_projects_passing.status', $status);
                 }
 
@@ -33,7 +34,7 @@ class Passing extends Model
 
             })->orWhere(function($q) use($articles_ids, $status)
             {
-                if ($status != self::PASSING_PASSED) {
+                if ($status != self::NO_STATUS) {
                     $q->where('ulogic_projects_passing.status', $status);
                 }
 
@@ -42,14 +43,14 @@ class Passing extends Model
 
             });
         } elseif ($articles_ids) {
-            if ($status != self::PASSING_PASSED) {
+            if ($status != self::NO_STATUS) {
                 $query->where('status', $status);
             }
 
             $query->where('entity_type', Post::class)
                 ->whereIn('entity_id', $articles_ids);
         } elseif ($test_ids) {
-            if ($status != self::PASSING_PASSED) {
+            if ($status != self::NO_STATUS) {
                 $query->where('status', $status);
             }
 
@@ -58,12 +59,12 @@ class Passing extends Model
         }
     }
 
-    public function scopeIsNotPassed($query, $articles_ids, $test_ids, $status = self::PASSING_PASSED)
+    public function scopeIsNotPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS)
     {
         if ($articles_ids && $test_ids) {
             $query->where(function($q) use($test_ids, $status)
             {
-                if ($status != self::PASSING_PASSED) {
+                if ($status != self::NO_STATUS) {
                     $q->where('ulogic_projects_passing.status', $status);
                 }
 
@@ -72,7 +73,7 @@ class Passing extends Model
 
             })->orWhere(function($q) use($articles_ids, $status)
             {
-                if ($status != self::PASSING_PASSED) {
+                if ($status != self::NO_STATUS) {
                     $q->where('ulogic_projects_passing.status', $status);
                 }
 
@@ -81,14 +82,14 @@ class Passing extends Model
 
             });
         } elseif ($articles_ids) {
-            if ($status != self::PASSING_PASSED) {
+            if ($status != self::NO_STATUS) {
                 $query->where('status', $status);
             }
 
             $query->where('entity_type', Post::class)
                 ->whereNotIn('entity_id', $articles_ids);
         } elseif ($test_ids) {
-            if ($status != self::PASSING_PASSED) {
+            if ($status != self::NO_STATUS) {
                 $query->where('status', $status);
             }
 

@@ -81,6 +81,9 @@ class ProjectRepository
                 //если сложный вопрос - пишем все части отдельно
                 if ($content['test']['type'] == 'complex') {
                     //Сначала записываем весь сложный вопрос в качестве родителя
+
+                    $content['test']['article_id'] = $articleModel->id ?? null;
+
                     $questionModel = TestQuestions::create((array)new Question($content['test']));
                     $questionModel->research_id = $research->id;
                     $questionModel->save();
@@ -97,7 +100,7 @@ class ProjectRepository
                         $test['type'] = 'child';
                         $test['title'] = $question['title'];
                         $test['text'] = $question['text'];
-
+                        $test['article_id'] = $articleModel->id ?? null;
                         $questionModel = TestQuestions::create((array)new Question($test));
                         $questionModel->parent_id = $parentID;
                         $questionModel->research_id = $research->id;
@@ -108,6 +111,7 @@ class ProjectRepository
                     }
                 } //если простой - все проще
                 else {
+                    $content['test']['article_id'] = $articleModel->id ?? null;
                     $questionModel = TestQuestions::create((array)new Question($content['test']));
                     $questionModel->research_id = $research->id;
                     $questionModel->save();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\File;
+use App\Models\Passing;
 use App\Models\ProjectsAgreement;
 use App\Models\TestQuestions;
 use Exception;
@@ -120,6 +121,8 @@ class TestsController extends Controller
                $model->test_id = $id;
                $model->save();
            }
+            $passed = new PassingProvider($apiUser);
+           $passed->setId(Passing::PASSING_NOT_ACTIVE);
             return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
         }
 
@@ -133,302 +136,6 @@ class TestsController extends Controller
         return preg_replace("/[^A-Za-z0-9]/", '', $str);
     }
 
-    /**
-     * Storing project from admin panel
-     * @return JsonResponse
-     */
-    public function submitProject()
-    {
-
-        $saveStatus = false;
-
-        $tests = is_array(post('tests')) ? post('tests') : [];
-
-        $isComplex = count($tests) === 1 ? false : true;
-        $testType = $isComplex ? 'complex' : 'simple';
-        $parentSavedId = null;
-
-        foreach ($tests as $test) {
-
-            $title = $test['question']['title'];
-            $question = $test['question']['text'];
-            $description = $test['question']['description'];
-            $correctAnswer = $test['answer']['correct'];
-            $agreement = $test['question']['agreement'];
-
-
-            $buttonsType = 'text';
-            if ($test['answer']['type'] == 'card') $buttonsType = 'card';
-
-            $answerType = 'variants';
-            if ($test['answer']['type'] == 'text') $answerType = 'text';
-
-            $isTextAnswerType = (boolean)($answerType == 'text');
-            $questionMedia = $test['question']['media'];
-            $points = !empty($test['question']['points']) ? $test['question']['points'] : 0;
-            $variantsPictures = is_array(post('attachments')) ? post('attachments') : [];
-            $informationLink = $test['question']['link'];
-
-            if (!is_int($parentSavedId)) {
-
-                if ($isComplex) {
-
-                    $complexTestParentModel = new Test;
-                    $complexTestParentModel->title = $title;
-                    $complexTestParentModel->test_type = 'complex';
-                    $complexTestParentModel->question = $question . ' это вопрос сложного теста';
-                    $complexTestParentModel->answer_type = 'variants';
-                    $complexTestParentModel->duration_seconds = 360;
-                    $complexTestParentModel->passing_bonus = $points;
-                    $complexTestParentModel->is_popular = rand(0, 1);
-                    $complexTestParentModel->variants = null;
-                    $complexTestParentModel->agreement = $agreement;
-                    $complexTestParentModel->options = [
-                        [
-                            'type' => 'to_learn',
-                            'data' => $informationLink,
-                        ],
-                        [
-                            'type' => 'description',
-                            'data' => $description
-                        ]
-                    ];
-
-                    if (isset($variantsPictures[$questionMedia])) {
-
-                        $coverImage = File::find($variantsPictures[$questionMedia]);
-
-                        $complexTestParentModel->cover_image = $coverImage;
-
-                    } else {
-                        $complexTestParentModel->cover_image = plugins_path() . '/ulogic/tests/updates/test1.png';
-                        $complexTestParentModel->featured_images = plugins_path() . '/ulogic/tests/updates/test1.png';
-                    }
-                    $complexTestParentModel->save();
-                }
-
-
-                $model = new Test;
-                $model->title = $title;
-
-                if ($isComplex) {
-                    $parentSavedId = $complexTestParentModel->id;
-                    $model->parent_id = $parentSavedId;
-                    $model->test_type = 'child';
-                } else {
-                    $model->test_type = $testType;
-                    if (isset($variantsPictures[$questionMedia])) {
-
-                        $coverImage = File::find($variantsPictures[$questionMedia]);
-
-                        $model->cover_image = $coverImage;
-                    }
-                }
-
-
-                $model->question = $question;
-                $model->answer_type = $answerType;
-                $model->duration_seconds = 360;
-                $model->passing_bonus = $points;
-                $model->is_popular = rand(0, 1);
-                $model->agreement = $agreement;
-
-                $buttons = [];
-
-                foreach ($test['variants'] as $variant) {
-                    $fields = [
-                        'variant' => $variant['title'],
-                        'title' => $variant['variant'],
-                    ];
-                    $mediaFields = [];
-
-                    if (isset($variantsPictures[$variant['itemId']])) {
-                        $mediaFields = [
-                            'description' => $variant['variant'],
-                            'file' => File::find($variantsPictures[$variant['itemId']])
-                        ];
-                    }
-
-
-                    if ($buttonsType == 'card') $fields = array_merge($fields, $mediaFields);
-                    $buttons[] = $fields;
-                }
-
-                if ($isTextAnswerType)
-                    $correctAnswer = [$test['variants'][0]['variant']];
-
-                $model->variants = array(
-                    'correct_answer' => $correctAnswer,
-                    'type' => $buttonsType,
-                    'buttons' => $buttons
-                );
-
-                $options = [
-                    [
-                        'type' => 'to_learn',
-                        'data' => $test['question']['link'],
-                    ],
-                ];
-
-                if (isset($variantsPictures[$questionMedia])) {
-
-                    $options[] =
-                        [
-                            'type' => 'video',
-                            'data' => File::find($variantsPictures[$questionMedia])->path,
-                        ];
-
-                }
-
-                $model->options = $options;
-
-                $saveStatus = $model->save();
-
-            } else {
-
-                $model = new TestQuestions;
-                $model->title = $title;
-                $model->test_type = 'child';
-                $model->parent_id = $parentSavedId;
-                $model->question = $question;
-                $model->answer_type = $answerType;
-                $model->duration_seconds = 360;
-
-                $buttons = [];
-                foreach ($test['variants'] as $variant) {
-                    $fields = [
-                        'variant' => $variant['title'],
-                        'title' => $variant['variant'],
-                    ];
-                    $mediaFields = [];
-
-                    if (isset($variantsPictures[$variant['itemId']])) {
-                        $mediaFields = [
-                            'description' => $variant['variant'],
-                            'file' => File::find($variantsPictures[$variant['itemId']])
-                        ];
-                    }
-
-
-                    if ($buttonsType == 'card') $fields = array_merge($fields, $mediaFields);
-                    $buttons[] = $fields;
-                }
-
-
-                if ($answerType == 'text')
-                    $correctAnswer = [$test['variants'][0]['variant']];
-
-                $model->variants = array(
-                    'correct_answer' => $correctAnswer,
-                    'type' => $buttonsType,
-                    'buttons' => $buttons
-                );
-
-                if (isset($variantsPictures[$questionMedia])) {
-
-                    $model->options = array(
-                        [
-                            'type' => 'video',
-                            'data' => File::find($variantsPictures[$questionMedia])->path,
-                        ],
-                    );
-                } else {
-                    $model->options = [];
-
-                    /*$fileVideo = new File;
-                    $fileVideo->data = plugins_path() . '/ulogic/tests/updates/video-sample.mp4';
-                    $fileVideo->is_public = true;
-                    $fileVideo->save();
-
-                    $model->options = array(
-                        [
-                            'type' => 'video',
-                            'data' => $fileVideo->path,
-                        ],
-                    );*/
-                }
-
-                $model->save();
-            }
-        }
-
-        $articles = is_array(post('articles')) ? post('articles') : [];
-
-        foreach ($articles as $article) {
-
-            $recommended = $article['chosenRecommended'];
-            $action = !empty($article['button']) ? $article['button'] : '';
-
-            $model = new \ULogic\News\Models\Articles;
-            $model->title = $article['title'];
-            $model->slug = uniqid();
-            $model->published = true;
-            $model->content_html = '';
-            $model->type = $article['articleType'];
-            $model->learning_bonus = $article['points'];
-            $model->is_popular = rand(0, 1);
-            $model->action = $action;
-            $model->user_id = 0;//$article['user_id']['id'];
-
-            $content = [
-                [
-                    'type' => 'text',
-                    'title' => null,
-                    'content' => $article['text']
-                ],
-            ];
-            foreach ($article['insert'] as $insert) {
-                if (!empty($insert['content'])) {
-                    $content[] = [
-                        'type' => 'text',
-                        'title' => $insert['title'],
-                        'content' => $insert['content']
-                    ];
-                }
-
-            }
-            $model->content = $content;
-
-            $file = File::find($article['cover_image']['id']);
-
-            $model->cover_image = $file;//plugins_path() . '/ulogic/news/updates/news-featured.png';
-            $model->featured_images = $file;
-            $model->published_at = time();
-            $saveStatus = $model->save();
-
-            if ($saveStatus) {
-                foreach ($recommended as $rec) {
-                    Recommended::create([
-                        'parent_id' => $model->id,
-                        'recommended_id' => $rec['id']
-                    ]);
-                }
-            }
-        }
-
-        if (!$saveStatus)
-            $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'saving_error']);
-
-        $data = $model;
-
-        $project = new Projects;
-        $project->options = '{}';//$request->input('options');
-        $projectStatus = $project->save();
-
-
-        $items = new ProjectItems;
-        $items->item_type = get_class($model);
-        $items->project_id = $project->id;
-        $items->item_id = $model->id;
-        $projectItemsStatus = $items->save();
-
-
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', [
-            'data' => 'ok',
-            'type' => 'test_submit',
-            'project' => $data
-        ]);
-    }
 
     /**
      * @param $variants
@@ -471,7 +178,7 @@ class TestsController extends Controller
                 'user' => $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray(),
             ]);
         }
-
+        $passed->setId($submittedTest, $submittedTest->id, Passing::PASSING_ACTIVE, $variants);
 
         if ($submittedTest->test_type == TestQuestions::TYPE_CHILD) {
 
@@ -515,7 +222,6 @@ class TestsController extends Controller
                         }
                     }
                 }
-                $passed->setId($testClass, $testID, $isRightAnswer, $userVariants);
             }
 
 

@@ -27,7 +27,7 @@ class PassingProvider
 
     }
 
-    public function setId( $entity, $entityId, $status=0, $userVariants=[]) {
+    public function setId( $entity, $entityId, $status=Passing::PASSING_NOT_ACTIVE, $userVariants=[]) {
         $model = new Passing();
         $model->entity_type = get_class($entity);
         $model->entity_id = $entityId;
