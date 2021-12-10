@@ -63,8 +63,8 @@ class BlogController extends Controller
                 ->isProjectActive()
                 ->isNotPassed($apiUser->id)
                 ->orderBy('rainlab_blog_posts.id', 'desc')
-                ->paginate($countOnPage)
-                ->makeHidden('research');
+                ->paginate($countOnPage);
+
         } else {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
@@ -75,8 +75,8 @@ class BlogController extends Controller
                 ->orderBy('rainlab_blog_posts.id', 'desc')
                 ->paginate($countOnPage);
         }
+        $data->setCollection($data->makeHidden(['research', 'content']));
 
-//        $data->makeHidden(['content']);
         $data = json_decode($data->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 

@@ -70,8 +70,8 @@ class TestsController extends Controller
 //        $query->get();
 //        dd(DB::getQueryLog());
 
-        $data = $query->paginate($countOnPage)->makeHidden('research');
-
+        $data = $query->paginate($countOnPage);
+        $data->setCollection($data->makeHidden('research'));
 
         $data = json_decode($data->toJSON());
 
