@@ -329,12 +329,13 @@ class BlogController extends Controller
     public function show($id)
     {
         $authUser = auth()->user();
+
+        dd(Articles::find($id)->toArray());
         $article = Articles::select('rainlab_blog_posts.*')
             ->with('cover_image')
             ->with('featured_images')
             ->where(['id' => $id])
             ->first();
-
 
         if (!$article) {
             return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);

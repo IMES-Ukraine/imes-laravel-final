@@ -100,9 +100,9 @@ class Post extends Model
 //        ]
 //    ];
 
-    public $attachMany = [
-        'featured_images' => [\App\Models\File::class, 'order' => 'sort_order'],
-    ];
+//    public $attachMany = [
+//        'featured_images' => [\App\Models\File::class, 'order' => 'sort_order'],
+//    ];
 
 
     /**

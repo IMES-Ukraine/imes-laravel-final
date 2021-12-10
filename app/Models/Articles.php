@@ -89,11 +89,6 @@ class Articles extends Post {
         return $this->belongsTo(File::class, 'cover_image_id', 'id');
     }
 
-    public function is_opened()
-    {
-        return $this->hasMany(Opened::class, 'news_id', 'id');
-    }
-
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
