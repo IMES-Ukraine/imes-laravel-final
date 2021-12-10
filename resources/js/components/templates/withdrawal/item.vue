@@ -62,11 +62,11 @@ export default {
             require: true
         },
         user: {
-            type: Array,
+            type: Object,
             require: true
         },
         card: {
-            type: Array,
+            type: Object,
             require: true
         },
         comment: {
