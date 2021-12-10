@@ -18,47 +18,79 @@ class Passing extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function scopeIsPassed($query, $articles_ids, $test_ids)
+    public function scopeIsPassed($query, $articles_ids, $test_ids, $status = 2)
     {
         if ($articles_ids && $test_ids) {
-            $query->where(function($q) use($test_ids)
+            $query->where(function($q) use($test_ids, $status)
             {
+                if ($status != 2) {
+                    $q->where('ulogic_projects_passing.status', $status);
+                }
+
                 $q->where('ulogic_projects_passing.entity_type', TestQuestions::class)
                     ->whereIn('ulogic_projects_passing.entity_id', $test_ids);
 
-            })->orWhere(function($q) use($articles_ids)
+            })->orWhere(function($q) use($articles_ids, $status)
             {
+                if ($status != 2) {
+                    $q->where('ulogic_projects_passing.status', $status);
+                }
+
                 $q->where('ulogic_projects_passing.entity_type', Post::class)
                     ->whereIn('ulogic_projects_passing.entity_id', $articles_ids);
 
             });
         } elseif ($articles_ids) {
+            if ($status != 2) {
+                $query->where('status', $status);
+            }
+
             $query->where('entity_type', Post::class)
                 ->whereIn('entity_id', $articles_ids);
         } elseif ($test_ids) {
+            if ($status != 2) {
+                $query->where('status', $status);
+            }
+
             $query->where('entity_type', TestQuestions::class)
                 ->whereIn('entity_id', $test_ids);
         }
     }
 
-    public function scopeIsNotPassed($query, $articles_ids, $test_ids)
+    public function scopeIsNotPassed($query, $articles_ids, $test_ids, $status = 2)
     {
         if ($articles_ids && $test_ids) {
-            $query->where(function($q) use($test_ids)
+            $query->where(function($q) use($test_ids, $status)
             {
+                if ($status != 2) {
+                    $q->where('ulogic_projects_passing.status', $status);
+                }
+
                 $q->where('ulogic_projects_passing.entity_type', TestQuestions::class)
                     ->whereNotIn('ulogic_projects_passing.entity_id', $test_ids);
 
-            })->orWhere(function($q) use($articles_ids)
+            })->orWhere(function($q) use($articles_ids, $status)
             {
+                if ($status != 2) {
+                    $q->where('ulogic_projects_passing.status', $status);
+                }
+
                 $q->where('ulogic_projects_passing.entity_type', Post::class)
                     ->whereNotIn('ulogic_projects_passing.entity_id', $articles_ids);
 
             });
         } elseif ($articles_ids) {
+            if ($status != 2) {
+                $query->where('status', $status);
+            }
+
             $query->where('entity_type', Post::class)
                 ->whereNotIn('entity_id', $articles_ids);
         } elseif ($test_ids) {
+            if ($status != 2) {
+                $query->where('status', $status);
+            }
+
             $query->where('entity_type', TestQuestions::class)
                 ->whereNotIn('entity_id', $test_ids);
         }
