@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Cards;
 use App\Http\Requests\StoreCardsRequest;
 use App\Models\UserCards;
+use App\Models\Withdraw;
 use App\Services\UsersService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CardsController extends Controller
 {
@@ -62,16 +64,26 @@ class CardsController extends Controller
 
 
 
-        $balance = $user->balance - $card->cost;
 
-        $model = new UserCards();
-        $model->user_id = $user->id;
-        $model->card_id = $id;
-        $model->is_active = UserCards::USER_CARDS_IS_ACTIVE;
-        $model->cost = $card->cost;
-        $model->save();
 
-        UsersService::reduceBalance($user->id, $balance);
+        DB::transaction(function() use ($user, $card, $id) {
+            $balance = $user->balance - $card->cost;
+            $model = new UserCards();
+            $model->user_id = $user->id;
+            $model->card_id = $id;
+            $model->is_active = UserCards::USER_CARDS_IS_ACTIVE;
+            $model->cost = $card->cost;
+            $model->save();
+
+            $withdraw = new Withdraw();
+            $withdraw->user_id = $user->id;
+            $withdraw->total   = $card->cost;
+            $withdraw->comment = $card->name;
+            $withdraw->type = 'card';
+
+            $withdraw->save();
+            UsersService::reduceBalance($user->id, $balance);
+        });
 
         return UserCards::where('user_id', $user->id)->with('card')->paginate();
 
