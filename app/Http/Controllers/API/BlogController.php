@@ -63,7 +63,8 @@ class BlogController extends Controller
                 ->isProjectActive()
                 ->isNotPassed($apiUser->id)
                 ->orderBy('rainlab_blog_posts.id', 'desc')
-                ->paginate($countOnPage);
+                ->paginate($countOnPage)
+                ->makeHidden('research');
         } else {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
@@ -334,23 +335,19 @@ class BlogController extends Controller
             ->where(['id' => $id])
             ->first();
 
+
         if (!$article) {
             return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);
         }
+        $article->makeHidden('research');
 
-        $research = $article->getResearch();
+        $research = $article->research;
         $project = $article->getProject();
 
         $data = $article->toArray();
 
         $user = User::where(['id' => $article->user_id])->select('id', 'name')->first();
         $data['user'] = $user;
-
-        $data['agreement'] = $project ? $project->options['agreement'] : '';
-        $data['isCommercial'] = !empty($research);
-        $data['isOpen'] = Opened::where(['user_id' => $authUser->id])->where(['news_id' => $id])->count();
-        $data['project_id'] = $research ? $research->project_id : null;
-
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
     }

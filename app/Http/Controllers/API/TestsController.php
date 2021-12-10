@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\File;
+use App\Models\ProjectsAgreement;
 use App\Models\TestQuestions;
 use Exception;
 use Illuminate\Database\Query\Expression;
@@ -58,11 +59,7 @@ class TestsController extends Controller
 //        DB::enableQueryLog();
 
         $query = TestQuestions::select('ulogic_tests_questions.*')
-        ->with(['cover_image', 'featured_images',
-            'agreementAccepted' => function ($q) use ($userModel) {
-                $q->where('user_id', '=', $userModel->id);
-            }
-        ])->where('ulogic_tests_questions.test_type', '!=', 'child')
+            ->with(['cover_image', 'featured_images'])->where('ulogic_tests_questions.test_type', '!=', 'child')
             ->isProjectActive()
             ->isNotPassed($userModel->id)
             ->orderBy('ulogic_tests_questions.id', 'desc');
@@ -73,7 +70,7 @@ class TestsController extends Controller
 //        $query->get();
 //        dd(DB::getQueryLog());
 
-        $data = $query->paginate($countOnPage);
+        $data = $query->paginate($countOnPage)->makeHidden('research');
 
 
         $data = json_decode($data->toJSON());
@@ -83,48 +80,22 @@ class TestsController extends Controller
 
     }
 
-    /**
-     * Show agreement box
-     * @param $id
-     * @return JsonResponse|void
-     */
-    public function showAgreement($id)
+
+
+    public function callback($id)
     {
-
-        $data = TestQuestions::where('id', $id)->get()->makeVisible('agreement')->first();
-
-        if (!$data) {
-            return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
-        }
-
-        $agreement = $data->research->project->options['agreement'] ?? '';
-        $data = $data->toArray();
-        $data['agreement'] = $agreement;
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
-
-    }
-
-    /**
-     * Accepts the agreement
-     * @param $id
-     * @return JsonResponse
-     */
-    public function acceptAgreement($id)
-    {
-
-        //$apiUser = Auth::getUser();
         $apiUser = auth()->user();
 
         $model = new TestOpened();
         $model->user_id = $apiUser->id;
         $model->test_id = $id;
-        $model->save();
 
-        if (!empty($model)) {
+
+        if ($model->save()) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $model->toArray());
         }
 
-        $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
+        $this->helpers->apiArrayResponseBuilder(400, 'error', $model->toArray());
     }
 
 
@@ -135,12 +106,21 @@ class TestsController extends Controller
      */
     public function show($id)
     {
+        $apiUser = auth()->user();
+        $test = TestQuestions::with(['cover_image', 'image', 'video', 'complex', 'featured_images'])
+            ->where(['id' => $id])
+            ->first()
+            ->makeHidden('research');
 
-        $data = TestQuestions::with(['cover_image', 'image', 'video', 'complex', 'featured_images'])->where(['id' => $id])->get();
-        //     $data->makeHidden(['agreement']);
-
-        if (!empty($data)) {
-            return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+        if (!empty($test)) {
+            $data = $test->toArray();
+           if (!$test->isOpened){
+               $model = new TestOpened();
+               $model->user_id = $apiUser->id;
+               $model->test_id = $id;
+               $model->save();
+           }
+            return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
         }
 
         $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);

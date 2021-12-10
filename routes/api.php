@@ -259,8 +259,8 @@ Route::group(
                 'prefix' => 'agreement'
             ],
             function () {
-                Route::get('/{id}', [TestsController::class, 'showAgreement']);
-                Route::post('/{id}', [TestsController::class, 'acceptAgreement']);
+                Route::get('/{id}', [ProjectsController::class, 'showAgreement']);
+                Route::post('/{id}', [ProjectsController::class, 'acceptAgreement']);
 
             }
         );

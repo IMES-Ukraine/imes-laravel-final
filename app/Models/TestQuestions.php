@@ -56,12 +56,30 @@ class TestQuestions extends Model
      */
     public $table = 'ulogic_tests_questions';
 
+
     /**
      * @var array Validation rules
      */
     public $rules = [
     ];
 
+
+    protected $appends = ['isAgreementAccepted', 'isOpened'];
+
+    public function getIsAgreementAcceptedAttribute()
+    {
+        $userModel = auth()->user();
+        if ($userModel) {
+            return (bool)ProjectsAgreement::where(['user_id' => $userModel->id])->where(['project_id' => $this->research->project_id])->count();
+        }
+        return false;
+    }
+
+    public function getIsOpenedAttribute()
+    {
+        $apiUser = auth()->user();
+        return (bool) TestOpened::where(['user_id' => $apiUser->id])->where(['test_id' => $this->id])->count();
+    }
 
 
     /**
@@ -112,14 +130,6 @@ class TestQuestions extends Model
         return $this->hasMany('App\Models\TestQuestions', 'parent_id', 'id');
     }
 
-    /**
-     * Agreement
-     * @return mixed
-     */
-    public function agreementAccepted()
-    {
-        return $this->hasMany(TestOpened::class, 'test_id', 'id');
-    }
 
     public function scopeIsProjectActive( $query)
     {
