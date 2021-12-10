@@ -1,6 +1,6 @@
 <template>
 
-    <tr class="db__row">
+    <tr class="db__row" v-if="record.user">
         <td class="db__td is-id">
             {{ index }}
         </td>
