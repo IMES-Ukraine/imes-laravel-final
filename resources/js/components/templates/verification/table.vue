@@ -24,6 +24,10 @@
                   :index="index + 1"
                   v-on="$listeners"
             ></item>
+
+            <!-- modal -->
+            <modal-user></modal-user>
+            <!-- modal -->
         <!-- line -->
         </tbody>
 
@@ -33,10 +37,12 @@
 
 <script>
 import Item from './item'
+import ModalUser from "../ModalUser"
+import ModalMixin from "../../../ModalMixin"
 
 export default {
     name: "tableVerify",
-    components: {Item},
+    components: {Item, ModalUser, ModalMixin},
     props: {
         requests: {
             type: Array,
