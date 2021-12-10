@@ -330,7 +330,7 @@ class BlogController extends Controller
     {
         $authUser = auth()->user();
 
-        dd(Articles::find($id)->toArray());
+
         $article = Articles::select('rainlab_blog_posts.*')
             ->with('cover_image')
             ->with('featured_images')
