@@ -33,7 +33,9 @@ class Articles extends Post {
     public function getIsOpenedAttribute()
     {
         $apiUser = auth()->user();
-        return (bool) Opened::where(['user_id' => $apiUser->id])->where(['news_id' => $this->id])->count();
+        if($apiUser) {
+            return (bool)Opened::where(['user_id' => $apiUser->id])->where(['news_id' => $this->id])->count();
+        }
     }
 
     public function getIsCommercialAttribute(): bool
