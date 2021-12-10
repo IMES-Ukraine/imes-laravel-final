@@ -110,22 +110,6 @@ export default {
     components: {jsonField},
     props: {
         index: Number,
-        user_id: {
-            type: Number,
-            require: true,
-        },
-        email: {
-            type: String,
-            require: true,
-        },
-        basic_information: {
-            type: Object,
-            require: true,
-        },
-        specialized_information: {
-            type: Object,
-            require: true,
-        },
         record: {
             type: Object,
             require: true,

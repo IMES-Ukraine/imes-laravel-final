@@ -15,15 +15,10 @@
         <!-- line -->
             <item v-for="(request, index) in requests"
                   v-bind:key=request.user_id
-                  :user_id = request.user_id
                   :record = request
-                  :id= request.user.email
-                  :email = request.user.email
-                  :basic_information = request.user.basic_information
-                  :specialized_information = request.user.specialized_information
                   :index="index + 1"
                   v-on="$listeners"
-            ></item>
+            >{{index}}</item>
 
             <!-- modal -->
             <modal-user></modal-user>
