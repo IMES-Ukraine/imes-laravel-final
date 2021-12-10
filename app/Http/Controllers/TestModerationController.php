@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\QuestionModeration;
+use App\Models\User;
+use App\Services\TestService;
 
 class TestModerationController extends Controller
 {
@@ -15,7 +17,16 @@ class TestModerationController extends Controller
     {
         $model = QuestionModeration::findOrFail($id);
         $model->status = QuestionModeration::TEST_MODERATION_ACCEPT;
-        $model->save();
+
+        if ($model->save()) {
+            $bonus = TestService::getTestBonus($model->question_id);
+
+            if ($bonus) {
+                $user = User::findOrFail($model->user_id);
+                $user->balance = $user->balance + $bonus[0];
+                $user->save();
+            }
+        }
     }
 
     /**
