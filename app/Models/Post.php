@@ -123,37 +123,7 @@ class Post extends Model
 //        return $this->hasMany('App\Models\File', 'attachment_id', 'id');
 //    }
 
-    /**
-     * @var array The accessors to append to the model's array form.
-     */
-    protected $appends = ['summary', 'has_summary', 'tags', 'recommended'];
 
-    public $preview = null;
-
-    public function getTagsAttribute()
-    {
-        $tagList = PostTag::where(['post_id' => $this->id])->get();
-        $tags = [];
-        foreach ($tagList as $tagItem) {
-            $tags[] = $tagItem->tag;
-        }
-        return $tags;
-    }
-
-    public function getRecommendedAttribute()
-    {
-        $recList = Recommended::where(['parent_id' => $this->id])->get();
-        $recommended = [];
-        foreach ($recList as $recItem) {
-            if ($recItem->post) {
-                $recommended[] = [
-                    'id' => $recItem->post->id,
-                    'title' => $recItem->post->title
-                ];
-            }
-        }
-        return $recommended;
-    }
 
 
     /**
@@ -414,25 +384,6 @@ class Post extends Model
         });
     }
 
-    //
-    // Summary / Excerpt
-    //
-
-    /**
-     * Used by "has_summary", returns true if this post uses a summary (more tag).
-     * @return boolean
-     */
-    public function getHasSummaryAttribute()
-    {
-        $more = Config::get('rainlab.blog::summary_separator', '<!-- more -->');
-        $length = Config::get('rainlab.blog::summary_default_length', 600);
-
-        return (
-            !!strlen(trim($this->excerpt)) ||
-            strpos($this->content_html, $more) !== false ||
-            strlen(strip_tags($this->content_html)/*Html::strip($this->content_html)*/) > $length
-        );
-    }
 
     /**
      * Used by "summary", if no excerpt is provided, generate one from the content.
