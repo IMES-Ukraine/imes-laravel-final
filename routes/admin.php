@@ -15,6 +15,7 @@ use App\Http\Controllers\API\UsersController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\UserCardsController;
 use App\Http\Controllers\API\ProjectsController as ProjectsApiController;
+use App\Http\Controllers\TestModerationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -129,7 +130,7 @@ Route::group(
 
                 Route::get('/times', [BlogController::class, 'times']);
 
-                Route::get('/{id}', [BlogController::class, 'show']);
+                Route::get('/{id}', [\App\Http\Controllers\BlogController::class, 'show']);
 
                 Route::delete('/destroy/{id}', [BlogController::class, 'destroy']);
             }
@@ -142,6 +143,8 @@ Route::group(
             function () {
                 Route::get ('/',  [TestsController::class, 'index']);
                 Route::get('/{id}', [TestsController::class, 'show']);
+                Route::get('/accept/{id}', [TestModerationController::class, 'accept']);
+                Route::get('/decline/{id}', [TestModerationController::class, 'decline']);
                 Route::delete('/{id}', [TestsController::class, 'destroy']);
                 Route::post('/', [TestsController::class, 'create']);
                 Route::post('/submit', [TestsController::class, 'submit']);
@@ -178,7 +181,7 @@ Route::group(
                 Route::get ('/passing-test-all/{content_id}/{status}',  [UsersController::class, 'passingTestAll']);
                 Route::get ('/passing-article-all/{content_id}/{status}',  [UsersController::class, 'passingArticleAll']);
                 Route::get ('/passing-test/{test_id}/{variant}',  [UsersController::class, 'passingTest']);
-                //Route::get('/{id}', [UsersController::class, 'show']);
+                Route::get('/{id}', [UsersController::class, 'show']);
                 Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
                 Route::post('/balance', [UsersController::class, 'balance']);
                 Route::get('/create-name/{name}', [UsersController::class, 'createName']);

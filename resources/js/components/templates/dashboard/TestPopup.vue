@@ -18,27 +18,27 @@
                                     <div class="study__item" v-for="variant in test.question.variants">
                                         <div class="study__item-content">
                                             <div :class="(variant.right)?'study__answer active':'study__answer'">
-                                                <p class="study__answer-letter">{{ variant.title }}</p>
+                                                <p class="study__answer-letter">{{ variant.variant }}</p>
                                                 <div class="study__answer-text" v-if="variant.media[0]">
                                                     <img :src="variant.media[0].path" alt="" />
                                                 </div>
-                                                <p class="study__answer-text" v-else>{{ variant.text }}</p>
+                                                <p class="study__answer-text" v-else>{{ variant.title }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
-                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
+                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
                                                     <div class="dashboard_main__status-line">
-                                                        <span :style="'width:'+percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
+                                                        <span :style="'width:'+percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
                                                     </div>
                                                 </div>
-                                                <p class="study__info-quantity">{{ getStaticTest(variant.title, tests[0]['id']) }}</p>
+                                                <p class="study__info-quantity">{{ getStaticTest(variant.variant, tests[0]['id']) }}</p>
                                             </div>
                                         </div>
                                         <test-users-popup
-                                            :title="test.text + ' - ' + variant.title"
+                                            :title="test.title + ' - ' + variant.variant"
                                             :id="tests[0]['id']"
-                                            :variant="variant.title"
-                                            v-if="getStaticTest(variant.title, tests[0]['id'])"/>
+                                            :variant="variant.variant"
+                                            v-if="getStaticTest(variant.variant, tests[0]['id'])"/>
                                     </div>
                                 </div>
                                 <div class="study__block-content" v-else>
@@ -63,10 +63,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <template v-if="getModerations(1, tests[0]['id'])">
-                                            <div class="study__table-block" v-for="(moderation, key) in getModerations(1, tests[0]['id'])">
+                                        <template v-if="moderations">
+                                            <div class="study__table-block" v-for="(moderation, key) in moderations.data">
                                                 <div class="study__table-item">
-                                                    <p class="study__table-number">{{key}}</p>
+                                                    <p class="study__table-number">{{key + 1}}</p>
                                                 </div>
                                                 <div class="study__table-item">
                                                     <p class="study__table-id">{{(moderation.user)?moderation.user.id:0}}</p>
@@ -79,13 +79,13 @@
                                                 </div>
                                                 <div class="study__table-item">
                                                     <div class="study__table-controls">
-                                                        <button class="study__table-button study__table-button--plus" type="button"></button>
-                                                        <button class="study__table-button study__table-button--minus" type="button"></button>
+                                                        <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id)"></button>
+                                                        <button :class="(moderation.status=='cancel')?class_minus + ' active':class_minus" type="button" :disabled="(moderation.status=='accept')?true:false" @click="decline(moderation.id)"></button>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="articles_pagination center">
-                                                <pagination :data="moderations[tests[0]['id']]" @pagination-change-page="getModerations(1, tests[0]['id'])"></pagination>
+                                                <pagination :data="moderations" @pagination-change-page="getResults"></pagination>
                                             </div>
                                         </template>
                                     </div>
@@ -99,24 +99,24 @@
                                     <div class="study__item" v-for="variant in test.question.variants">
                                         <div class="study__item-content">
                                             <div class="study__answer">
-                                                <p class="study__answer-letter">{{ variant.title }}</p>
-                                                <p class="study__answer-text">{{ variant.text }}</p>
+                                                <p class="study__answer-letter">{{ variant.variant }}</p>
+                                                <p class="study__answer-text">{{ variant.title }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
-                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
+                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
                                                     <div class="dashboard_main__status-line">
-                                                        <span :style="'width:'+percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
+                                                        <span :style="'width:'+percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
                                                     </div>
                                                 </div>
-                                                <p class="study__info-quantity">{{ getStaticTest(variant.title, tests[0]['id']) }}</p>
+                                                <p class="study__info-quantity">{{ getStaticTest(variant.variant, tests[0]['id']) }}</p>
                                             </div>
                                         </div>
                                         <test-users-popup
-                                            :title="test.text + ' - ' + variant.title"
+                                            :title="test.title + ' - ' + variant.variant"
                                             :id="tests[0]['id']"
-                                            :variant="variant.title"
-                                            v-if="getStaticTest(variant.title, tests[0]['id'])"/>
+                                            :variant="variant.variant"
+                                            v-if="getStaticTest(variant.variant, tests[0]['id'])"/>
                                     </div>
                                 </div>
                             </template>
@@ -129,27 +129,27 @@
                                         <div class="study__item" v-for="variant in complex_question.variants">
                                             <div class="study__item-content">
                                                 <div :class="(variant.right)?'study__answer active':'study__answer'">
-                                                    <p class="study__answer-letter">{{ variant.title }}</p>
+                                                    <p class="study__answer-letter">{{ variant.variant }}</p>
                                                     <div class="study__answer-text" v-if="complex_question.type == 'media'">
                                                         <img :src="variant.media[0]['path']" alt="" />
                                                     </div>
-                                                    <p class="study__answer-text" v-else>{{ variant.text }}</p>
+                                                    <p class="study__answer-text" v-else>{{ variant.title }}</p>
                                                 </div>
                                                 <div class="study__info">
                                                     <div class="study__info-block">
-                                                        <p class="study__info-data">{{ percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
+                                                        <p class="study__info-data">{{ percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
                                                         <div class="dashboard_main__status-line">
-                                                            <span :style="'width:'+percent(getStaticTest(variant.title, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
+                                                            <span :style="'width:'+percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
                                                         </div>
                                                     </div>
-                                                    <p class="study__info-quantity">{{ getStaticTest(variant.title, tests[0]['id']) }}</p>
+                                                    <p class="study__info-quantity">{{ getStaticTest(variant.variant, tests[0]['id']) }}</p>
                                                 </div>
                                             </div>
                                             <test-users-popup
-                                                :title="test.text + ' - ' + variant.title"
+                                                :title="test.title + ' - ' + variant.variant"
                                                 :id="tests[0]['id']"
-                                                :variant="variant.title"
-                                                v-if="getStaticTest(variant.title, tests[0]['id'])"/>
+                                                :variant="variant.variant"
+                                                v-if="getStaticTest(variant.variant, tests[0]['id'])"/>
                                         </div>
                                     </div>
                                     <div class="study__block-content" v-else>
@@ -174,27 +174,31 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            {{ getModerations(tests[0]['id']) }}
-                                            <div class="study__table-block" v-for="(moderation, key) in moderations[tests[0]['id']].data">
-                                                <div class="study__table-item">
-                                                    <p class="study__table-number">{{key}}</p>
-                                                </div>
-                                                <div class="study__table-item">
-                                                    <p class="study__table-id">{{(moderation.user)?moderation.user.id:0}}</p>
-                                                </div>
-                                                <div class="study__table-item">
-                                                    <p class="study__table-name">{{(moderation.user)?moderation.user.name:'Уже нет такого пользователя'}}</p>
-                                                </div>
-                                                <div class="study__table-item">
-                                                    <p class="study__table-description">{{moderation.answer}}</p>
-                                                </div>
-                                                <div class="study__table-item">
-                                                    <div class="study__table-controls">
-                                                        <button class="study__table-button study__table-button--plus" type="button"></button>
-                                                        <button class="study__table-button study__table-button--minus" type="button"></button>
+                                            <template v-if="moderations">
+                                                <div class="study__table-block" v-for="(moderation, key) in moderations.data">
+                                                    <div class="study__table-item">
+                                                        <p class="study__table-number">{{key + 1}}</p>
+                                                    </div>
+                                                    <div class="study__table-item">
+                                                        <p class="study__table-id">{{(moderation.user)?moderation.user.id:0}}</p>
+                                                    </div>
+                                                    <div class="study__table-item">
+                                                        <p class="study__table-name">{{(moderation.user)?moderation.user.name:'Уже нет такого пользователя'}}</p>
+                                                    </div>
+                                                    <div class="study__table-item">
+                                                        <p class="study__table-description">{{moderation.answer}}</p>
+                                                    </div>
+                                                    <div class="study__table-item">
+                                                        <div class="study__table-controls">
+                                                            <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id)"></button>
+                                                            <button :class="(moderation.status=='cancel')?class_minus + ' active':class_minus" type="button" :disabled="(moderation.status=='accept')?true:false" @click="decline(moderation.id)"></button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                                <div class="articles_pagination center">
+                                                    <pagination :data="moderations" @pagination-change-page="getResults"></pagination>
+                                                </div>
+                                            </template>
                                         </div>
                                     </div>
                                 </div>
@@ -209,7 +213,7 @@
 
 <script>
     import FragmentCloseItem from "../../fragmets/close-item"
-    import {TEST, MODERATION} from "../../../api/endpoints"
+    import {TEST, MODERATION, TEST_CONFIRMATION, TEST_DECLINE} from "../../../api/endpoints"
     import TestUsersPopup from "../../templates/dashboard/TestUsersPopup"
 
     export default {
@@ -251,7 +255,9 @@
                 test_type: '',
                 type: '',
                 moderations: {},
-                total_test: {}
+                total_test: {},
+                class_plus: 'study__table-button study__table-button--plus',
+                class_minus: 'study__table-button study__table-button--minus'
             }
         },
         methods: {
@@ -268,25 +274,22 @@
             close () {
                 this.$router.push({ path: '/' })
             },
-            getModerations (page, test_id) {
+            getResults (page) {
                 if (typeof page === 'undefined') {
                     page = 1;
                 }
 
-                this.$get(MODERATION + '/' + test_id + '?page=' + page)
+                this.$get(MODERATION + '/' + this.tests[0]['id'] + '?page=' + page)
                     .then(response => {
-                        this.moderations[test_id] = response.data;
-                        return response.data;
+                        this.moderations = response.data;
                     });
-                console.log(this.moderations[test_id])
-                return (this.moderations[test_id])?this.moderations[test_id].data:{};
             },
             totalQuestionVariants (variants, test_id) {
                 let total = 0;
                 let total_test = 0;
                 if (variants) {
                     for (let variant in variants) {
-                        total = this.getStaticTest(variants[variant].title, test_id);
+                        total = this.getStaticTest(variants[variant].variant, test_id);
 
                         if (total) {
                             total_test += total;
@@ -299,6 +302,29 @@
             percent(status, total) {
                 return status?parseInt(status * 100 / total):0
             },
+            async accept(id) {
+                this.$get(TEST_CONFIRMATION + "/" + id).then();
+
+                for (const [index, value] of Object.entries(this.moderations.data)) {
+                    if (value.id === id) {
+                        value.status = 'accept'
+                        return
+                    }
+                }
+            },
+            async decline(id) {
+                this.$get(TEST_DECLINE + "/" + id).then();
+
+                for (const [index, value] of Object.entries(this.moderations.data)) {
+                    if (value.id === id) {
+                        value.status = 'cancel'
+                        return
+                    }
+                }
+            },
+        },
+        mounted() {
+            this.getResults(1);
         },
     }
 </script>

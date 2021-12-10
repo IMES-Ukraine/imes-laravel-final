@@ -195,6 +195,7 @@ class UsersController extends Controller
         if (!$data) {
             return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
         }
+        $data = json_decode($data->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 

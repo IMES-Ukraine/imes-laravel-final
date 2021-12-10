@@ -30,15 +30,21 @@
             v-on="$listeners"
         ></item>
 
+        <!-- modal -->
+        <modal-user></modal-user>
+        <!-- modal -->
+
     </div>
 </template>
 
 <script>
 import Item from './item'
+import ModalUser from "../ModalUser"
+import ModalMixin from "../../../ModalMixin"
 
 export default {
     name: "table",
-    components: {Item},
+    components: {Item, ModalUser, ModalMixin},
     props: {
         requests: {
             type: Array,

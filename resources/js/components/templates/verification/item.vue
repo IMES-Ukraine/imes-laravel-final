@@ -11,93 +11,12 @@
             {{ record.user.name }}
         </td>
         <td class="db__td">
-            <button type="button" class="db__button" aria-label="переглянути реєстраційні дані"
-                    title="переглянути реєстраційні дані" data-toggle="modal"
-                    :data-target="'#db-modal--' + record.user_id">
+            <button type="button" class="db__button"
+                    @click="showModal(record.user)"
+                    aria-label="переглянути реєстраційні дані"
+                    title="переглянути реєстраційні дані" >
                 <span class="icon-is-doc"></span>
             </button>
-
-            <div class="modal db-modal fade" :id="'db-modal--' + record.user_id" tabindex="-1" role="dialog"
-                 aria-hidden="true"><!-- data -->
-                <div class="modal-dialog modal-dialog-centered db-edit-modal__dialog" role="document">
-                    <div class="db-edit-modal__content modal-content">
-                        <button class="articles_create-close" data-dismiss="modal"></button>
-                        <div class="modal-body p-0">
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-control__label">Имя</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.basic_information)?record.user.basic_information.name:'')" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-control__label">Email</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.basic_information)?record.user.basic_information.email:'')" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-6">
-                                    <label class="form-control__label">Телефон</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.basic_information)?record.user.basic_information.phone:'')" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-control__label">Спецификация</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.specialized_information)?record.user.specialized_information.specification:'')" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-control__label">Квалификация</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.specialized_information)?record.user.specialized_information.qualification:'')" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-control__label">Место работы</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.specialized_information)?record.user.specialized_information.workplace:'')" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-control__label">Должность</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.specialized_information)?record.user.specialized_information.position:'')" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-control__label">Номер лицензии</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.specialized_information)?record.user.specialized_information.licenseNumber:'')" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-control__label">Период обучения</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.specialized_information)?record.user.specialized_information.studyPeriod:'')" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-control__label">Дополнительная квалификация</label>
-                                    <input class="form-control db-edit-modal__input" type="text"
-                                           :value="((record.user.specialized_information)?record.user.specialized_information.additional_qualification:'')" readonly>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- modal data -->
         </td>
         <td class="db__td">
             {{ record.user.balance }}
@@ -182,9 +101,12 @@
 </template>
 
 <script>
-import jsonField from "./jsonField";
+import jsonField from "./jsonField"
+import  ModalMixin from "../../../ModalMixin"
+
 export default {
     name: "item",
+    mixins: [ModalMixin],
     components: {jsonField},
     props: {
         index: Number,
