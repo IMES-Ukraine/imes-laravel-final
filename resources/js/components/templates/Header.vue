@@ -32,7 +32,7 @@
                     { name: 'Статті', path: '/articles' },
                     { name: 'Розсилка', path: '/notification' },
                     { name: 'Чат підтримки', path: '/chat' },
-                    //{ name: 'Користувачi', path: '/clients' },
+                    { name: 'Користувачi', path: '/clients' },
                     //{ name: 'Повідомлення', path: '/notices' },
                     { name: 'Верифiкацiя', path: '/verification' },
                     { name: 'Перекази', path: '/withdrawal' },
