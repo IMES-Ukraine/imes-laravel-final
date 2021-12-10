@@ -10,6 +10,7 @@ namespace App\Models;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Config;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class Articles extends Post {
@@ -19,7 +20,7 @@ class Articles extends Post {
     const IS_INSTANT = 0;
     const IS_SCHEDULED = 1;
 
-    protected $appends = ['isAgreementAccepted', 'isOpened', 'isCommercial', 'projectId'];
+    protected $appends = ['isAgreementAccepted', 'isOpened', 'isCommercial', 'projectId', 'summary', 'has_summary', 'tags', 'recommended'];
 
     public function getIsAgreementAcceptedAttribute()
     {
@@ -36,6 +37,7 @@ class Articles extends Post {
         if($apiUser) {
             return (bool)Opened::where(['user_id' => $apiUser->id])->where(['news_id' => $this->id])->count();
         }
+        return false;
     }
 
     public function getIsCommercialAttribute(): bool
@@ -47,6 +49,52 @@ class Articles extends Post {
     {
         return $this->research ? $this->research->project_id : null;
     }
+
+
+    public $preview = null;
+
+    public function getTagsAttribute()
+    {
+        $tagList = PostTag::where(['post_id' => $this->id])->get();
+        $tags = [];
+        foreach ($tagList as $tagItem) {
+            $tags[] = $tagItem->tag;
+        }
+        return $tags;
+    }
+
+    public function getRecommendedAttribute()
+    {
+        $recList = Recommended::where(['parent_id' => $this->id])->get();
+        $recommended = [];
+        foreach ($recList as $recItem) {
+            if ($recItem->post) {
+                $recommended[] = [
+                    'id' => $recItem->post->id,
+                    'title' => $recItem->post->title
+                ];
+            }
+        }
+        return $recommended;
+    }
+
+    /**
+     * Used by "has_summary", returns true if this post uses a summary (more tag).
+     * @return boolean
+     */
+    public function getHasSummaryAttribute()
+    {
+        $more = Config::get('rainlab.blog::summary_separator', '<!-- more -->');
+        $length = Config::get('rainlab.blog::summary_default_length', 600);
+
+        return (
+            !!strlen(trim($this->excerpt)) ||
+            strpos($this->content_html, $more) !== false ||
+            strlen(strip_tags($this->content_html)/*Html::strip($this->content_html)*/) > $length
+        );
+    }
+
+
 
     public function scopeIsArticle($query) {
         return $query->where('type', self::ARTICLE);
@@ -87,6 +135,11 @@ class Articles extends Post {
     public function cover_image()
     {
         return $this->belongsTo(File::class, 'cover_image_id', 'id');
+    }
+
+    public function is_opened()
+    {
+        return $this->hasMany(Opened::class, 'news_id', 'id');
     }
 
     public function user()
