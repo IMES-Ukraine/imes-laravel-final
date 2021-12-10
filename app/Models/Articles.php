@@ -19,8 +19,32 @@ class Articles extends Post {
     const IS_INSTANT = 0;
     const IS_SCHEDULED = 1;
 
+    protected $appends = ['isAgreementAccepted', 'isOpened', 'isCommercial', 'projectId'];
 
+    public function getIsAgreementAcceptedAttribute()
+    {
+        $userModel = auth()->user();
+        if ($userModel) {
+            return (bool)ProjectsAgreement::where(['user_id' => $userModel->id])->where(['project_id' => $this->research->project_id])->count();
+        }
+        return false;
+    }
 
+    public function getIsOpenedAttribute()
+    {
+        $apiUser = auth()->user();
+        return (bool) Opened::where(['user_id' => $apiUser->id])->where(['news_id' => $this->id])->count();
+    }
+
+    public function getIsCommercialAttribute(): bool
+    {
+        return !empty($this->research );
+    }
+
+    public function getProjectIdAttribute()
+    {
+        return $this->research ? $this->research->project_id : null;
+    }
 
     public function scopeIsArticle($query) {
         return $query->where('type', self::ARTICLE);
@@ -104,14 +128,14 @@ class Articles extends Post {
      * Project
      * @return mixed
      */
-    public function getResearch()
+    public function research()
     {
-        return ProjectResearches::find($this->research_id);
+        return $this->hasOne(ProjectResearches::class, 'id', 'research_id');
     }
 
     public function getProject()
     {
-        $research = $this->getResearch();
+        $research = $this->research;
         return $research ? Projects::find($research->project_id) : null;
     }
 

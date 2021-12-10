@@ -9,7 +9,9 @@ use App\Models\File;
 use App\Models\ImageHelper;
 use App\Models\ProjectItems;
 use App\Models\ProjectResearches;
+use App\Models\ProjectsAgreement;
 use App\Models\Tags;
+use App\Models\TestQuestions;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -169,9 +171,9 @@ class ProjectsController extends Controller
         }
 
 
-        $project = $this->projectRepository->create($request);
+        $neProject = $this->projectRepository->create($request);
 
-        if (!$project->saved) {
+        if (!$neProject->saved) {
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'saving_error']);
         }
 
@@ -179,14 +181,14 @@ class ProjectsController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
             'data' => 'ok',
             'type' => 'test_submit',
-            'project' => $project->data
+            'project' => $neProject->data
         ]);
     }
 
     /**
      * Set cover articles and license image
      */
-    public function setImage($field, $type = 'articles')
+    public function setImage($field, $type = 'articles'): JsonResponse
     {
         $attachment_type = self::ATTACHMENT_TYPE_ARTICLES;
 
@@ -221,9 +223,9 @@ class ProjectsController extends Controller
      * Start the specified resource from storage.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function start(Request $request)
+    public function start(Request $request): JsonResponse
     {
         $model = Projects::findOrFail($request->id);
         $model->status = Projects::STATUS_ACTIVE;
@@ -235,16 +237,59 @@ class ProjectsController extends Controller
     /**
      * Stop the specified resource from storage.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return JsonResponse
      */
-    public function stop($id)
+    public function stop($id): JsonResponse
     {
         $model = Projects::findOrFail($id);
         $model->status = Projects::STATUS_INACTIVE;
         $model->save();
 
         return $this->helpers->apiArrayResponseBuilder(200, ['status' => Projects::STATUS_INACTIVE]);
+    }
+
+    /**
+     * Show agreement box
+     * @param $id ProjectResearches::ID
+     * @return JsonResponse
+     */
+    public function showAgreement($id)
+    {
+        $research = ProjectResearches::find($id);
+        if (!$research) {
+            $this->helpers->apiArrayResponseBuilder(404, 'no research', ['research_id' => $id]);
+        }
+        $agreement = $research->project->options['agreement'] ?? '';
+
+        $data = [
+            'agreement' => $agreement,
+            'research_id' => $id,
+            'project_id' => $research->project_id
+        ];
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
+    /**
+     * Accepts the agreement
+     * @param $id ProjectResearches::ID
+     * @return JsonResponse
+     */
+    public function acceptAgreement($id): JsonResponse
+    {
+        $research = ProjectResearches::find($id);
+        if (!$research) {
+            $this->helpers->apiArrayResponseBuilder(404, 'no research', ['research_id' => $id]);
+        }
+
+        $userModel = auth()->user();
+        $agreement = new ProjectsAgreement();
+        $agreement->user_id = $userModel->id;
+        $agreement->project_id = $research->project_id;
+        if (!$agreement->save() ){
+            $this->helpers->apiArrayResponseBuilder(400, 'error', $agreement->toArray());
+        }
+        return $this->helpers->apiArrayResponseBuilder(200, 'success');
     }
 
 }
