@@ -340,11 +340,18 @@ class BlogController extends Controller
             return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);
         }
         $article->makeHidden('research');
+        $data = $article->toArray();
+
+        if (!$article->isOpened){
+            $model = new Opened();
+            $model->user_id = $authUser->id;
+            $model->news_id = $id;
+            $model->save();
+        }
 
         $research = $article->research;
         $project = $article->getProject();
 
-        $data = $article->toArray();
 
         $user = User::where(['id' => $article->user_id])->select('id', 'name')->first();
         $data['user'] = $user;
