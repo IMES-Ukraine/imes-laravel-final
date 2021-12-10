@@ -77,4 +77,14 @@ class TestService
         }
     }
 
+    /**
+     * Return bonus
+     * @param $test_id
+     * @return array
+     */
+    public static function getTestBonus($test_id)
+    {
+        return TestQuestions::select('passing_bonus')->where('id', $test_id)->pluck('passing_bonus');
+    }
+
 }

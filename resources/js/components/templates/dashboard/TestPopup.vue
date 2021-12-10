@@ -79,7 +79,7 @@
                                                 </div>
                                                 <div class="study__table-item">
                                                     <div class="study__table-controls">
-                                                        <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id)"></button>
+                                                        <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id, moderation.status)"></button>
                                                         <button :class="(moderation.status=='cancel')?class_minus + ' active':class_minus" type="button" :disabled="(moderation.status=='accept')?true:false" @click="decline(moderation.id)"></button>
                                                     </div>
                                                 </div>
@@ -190,7 +190,7 @@
                                                     </div>
                                                     <div class="study__table-item">
                                                         <div class="study__table-controls">
-                                                            <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id)"></button>
+                                                            <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id, moderation.status)"></button>
                                                             <button :class="(moderation.status=='cancel')?class_minus + ' active':class_minus" type="button" :disabled="(moderation.status=='accept')?true:false" @click="decline(moderation.id)"></button>
                                                         </div>
                                                     </div>
@@ -302,13 +302,15 @@
             percent(status, total) {
                 return status?parseInt(status * 100 / total):0
             },
-            async accept(id) {
-                this.$get(TEST_CONFIRMATION + "/" + id).then();
+            async accept(id, status) {
+                if (status == 'pending') {
+                    this.$get(TEST_CONFIRMATION + "/" + id).then();
 
-                for (const [index, value] of Object.entries(this.moderations.data)) {
-                    if (value.id === id) {
-                        value.status = 'accept'
-                        return
+                    for (const [index, value] of Object.entries(this.moderations.data)) {
+                        if (value.id === id) {
+                            value.status = 'accept'
+                            return
+                        }
                     }
                 }
             },
