@@ -225,6 +225,10 @@ class UsersController extends Controller
 
         $data = $request->input('data');
 
+        if (User::where('email', $data['email'])->first()) {
+            return $this->helpers->apiArrayResponseBuilder(400, 'Пользователь с таким Email уже существует!');
+        }
+
         $status = $this->user->where('id', $id)->update( $data);
 
         if ($status) {
