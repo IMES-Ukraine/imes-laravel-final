@@ -78,7 +78,10 @@ class TestQuestions extends Model
     public function getIsOpenedAttribute()
     {
         $apiUser = auth()->user();
-        return (bool) TestOpened::where(['user_id' => $apiUser->id])->where(['test_id' => $this->id])->count();
+        if($apiUser) {
+            return (bool)TestOpened::where(['user_id' => $apiUser->id])->where(['test_id' => $this->id])->count();
+        }
+        return false;
     }
 
 
