@@ -459,14 +459,14 @@ export default {
 
             for (const [index, item] of Object.entries(this.items)) {
                 if (item.id === id) {
-                    if (item.title == '') {
+                    if (!item.title || !item.title.trim()) {
                         this.items[index].title_error = 'Название обязательно';
                         error = true;
                     } else {
                         this.items[index].title_error = '';
                     }
 
-                    if (item.date == '') {
+                    if (!item.date || !item.date.trim()) {
                         this.items[index].date_error = 'Дата обязательна';
                         error = true;
                     } else {
@@ -484,7 +484,7 @@ export default {
                         this.items[index].image_error = '';
                     }
 
-                    if (item.excerpt == '') {
+                    if (!item.excerpt || !item.excerpt.trim()) {
                         this.items[index].text_error = 'Описание обязательно';
                         error = true;
                     } else {

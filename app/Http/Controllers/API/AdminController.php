@@ -26,7 +26,6 @@ class AdminController extends BaseController
 
     public function NotificationSendAll(Request $request)
     {
-        $users = User::all();
         $body = $request->post('body');
         $title = $request->post('title');
         $action = $request->post('action');
@@ -38,15 +37,9 @@ class AdminController extends BaseController
 
         try {
 
-            if ($body) {
-                foreach ($users as $user) {
-                    $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body, $extraFields, $title);
-                }
+            $this->sendNotificationToAll(Notifications::TYPE_MESSAGE, $body, $extraFields, $title);
 
-                Session::flash('success', 'Вiдправлено успiшно!');
-            } else {
-                throw new Exception('Введите текст для уведомления!');
-            }
+            Session::flash('success', 'Вiдправлено успiшно!');
 
         } catch (Exception $exception) {
             Session::flash('error', $exception->getMessage());
@@ -70,21 +63,21 @@ class AdminController extends BaseController
 
             if (!empty($to)) {
 
-                $user = User::find( $to );
-                //$user = User::where('username', $to)->first();
+                $user = User::where('id', $to)->whereNotNull('firebase_token')->first();
 
-                $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body, $extraFields, $title);
+                if ($user) {
+                    $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body, $extraFields, $title);
 
-
-                //Flash::success('Вiдправлено успiшно!');
-                Session::flash('success', 'Вiдправлено успiшно!');
+                    Session::flash('success', 'Вiдправлено успiшно!');
+                } else {
+                    Session::flash('error', 'Firebase Token Error');
+                }
 
             } else {
                 throw new Exception('Будь ласка, вкажiть отримувача');
             }
 
         } catch (Exception $exception) {
-            //Flash::error($exception->getMessage());
             Session::flash('error', $exception->getMessage());
         }
     }

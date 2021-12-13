@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Helpers;
 use App\Models\UserCards;
 use App\Http\Requests\StoreUserCardsRequest;
+use Illuminate\Http\Request;
 
 class UserCardsController extends Controller
 {
@@ -22,13 +23,21 @@ class UserCardsController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param $request Request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $withdraws = UserCards::with('user')
-            ->with('card')
-            ->orderBy('created_at', 'desc')
+        $filterId = $request->get('filter');
+
+        $request = UserCards::with('user')
+            ->with('card');
+
+        if ($filterId) {
+            $request->where('user_id', $filterId);
+        }
+
+        $withdraws = $request->orderBy('created_at', 'desc')
             ->paginate(self::COUNT_PER_PAGE);
 
         $data = json_decode($withdraws->toJSON());
