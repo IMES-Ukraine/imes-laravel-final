@@ -69,7 +69,7 @@ class ProjectRepository
             $article = $content['article'];
             if ($article['title']) {
                 $articleModel = $this->articleService->addArticle($article);
-                $articleModel->research_id = $research->id;
+                $articleModel->research_id = (int)$research->id;
                 $articleModel->scheduled = $scheduled;
                 $articleModel->save();
                 TestService::setAttachment($content['article'], $articleModel->id);
@@ -85,7 +85,7 @@ class ProjectRepository
                     $content['test']['article_id'] = $articleModel->id ?? null;
 
                     $questionModel = TestQuestions::create((array)new Question($content['test']));
-                    $questionModel->research_id = $research->id;
+                    $questionModel->research_id = (int) $research->id;
                     $questionModel->save();
                     TestService::setAttachment($content['test'], $questionModel->id);
 
@@ -103,7 +103,7 @@ class ProjectRepository
                         $test['article_id'] = $articleModel->id ?? null;
                         $questionModel = TestQuestions::create((array)new Question($test));
                         $questionModel->parent_id = $parentID;
-                        $questionModel->research_id = $research->id;
+                        $questionModel->research_id = (int)$research->id;
                         $questionModel->save();
                         TestService::setAttachment($question, $questionModel->id);
 
@@ -113,7 +113,7 @@ class ProjectRepository
                 else {
                     $content['test']['article_id'] = $articleModel->id ?? null;
                     $questionModel = TestQuestions::create((array)new Question($content['test']));
-                    $questionModel->research_id = $research->id;
+                    $questionModel->research_id = (int)$research->id;
                     $questionModel->save();
                     TestService::setAttachment($content['test'], $questionModel->id);
 

@@ -75,9 +75,14 @@ class TestsController extends Controller
         $data->setCollection($data->makeHidden('research'));
 
         $data = json_decode($data->toJSON());
+foreach($data->data as &$item){
+    if(isset($item->options[0]) ) {
+        $item->options[0]->data = (string)$item->options[0]->data;
+    }
 
+}
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success. ' . $userModel->id, $data);
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
     }
 
@@ -122,7 +127,11 @@ class TestsController extends Controller
                $model->save();
            }
             $passed = new PassingProvider($apiUser);
-           $passed->setId(Passing::PASSING_NOT_ACTIVE);
+           $passed->setId($test, $test->id, Passing::PASSING_NOT_ACTIVE);
+
+            if(isset($data['options'][0]) ) {
+                $data['options'][0]['data'] = (int)$data['options'][0]['data'];
+            }
             return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
         }
 
