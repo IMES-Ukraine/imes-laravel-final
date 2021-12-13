@@ -46,6 +46,16 @@ class TestsController extends Controller
         $this->project = $project;
     }
 
+    // Принудительная типизация уже сохраненных данных.
+    private function setParamTypes($data) {
+        $data['research_id'] = $data['research_id'] ? (int)$data['research_id'] : null;
+        foreach ($data['options'] as $key => $item) {
+            if (isset($data['options'][$key]['type']) && $data['options'][$key]['type'] == Question::TYPE_TO_LEARN) {
+                $data['options'][$key]['data'] = $data['options'][$key]['data'] ? (int)$data['options'][$key]['data'] : null;
+            }
+        }
+        return $data;
+}
 
     public function index()
     {
@@ -74,18 +84,11 @@ class TestsController extends Controller
         $data = $query->paginate($countOnPage);
         $data->setCollection($data->makeHidden('research'));
 
-        $data = json_decode($data->toJSON());
+        $data = json_decode($data->toJSON(), true);
 
-        // Временный костыль - типизация уже сохраненных данных.
-        // Потом можно убрать.
-        foreach ($data->data as &$item) {
-            if (isset($item->options[0])) {
-                $item->options[0]->data = (int)$item->options[0]->data;
-                $item->research_id = (int)$item->research_id;
-            }
-
+        foreach ($data['data'] as $key => $item) {
+            $data['data'][$key] = $this->setParamTypes($item);
         }
-
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
     }
@@ -104,7 +107,7 @@ class TestsController extends Controller
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $model->toArray());
         }
 
-        $this->helpers->apiArrayResponseBuilder(400, 'error', $model->toArray());
+        return $this->helpers->apiArrayResponseBuilder(400, 'error', $model->toArray());
     }
 
 
@@ -122,7 +125,8 @@ class TestsController extends Controller
             ->makeHidden('research');
 
         if (!empty($test)) {
-            $data = $test->toArray();
+            $data = json_decode($test->toJson(), true);
+            $data = $this->setParamTypes($data);
             if (!$test->isOpened) {
                 $model = new TestOpened();
                 $model->user_id = $apiUser->id;
@@ -131,15 +135,6 @@ class TestsController extends Controller
             }
             $passed = new PassingProvider($apiUser);
             $passed->setId($test, $test->id, Passing::PASSING_NOT_ACTIVE);
-
-
-            // Временный костыль - типизация уже сохраненных данных.
-            // Потом можно убрать.
-            if (isset($data['options'][0])) {
-                $data['options'][0]['data'] = (int)$data['options'][0]['data'];
-                $data['research_id'] = (int)$data['research_id'];
-            }
-
 
             return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
         }

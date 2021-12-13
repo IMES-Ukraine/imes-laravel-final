@@ -12,6 +12,8 @@ class Question
     const ANSWER_TEXT = 'text';
     const ANSWER_MEDIA = 'media';
 
+    const TYPE_TO_LEARN = 'to_learn';
+
     public $title;
     public $question;
     public $duration_seconds = 360;
@@ -117,8 +119,8 @@ class Question
 
         $options[] =
             [
-                'type' => 'to_learn',
-                'data' => ( (int)$question['article_id'] ) ?? null,
+                'type' => self::TYPE_TO_LEARN,
+                'data' => $question['article_id'] ? (int)$question['article_id'] : null,
             ];
 
         if (isset($question['question']['video']) && isset($question['question']['video']['id'])) {

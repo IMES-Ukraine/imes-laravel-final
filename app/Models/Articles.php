@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 /**
  * Created by PhpStorm.
@@ -13,14 +14,17 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Config;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
-class Articles extends Post {
+class Articles extends Post
+{
     const ARTICLE = 1;
     const INFORMATION = 2;
 
     const IS_INSTANT = 0;
     const IS_SCHEDULED = 1;
 
-    protected $appends = ['isAgreementAccepted', 'isOpened', 'isCommercial', 'projectId', 'summary', 'has_summary', 'tags', 'recommended'];
+    protected $appends = ['isAgreementAccepted', 'isOpened', 'isCommercial',
+        'projectId', 'test_id', 'summary', 'has_summary', 'tags', 'recommended'
+    ];
 
     public function getIsAgreementAcceptedAttribute()
     {
@@ -34,15 +38,23 @@ class Articles extends Post {
     public function getIsOpenedAttribute()
     {
         $apiUser = auth()->user();
-        if($apiUser) {
+        if ($apiUser) {
             return (bool)Opened::where(['user_id' => $apiUser->id])->where(['news_id' => $this->id])->count();
         }
         return false;
     }
 
+    public function getTestIdAttribute()
+    {
+        if ($this->research_id && $test = TestQuestions::where(['research_id' => $this->research_id])->first()) {
+            return (int)$test->id;
+        }
+        return null;
+    }
+
     public function getIsCommercialAttribute(): bool
     {
-        return !empty($this->research );
+        return !empty($this->research);
     }
 
     public function getProjectIdAttribute()
@@ -95,37 +107,38 @@ class Articles extends Post {
     }
 
 
-
-    public function scopeIsArticle($query) {
+    public function scopeIsArticle($query)
+    {
         return $query->where('type', self::ARTICLE);
     }
 
-    public function scopeIsInformation($query) {
+    public function scopeIsInformation($query)
+    {
         return $query->where('type', self::INFORMATION);
     }
 
-    public function scopeIsNotPassed( $query, $userId)
+    public function scopeIsNotPassed($query, $userId)
     {
-        return $query->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.entity_id',  '=', 'rainlab_blog_posts.id')
-            ->whereNotExists(function ($q) use ($userId){
+        return $query->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.entity_id', '=', 'rainlab_blog_posts.id')
+            ->whereNotExists(function ($q) use ($userId) {
                 $q->select('ulogic_projects_passing.answer')
                     ->where('ulogic_projects_passing.entity_type', Post::class)
-                  ->where('ulogic_projects_passing.user_id', $userId);
-                });
+                    ->where('ulogic_projects_passing.user_id', $userId);
+            });
     }
 
-    public function scopeIsProjectActive( $query)
+    public function scopeIsProjectActive($query)
     {
-        return $query->leftJoin('project_researches', 'project_researches.id',  '=', 'rainlab_blog_posts.research_id')
+        return $query->leftJoin('project_researches', 'project_researches.id', '=', 'rainlab_blog_posts.research_id')
             ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
             ->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
     }
 
-    public function scopeNotTimes( $query) {
+    public function scopeNotTimes($query)
+    {
         return $query->leftJoin('rainlab_blog_posts_times', 'rainlab_blog_posts_times.post_id', '=', 'rainlab_blog_posts.id')
             ->whereNull('rainlab_blog_posts_times.date');
     }
-
 
 
     /**
