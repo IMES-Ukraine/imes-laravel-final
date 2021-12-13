@@ -48,6 +48,12 @@
         name: "withdrawal-form-sidebar",
         components: {RouterButton, PopupButton},
         mixins: [ModalMixin],
+        props: {
+            filter: {
+                type: Boolean,
+                default: false
+            },
+        },
         data() {
             return {
                 filterId: null
@@ -55,12 +61,15 @@
         },
         methods: {
             findUser(id) {
-                //this.$store.dispatch('setFilter',  id);
-                this.$get(USER + '/' + id).then(
-                    response => {
-                        this.showModal(response.data);
-                    }
-                )
+                if (this.filter) {
+                    this.$emit('update', id);
+                } else {
+                    this.$get(USER + '/' + id).then(
+                        response => {
+                            this.showModal(response.data);
+                        }
+                    )
+                }
             },
             changeBalance(user_id, count) {
                 for (const [index, value] of Object.entries(this.$store.state.clients)) {

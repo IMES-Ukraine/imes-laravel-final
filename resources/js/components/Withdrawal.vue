@@ -3,7 +3,7 @@
 
 
         <template v-slot:sidebar>
-            <SidebarUsers></SidebarUsers>
+            <SidebarUsers filter="true" @update="setFilterUsers"></SidebarUsers>
         </template>
 
         <div class="template_box style_for_table">
@@ -36,7 +36,8 @@ export default {
     },
     data() {
         return {
-            requests: {}
+            requests: {},
+            filter: 0
         }
     },
     methods: {
@@ -58,15 +59,29 @@ export default {
             this.$get(WITHDRAWAL_DECLINE, {id: id}).then()
         },
         getResults(page) {
+            let filter_url = '';
+
             if (typeof page === 'undefined') {
                 page = 1;
             }
 
-            this.$get(WITHDRAWAL + '?page=' + page)
+            if (this.filter) {
+                filter_url = '&filter=' + this.filter;
+            }
+
+            this.$get(WITHDRAWAL + '?page=' + page + filter_url)
                 .then(response => {
                     this.requests = response.data;
                 });
         },
+        setFilterUsers(user_id) {
+            this.filter = user_id;
+
+            this.$get(WITHDRAWAL + '?page=1&filter=' + user_id)
+                .then(response => {
+                    this.requests = response.data;
+                });
+        }
     },
     mounted() {
         this.getResults();
