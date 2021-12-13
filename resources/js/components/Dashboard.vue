@@ -95,7 +95,7 @@
                                 <users-popup
                                     :title="'Выполнили активности'"
                                     classButton="dashboard_study__info-button"
-                                    id="test_status_active"
+                                    :id="'test_status_active' + content.id"
                                     index="1"
                                     v-if="content.test_status_active"
                                     :project_id="project.project.id"
@@ -107,7 +107,7 @@
                                 <users-popup
                                     :title="'Не выполнили активности'"
                                     classButton="dashboard_study__info-button"
-                                    id="test_status_not_active"
+                                    :id="'test_status_not_active' + content.id"
                                     index="0"
                                     v-if="content.test_status_not_active"
                                     :project_id="project.project.id"
@@ -119,7 +119,7 @@
                                 <users-popup
                                     :title="'Не участвовали'"
                                     classButton="dashboard_study__info-button"
-                                    id="test_status_not_participate"
+                                    :id="'test_status_not_participate' + content.id"
                                     index="2"
                                     v-if="content.test_status_not_participate"
                                     :project_id="project.project.id"
@@ -148,7 +148,7 @@
                                 <users-popup
                                     :title="'Выполнили активности'"
                                     classButton="dashboard_study__info-button"
-                                    id="article_status_active"
+                                    :id="'article_status_active' + content.id"
                                     index="1"
                                     v-if="content.article_status_active"
                                     :project_id="project.project.id"
@@ -160,7 +160,7 @@
                                 <users-popup
                                     :title="'Не выполнили активности'"
                                     classButton="dashboard_study__info-button"
-                                    id="article_status_not_active"
+                                    :id="'article_status_not_active' + content.id"
                                     index="0"
                                     v-if="content.article_status_not_active"
                                     :project_id="project.project.id"
@@ -172,7 +172,7 @@
                                 <users-popup
                                     :title="'Не участвовали'"
                                     classButton="dashboard_study__info-button"
-                                    id="article_status_not_participate"
+                                    :id="'article_status_not_participate' + content.id"
                                     index="2"
                                     v-if="content.article_status_not_participate"
                                     :project_id="project.project.id"
