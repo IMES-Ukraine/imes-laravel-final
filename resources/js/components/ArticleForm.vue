@@ -379,12 +379,12 @@ export default {
                 error = true;
             }
 
-            if (!this.article.title) {
+            if (!this.article.title || !this.article.title.trim()) {
                 this.title_error = 'Название обязательно'
                 error = true;
             }
 
-            if (!this.article.excerpt) {
+            if (!this.article.excerpt || !this.article.excerpt.trim()) {
                 this.text_error = 'Описание обязательно'
                 error = true;
             }
