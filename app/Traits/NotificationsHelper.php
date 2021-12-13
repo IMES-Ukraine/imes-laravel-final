@@ -11,17 +11,18 @@ use Kreait\Firebase\Messaging\CloudMessage;
 trait NotificationsHelper
 {
 
-    private function defaultPayload($text){
+    private function defaultPayload($text, $title){
         return [
-            //'body' => $text,
-            'title' => $text,
+            'body' => $text,
+            'title' => $title,
             'sound' => 'default',
             'badge' => 1
         ];
     }
 
-    protected function sendNotificationToAll($type, $text, $extraFields = []) {
+    protected function sendNotificationToAll($type, $text, $extraFields = [], $title = '') {
 
+        $title = $title??$text;
         $userTokens = User::whereNotNull('messaging_token')->pluck( 'messaging_token')->toArray();
         $users = User::where('is_activated', 1)->pluck( 'id')->toArray();
 
@@ -30,7 +31,7 @@ trait NotificationsHelper
         $notification->user_id = 0;
         $notification->type = $type;
         $notification->text = [
-            'title' => $text,
+            'title' => $title,
             'content' => $text,
         ];
         if(isset( $extraFields['action'])) {
@@ -44,16 +45,18 @@ trait NotificationsHelper
 
         foreach ( $userTokens as $token){
 
-            $this->sendNotification(
-                $token,
-                $this->defaultPayload($text),
-                array_merge([
-                    'user_id' => $notification->user_id,
-                    'type' => $notification->type,
-                    'action' => $notification->action,
-                ], $extraFields),
-                $type
-            );
+            if ($token) {
+                $this->sendNotification(
+                    $token,
+                    $this->defaultPayload($text, $title),
+                    array_merge([
+                        'user_id' => $notification->user_id,
+                        'type' => $notification->type,
+                        'action' => $notification->action,
+                    ], $extraFields),
+                    $type
+                );
+            }
         }
 
         foreach ( $users as $userId) {
@@ -79,11 +82,13 @@ trait NotificationsHelper
 
     protected function sendNotificationToUser( User $user, $type, $text, $extraFields = [], $title = '') {
 
+        $title = $title??$text;
+
         $notification = new Notifications();
         $notification->user_id = $user->id;
         $notification->type = $type;
         $notification->text = [
-            'title' => $title??$text,
+            'title' => $title,
             'content' => $text,
         ];
         if(isset( $extraFields['action'])) {
@@ -95,7 +100,7 @@ trait NotificationsHelper
 
         $this->sendNotification(
             $user->messaging_token,
-            $this->defaultPayload($text),
+            $this->defaultPayload($text, $title),
             array_merge([
                 'user_id' => $notification->user_id,
                 'type' => $notification->type,
@@ -127,23 +132,13 @@ trait NotificationsHelper
 
         $messaging = $this->createMessaging();
 
-
-        $subscriptionResult = $messaging->subscribeToTopic(Notifications::TOPIC_MAPPING[$type], $userToken);
-        foreach ( $subscriptionResult[Notifications::TOPIC_MAPPING[$type]] as $key => $value) {
-            $topicKey = $key;
-            break;
-        }
-
         $message = CloudMessage::fromArray([
-            //'condition' => $condition,
-            'topic' => Notifications::TOPIC_MAPPING[$type],//array_key_first( $result['balance']),
-            'to' => $topicKey,
+            'token' => $userToken,
             'notification' => $msg, // optional
             'data'  => $data,
         ]);
 
-        $vare = $messaging->send($message);
-        //echo $vare;
+        $var = $messaging->send($message);
     }
 
     /**
