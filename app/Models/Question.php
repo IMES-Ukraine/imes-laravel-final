@@ -118,7 +118,7 @@ class Question
         $options[] =
             [
                 'type' => 'to_learn',
-                'data' => $question['article_id'] ?? '',
+                'data' => ( (int)$question['article_id'] ) ?? null,
             ];
 
         if (isset($question['question']['video']) && isset($question['question']['video']['id'])) {

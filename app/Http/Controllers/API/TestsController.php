@@ -76,11 +76,19 @@ class TestsController extends Controller
 
         $data = json_decode($data->toJSON());
 
+        // Временный костыль - типизация уже сохраненных данных.
+        // Потом можно убрать.
+        foreach ($data->data as &$item) {
+            if (isset($item->options[0])) {
+                $item->options[0]->data = (int)$item->options[0]->data;
+                $item->research_id = (int)$item->research_id;
+            }
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success. ' . $userModel->id, $data);
+        }
+
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
     }
-
 
 
     public function callback($id)
@@ -115,14 +123,24 @@ class TestsController extends Controller
 
         if (!empty($test)) {
             $data = $test->toArray();
-           if (!$test->isOpened){
-               $model = new TestOpened();
-               $model->user_id = $apiUser->id;
-               $model->test_id = $id;
-               $model->save();
-           }
+            if (!$test->isOpened) {
+                $model = new TestOpened();
+                $model->user_id = $apiUser->id;
+                $model->test_id = $id;
+                $model->save();
+            }
             $passed = new PassingProvider($apiUser);
-           $passed->setId(Passing::PASSING_NOT_ACTIVE);
+            $passed->setId($test, $test->id, Passing::PASSING_NOT_ACTIVE);
+
+
+            // Временный костыль - типизация уже сохраненных данных.
+            // Потом можно убрать.
+            if (isset($data['options'][0])) {
+                $data['options'][0]['data'] = (int)$data['options'][0]['data'];
+                $data['research_id'] = (int)$data['research_id'];
+            }
+
+
             return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
         }
 
