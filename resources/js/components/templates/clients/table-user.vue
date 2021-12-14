@@ -8,7 +8,7 @@
                 <th class="db__th">ПІБ</th>
                 <th class="db__th">Реєстраційні дані</th>
                 <th class="db__th">Бали</th>
-                <th class="db__th">Веріфікований?</th>
+                <!--<th class="db__th">Веріфікований?</th>-->
                 <th class="db__th">Управлiння</th>
             </tr>
 
