@@ -95,6 +95,7 @@ export default {
                     img: null,
                     video: null,
                 },
+                isCheckedVariant: true
             },
             variantTemplate: {
                 itemId: '',
