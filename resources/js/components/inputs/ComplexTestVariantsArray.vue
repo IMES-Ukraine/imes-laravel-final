@@ -5,7 +5,7 @@
             <div class="articles_create-line"></div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="variants">
+                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" @click="$emit('input', $event.target.value)" value="variants">
                     <i></i>
                     <p>Готовый <br>ответ</p>
                 </div>
@@ -30,7 +30,7 @@
 
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="text">
+                    <input type="radio" :name="'type-'+variant.itemId" @click="$emit('input', $event.target.value)" v-model="localType" value="text">
                     <i></i>
                     <p>Поле ввода ответа</p>
                 </div>
@@ -40,7 +40,7 @@
             </div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="media">
+                    <input type="radio" :name="'type-'+variant.itemId" @click="$emit('input', $event.target.value)" v-model="localType" value="media">
                     <i></i>
                     <p>Медиа</p>
                 </div>
