@@ -8,6 +8,7 @@
                     <input type="radio"
                            :name="'answer_'+variant.itemId"
                            value="variants"
+                           @click="$emit('input', $event.target.value)"
                            v-model="localType"/>
                     <i></i>
                     <p>Готовый <br>ответ</p>
@@ -35,6 +36,7 @@
                 <div class="articles_create__item-title has_radio">
                     <input type="radio" :name="'answer_'+variant.itemId"
                            value="text"
+                           @click="$emit('input', $event.target.value)"
                            v-model="localType"
                     />
                     <i></i>
@@ -50,6 +52,7 @@
                     <input type="radio"
                            v-model="localType"
                            value="media"
+                           @click="$emit('input', $event.target.value)"
                            :name="'answer_'+variant.itemId"/>
                     <i></i>
                     <p>Медиа</p>
