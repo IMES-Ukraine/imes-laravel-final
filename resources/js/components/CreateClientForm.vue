@@ -137,7 +137,9 @@ export default {
                 this.errors.name = 'Укажите имя';
             }
             if (!this.email) {
-                this.errors.email = 'Укажите email';
+                this.errors.email = 'Укажите Email';
+            } else if (!this.validEmail(this.email)) {
+                this.errors.email = 'Не верно указан Email';
             }
             this.phone = this.$refs['phone-input'].value;
             if (!this.phone) {
