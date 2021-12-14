@@ -173,9 +173,21 @@ export default {
                 }
             }
         },
+        typeComplexAnswerText(variants) {
+            for (const index in variants) {
+                if (index > 0) {
+                    document.getElementById('block-' + index + '-' + variants[index].itemId).classList.add('hide');
+                }
+            }
+        },
         typeAnswerOther(variants) {
             for (const index in variants) {
                 document.getElementById('block-' + index).classList.remove('hide');
+            }
+        },
+        typeComplexAnswerOther(variants) {
+            for (const index in variants) {
+                document.getElementById('block-' + index + '-' + variants[index].itemId).classList.remove('hide');
             }
         },
 
