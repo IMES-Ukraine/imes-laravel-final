@@ -60,9 +60,10 @@
                 </div>
             </div>
             <SimpleTestVariants :test.sync="test"
-                                :errors.sync="errors" />
+                                :errors.sync="errors"
+                                @input="getRadioType" />
 
-            <button class="articles_create-submit button-border mtb20" type="button"
+            <button class="articles_create-submit button-border mtb20" v-if="isCheckedVariant" type="button"
                     @click="addAnswerTest(test.question.variants.length)">добавить ответ
             </button>
             <div class="articles_create-line"></div>
@@ -230,6 +231,7 @@ export default {
 
             isCheckedFile: false,
             isCheckedVideo: false,
+            isCheckedVariant: true,
             coverError: ''
         }
     },
@@ -245,7 +247,15 @@ export default {
         },
     },
     computed: {},
-    methods: {},
+    methods: {
+        getRadioType (value) {
+            this.isCheckedVariant = true;
+
+            if (value == 'text') {
+                this.isCheckedVariant = false;
+            }
+        }
+    },
     mounted() {
         if (!this.test.question.variants.length) {
             this.addAnswerTest(0);
