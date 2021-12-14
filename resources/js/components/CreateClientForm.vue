@@ -160,7 +160,7 @@ export default {
                     if (resp.status === 200) {
                         this.$bvModal.msgBoxOk('Пользователь успешно создан')
                             .then(value => {
-                                this.$router.push({name: 'clients'});
+                                this.$router.push({name: 'verification'});
                             });
                     }
                     console.log('Mess: ', resp.data.data);
