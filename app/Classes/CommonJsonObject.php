@@ -7,9 +7,11 @@ class CommonJsonObject
     public function __construct($data = [])
     {
 
-        foreach ($data as $key => $value){
-            if (in_array($key, array_keys(get_class_vars(static::class) ) ) ){
-                $this->$key = $value;
+        if ($data) {
+            foreach ($data as $key => $value) {
+                if (in_array($key, array_keys(get_class_vars(static::class)))) {
+                    $this->$key = $value;
+                }
             }
         }
     }
