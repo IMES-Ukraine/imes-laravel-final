@@ -7,11 +7,11 @@
         <td class="db__td is-id">
             {{ request.id }}
         </td>
-        <td class="db__td is-account" v-if="request.name">
-            {{ request.name }}
+        <td class="db__td is-account" v-if="request.basic_information.name">
+            {{ request.basic_information.name }} {{ request.basic_information.surname }}
         </td>
         <td class="db__td is-account" v-else>
-            {{ request.username}}
+            {{ request.name }}
         </td>
         <td class="db__td">
             <button type="button" class="db__button"
