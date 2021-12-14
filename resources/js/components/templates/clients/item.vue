@@ -25,9 +25,9 @@
         <td class="db__td">
             {{ request.balance }}
         </td>
-        <td class="db__td">
+        <!--<td class="db__td">
             {{ request.is_verified ? 'Так' : 'Ні' }}
-        </td>
+        </td>-->
         <td class="db__td is-action">
             <div class="db__check" :data-request-data="request.id">
                 <div class="db__check-info" :id="'check-info-' + request.id">{{ activeTextBlockUser(request.is_activated) }}</div>

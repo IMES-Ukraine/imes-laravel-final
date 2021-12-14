@@ -39,7 +39,7 @@ class UsersController extends Controller
 
     public function index()
     {
-        $users = $this->user->orderBy('id','desc')->paginate();
+        $users = $this->user->orderBy('id','desc')->isVerified()->paginate();
         $data = json_decode($users->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 

@@ -19,9 +19,6 @@ class AdminController extends BaseController
     use NotificationsHelper;
     public $helpers;
 
-    const USER_IS_VERIFIED_FALSE = 0;
-    const USER_IS_VERIFIED_TRUE = 1;
-
     public function __construct(Helpers $helpers)
     {
         $this->helpers = $helpers;
@@ -100,7 +97,7 @@ class AdminController extends BaseController
     public function acceptVerification($id): JsonResponse
     {
         $user = User::find( $id );
-        $user->is_verified = self::USER_IS_VERIFIED_TRUE;
+        $user->is_verified = User::USER_IS_VERIFIED_TRUE;
         $user->save();
 
         // после подтверждения удаляем заявку из таблицы заявок
