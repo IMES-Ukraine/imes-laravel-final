@@ -258,12 +258,9 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
     }
 
-    public
-    function destroy($id)
+    public function destroy($id)
     {
-
-        $this->user->where('id', $id)->delete();
-        //return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
+        User::find($id)->user_cards()->delete();
     }
 
     public
