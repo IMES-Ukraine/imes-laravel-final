@@ -155,7 +155,7 @@
                                 </div>
                             </div>
                             <template v-if="complex_moderations">
-                                <div class="study__block" v-for="(complex_test, key) in tests" v-if="complex_test.test_type=='child'">
+                                <div class="study__block" v-for="(complex_test, key) in tests" v-if="complex_test.test_type=='child' && complex_test.answer_type=='text'">
 
                                     <p class="study__block-title">Вопрос: <b>{{ complex_test.question }}</b></p>
 
