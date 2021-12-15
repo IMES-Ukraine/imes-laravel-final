@@ -235,7 +235,6 @@ class User extends Authenticatable implements JWTSubject
             'phone' => $phone,
             'email' => $email ?? '',
         ]);
-Log::info('UserInfo: ', $userInfo->toArray());
         return self::create([
             'phone' => $phone,
             'name' => $name ?? $phone,
@@ -248,6 +247,7 @@ Log::info('UserInfo: ', $userInfo->toArray());
             'messaging_token' => env('MESSAGING_TOKEN')
         ]);
     }
+
 
     /**
      * Get the cards of the users
