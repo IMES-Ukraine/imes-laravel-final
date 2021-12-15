@@ -12,7 +12,7 @@
                 <project-close/>
                 <project-alert-test/>
                 <form class="articles_create-box">
-                    <div v-if="currentStep == 1 || currentStep == 5">
+                    <template v-if="currentStep == 1 || currentStep == 5">
                         <div class="articles_create-block">
                             <div class="articles_create__item">
                                 <p class="articles_create__item-title">Обложка</p>
@@ -161,7 +161,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
                     <div v-if="currentStep == 2">
                        <p class="articles_create-title">Створення пакета контента</p>
                         <content-pack :key="contentTitle"/>
