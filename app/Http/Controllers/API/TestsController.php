@@ -179,9 +179,11 @@ class TestsController extends Controller
         $passed = new PassingProvider($apiUser);
 
         $variants = $request->post('data');
-        Log::info('Submitted test', [$variants]);
+        Log::info('Submitted test', $request->post);
+
         $variant = reset($variants);
         $submittedTest = TestQuestions::find($variant['test_id']);
+
 
         if (!$submittedTest->can_retake && in_array($variant['test_id'], $passed->getIds(TestQuestions::class))) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', [
@@ -194,8 +196,13 @@ class TestsController extends Controller
         }
         $passedModel = $passed->setId($submittedTest, $submittedTest->id, Passing::PASSING_ACTIVE, $variants);
 
+        $finalTest = true;
         if ($submittedTest->test_type == TestQuestions::TYPE_CHILD) {
 
+            // Для сложного теста проверяем на то, финальный ли запрос.
+            if (!isset($variants[1])) {
+                $finalTest = false;
+            }
             $parentId = $submittedTest->parent_id;
             //$rootTest = Test::find($parentId);
             $rootTest = TestQuestions::find($parentId);

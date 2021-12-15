@@ -150,7 +150,8 @@ export default {
             }
 
             if (!Object.keys(this.errors).length) {
-
+                let this_reference = this;
+                let router = this.$router;
                 axios.post(USER, {
                     name: this.name,
                     email: this.email,
@@ -158,14 +159,16 @@ export default {
                     password: this.password
                 }).then((resp) => {
                     if (resp.status === 200) {
-                        this.$bvModal.msgBoxOk('Пользователь успешно создан')
-                            .then(value => {
-                                this.$router.push({name: 'verification'});
+                        this_reference.$bvModal.msgBoxOk('Пользователь успешно создан')
+                            .then(() => {
+                                router.push('/verification');
                             });
                     }
-                    console.log('Mess: ', resp.data.data);
+                    else {
+                        console.log(resp.data);
+                    }
                 }).catch(resp => {
-                    this.$bvModal.msgBoxOk("Возникла ошибка: " + resp.data.data.error);
+                    this_reference.$bvModal.msgBoxOk("Возникла ошибка: " + resp.data.data.error);
                 });
             }
 
