@@ -86,6 +86,9 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, JWT, JsonFieldTrait;
 
+    const USER_IS_VERIFIED_FALSE = 0;
+    const USER_IS_VERIFIED_TRUE = 1;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -172,6 +175,10 @@ class User extends Authenticatable implements JWTSubject
             $in_tests = $query_test->distinct();
             $query->orWhereIn('id', $in_tests);
         }
+    }
+
+    public function scopeIsVerified($query) {
+        $query->where('is_verified', self::USER_IS_VERIFIED_TRUE);
     }
 
     /**

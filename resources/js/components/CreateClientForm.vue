@@ -137,7 +137,9 @@ export default {
                 this.errors.name = 'Укажите имя';
             }
             if (!this.email) {
-                this.errors.email = 'Укажите email';
+                this.errors.email = 'Укажите Email';
+            } else if (!this.validEmail(this.email)) {
+                this.errors.email = 'Не верно указан Email';
             }
             this.phone = this.$refs['phone-input'].value;
             if (!this.phone) {
@@ -158,7 +160,7 @@ export default {
                     if (resp.status === 200) {
                         this.$bvModal.msgBoxOk('Пользователь успешно создан')
                             .then(value => {
-                                this.$router.push({name: 'clients'});
+                                this.$router.push({name: 'verification'});
                             });
                     }
                     console.log('Mess: ', resp.data.data);

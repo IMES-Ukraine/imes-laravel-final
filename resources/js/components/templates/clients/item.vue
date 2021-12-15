@@ -7,11 +7,11 @@
         <td class="db__td is-id">
             {{ request.id }}
         </td>
-        <td class="db__td is-account" v-if="request.name">
-            {{ request.name }}
+        <td class="db__td is-account" v-if="request.basic_information.name">
+            {{ request.basic_information.name }} {{ request.basic_information.surname }}
         </td>
         <td class="db__td is-account" v-else>
-            {{ request.username}}
+            {{ request.name }}
         </td>
         <td class="db__td">
             <button type="button" class="db__button"
@@ -25,9 +25,9 @@
         <td class="db__td">
             {{ request.balance }}
         </td>
-        <td class="db__td">
+        <!--<td class="db__td">
             {{ request.is_verified ? 'Так' : 'Ні' }}
-        </td>
+        </td>-->
         <td class="db__td is-action">
             <div class="db__check" :data-request-data="request.id">
                 <div class="db__check-info" :id="'check-info-' + request.id">{{ activeTextBlockUser(request.is_activated) }}</div>

@@ -64,9 +64,9 @@
                             </div>
                         </div>
                     </div>
-                    <ComplexTestVariants :toValidate="toValidate" :errors="errorsParent" :i="index" :question.sync="question"/>
+                    <ComplexTestVariants :toValidate="toValidate" @input="getRadioType($event, index)" :errors="errorsParent" :i="index" :question.sync="question"/>
 
-                    <button class="articles_create-submit button-border mtb20" type="button"
+                    <button class="articles_create-submit button-border mtb20" type="button" v-if="question.isCheckedVariant"
                             @click="addAnswerTest(question.variants.length, index + 1)">добавить ответ
                     </button>
                     <div class="articles_create-line"></div>
@@ -136,6 +136,13 @@ export default {
                 }
             }
         },
+        getRadioType (value, index) {
+            this.complex_question[index].isCheckedVariant = true;
+
+            if (value == 'text') {
+                this.complex_question[index].isCheckedVariant = false;
+            }
+        }
     },
     validations: {
         text: {

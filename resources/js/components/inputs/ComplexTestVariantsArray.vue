@@ -1,16 +1,16 @@
 <template>
     <div>
         <div class="articles_create-block" v-for="(variant, index) in question.variants" v-bind:key="variant.itemId"
-             :id="'block-'+index">
+             :id="'block-'+index+'-'+variant.itemId">
             <div class="articles_create-line"></div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="variants">
+                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" @click="$emit('input', $event.target.value)" value="variants">
                     <i></i>
                     <p>Готовый <br>ответ</p>
                 </div>
                 <div class="articles_create__item-content">
-                    <div v-if="!isText" class="articles_create__ready_answer">
+                    <div v-if="!question.isText" class="articles_create__ready_answer">
                         <p class="articles_create__ready_answer-letter">{{ variant.variant }}</p>
                         <input v-if="localType === 'variants'" type="text" v-model="variant.title">
 
@@ -30,17 +30,17 @@
 
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="text">
+                    <input type="radio" :name="'type-'+variant.itemId" @click="$emit('input', $event.target.value)" v-model="localType" value="text">
                     <i></i>
                     <p>Поле ввода ответа</p>
                 </div>
-                <div  v-if="isText" class="articles_create__item-content">
+                <div  v-if="question.isText" class="articles_create__item-content">
                     <textarea v-model.lazy="variant.description"></textarea>
                 </div>
             </div>
             <div class="articles_create__item">
                 <div class="articles_create__item-title has_radio">
-                    <input type="radio" :name="'type-'+variant.itemId" v-model="localType" value="media">
+                    <input type="radio" :name="'type-'+variant.itemId" @click="$emit('input', $event.target.value)" v-model="localType" value="media">
                     <i></i>
                     <p>Медиа</p>
                 </div>
@@ -178,11 +178,11 @@ export default {
             this.question.type = this.localType;
             this.errorsLocal = [];
             if (this.localType === 'text') {
-                this.isText = true;
-                this.typeAnswerText(this.question.variants);
+                this.question.isText = true;
+                this.typeComplexAnswerText(this.question.variants);
             } else {
-                this.isText = false;
-                this.typeAnswerOther(this.question.variants);
+                this.question.isText = false;
+                this.typeComplexAnswerOther(this.question.variants);
             }
         },
         toValidate() {

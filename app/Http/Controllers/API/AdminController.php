@@ -97,7 +97,7 @@ class AdminController extends BaseController
     public function acceptVerification($id): JsonResponse
     {
         $user = User::find( $id );
-        $user->is_verified = 1;
+        $user->is_verified = User::USER_IS_VERIFIED_TRUE;
         $user->save();
 
         // после подтверждения удаляем заявку из таблицы заявок

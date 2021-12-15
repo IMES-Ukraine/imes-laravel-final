@@ -3,9 +3,9 @@
         <router-button :icon="'has-icon-plus'" :isActive="(this.$route.path === '/client/new')?true:false" :url="'/client/new'">
             Добавить
         </router-button>
-        <router-button :icon="'has-icon-arrow'" :isActive="(this.$route.path === '/requests')?true:false" :url="'/requests'">
+        <!--<router-button :icon="'has-icon-arrow'" :isActive="(this.$route.path === '/requests')?true:false" :url="'/requests'">
             Запросы
-        </router-button>
+        </router-button>-->
         <router-button :icon="'has-icon-arrow'" :isActive="(this.$route.path === '/verification')?true:false" :url="'/verification'">
             Верификация
         </router-button>

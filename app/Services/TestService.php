@@ -4,6 +4,7 @@ namespace App\Services;
 
 
 use App\Models\File;
+use App\Models\QuestionModeration;
 use App\Models\TestQuestions as TestModel;
 use App\Models\TestQuestions;
 
@@ -87,4 +88,30 @@ class TestService
         return TestQuestions::select('passing_bonus')->where('id', $test_id)->pluck('passing_bonus');
     }
 
+    /**
+     * Return success answer
+     * @param $content_id
+     * @param $user_id
+     * @return boolean
+     */
+    public static function getAnswerCorrect($content_id, $user_id)
+    {
+        $success = true;
+        $tests = TestQuestions::where('research_id', $content_id)->all();
+
+        foreach ($tests as $test) {
+            if ($test->answer_type == 'text') {
+                $test_moderation = QuestionModeration::where('user_id', $user_id)->where('question_id', $test->id)->pluck('status');
+
+                if (isset($test_moderation[0]) && $test_moderation[0] != 'accept') {
+                    $success = false;
+                    break;
+                }
+            } else {
+                //
+            }
+        }
+
+        return $success;
+    }
 }
