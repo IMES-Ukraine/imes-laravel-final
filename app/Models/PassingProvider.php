@@ -34,6 +34,7 @@ class PassingProvider
         $model->user_id = $this->user->id;
         $model->status = $status;
         $model->answer = $userVariants;
+        $model->save();
 
         return $model;
     }
