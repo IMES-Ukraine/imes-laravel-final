@@ -35,7 +35,7 @@ class PassingProvider
         $model->status = $status;
         $model->answer = $userVariants;
 
-        return $model->save();
+        return $model;
     }
 
 }

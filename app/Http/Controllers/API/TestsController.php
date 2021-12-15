@@ -191,7 +191,7 @@ class TestsController extends Controller
                 'user' => $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray(),
             ]);
         }
-        $passed->setId($submittedTest, $submittedTest->id, Passing::PASSING_ACTIVE, $variants);
+        $passedModel = $passed->setId($submittedTest, $submittedTest->id, Passing::PASSING_ACTIVE, $variants);
 
         if ($submittedTest->test_type == TestQuestions::TYPE_CHILD) {
 
@@ -243,7 +243,7 @@ class TestsController extends Controller
             $userPassingBonus = 0;
 
             if ($accountingAnswersCount > 0) {
-                //если есть вопросы с выбором ответов. Считаем сумму полученных бонусов
+                // Если есть вопросы с выбором ответов. Считаем сумму полученных бонусов
                 $correctAnswersPercent = ($correctAnswersCount / $accountingAnswersCount) * 100;
                 switch (true) {
                     case ($correctAnswersPercent < 20):
@@ -263,6 +263,9 @@ class TestsController extends Controller
                 $testStatus = TestQuestions::STATUS_PASSED;
                 $userPassingBonus = $fullPassingBonus;
             }
+
+            $passedModel->result = $userPassingBonus > 0;
+            $passedModel->save();
 
             $apiUser->balance = $apiUser->balance + $userPassingBonus;
             $apiUser->save();
