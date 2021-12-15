@@ -39,7 +39,7 @@ class UsersController extends Controller
 
     public function index()
     {
-        $users = $this->user->orderBy('id','desc')->isVerified()->paginate();
+        $users = $this->user->orderBy('id', 'desc')->isVerified()->paginate();
         $data = json_decode($users->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
@@ -77,12 +77,12 @@ class UsersController extends Controller
         if ($status == self::STATUS_NOT_PARTICIPATE) {
             $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
                 ->whereNull('ulogic_projects_passing.user_id')
-                ->orWhereRaw('(status = ' . $status . ' AND `entity_type` LIKE "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+                ->orWhereRaw('(status = ' . $status . ' AND `entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_TEST . '" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
                 ->paginate(self::COUNT_PER_PAGE);
         } else {
             $results = Passing::with('user')
                 ->with('withdraw')
-                ->whereRaw('(status = ' . $status . ' AND `entity_type` LIKE "'.Passing::PASSING_ENTITY_TYPE_TEST.'" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+                ->whereRaw('(status = ' . $status . ' AND `entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_TEST . '" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
                 ->paginate(self::COUNT_PER_PAGE);
         }
 
@@ -98,12 +98,12 @@ class UsersController extends Controller
         if ($status == self::STATUS_NOT_PARTICIPATE) {
             $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
                 ->whereNull('ulogic_projects_passing.user_id')
-                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` LIKE "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
+                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_POST . '" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
                 ->paginate(self::COUNT_PER_PAGE);
         } else {
             $results = Passing::with('user')
                 ->with('withdraw')
-                ->whereRaw('(status = '.$status.' AND `entity_type` LIKE "'.Passing::PASSING_ENTITY_TYPE_POST.'" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
+                ->whereRaw('(status = ' . $status . ' AND `entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_POST . '" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
                 ->paginate(self::COUNT_PER_PAGE);
         }
 
@@ -118,12 +118,33 @@ class UsersController extends Controller
             ->with('withdraw')
             ->where('entity_type', 'LIKE', Passing::PASSING_ENTITY_TYPE_TEST)
             ->where('entity_id', $test_id)
-            ->where('answer','LIKE','%'.$variant.'%')
+            ->where('answer', 'LIKE', '%' . $variant . '%')
             ->paginate(self::COUNT_PER_PAGE);
 
         $data = json_decode($results->toJSON());
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+    }
+
+    private function validateUser($data, $user = null)
+    {
+        $errors = '';
+
+//        Проверяем наличие такого телефона. Плюс вначале игнорируем
+        $userPhone = User::findByUsername($this->helpers->generateUserName($data['phone']));
+        if ($userPhone) {
+            if (!$user || $user->id != $userPhone->id) {
+                $errors .= 'Такой телефон уже зарегистрирован; ';
+            }
+        }
+
+        $userEmail = User::findByEmail($data['email']);
+        if ($userEmail) {
+            if (!$user || $user->id != $userEmail->id) {
+                $errors .= 'Такой email уже зарегистрирован';
+            }
+        }
+        return $errors;
     }
 
     public function create(Request $request)
@@ -132,13 +153,8 @@ class UsersController extends Controller
         $phone = str_replace('+', '', $phone);
         $email = $request->post('email');
 
-//        Проверяем наличие такого телефона. Плюс вначале игнорируем
-        if (User::findByUsername($this->helpers->generateUserName($phone)) ){
-            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'phone', 'error' => 'Такой телефон уже зарегистрирован']);
-        }
-
-        if (User::findByEmail($email) ){
-            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'email', 'error' => 'Такой email уже зарегистрирован']);
+        if ($errors = $this->validateUser(['email' => $email, 'phone' => $phone])) {
+            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['error' => $errors]);
         }
 
         $password = Hash::make($request->post('password'));
@@ -152,7 +168,7 @@ class UsersController extends Controller
         $verificationRequest->user_id = $user->id;
         $verificationRequest->save();
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $user->getAttributes() );
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $user->getAttributes());
     }
 
 
@@ -212,14 +228,18 @@ class UsersController extends Controller
 
     public function update($id, Request $request)
     {
+        $user = $this->user->find($id);
 
         $data = $request->input('data');
+        $data['phone'] = filter_var($data['phone'], FILTER_SANITIZE_NUMBER_INT);
+        $data['phone'] = str_replace('+', '', $data['phone']);
 
-        if (User::where('email', $data['email'])->first()) {
-            return $this->helpers->apiArrayResponseBuilder(400, 'Пользователь с таким Email уже существует!');
+        if ($errors = $this->validateUser($data, $user)) {
+            return $this->helpers->apiArrayResponseBuilder(201, 'error', ['error' => $errors]);
         }
 
-        $status = $this->user->where('id', $id)->update( $data);
+
+        $status = $user->update($data);
 
         if ($status) {
 
