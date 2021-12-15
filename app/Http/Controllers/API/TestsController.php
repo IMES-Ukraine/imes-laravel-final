@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Http\Helpers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\ProjectItems;
@@ -178,7 +179,7 @@ class TestsController extends Controller
         $passed = new PassingProvider($apiUser);
 
         $variants = $request->post('data');
-
+        Log::info('Submitted test', [$variants]);
         $variant = reset($variants);
         $submittedTest = TestQuestions::find($variant['test_id']);
 
@@ -209,7 +210,7 @@ class TestsController extends Controller
             $fullPassingBonus = $submittedTest->passing_bonus;
         }
 
-        //$userVariants = [];
+        $userVariants = [];
 
 
         if ($submittedTest->answer_type !== Question::ANSWER_TEXT) {
