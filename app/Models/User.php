@@ -242,4 +242,13 @@ class User extends Authenticatable implements JWTSubject
             'messaging_token' => env('MESSAGING_TOKEN')
         ]);
     }
+
+    /**
+     * Get the cards of the users
+     *
+     */
+    public function user_cards()
+    {
+        return $this->hasMany(UserCards::class);
+    }
 }
