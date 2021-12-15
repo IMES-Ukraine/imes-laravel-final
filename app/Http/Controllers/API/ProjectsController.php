@@ -264,8 +264,8 @@ class ProjectsController extends Controller
 
         $data = [
             'agreement' => $agreement,
-            'research_id' => $id,
-            'project_id' => $research->project_id
+            'research_id' => (int)$id,
+            'project_id' => (int)$research->project_id
         ];
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }

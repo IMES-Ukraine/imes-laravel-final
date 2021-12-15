@@ -197,7 +197,7 @@
                                                     </div>
                                                     <div class="study__table-item">
                                                         <div class="study__table-controls">
-                                                            <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id, moderation.status)"></button>
+                                                            <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="acceptComplex(moderation.id, moderation.status, complex_test.id)"></button>
                                                             <button :class="(moderation.status=='cancel')?class_minus + ' active':class_minus" type="button" :disabled="(moderation.status=='accept')?true:false" @click="decline(moderation.id)"></button>
                                                         </div>
                                                     </div>
@@ -220,7 +220,7 @@
 
 <script>
     import FragmentCloseItem from "../../fragmets/close-item"
-    import {TEST, MODERATION, TEST_CONFIRMATION, TEST_DECLINE} from "../../../api/endpoints"
+    import {TEST, MODERATION, TEST_CONFIRMATION, TEST_COMPLEX_CONFIRMATION, TEST_DECLINE} from "../../../api/endpoints"
     import TestUsersPopup from "../../templates/dashboard/TestUsersPopup"
     import VPreloader from "../../fragmets/preloader"
 
@@ -329,6 +329,18 @@
                     this.$get(TEST_CONFIRMATION + "/" + id).then();
 
                     for (const [index, value] of Object.entries(this.moderations.data)) {
+                        if (value.id === id) {
+                            value.status = 'accept'
+                            return
+                        }
+                    }
+                }
+            },
+            async acceptComplex(id, status, test_id) {
+                if (status == 'pending') {
+                    this.$get(TEST_COMPLEX_CONFIRMATION + "/" + id + "/" + this.content_id).then();
+
+                    for (const [index, value] of Object.entries(this.moderations[test_id].data)) {
                         if (value.id === id) {
                             value.status = 'accept'
                             return

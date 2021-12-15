@@ -30,6 +30,30 @@ class TestModerationController extends Controller
     }
 
     /**
+     * accept the specified resource from storage.
+     *
+     * @param integer $id
+     * @param integer $content_id
+     */
+    public function acceptComplex($id, $content_id)
+    {
+        $model = QuestionModeration::findOrFail($id);
+        $model->status = QuestionModeration::TEST_MODERATION_ACCEPT;
+
+        if ($model->save()) {
+            $bonus = TestService::getTestBonus($model->question_id);
+
+            $success = TestService::getAnswerCorrect($content_id, $model->user_id);
+
+            if ($bonus && $success) {
+                $user = User::findOrFail($model->user_id);
+                $user->balance = $user->balance + $bonus[0];
+                $user->save();
+            }
+        }
+    }
+
+    /**
      * decline the specified resource from storage.
      *
      * @param integer $id

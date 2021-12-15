@@ -144,6 +144,7 @@ Route::group(
                 Route::get ('/',  [TestsController::class, 'index']);
                 Route::get('/{id}', [TestsController::class, 'show']);
                 Route::get('/accept/{id}', [TestModerationController::class, 'accept']);
+                Route::get('/accept-complex/{id}/{content_id}', [TestModerationController::class, 'acceptComplex']);
                 Route::get('/decline/{id}', [TestModerationController::class, 'decline']);
                 Route::delete('/{id}', [TestsController::class, 'destroy']);
                 Route::post('/', [TestsController::class, 'create']);
