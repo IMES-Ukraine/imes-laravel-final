@@ -17,16 +17,9 @@
                 <div class="modal-body p-0">
                     <div class="form-row">
                         <div class="form-group col-12">
-                            <label class="form-control__label">Ім'я</label>
+                            <label class="form-control__label">Имя, Фамилия</label>
                             <input class="form-control db-edit-modal__input" type="text"
                                    v-model="data.basic_information.name">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-12">
-                            <label class="form-control__label">Прізвище</label>
-                            <input class="form-control db-edit-modal__input" type="text"
-                                   v-model="data.basic_information.surname">
                         </div>
                     </div>
                     <div class="form-row">

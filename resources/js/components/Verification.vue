@@ -11,6 +11,7 @@
                 <div class="card">
                     <div class="card-body">
                         <verification-table
+                            :key="tableKey"
                             v-bind:requests="requests"
                             v-on:process="process"
                             v-on:onAcceptVerification="onAcceptVerification"
@@ -47,13 +48,14 @@ name: "Verification",
     data() {
         return {
             requests: [],
+            tableKey: Math.random()
         }
     },
     methods: {
         async loadVerifications() {
-
             this.$get(PROFILE_VERIFICATION_LIST).then( response => {
-                this.requests = response.data
+                this.requests = response.data;
+                this.tableKey =  Math.random();
             });
         },
         hasRequests() {
@@ -89,16 +91,12 @@ name: "Verification",
                 }
             }
         },
-        async onDeleteUser(id) {
-
-            this.$delete(CLIENTS_DELETE_USER + '/' + id).then()
-            $('#db-remove--' + id + ' .is-close').click();
-            for (const [index, value] of Object.entries(this.requests)) {
-                if (value.id === id) {
-                    this.requests.splice(index, 1)
-                    return
-                }
-            }
+        onDeleteUser(id) {
+            let this_reference = this;
+            axios.delete(CLIENTS_DELETE_USER + '/' + id).then(() => {
+                this_reference.loadVerifications();
+                $('#db-remove--' + id + ' .is-close').click();
+            });
         }
     },
     mounted() {

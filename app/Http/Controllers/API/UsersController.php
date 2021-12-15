@@ -133,7 +133,7 @@ class UsersController extends Controller
         $email = $request->post('email');
 
 //        Проверяем наличие такого телефона. Плюс вначале игнорируем
-        if (User::findByPhone($phone) ){
+        if (User::findByUsername($this->helpers->generateUserName($phone)) ){
             return $this->helpers->apiArrayResponseBuilder(201, 'error', ['field' => 'phone', 'error' => 'Такой телефон уже зарегистрирован']);
         }
 
@@ -142,21 +142,11 @@ class UsersController extends Controller
         }
 
         $password = Hash::make($request->post('password'));
-        $basic = new UserBasicInfo($request->post('basic_information'));
+
 
         // create a user
         /** @var User $user */
-        $user = User::create([
-            'name' => $basic->name ? $basic->name . $basic->surname : $phone,
-            'phone' => $phone,
-            'email' => $email,
-            'username' => $phone . '@imes.pro',
-            'password' => $password,
-            'basic_information' => $basic->toArray(),
-            'specialized_information' => (new UserSpecializedInfo() )->toArray(),
-            'financial_information' => (new UserFinancialInfo() )->toArray(),
-            'messaging_token' => 'eUpQSLg0fkqLqK8o7T5bD4:APA91bGfNkJ5cr8DXcLubsBlqBz7fSgz_BogwAC5muytt8jOF4VEk6_Vj9D_NMff0owflTvA9TFnEV-DneQJeUGshLktOjC2PUFsmSS4Gz_qTU7ycUh8Fbxi28i0h8pa28fL3jiuJ2g5'
-        ]);
+        $user = User::createNewUser($phone, $password, $request->post('name'), $email);
 
         $verificationRequest = new AccountVerificationRequests;
         $verificationRequest->user_id = $user->id;
@@ -188,10 +178,6 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    protected function generateUserId($id)
-    {
-        return 100000 + (int)$id;
-    }
 
     public function show($id)
     {
@@ -246,8 +232,7 @@ class UsersController extends Controller
         }
     }
 
-    public
-    function delete($id)
+    public function delete($id)
     {
 
         $this->user->where('id', $id)->delete();
@@ -261,6 +246,7 @@ class UsersController extends Controller
     public function destroy($id)
     {
         User::find($id)->user_cards()->delete();
+        $this->delete($id);
     }
 
     public

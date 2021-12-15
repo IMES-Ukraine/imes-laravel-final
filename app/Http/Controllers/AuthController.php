@@ -57,7 +57,7 @@ class AuthController extends Controller
 
         $username = $this->helpers->generateUserName($phone);
 
-        if (User::findByUserName($username)) {
+        if (User::findByUsername($username)) {
             return response()->json(['message' => 'такой пользователь уже зарегистрирован'], 401);
         }
 

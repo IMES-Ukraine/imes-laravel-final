@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -210,7 +211,7 @@ class User extends Authenticatable implements JWTSubject
      * Looks up a user by their username.
      * @return self|null
      */
-    public static function findByUserName($username)
+    public static function findByUsername($username)
     {
         if (!$username) {
             return null;
@@ -229,14 +230,19 @@ class User extends Authenticatable implements JWTSubject
     {
         $username = (new Helpers())->generateUserName($phone);
         $passwordHash = Hash::make($password ?? $username);
-
+        $userInfo = new UserBasicInfo([
+            'name' => $name ?? $phone,
+            'phone' => $phone,
+            'email' => $email ?? '',
+        ]);
+Log::info('UserInfo: ', $userInfo->toArray());
         return self::create([
             'phone' => $phone,
             'name' => $name ?? $phone,
             'username' => $username,
             'email' => $email ?? $username,
             'password' => $passwordHash,
-            'basic_information' => new UserBasicInfo(),
+            'basic_information' => $userInfo,
             'specialized_information' => new UserSpecializedInfo(),
             'financial_information' => new UserFinancialInfo(),
             'messaging_token' => env('MESSAGING_TOKEN')
@@ -251,4 +257,5 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(UserCards::class);
     }
+
 }
