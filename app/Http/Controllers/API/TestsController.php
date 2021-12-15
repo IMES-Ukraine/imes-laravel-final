@@ -231,7 +231,6 @@ class TestsController extends Controller
                     foreach ($correctAnswer as $answ) {
                         if (in_array($answ, $userVariants)) {
                             $correctAnswersCount++;
-                            $isRightAnswer = true;
                         }
                     }
                 }
