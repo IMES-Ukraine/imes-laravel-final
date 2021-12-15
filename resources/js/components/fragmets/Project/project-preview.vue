@@ -25,8 +25,8 @@
                         <div class="preview__study">
                             <p class="preview__study-title">{{item.title}}</p>
                             <div class="preview__study-list">
-                                <p class="preview__study-item">100 тестов</p>
-                                <p class="preview__study-item">100 статей</p>
+                                <p class="preview__study-item">{{ (item.test.title==null)?0:1 }} тестов</p>
+                                <p class="preview__study-item">{{ (item.article.title==null)?0:1 }} статей</p>
                             </div>
                         </div>
                         <button class="preview__block-more" type="button" @click="editContent(item.title)">Подробнее</button>
