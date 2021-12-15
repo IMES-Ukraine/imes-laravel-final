@@ -29,7 +29,7 @@ class Articles extends Post
     public function getIsAgreementAcceptedAttribute()
     {
         $userModel = auth()->user();
-        if ($userModel) {
+        if ($userModel && $this->research) {
             return (bool)ProjectsAgreement::where(['user_id' => $userModel->id])->where(['project_id' => $this->research->project_id])->count();
         }
         return false;
@@ -129,9 +129,11 @@ class Articles extends Post
 
     public function scopeIsProjectActive($query)
     {
-        return $query->leftJoin('project_researches', 'project_researches.id', '=', 'rainlab_blog_posts.research_id')
-            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
-            ->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
+        return $query->when('rainlab_blog_posts.research_id' !== NULL , function ($q) {
+            return $q->leftJoin('project_researches', 'project_researches.id', '=', 'rainlab_blog_posts.research_id')
+                ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
+                ->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
+        });
     }
 
     public function scopeNotTimes($query)
