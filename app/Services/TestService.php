@@ -114,4 +114,20 @@ class TestService
 
         return $success;
     }
+
+    /**
+     * Return if complex answer all
+     * @param $variants
+     * @param $research_id
+     * @return boolean
+     */
+    public static function getComplexAll($variants, $research_id)
+    {
+        $complex = true;
+        $count = TestQuestions::where('research_id', $research_id)->where('test_type', 'child')->count();
+
+        if ($count != $variants) $complex = false;
+
+        return $complex;
+    }
 }

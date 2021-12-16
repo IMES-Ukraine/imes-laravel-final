@@ -233,8 +233,8 @@ class ProjectRepository
                 $passing = Passing::where('entity_type', 'LIKE', Passing::PASSING_ENTITY_TYPE_TEST)->where('entity_id', $test_id)->get();
 
                 foreach ($passing as $pass) {
-                    if ($pass['answer']) {
-                        foreach ($pass['answer'] as $answer) {
+                    if ($pass->answer) {
+                        foreach ($pass->answer as $answer) {
                             $passing_tests[$test_id][$answer][] = $pass->user_id;
                         }
                     }
