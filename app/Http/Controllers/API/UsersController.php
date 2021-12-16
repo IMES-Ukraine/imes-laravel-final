@@ -130,7 +130,8 @@ class UsersController extends Controller
     {
         $errors = '';
 
-//        Проверяем наличие такого телефона. Плюс вначале игнорируем
+//        Проверяем наличие такого телефона. Плюс вначале игнорируем. Смотрим по полю  UserName
+
         $userPhone = User::findByUsername($this->helpers->generateUserName($data['phone']));
         if ($userPhone) {
             if (!$user || $user->id != $userPhone->id) {
@@ -230,9 +231,15 @@ class UsersController extends Controller
     {
         $user = $this->user->find($id);
 
+
+
         $data = $request->input('data');
         $data['phone'] = filter_var($data['phone'], FILTER_SANITIZE_NUMBER_INT);
         $data['phone'] = str_replace('+', '', $data['phone']);
+
+        if (!$data['email']){
+            $data['email'] = $this->helpers->generateUserName($phone);
+        }
 
         if ($errors = $this->validateUser($data, $user)) {
             return $this->helpers->apiArrayResponseBuilder(201, 'error', ['error' => $errors]);
