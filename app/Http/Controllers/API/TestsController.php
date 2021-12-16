@@ -179,7 +179,7 @@ class TestsController extends Controller
         $passed = new PassingProvider($apiUser);
 
         $variants = $request->post('data');
-        Log::info('Submitted test', $request->post);
+        Log::info('Submitted test', [$request->post]);
 
         $variant = reset($variants);
         $submittedTest = TestQuestions::find($variant['test_id']);
