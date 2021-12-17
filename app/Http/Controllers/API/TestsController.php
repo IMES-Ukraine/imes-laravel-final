@@ -194,7 +194,7 @@ class TestsController extends Controller
                 $ifComplexAll = TestService::getComplexAll(count($variants), $submittedTest->research_id);
             }
 
-            //if ($ifComplexAll) {
+            if ($ifComplexAll) {
                 if ($variants > 1) {
                     $ifComplexAnswerQuestion = TestService::ifComplexAnswerQuestion($variants);
                 }
@@ -310,11 +310,7 @@ class TestsController extends Controller
                 }
 
                 $data = $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
-            /*} else {
-                return $this->helpers->apiArrayResponseBuilder(200, 'success', [
-                    'data' => 'ok'
-                ]);
-            }*/
+            }
         }
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
             'data' => 'ok',
