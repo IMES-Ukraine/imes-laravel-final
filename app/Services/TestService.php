@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\QuestionModeration;
 use App\Models\TestQuestions as TestModel;
 use App\Models\TestQuestions;
+use App\Models\User;
 
 class TestService
 {
@@ -107,8 +108,6 @@ class TestService
                     $success = false;
                     break;
                 }
-            } else {
-                //
             }
         }
 
@@ -149,5 +148,23 @@ class TestService
         }
 
         return $answerQuestion;
+    }
+
+    /**
+     * Add balance for user if question-answer has accept
+     * @param $content_id
+     * @param $user_id
+     */
+    public static function addBalanceAllTests($content_id, $user_id)
+    {
+        $tests = TestQuestions::where('research_id', $content_id)->all();
+
+        foreach ($tests as $test) {
+            if ($test->test_type == 'child') {
+                $user = User::findOrFail($user_id);
+                $user->balance = $user->balance + $test->passing_bonus;
+                $user->save();
+            }
+        }
     }
 }

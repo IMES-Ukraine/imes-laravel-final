@@ -46,9 +46,7 @@ class TestModerationController extends Controller
             $success = TestService::getAnswerCorrect($content_id, $model->user_id);
 
             if ($bonus && $success) {
-                $user = User::findOrFail($model->user_id);
-                $user->balance = $user->balance + $bonus[0];
-                $user->save();
+                TestService::addBalanceAllTests($content_id, $model->user_id);
             }
         }
     }
