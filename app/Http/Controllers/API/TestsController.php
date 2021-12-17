@@ -185,15 +185,20 @@ class TestsController extends Controller
         }
         Log::info('Submitted test', [$request->post()]);
 
+        $ifComplexAll = true;
+
         foreach ($variants as $variant) {
             $submittedTest = TestQuestions::find($variant['test_id']);
 
-            $ifComplexAll = true;
             if ($submittedTest->test_type == 'child') {
                 $ifComplexAll = TestService::getComplexAll(count($variants), $submittedTest->research_id);
             }
 
-            if ($ifComplexAll) {
+            //if ($ifComplexAll) {
+                if ($variants > 1) {
+                    $ifComplexAnswerQuestion = TestService::ifComplexAnswerQuestion($variants);
+                }
+
                 if (!$submittedTest->can_retake && in_array($variant['test_id'], $passed->getIds(TestQuestions::class))) {
                     return $this->helpers->apiArrayResponseBuilder(200, 'success', [
                         'data' => 'test already done',
@@ -284,8 +289,10 @@ class TestsController extends Controller
                     $passedModel->result = $userPassingBonus > 0;
                     $passedModel->save();
 
-                    $apiUser->balance = $apiUser->balance + $userPassingBonus;
-                    $apiUser->save();
+                    //if (!$ifComplexAnswerQuestion) {
+                        $apiUser->balance = $apiUser->balance + $userPassingBonus;
+                        $apiUser->save();
+                    //}
                 } else {
                     if (isset($variant['variant'])) {
                         $userVariants = $variant['variant'];
@@ -303,11 +310,11 @@ class TestsController extends Controller
                 }
 
                 $data = $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
-            } else {
+            /*} else {
                 return $this->helpers->apiArrayResponseBuilder(200, 'success', [
                     'data' => 'ok'
                 ]);
-            }
+            }*/
         }
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
             'data' => 'ok',
