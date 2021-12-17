@@ -130,4 +130,24 @@ class TestService
 
         return $complex;
     }
+
+    /**
+     * Return if complex answer all
+     * @param $variants
+     * @return boolean
+     */
+    public static function ifComplexAnswerQuestion($variants)
+    {
+        $answerQuestion = false;
+        foreach ($variants as $variant) {
+            $test = TestQuestions::find($variant->test_id)->where('answer_type', 'text')->first();
+
+            if ($test) {
+                $answerQuestion = true;
+                break;
+            }
+        }
+
+        return $answerQuestion;
+    }
 }
