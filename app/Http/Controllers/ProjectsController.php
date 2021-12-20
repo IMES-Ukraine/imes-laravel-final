@@ -20,10 +20,17 @@ class ProjectsController extends Controller
     /**
      * @return JsonResponse
      */
-    public function index() {
+    public function index(Request $request) {
         $countOnPage = 15;
-        $data = Projects::with('tags')->with('items')->whereNull('deleted_at')->with('items')->orderBy('created_at', 'DESC')->paginate($countOnPage);
-        $data = json_decode($data->toJSON() );
+        $query = Projects::with('tags')->with('items')->whereNull('deleted_at')->with('items');
+
+        if ($request->post('tag')) {
+            $pluck_tag = Tags::where('name', $request->post('tag'))->pluck('id')->toArray();
+            $query->tag($pluck_tag);
+        }
+
+        $result = $query->orderBy('created_at', 'DESC')->paginate($countOnPage);
+        $data = json_decode($result->toJSON());
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 

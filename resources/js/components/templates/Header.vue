@@ -7,13 +7,8 @@
 
             <ul class="navbar-nav">
                 <li class="nav-item" v-for="(route, k) in routes" v-bind:key="route.path">
-                    <router-link
-                            :to="{path: route.path}"
-                            :key="k"
-                            class="nav-link form-control__label"
-                    >
-                        {{route.name}}
-                    </router-link>
+                    <a :href="route.path" :key="k"
+                       class="nav-link form-control__label">{{route.name}}</a>
                 </li>
             </ul>
         </div>

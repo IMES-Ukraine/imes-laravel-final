@@ -128,6 +128,11 @@ export default new Router({
             name: 'BannerForm',
             component: () => import("../components/BannerForm.vue")
         },
+        {
+            path: '/:tag',
+            name: "projectList",
+            component: () => import("../components/ProjectList.vue")
+        }
 
     ]
 
