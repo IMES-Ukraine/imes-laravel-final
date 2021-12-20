@@ -3,7 +3,7 @@
         :to="{name: routeName, params: {projectId: id}}"
         class="col-4 mb-3 rectangle"
     >-->
-        <div class="articles_list__block" v-if="(this.$route.hash && this.$route.hash == tag) || (!this.$route.hash)">
+        <div class="articles_list__block">
             <router-link
                 :to="'project/view/' + id"
                 class="articles_list__block-link"

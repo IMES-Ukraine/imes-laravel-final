@@ -39,6 +39,12 @@ class Projects extends Model
         'options' => 'array',
     ];
 
+    public function scopeTag($query, $tag)
+    {
+        return $query->leftJoin('ulogic_projects_tags', 'ulogic_projects_tags.project_id', '=', 'ulogic_projects_settings.id')
+            ->where('ulogic_projects_tags.tag_id', $tag);
+    }
+
     public function getCreatedAtAttribute($value)
     {
         return date_format(date_create($value), 'd.m.Y');

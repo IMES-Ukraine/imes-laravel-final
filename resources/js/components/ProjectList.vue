@@ -14,7 +14,6 @@
                     :title="project.options.title"
                     :options="project.options"
                     :items="project.items"
-                    :tag="(project.tags)?'#'+project.tags.project_tags.slug:''"
                 />
             </div>
             <div class="articles_pagination center">
@@ -46,11 +45,16 @@
                 return !!Object.keys(this.projectList).length;
             },
             getResults(page) {
+                let tag = '';
                 if (typeof page === 'undefined') {
                     page = 1;
                 }
 
-                this.$get(ADMIN_PROJECT + '?page=' + page)
+                if (this.$route.params.tag) {
+                    tag = '&tag=' + this.$route.params.tag;
+                }
+
+                this.$get(ADMIN_PROJECT + '?page=' + page + tag)
                     .then(response => {
                         this.projectList = response.data;
                     });

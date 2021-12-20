@@ -96,7 +96,7 @@ Route::group(
                 Route::post('/stop/{id}', [ProjectsApiController::class, 'stop']);
                 Route::get('/tags', [ProjectsApiController::class, 'tags']);
                 Route::get('/tests/{id?}', [ProjectsApiController::class, 'getTests']);
-                Route::get('/', [ProjectsApiController::class, 'index']);
+                Route::get('/', [ProjectsController::class, 'index']);
                 Route::post('/cover/{type}', [ProjectsApiController::class, 'setImage']);
                 Route::get('/{id}', [ProjectsApiController::class, 'show']);
                 Route::post('/{id}', [ProjectsApiController::class, 'update']);
