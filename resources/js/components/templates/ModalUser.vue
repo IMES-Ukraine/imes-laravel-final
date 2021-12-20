@@ -17,7 +17,7 @@
         <div class="modal-body p-0">
             <div class="form-row">
                 <div class="form-group col-12">
-                    <label class="form-control__label">Имя, Фамилия</label>
+                    <label class="form-control__label">ПІБ</label>
                     <input class="form-control db-edit-modal__input" type="text"
                            v-model="data.basic_information.name">
                 </div>
