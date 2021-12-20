@@ -55,7 +55,7 @@
             },
             destroy () {
                 this.$delete(PROJECT_DESTROY + this.$route.params.projectId).then()
-                this.$router.push({ path: '/' })
+                window.location.href = '/'
             }
         }
     }
