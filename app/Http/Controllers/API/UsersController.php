@@ -173,29 +173,6 @@ class UsersController extends Controller
     }
 
 
-    public function createName($name)
-    {
-        $number = mt_rand(1, 4294967294);
-        $email = $number . '@imes.pro';
-        $password = Hash::make($name);
-
-        // create only name for users
-        $user = User::create([
-            'name' => $name,
-            'email' => $email,
-            'username' => $email,
-            'password' => $password,
-            'messaging_token' => 'eUpQSLg0fkqLqK8o7T5bD4:APA91bGfNkJ5cr8DXcLubsBlqBz7fSgz_BogwAC5muytt8jOF4VEk6_Vj9D_NMff0owflTvA9TFnEV-DneQJeUGshLktOjC2PUFsmSS4Gz_qTU7ycUh8Fbxi28i0h8pa28fL3jiuJ2g5'
-        ]);
-
-        $user->save();
-
-        $data = $this->user->all()->toArray();
-
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
-    }
-
-
     public function show($id)
     {
         $data = $this->user->where('id', $id)->first();
