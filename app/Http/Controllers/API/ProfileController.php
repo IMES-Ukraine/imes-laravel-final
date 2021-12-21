@@ -180,7 +180,7 @@ class ProfileController extends Controller
         $apiUser = Auth::user();
 
         $model = User::find($apiUser->id);
-        $model->messaging_token = $request->input('token');
+        $model->firebase_token = $request->input('token');
         $model->save();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success');
