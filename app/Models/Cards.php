@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Cards
@@ -26,6 +27,7 @@ use Illuminate\Support\Carbon;
 class Cards extends Model
 {
     use JsonFieldTrait;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.

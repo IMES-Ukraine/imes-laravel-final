@@ -101,5 +101,9 @@ class UserCards extends Model
         return $this->belongsTo(Cards::class, 'card_id', 'id');
     }
 
+    public function cardall() {
+        return $this->belongsTo(Cards::class, 'card_id', 'id')->withTrashed();
+    }
+
 
 }

@@ -307,15 +307,14 @@ class UsersController extends Controller
             ->get();
     }
 
-    public
-    function balance(Request $request)
+    public function balance(Request $request)
     {
         UsersService::setBalance($request->post('id'), $request->post('count'));
     }
 
     public function cards($user_id)
     {
-        $data = UserCards::where('user_id', $user_id)->with('card')->get()->toArray();
+        $data = UserCards::where('user_id', $user_id)->with('cardall')->get()->toArray();
 
         if (count($data) > 0) {
             return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
