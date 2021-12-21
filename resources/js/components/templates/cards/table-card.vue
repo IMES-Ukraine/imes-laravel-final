@@ -5,8 +5,8 @@
             <tr class="db__row is-th">
                 <th class="db__th">№ зп</th>
                 <th class="db__th">Код</th>
-                <th class="db__th">Назва</th>
                 <th class="db__th">Вартість</th>
+                <th class="db__th">Назва</th>
                 <th class="db__th">Опис</th>
                 <th class="db__th">Переглянути</th>
                 <th class="db__th">Управлiння</th>
