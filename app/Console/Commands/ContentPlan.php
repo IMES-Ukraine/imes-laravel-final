@@ -45,7 +45,7 @@ class ContentPlan extends Command
         foreach ($times as $value) {
             $hour = date("H", strtotime($value->time));
 
-            if ($value->date <= $today_date && $today_hour > $hour) {
+            if (($value->date == $today_date && $today_hour > $hour) || ($value->date < $today_date)) {
                 PostTimes::find($value->id)->delete();
             }
         }
