@@ -249,6 +249,12 @@ class User extends Authenticatable implements JWTSubject
         ]);
     }
 
+    public function addBalance($sum)
+    {
+        $this->balance += $sum;
+        $this->save();
+    }
+
 
     /**
      * Get the cards of the users

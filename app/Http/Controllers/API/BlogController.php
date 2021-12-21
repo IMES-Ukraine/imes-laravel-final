@@ -180,13 +180,12 @@ class BlogController extends Controller
             $passedIds = $passed->getIds(Post::class);
 
             if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($articleId)) {
-                $userModel->balance = $userModel->balance + $learningBonus;
-                $userModel->save();
+                $userModel->addBalance($learningBonus);
                 $finalBonus = $learningBonus;
                 $passed->setId($article, $articleId);
             }
 
-            $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
+            $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at', 'messaging_token', 'firebase_token'])->toArray();
 
             Post::find($articleId)->increment('callbacks');
 
@@ -221,29 +220,32 @@ class BlogController extends Controller
         if (!$saveStatus) {
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
         }
-
-        foreach ($request->featured_images as $image) {
-            $fileImage = File::find($image['id']);
-            $fileImage->attachment_id = $model->id;
-            $fileImage->save();
+        if ($request->featured_images) {
+            foreach ($request->featured_images as $image) {
+                $fileImage = File::find($image['id']);
+                $fileImage->attachment_id = $model->id;
+                $fileImage->save();
 //                $model_gallery = new PostGallery();
 //                $model_gallery->post_id = $model->id;
 //                $model_gallery->cover_image = $value['path'];
 //                $model_gallery->save();
+            }
         }
-
-        foreach ($request->tags as $tag) {
-            $model_tags = new PostTag();
-            $model_tags->post_id = $model->id;
-            $model_tags->tag_id = $tag['id'];
-            $model_tags->save();
+        if ($request->tags) {
+            foreach ($request->tags as $tag) {
+                $model_tags = new PostTag();
+                $model_tags->post_id = $model->id;
+                $model_tags->tag_id = $tag['id'];
+                $model_tags->save();
+            }
         }
-
-        foreach ($request->recommended as $rec) {
-            Recommended::create([
-                'parent_id' => $model->id,
-                'recommended_id' => $rec['id']
-            ]);
+        if ($request->recommended) {
+            foreach ($request->recommended as $rec) {
+                Recommended::create([
+                    'parent_id' => $model->id,
+                    'recommended_id' => $rec['id']
+                ]);
+            }
         }
 
         if (isset($request->date) && isset($request->time)) {
@@ -343,7 +345,7 @@ class BlogController extends Controller
         $article->makeHidden('research');
         $data = $article->toArray();
 
-        if (!$article->isOpened){
+        if (!$article->isOpened) {
             $model = new Opened();
             $model->user_id = $authUser->id;
             $model->news_id = $id;
@@ -373,7 +375,6 @@ class BlogController extends Controller
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success');
     }
-
 
 
 }
