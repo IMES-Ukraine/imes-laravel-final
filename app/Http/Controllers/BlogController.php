@@ -63,6 +63,7 @@ class BlogController extends Controller
      */
     public function show($id)
     {
+        /** @var Articles $article */
         $article = Articles::select('rainlab_blog_posts.*')
             ->with('cover_image')
             ->with('featured_images')
