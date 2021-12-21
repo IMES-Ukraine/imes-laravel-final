@@ -111,11 +111,11 @@ export default {
         toValidate() {
             this.varKey = Math.random();
             for (let indexQuestion in this.complex_question) {
-                if (this.complex_question[indexQuestion].title == '') {
+                if (!this.complex_question[indexQuestion].title || this.complex_question[indexQuestion].title.trim()) {
                     this.errors.title[indexQuestion] = 'Назва обовʼязкова';
                 }
 
-                if (this.complex_question[indexQuestion].text == '') {
+                if (!this.complex_question[indexQuestion].text || !this.complex_question[indexQuestion].text.trim()) {
                     this.errors.text[indexQuestion] = 'Питання обовʼязкове'
                 }
 
