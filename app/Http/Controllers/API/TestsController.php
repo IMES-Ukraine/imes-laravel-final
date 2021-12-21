@@ -162,9 +162,7 @@ class TestsController extends Controller
         $fullCount = 0;
 
         foreach ($variants as $v) {
-
             foreach ($v['variant'] as $a) $fullCount++;
-
         }
         return $fullCount;
     }
@@ -195,9 +193,9 @@ class TestsController extends Controller
             }
 
             if ($ifComplexAll) {
-                if ($variants > 1) {
-                    $ifComplexAnswerQuestion = TestService::ifComplexAnswerQuestion($variants);
-                }
+//                if ($variants > 1) {
+//                    $ifComplexAnswerQuestion = TestService::ifComplexAnswerQuestion($variants);
+//                }
 
                 if (!$submittedTest->can_retake && in_array($variant['test_id'], $passed->getIds(TestQuestions::class))) {
                     return $this->helpers->apiArrayResponseBuilder(200, 'success', [
@@ -235,7 +233,6 @@ class TestsController extends Controller
 
 
                 if ($submittedTest->answer_type !== Question::ANSWER_TEXT) {
-
                     $fullCount = $this->getFullVariantsCount($variants);
                     $dummyAnswersCount = 0; //опросы
                     $correctAnswersCount = 0; //тесты
