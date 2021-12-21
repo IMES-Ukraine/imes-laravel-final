@@ -106,7 +106,7 @@ class ArticleService
         $model->fill($request->post());
 
         $model->content_html = $request->excerpt;
-        $model->cover_image_id = $request->cover_image['id'];
+        $model->cover_image_id = $request->cover_image['id'] ?? null;
         $model->published = true;
         $model->learning_bonus = 0;
         $model->is_popular = rand(0, 1);
