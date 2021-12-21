@@ -37,6 +37,7 @@ class BlogController extends Controller
             ->whereNull('research_id')
             //->where( 'published_at', '<=', Carbon::now()
             //->toDateTimeString())
+            ->notTimes()
             ->orderBy('rainlab_blog_posts.id', 'desc')
             ->paginate($countOnPage);
 
