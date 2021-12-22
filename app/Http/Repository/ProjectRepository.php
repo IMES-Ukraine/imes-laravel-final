@@ -296,6 +296,7 @@ class ProjectRepository
             'status_active' => $total_status_active,
             'status_not_active' => $total_status_not_active,
             'status_not_participate' => $total_status_not_participate,
+            'user_total' => $users_total
         ]];
     }
 
