@@ -47,7 +47,8 @@ class ProjectRepository
         $project = new Projects;
         $project->options = $projectTotal['options'];
         $project->status = Projects::STATUS_ACTIVE;
-        $isProjectSaved = $project->save();
+        $project->save();
+
         TestService::setAttachment($projectTotal['options']['files'], $project->id);
 
         if ($projectTotal['tag']) {

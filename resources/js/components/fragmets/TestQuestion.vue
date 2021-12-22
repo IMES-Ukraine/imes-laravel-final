@@ -17,7 +17,7 @@
                                 :value="test.cover"
                                 :error="coverError"
                                 @fileInput="test.cover = $event"
-                                type="cover"/>
+                                type="image"/>
                 </div>
             </div>
             <div class="articles_create-block">
@@ -40,7 +40,7 @@
                                     :value="test.question.file"
                                     @fileInput="test.question.file = $event"
                                     :type="test.question.fileType"
-                                    :disabled="!isCheckedFile"/>
+                                    :disabled="!test.question.fileType"/>
                     </div>
                 </div>
                 <div class="articles_create__item half"></div>
