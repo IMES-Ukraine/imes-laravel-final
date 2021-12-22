@@ -1,6 +1,7 @@
 <template>
     <div class="articles_create__item-content">
-        <div :class = "['articles_create__item-file', 'width-auto buttonAddFile', {fileDisabled: disabled}, {has_file: haveImage}]">
+        <div
+            :class="['articles_create__item-file', 'width-auto buttonAddFile', {fileDisabled: disabled}, {has_file: haveImage}]">
             <input type="file" v-on:change="handleUpload" :name="type">
             <p><span>{{ haveImage ? model.file_name : 'Загрузить' }}</span>
             </p>
@@ -26,28 +27,33 @@ export default {
         attachment: String
     },
     data() {
-      return {
-        model: this.value
-      }
+        return {
+            model: this.value
+        }
+    },
+    watch: {
+        value() {
+            this.model = this.value;
+        }
     },
     computed: {
-      haveImage() {
-          return !!this.model &&  !!Object.keys(this.model).length && !!this.model.file_name
-      },
+        haveImage() {
+            return !!this.model && !!Object.keys(this.model).length && !!this.model.file_name
+        },
     },
     methods: {
         /**
          * Handle changing of file input (cover, video, variants)
          * @param event
          */
-        handleUpload( event) {
+        handleUpload(event) {
             this.coverError = '';
             let imageForm = new FormData();
             let input = event.target
-            if (! checkIsImage(input.value) ) {
-                this.errorArticleCover = this.notImageText;
-                return;
-            }
+            // if (!checkIsImage(input.value)) {
+            //     this.errorArticleCover = this.notImageText;
+            //     return;
+            // }
             imageForm.append('file', input.files[0]);
             this.$post(PROJECT_IMAGE + this.type + '/' + (this.attachment ? this.attachment : 'test'),
                 imageForm,
@@ -57,8 +63,15 @@ export default {
                     }
                 }
             ).then((file) => {
-                this.model = file.data;
-                this.$emit('fileInput', this.model)
+                console.log(file.data.content_type, this.type, file.data.content_type.includes(this.type));
+                if (!file.data.content_type.includes(this.type)) {
+                    this.$bvModal.msgBoxOk("Неверный тип файла");
+                }
+                else
+                {
+                    this.model = file.data;
+                    this.$emit('fileInput', this.model)
+                }
             })
         },
     }

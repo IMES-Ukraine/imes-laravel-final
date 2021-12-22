@@ -162,6 +162,7 @@ class BlogController extends Controller
     public function read($articleId, $blockId): JsonResponse
     {
 
+        /** @var User $userModel */
         $userModel = auth()->user();
 
         $tracking = new TrackingProvider($userModel);

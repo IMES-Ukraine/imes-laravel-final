@@ -105,7 +105,6 @@ class Question
         }
 
         if ($this->isTextAnswerType) {
-
             $textVariant = $question['question']['variants'][0]['variant'];
             $this->correctAnswer[] = $textVariant;
         }
