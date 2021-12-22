@@ -195,6 +195,7 @@
     import UsersPopup from "./templates/dashboard/UsersPopup"
     import TestPopup from "./templates/dashboard/TestPopup"
     import VPreloader from "./fragmets/preloader"
+    import { percentDashboard } from './../utils'
 
     export default {
         name: "Dashboard",
@@ -222,11 +223,30 @@
                         this.project = response.data
                         setTimeout(() => {
                             let canvas = document.getElementById("dashboardCircle");
+                            let not_participate = this.project.status_not_participate;
+                            let active = this.project.status_active;
+                            let not_active = this.project.status_not_active;
+                            let user_total = this.project.user_total;
+
+                            let per_active = 0;
+                            if (active) {
+                                per_active = percentDashboard(active, user_total);
+                            }
+
+                            let per_not_active = 0;
+                            if (not_active) {
+                                per_not_active = percentDashboard(not_active, user_total);
+                            }
+
+                            let per_not_participate = 0;
+                            if (not_participate) {
+                                per_not_participate = percentDashboard(not_participate, user_total);
+                            }
 
                             if (canvas) {
                                 let ctx = canvas.getContext("2d");
                                 let lastend = 0;
-                                let data = [this.project.status_not_participate, this.project.status_active, this.project.status_not_active];
+                                let data = [parseFloat(per_not_participate), parseFloat(per_active), parseFloat(per_not_active)];
                                 let myTotal = 0;
                                 let myColor = ['#00B7FF', '#4CF99E', '#FF608D'];
 

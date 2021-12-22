@@ -21,6 +21,17 @@ const changeFormatDate = (date) => {
     let arrDate = date.split('-');
     return arrDate[2] + '-' + arrDate[1] + '-' + arrDate[0]
 };
+const percentDashboard = (number, user_total) => {
+    let result = number / user_total;
+    result = result * 100;
+    return result.toFixed(2);
+};
+const currentTime = () => {
+    let d = new Date();
+    let curr_hour = d.getHours() + 1;
+
+    return curr_hour + ':00';
+};
 const getRandomId = () => {
     return Math.random().toString(36).substr(2, 9)
 }
@@ -59,5 +70,7 @@ export {
     alphabet,
     variantTemplate,
     currentDate,
-    changeFormatDate
+    currentTime,
+    changeFormatDate,
+    percentDashboard
 };
