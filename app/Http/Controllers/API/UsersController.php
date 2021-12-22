@@ -75,14 +75,11 @@ class UsersController extends Controller
         $test_ids = TestService::pluckIDArticles($content_id);
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
-                ->whereNull('ulogic_projects_passing.user_id')
-                ->orWhereRaw('(status = ' . $status . ' AND `entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_TEST . '" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
-                ->paginate(self::COUNT_PER_PAGE);
+            $results = User::isNotPassed(false, $test_ids)->paginate(self::COUNT_PER_PAGE);
         } else {
             $results = Passing::with('user')
                 ->with('withdraw')
-                ->whereRaw('(status = ' . $status . ' AND `entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_TEST . '" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+                ->isPassed(false, $test_ids, $status)
                 ->paginate(self::COUNT_PER_PAGE);
         }
 
@@ -96,14 +93,11 @@ class UsersController extends Controller
         $articles_ids = ArticleService::pluckIDArticles($content_id);
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
-                ->whereNull('ulogic_projects_passing.user_id')
-                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_POST . '" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
-                ->paginate(self::COUNT_PER_PAGE);
+            $results = User::isNotPassed($articles_ids, false)->paginate(self::COUNT_PER_PAGE);
         } else {
             $results = Passing::with('user')
                 ->with('withdraw')
-                ->whereRaw('(status = ' . $status . ' AND `entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_POST . '" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
+                ->isPassed($articles_ids, false, $status)
                 ->paginate(self::COUNT_PER_PAGE);
         }
 
