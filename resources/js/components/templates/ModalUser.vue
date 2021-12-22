@@ -85,13 +85,20 @@
                            v-model="data.specialized_information.additional_qualification">
                 </div>
             </div>
+            <div class="form-row" v-if="data.specialized_information && data.specialized_information.passport">
+                <div class="form-group col-12">
+                    <label class="form-control__label">Пасспорт</label>
+                    <button @click="windowImage(data.specialized_information.passport.path)">Смотреть</button>
+                </div>
+            </div>
         </div>
     </b-modal>
 </template>
 
 <script>
-import {CLIENTS} from "../../api/endpoints";
-import ModalMixin from "../../ModalMixin";
+import {CLIENTS} from "../../api/endpoints"
+import ModalMixin from "../../ModalMixin"
+import { openImageWindow } from '../../utils'
 
 export default {
     name: "modal-user",
@@ -116,6 +123,9 @@ export default {
 
     },
     methods: {
+        windowImage(src) {
+            openImageWindow(src);
+        },
         saveData() {
             let this_reference = this;
             console.log(this.data);
