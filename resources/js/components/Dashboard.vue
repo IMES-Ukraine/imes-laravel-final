@@ -21,9 +21,9 @@
                     <div class="dashboard_main__status">
                         <p class="dashboard_main__status-title">Статус активностей</p>
                         <div class="dashboard_main__status-content">
-                            <p class="dashboard_main__status-description">{{ percentActive(project.status_active, project.total) }}% выполненых</p>
+                            <p class="dashboard_main__status-description">{{ percentActive(project.status_active, project.user_total) }}% выполненых</p>
                             <div class="dashboard_main__status-line">
-                                <span :style="'width:'+percentActive(project.status_active, project.total)+'%;'"></span>
+                                <span :style="'width:'+percentActive(project.status_active, project.user_total)+'%;'"></span>
                             </div>
                             <p class="dashboard_main__status-description">{{ project.status_active }} активностей</p>
                         </div>
@@ -279,7 +279,14 @@
                 })
             },
             percentActive(status, total) {
-                return status?parseInt(status * 100 / total):0
+                //return status?parseInt(status * 100 / total):0
+                if (status) {
+                    let result = status / total;
+                    result = result * 100;
+                    return parseInt(result);
+                }
+
+                return 0;
             }
         },
         mounted() {
