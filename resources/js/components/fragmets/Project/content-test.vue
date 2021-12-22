@@ -129,7 +129,7 @@ export default {
             }
 
             if (!this.test.text || !this.test.title.trim()) {
-                this.testErrors.testText = 'Питання обовʼязкове';
+                this.testErrors.testText = 'Поле обовʼязкове';
                 isLocalErrors = true;
             }
 
