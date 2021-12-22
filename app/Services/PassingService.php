@@ -61,13 +61,14 @@ class PassingService
     /**
      * @param $content_id
      * @param $status
+     * @param $result
      * @return integer
      */
-    public static function getPassingTotalStatusTest($content_id, $status) {
+    public static function getPassingTotalStatusTest($content_id, $status, $result) {
         $test_ids = TestService::pluckIDArticles($content_id);
 
         if ($test_ids) {
-            return Passing::IsPassed(false, $test_ids, $status)->count();
+            return Passing::IsPassed(false, $test_ids, $status, $result)->distinct()->orderBy('created_at')->count('user_id');
         }
 
         return 0;
@@ -82,7 +83,7 @@ class PassingService
         $articles_ids = ArticleService::pluckIDArticles($content_id);
 
         if ($articles_ids) {
-            return Passing::IsPassed($articles_ids, false, $status)->count();
+            return Passing::IsPassed($articles_ids, false, $status)->distinct()->orderBy('created_at')->count('user_id');
         }
 
         return 0;

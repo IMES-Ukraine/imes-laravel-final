@@ -279,7 +279,6 @@
                 })
             },
             percentActive(status, total) {
-                //return status?parseInt(status * 100 / total):0
                 if (status) {
                     let result = status / total;
                     result = result * 100;
