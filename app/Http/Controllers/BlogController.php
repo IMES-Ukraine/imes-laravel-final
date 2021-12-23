@@ -74,7 +74,7 @@ class BlogController extends Controller
             return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);
         }
 
-        $research = $article->getResearch();
+        $research = $article->research;
         $project = $article->getProject();
 
         $data = $article->toArray();
