@@ -19,16 +19,14 @@ export default new Vuex.Store({
                 agreement: '',
                 presentation_type: 'at_once',   // {'at_once', 'scheduled', 'series' }
                 selected: {
-                    category: 1,
-                    region: 1
+                    category: null,
+                    region: null
                 },
                 files: {
                     cover: {
                         file_name: ''
                     },
-                    audience: {
-                        file_name: ''
-                    },
+                    audience: null,
                 }
             },
             tag: '',

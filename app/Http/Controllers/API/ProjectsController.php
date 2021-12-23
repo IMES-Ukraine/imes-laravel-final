@@ -27,6 +27,8 @@ class ProjectsController extends Controller
     const ATTACHMENT_TYPE_TEST_QUESTIONS = 'App\Models\TestQuestions';
     const ATTACHMENT_TYPE_PROJECT = 'App\Models\Projects';
     const ATTACHMENT_TYPE_BANNERS = 'App\Models\Banners';
+    const ATTACHMENT_TYPE_CSV = 'CSV';
+
 
     protected $helpers;
     protected $project;
@@ -200,6 +202,10 @@ class ProjectsController extends Controller
         } elseif
         ($type == 'banners') {
             $attachment_type = self::ATTACHMENT_TYPE_BANNERS;
+        }
+        elseif
+        ($type == 'audience') {
+            $attachment_type = self::ATTACHMENT_TYPE_CSV;
         }
 
         $file = new File;

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 
@@ -36,28 +37,21 @@ class TrackingProvider
     {
         $article = Post::findOrFail($articleId);
 
-        if ( is_array($content = $article->content)) {
+        if (is_array($content = $article->content)) {
 
             $blockCount = count($content) - 1;
 
-            if ($blockCount === 0 ){
-                return  true;
+            if ($blockCount === 0) {
+                return true;
             }
 
             $totalSymbolsCount = 0;
-            $totalWordsCount = 0;
 
             foreach ($content as $contentBlock) {
 
                 $contentSymbolsCount = iconv_strlen($contentBlock->content);
-                $wordsArray = explode(' ', $contentBlock->content);
-
-                array_filter($wordsArray);
-
-                $totalWordsCount = $totalWordsCount + count($wordsArray);
                 $totalSymbolsCount = $totalSymbolsCount + $contentSymbolsCount;
             }
-
 
             $trackStarted = NewsTracking::where('news_id', $articleId)
                 ->where('user_id', $this->user->id)
@@ -69,28 +63,23 @@ class TrackingProvider
                 ->where('user_id', $this->user->id)
                 ->where('position', $blockCount)
                 ->orderBy('created_at', 'desc')
-                //->orderBy('position', 'asc')
                 ->first();
 
 
-            if( $trackStarted && $trackEnded ) {
+            if ($trackStarted && $trackEnded) {
 
-                $startingDate = !empty( $trackStarted ) ? Carbon::parse( $trackStarted->created_at ) : Carbon::now();
-                $endingDate = !empty( $trackEnded ) ? Carbon::parse( $trackEnded->created_at ) : Carbon::now();
+                $startingDate = !empty($trackStarted) ? Carbon::parse($trackStarted->created_at) : Carbon::now();
+                $endingDate = !empty($trackEnded) ? Carbon::parse($trackEnded->created_at) : Carbon::now();
 
                 $timeDifference = $startingDate->diffInMinutes($endingDate);
 
-                if( $timeDifference == 0)
-                {
+                if ($timeDifference == 0) {
                     return false;
                 }
 
-                $userReadingRate = $totalSymbolsCount/$timeDifference;
-
+                $userReadingRate = $totalSymbolsCount / $timeDifference;
                 return $userReadingRate <= env('READING_SYMBOLS_PER_MINUTE');
-
-            } else
-            {
+            } else {
                 return false;
             }
 
