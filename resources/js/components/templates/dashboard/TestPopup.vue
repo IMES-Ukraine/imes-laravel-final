@@ -275,8 +275,8 @@
                 default: []
             },
             passing_tests: {
-                type: Array,
-                default: []
+                type: Object,
+                default: {}
             },
             content_id: {
                 type: Number,
@@ -305,7 +305,6 @@
         },
         methods: {
             getStaticTest (title, test_id) {
-                console.log(this.passing_tests[test_id]);
                 if (this.passing_tests[test_id] && this.passing_tests[test_id][title]) {
                     return this.passing_tests[test_id][title].length;
                 }
