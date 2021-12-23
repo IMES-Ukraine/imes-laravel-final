@@ -221,6 +221,7 @@ class ProjectRepository
             ];
         }
 
+        //Dashboard
         $total = 0;
         $passing_tests = [];
         $total_status_active = 0;
@@ -229,21 +230,22 @@ class ProjectRepository
         $users_total = UsersService::getTotal();
 
         foreach ($content as $key => $item) {
-            $test_id = $item->tests[0]['id'];
-            $article_id = isset($item->articles[0]) ? $item->articles[0]['id'] : 0;
-            $passing = Passing::where('entity_type', 'LIKE', Passing::PASSING_ENTITY_TYPE_TEST)->where('entity_id', $test_id)->get();
+            foreach ($item->tests as $test) {
+                $test_id = $test['id'];
+                $article_id = isset($item->articles[0]) ? $item->articles[0]['id'] : 0;
+                $passing = Passing::where('entity_type', TestQuestions::class)->where('entity_id', $test_id)->get();
 
-            foreach ($passing as $pass) {
-                if ($pass->answer) {
-                    foreach ($pass->answer as $answer) {
-                        $passing_tests[$test_id][$answer][] = $pass->user_id;
+                foreach ($passing as $pass) {
+                    if ($pass->answer) {
+                        foreach ($pass->answer as $answer) {
+                            $passing_tests[$test_id][$answer][] = $pass->user_id;
+                        }
                     }
                 }
             }
 
             //Status passing active
             $status_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_ACTIVE);
-            $total_status_active += $status_active;
             $test_status_active = PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_ACTIVE, Passing::PASSING_RESULT_ACTIVE);
             $content[$key]->offsetSet('test_status_active', $test_status_active);
 
@@ -251,6 +253,12 @@ class ProjectRepository
             if ($article_id) {
                 $article_status_active = PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE);
                 $content[$key]->offsetSet('article_status_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE));
+
+                if ($status_active && $article_status_active) {
+                    $total_status_active += $status_active;
+                } else {
+                    $total_status_not_active += 1;
+                }
             }
 
             //Status passing not active
