@@ -26,12 +26,6 @@
                                         <div class="study__table-item">
                                             <p class="study__table-title">Детальная информация</p>
                                         </div>
-                                        <div class="study__table-item">
-                                            <p class="study__table-title">Вопрос</p>
-                                        </div>
-                                        <div class="study__table-item">
-                                            <p class="study__table-title">Ответ</p>
-                                        </div>
                                     </div>
                                     <div class="study__table-block" v-for="(result, key) in results.data" v-if="result" :key="key">
                                         <div class="study__table-item">
@@ -45,12 +39,6 @@
                                         </div>
                                         <div class="study__table-item">
                                             <p class="study__table-description">{{ (result.user)?result.user.email:result.email }} {{ (result.user || result.phone)?','+((result.user)?result.user.phone:result.phone):'' }}</p>
-                                        </div>
-                                        <div class="study__table-item">
-                                            <p class="study__table-title">{{ result.test.question }}</p>
-                                        </div>
-                                        <div class="study__table-item">
-                                            <p class="study__table-title">{{ result.answer[0] }}</p>
                                         </div>
                                     </div>
                                 </div>
