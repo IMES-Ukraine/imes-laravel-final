@@ -92,7 +92,7 @@ class TestService
     public static function getAnswerCorrect($content_id, $user_id)
     {
         $success = true;
-        $tests = TestQuestions::where('research_id', $content_id)->all();
+        $tests = TestQuestions::where('research_id', $content_id)->get();
 
         foreach ($tests as $test) {
             if ($test->answer_type == 'text') {
