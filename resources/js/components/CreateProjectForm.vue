@@ -20,7 +20,7 @@
                                             :value="project.options.files.cover"
                                             @fileInput="project.options.files.cover = $event"
                                             :error="errorCover"
-                                            type="cover"
+                                            type="image"
                                             attachment="project"/>
 <!--                                <div class="articles_create__item-content">-->
 <!--                                        <div class="articles_create__item-file width-auto buttonAddFile">-->
