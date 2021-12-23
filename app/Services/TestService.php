@@ -114,14 +114,11 @@ class TestService
      * @param $research_id
      * @return boolean
      */
-    public static function getComplexAll($variants, $research_id)
+    public static function getComplexAll($variantsCnt, $research_id)
     {
-        $complex = true;
         $count = TestQuestions::where('research_id', $research_id)->where('test_type', 'child')->count();
 
-        if ($count != $variants) $complex = false;
-
-        return $complex;
+        return $count == $variantsCnt;
     }
 
     /**

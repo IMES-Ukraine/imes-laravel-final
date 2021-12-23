@@ -83,7 +83,6 @@ class Projects extends Model
         $file = fopen(storage_path($path), 'r');
         $audience = [];
 
-
         while ($raw = fgetcsv($file)) {
             //    'name', 'phone', 'email'
             if ($raw[0] && $raw[1] && $raw[2]) {
