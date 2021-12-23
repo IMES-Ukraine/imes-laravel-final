@@ -155,4 +155,9 @@ class Passing extends Model
     {
         return $this->hasOne(Withdraw::class, 'id', 'user_id');
     }
+
+    public function test()
+    {
+        return $this->hasOne(TestQuestions::class, 'id', 'entity_id');
+    }
 }
