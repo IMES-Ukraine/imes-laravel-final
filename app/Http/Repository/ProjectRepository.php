@@ -257,7 +257,7 @@ class ProjectRepository
 
                 if ($status_active && $article_status_active) {
                     $total_status_active += $status_active;
-                } else {
+                } elseif($status_active) {
                     $total_status_not_active += 1;
                 }
             }
