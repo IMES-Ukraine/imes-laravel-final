@@ -7,7 +7,7 @@
                 :tag="project.tag"/>
         </template>
 
-        <div class="articles" >
+        <div class="articles">
             <div class="articles_create">
                 <project-close/>
                 <project-alert-test/>
@@ -17,20 +17,11 @@
                             <div class="articles_create__item">
                                 <p class="articles_create__item-title">Обложка</p>
                                 <file-input
-                                            :value="project.options.files.cover"
-                                            @fileInput="project.options.files.cover = $event"
-                                            :error="errorCover"
-                                            type="image"
-                                            attachment="project"/>
-<!--                                <div class="articles_create__item-content">-->
-<!--                                        <div class="articles_create__item-file width-auto buttonAddFile">-->
-<!--                                            <input type="file" name="cover"-->
-<!--                                                   @change="handleUpload($event, 'cover')">-->
-<!--                                            <p><span data-placeholder="Загрузить">{{ project.options.files.cover.file_name }}</span></p>-->
-<!--                                            <button class="delete_file deleteFile" type="button"></button>-->
-<!--                                        </div>-->
-<!--                                        <span class="errors" v-if="errorCover">{{ errorCover }}</span>-->
-<!--                                </div>-->
+                                    :value="project.options.files.cover"
+                                    @fileInput="project.options.files.cover = $event"
+                                    :error="errorCover"
+                                    type="image"
+                                    attachment="project"/>
                             </div>
                             <div class="articles_create__item">
                                 <p class="articles_create__item-title">Название</p>
@@ -68,16 +59,14 @@
                                                 <span class="icon-left" v-else>Добавить</span>
                                             </button>
                                         </div>
-                                        <!--<div class="articles_create__grid-block">
-                                            <div class="articles_create__item-file buttonAddFile">
-                                                <input type="file" name="audience"
-                                                       accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                                       @change="handleUpload($event, 'audience')">
-                                                <p><span data-placeholder="Загрузить персональную аудиторию"></span>
-                                                </p>
-                                                <button class="delete_file deleteFile" type="button"></button>
-                                            </div>
-                                        </div>-->
+                                        <div class="articles_create__item">
+                                            <file-input
+                                                :value="project.options.files.audience"
+                                                @fileInput="project.options.files.audience = $event"
+                                                :extensions="['csv']"
+                                                attachment="project"/>
+                                            <span class="icon-left" v-if="project.options.selected.category">Загрузить персональную аудиторию</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -106,22 +95,7 @@
                                                     <b-form-select class="articles_create-select"
                                                                    v-model="project.options.selected.region"
                                                                    :options="lists.regions"></b-form-select>
-                                                    <!--                                                        <select class="articles_create-select"-->
-                                                    <!--                                                                v-model="project.options.selected.region">-->
-                                                    <!--                                                            <option v-for="item in lists.region" :value="item.id"-->
-                                                    <!--                                                                    :key="item.id">-->
-                                                    <!--                                                                {{ item.name }}-->
-                                                    <!--                                                            </option>-->
-                                                    <!--                                                        </select>-->
                                                 </div>
-                                                <!--<div class="articles_create__several-block">
-                                                    <select class="articles_create-select">
-                                                        <option value="1" selected>Вся Украина</option>
-                                                        <option value="2">Харьковская обл.</option>
-                                                        <option value="3">Киевская обл.</option>
-                                                    </select>
-                                                    <button class="articles_create-plus"></button>
-                                                </div>-->
                                             </div>
                                         </div>
                                     </div>
@@ -163,13 +137,13 @@
                         </div>
                     </template>
                     <div v-if="currentStep == 2">
-                       <p class="articles_create-title">Створення пакета контента</p>
+                        <p class="articles_create-title">Створення пакета контента</p>
                         <content-pack :key="contentTitle"/>
 
                     </div>
                     <div v-if="currentStep == 3">
                         <p class="articles_create-title">Створення статті</p>
-                        <content-article />
+                        <content-article/>
                     </div>
                     <div v-if="currentStep == 4">
                         <p class="articles_create-title">Створення теста</p>
@@ -183,13 +157,16 @@
                                 <div class="articles_create__grid width-third column-gap-25">
                                     <div class="articles_create__grid-block">
                                         <div class="articles_create__sorting">
-                                            <input type="radio" name="sorting-1" v-model="project.options.presentation_type" value="at_once">
+                                            <input type="radio" name="sorting-1"
+                                                   v-model="project.options.presentation_type" value="at_once">
                                             <p><span class="icon-list">Все сразу</span></p>
                                         </div>
                                     </div>
                                     <div class="articles_create__grid-block">
                                         <div class="articles_create__sorting">
-                                            <input type="radio" name="sorting-1" v-model="project.options.presentation_type" value="scheduled" @click="scheduledKey=Math.random(); setStep(6)">
+                                            <input type="radio" name="sorting-1"
+                                                   v-model="project.options.presentation_type" value="scheduled"
+                                                   @click="scheduledKey=Math.random(); setStep(6)">
                                             <p><span class="icon-list">По графику</span></p>
                                         </div>
                                     </div>
@@ -209,8 +186,8 @@
                                 <p>Соглашение</p>
                             </div>
                             <div class="articles_create__item-content">
-                                <textarea   v-model="project.options.agreement"
-                                            :disabled="!hasAgreement"/>
+                                <textarea v-model="project.options.agreement"
+                                          :disabled="!hasAgreement"/>
                             </div>
                         </div>
 
@@ -222,7 +199,8 @@
                                         <div class="articles_create__indicators-block">
                                             <p class="articles_create__indicators-title">Аудитория</p>
                                             <div class="articles_create__indicators-item articlesCreateIndicators">
-                                                <div class="articles_create__indicators-line" data-value="1000" data-max="1000">
+                                                <div class="articles_create__indicators-line" data-value="1000"
+                                                     data-max="1000">
                                                     <span></span></div>
                                                 <p class="articles_create__indicators-data"></p>
                                             </div>
@@ -230,7 +208,8 @@
                                         <div class="articles_create__indicators-block">
                                             <p class="articles_create__indicators-title">Пользователи</p>
                                             <div class="articles_create__indicators-item articlesCreateIndicators">
-                                                <div class="articles_create__indicators-line" data-value="700" data-max="1000">
+                                                <div class="articles_create__indicators-line" data-value="700"
+                                                     data-max="1000">
                                                     <span></span></div>
                                                 <p class="articles_create__indicators-data"></p>
                                             </div>
@@ -243,11 +222,16 @@
                                     <div class="articles_create__result not_ready">
                                         <!-- Для зеленого блока класс "ready" -->
                                         <i class="articles_create__result-icon"></i>
-                                        <p class="articles_create__result-title">Часть аудитории еще не установили приложение
+                                        <p class="articles_create__result-title">Часть аудитории еще не установили
+                                            приложение
                                         </p>
                                         <ul class="articles_create__result-list">
-                                            <li class="articles_create__result-item">уменьшите количество активности, или</li>
-                                            <li class="articles_create__result-item">увеличить количество пользователей</li>
+                                            <li class="articles_create__result-item">уменьшите количество активности,
+                                                или
+                                            </li>
+                                            <li class="articles_create__result-item">увеличить количество
+                                                пользователей
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -255,26 +239,27 @@
                         </div>
                     </div>
 
-                    <button  v-if="currentStep == 1 || currentStep == 5" class="articles_create-submit button-border" type="button"
+                    <button v-if="currentStep == 1 || currentStep == 5" class="articles_create-submit button-border"
+                            type="button"
                             @click.prevent="createProject">
                         <template v-if="packsPresent">Сохранить</template>
                         <template v-else>Далее</template>
                     </button>
 
-                    <div v-if="currentStep == 6" >
-                        <schedule />
+                    <div v-if="currentStep == 6">
+                        <schedule/>
                     </div>
                     <div v-if="currentStep == 7">
-                        <project-preview />
+                        <project-preview/>
                     </div>
                 </form>
-                </div>
             </div>
+        </div>
     </v-content>
 </template>
 <script>
 import {ValidationProvider} from "vee-validate";
-import {ARTICLE_COVER, PROJECT, PROJECT_IMAGE, TOKEN} from "../api/endpoints";
+import {ARTICLE_COVER, PROJECT, PROJECT_FILE, PROJECT_IMAGE, TOKEN} from "../api/endpoints";
 import PlusButton from './controls/PlusButton'
 import VContent from "./templates/Content"
 import axios from 'axios'
@@ -357,7 +342,9 @@ export default {
     },
     computed: {
         project: {
-            get: function() { return store.state.project },
+            get: function () {
+                return store.state.project
+            },
             set: function (newValue) {
                 store.commit('storeProject', newValue);
             }
@@ -396,37 +383,32 @@ export default {
             const valTitle = await this.$refs['title'].validate();
             this.isValidated = !this.errorContent.length && !this.errorCover.length && valTitle.valid;
 
-                if (this.isValidated) {
-                    await this.$store.dispatch('storeProject', this.project);
-                    if (!this.errorContent) {
+            if (this.isValidated) {
+                await this.$store.dispatch('storeProject', this.project);
+                if (!this.errorContent) {
 
-                        switch (this.currentStep) {
-                            case 5:
-                                this.setStep(7);
-                                break;
-                            case 6:
-                                this.finalStoreProject();
-                                break;
-                            default:
-                                this.setStep(5);
-                        }
+                    switch (this.currentStep) {
+                        case 5:
+                            this.setStep(7);
+                            break;
+                        case 6:
+                            this.finalStoreProject();
+                            break;
+                        default:
+                            this.setStep(5);
                     }
                 }
+            }
 
         },
 
-        handleUpload(event, field) {
-            if (event.target.files[0].size <= 1024 * 1024 * 1024) {
-                this.errorCover = '';
-            } else {
-                this.errorCover = 'Изображение слишком большое';
-            }
+
+        csvUpload(event) {
 
             let imageForm = new FormData()
             imageForm.append('file', event.target.files[0])
-
             axios.post(
-                PROJECT_IMAGE + 'cover/project',
+                PROJECT_FILE + 'audience',
                 imageForm,
                 {
                     headers: {
@@ -438,7 +420,7 @@ export default {
                 }
             ).then((file) => {
                 let project = this.$store.state.project;
-                project.options.files[field] = file.data.data;
+                project.options.files['audience'] = file.data.data;
                 this.$store.dispatch('storeProject', project);
             })
         },
@@ -453,7 +435,7 @@ export default {
     },
     mounted() {
         if (sessionStorage.project) {
-            this.$store.dispatch("storeProject", JSON.parse(sessionStorage.project) );
+            this.$store.dispatch("storeProject", JSON.parse(sessionStorage.project));
         }
         this.hasAgreement = !!this.project.options.agreement;
     },
@@ -467,7 +449,7 @@ export default {
     },*/
 }
 </script>
-<style >
+<style>
 .h20 {
     height: 20px;
 }
