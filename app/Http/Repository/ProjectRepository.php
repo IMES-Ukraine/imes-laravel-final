@@ -234,7 +234,7 @@ class ProjectRepository
             foreach ($item->tests as $test) {
                 $test_id = $test['id'];
                 $article_id = isset($item->articles[0]) ? $item->articles[0]['id'] : 0;
-                $passing = Passing::where('entity_type', TestQuestions::class)->where('entity_id', $test_id)->get();
+                $passing = Passing::IsPassed(false, [$test_id])->get();
 
                 foreach ($passing as $pass) {
                     if ($pass->answer) {
@@ -257,7 +257,7 @@ class ProjectRepository
 
                 if ($status_active && $article_status_active) {
                     $total_status_active += $status_active;
-                } else {
+                } elseif($status_active) {
                     $total_status_not_active += 1;
                 }
             }

@@ -372,10 +372,12 @@
                 if (status == 'pending') {
                     this.$get(TEST_COMPLEX_CONFIRMATION + "/" + id + "/" + this.content_id).then();
 
-                    for (const [index, value] of Object.entries(this.moderations[test_id].data)) {
-                        if (value.id === id) {
-                            value.status = 'accept'
-                            return
+                    if (this.moderations) {
+                        for (const [index, value] of Object.entries(this.moderations[test_id].data)) {
+                            if (value.id === id) {
+                                value.status = 'accept'
+                                return
+                            }
                         }
                     }
                 }
