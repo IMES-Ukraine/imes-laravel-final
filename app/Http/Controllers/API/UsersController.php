@@ -114,6 +114,7 @@ class UsersController extends Controller
             ->where('entity_type', 'LIKE', Passing::PASSING_ENTITY_TYPE_TEST)
             ->where('entity_id', $test_id)
             ->where('answer', 'LIKE', '%' . $variant . '%')
+            ->groupBy('user_id')
             ->paginate(self::COUNT_PER_PAGE);
 
         $data = json_decode($results->toJSON());

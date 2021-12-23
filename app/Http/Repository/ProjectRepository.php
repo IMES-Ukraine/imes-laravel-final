@@ -234,7 +234,7 @@ class ProjectRepository
             foreach ($item->tests as $test) {
                 $test_id = $test['id'];
                 $article_id = isset($item->articles[0]) ? $item->articles[0]['id'] : 0;
-                $passing = Passing::where('entity_type', TestQuestions::class)->where('entity_id', $test_id)->get();
+                $passing = Passing::IsPassed(false, [$test_id])->get();
 
                 foreach ($passing as $pass) {
                     if ($pass->answer) {
