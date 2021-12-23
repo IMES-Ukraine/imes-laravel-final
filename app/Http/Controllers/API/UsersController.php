@@ -79,6 +79,7 @@ class UsersController extends Controller
         } else {
             $results = Passing::with('user')
                 ->with('withdraw')
+                ->with('test')
                 ->isPassed(false, $test_ids, $status)
                 ->paginate(self::COUNT_PER_PAGE);
         }
