@@ -198,27 +198,27 @@
                                         <div class="articles_create__indicators-block">
                                             <p class="articles_create__indicators-title">Аудитория</p>
                                             <div class="articles_create__indicators-item articlesCreateIndicators">
-                                                <div class="articles_create__indicators-line" data-value="1000"
-                                                     data-max="1000">
-                                                    <span></span></div>
-                                                <p class="articles_create__indicators-data"></p>
+                                                <div class="articles_create__indicators-line" :data-value="totalAudience">
+                                                    <span :style="'width:'+percentActive(usersAudience, Math.max(totalAudience, usersAudience))+'%;'"></span>
+                                                </div>
+                                                <p class="articles_create__indicators-data">{{totalAudience}}</p>
                                             </div>
                                         </div>
                                         <div class="articles_create__indicators-block">
                                             <p class="articles_create__indicators-title">Пользователи</p>
                                             <div class="articles_create__indicators-item articlesCreateIndicators">
-                                                <div class="articles_create__indicators-line" data-value="700"
-                                                     data-max="1000">
-                                                    <span></span></div>
-                                                <p class="articles_create__indicators-data"></p>
+                                                <div class="articles_create__indicators-line" :data-value="usersAudience">
+                                                    <span :style="'width:'+percentActive(usersAudience, Math.max(totalAudience, usersAudience))+'%;'"></span>
+                                                </div>
+                                                <p class="articles_create__indicators-data">{{usersAudience}}</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="articles_create__visual-quantity">
                                         <p>Количество активности</p>
-                                        <p><b>1000</b></p>
+                                        <p><b>{{activity}}</b></p>
                                     </div>
-                                    <div class="articles_create__result not_ready">
+                                    <div class="articles_create__result not_ready" v-if="(totalAudience > usersAudience) || (activity < usersAudience)">
                                         <!-- Для зеленого блока класс "ready" -->
                                         <i class="articles_create__result-icon"></i>
                                         <p class="articles_create__result-title">Часть аудитории еще не установили
@@ -229,6 +229,19 @@
                                                 или
                                             </li>
                                             <li class="articles_create__result-item">увеличить количество
+                                                пользователей
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="articles_create__result ready" v-else>
+                                        <!-- Для зеленого блока класс "ready" -->
+                                        <i class="articles_create__result-icon"></i>
+                                        <p class="articles_create__result-title">Проект готов к запуску!
+                                        </p>
+                                        <ul class="articles_create__result-list">
+                                            <li class="articles_create__result-item">Вся аудитория является пользователями
+                                            </li>
+                                            <li class="articles_create__result-item">Количество активностей соответствует количеству пользователей
                                                 пользователей
                                             </li>
                                         </ul>
@@ -336,7 +349,9 @@ export default {
             targeting: false,
             errorContent: '',
             errorCover: '',
-            contentTitle: ''
+            contentTitle: '',
+            totalAudience: 0,
+            usersAudience: 0
         }
     },
     computed: {
@@ -351,6 +366,20 @@ export default {
         packsPresent() {
             return Object.keys(this.$store.state.project.content).length;
         },
+        activity() {
+            let sum = 0;
+            for(let contIndex in this.project.content ){
+                sum += this.project.content[contIndex].test.count;
+            }
+            return sum;
+        }
+    },
+    watch: {
+        currentStep() {
+            if (this.currentStep == 5) {
+                this.getStat();
+            }
+        }
     },
     methods: {
         newContent() {
@@ -400,29 +429,6 @@ export default {
             }
 
         },
-
-
-        csvUpload(event) {
-
-            let imageForm = new FormData()
-            imageForm.append('file', event.target.files[0])
-            axios.post(
-                PROJECT_FILE + 'audience',
-                imageForm,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    params: {
-                        access_token: TOKEN
-                    },
-                }
-            ).then((file) => {
-                let project = this.$store.state.project;
-                project.options.files['audience'] = file.data.data;
-                this.$store.dispatch('storeProject', project);
-            })
-        },
         showTargeting() {
             this.targeting = true
         },
@@ -431,6 +437,24 @@ export default {
             this.$emit('update', value);
         },
 
+        getStat() {
+            axios.put(PROJECT + '/stats', {
+                data:  this.project
+            }).then(res => {
+               this.totalAudience = res.data.data.total;
+               this.usersAudience = res.data.data.users;
+            });
+        },
+        percentActive(status, total) {
+            if (status) {
+                let result = status / total;
+                result = Math.ceil(result * 100);
+                return parseInt(result);
+            }
+
+            return 0;
+        }
+
     },
     mounted() {
         if (sessionStorage.project) {
@@ -438,14 +462,6 @@ export default {
         }
         this.hasAgreement = !!this.project.options.agreement;
     },
-    /*validations: {
-        title: {
-            required
-        },
-        text: {
-            required
-        }
-    },*/
 }
 </script>
 <style>

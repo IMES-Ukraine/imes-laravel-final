@@ -183,7 +183,7 @@ class BlogController extends Controller
             if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($articleId)) {
                 $userModel->addBalance($learningBonus);
                 $finalBonus = $learningBonus;
-                $passed->setId($article, $articleId);
+                $passed->setId($article);
             }
 
             $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at', 'messaging_token', 'firebase_token'])->toArray();

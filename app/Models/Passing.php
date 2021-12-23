@@ -24,6 +24,13 @@ class Passing extends Model
     const PASSING_ENTITY_TYPE_TEST = '%TestQuestions';
 
     protected $dates = ['deleted_at'];
+    protected $fillable = [
+        'entity_type',
+        'entity_id',
+        'user_id',
+        'status',
+        'answer'
+    ];
 
     public function scopeIsPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS, $result = self::NO_RESULT)
     {

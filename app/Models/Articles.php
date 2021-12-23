@@ -198,6 +198,7 @@ class Articles extends Post
         return $this->hasOne(ProjectResearches::class, 'id', 'research_id');
     }
 
+
     public function getProject()
     {
         $research = $this->research;

@@ -12,6 +12,7 @@ use App\Models\ProjectResearches;
 use App\Models\ProjectsAgreement;
 use App\Models\Tags;
 use App\Models\TestQuestions;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -30,20 +31,16 @@ class ProjectsController extends Controller
     const ATTACHMENT_TYPE_CSV = 'CSV';
 
 
-    protected $helpers;
-    protected $project;
-    protected $projectItems;
     protected $projectRepository;
 
     /**
      * ProjectsController constructor.
      * @param Helpers $helpers
+     * @param ProjectRepository $projectRepository
      */
-    public function __construct(Helpers $helpers, Projects $project, ProjectItems $projectItems, ProjectRepository $projectRepository)
+    public function __construct(Helpers $helpers, ProjectRepository $projectRepository)
     {
-        $this->helpers = $helpers;
-        $this->project = $project;
-        $this->projectItems = $projectItems;
+        parent::__construct($helpers);
         $this->projectRepository = $projectRepository;
     }
 
@@ -91,27 +88,27 @@ class ProjectsController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 
-    public function getTests($id = null)
-    {
-        $data = [];
-        $query = ProjectResearches::query();
-        if ($id) {
-            $query->where(['project_id' => $id]);
-        }
-        if (!request()->input('all_items', 0)) {
-            $query->where('schedule', '<=', date('Y-m-d H:i:s'));
-        }
-
-        $projectItems = $query->get();
-        foreach ($projectItems as $key => $item) {
-            $data[$key] = (array)$item->test;
-            $data[$key]['id'] = $item->id;
-            $data[$key]['project_id'] = $item->project_id;
-            $data[$key]['schedule'] = $item->schedule;
-
-        }
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
-    }
+//    public function getTests($id = null)
+//    {
+//        $data = [];
+//        $query = ProjectResearches::query();
+//        if ($id) {
+//            $query->where(['project_id' => $id]);
+//        }
+//        if (!request()->input('all_items', 0)) {
+//            $query->where('schedule', '<=', date('Y-m-d H:i:s'));
+//        }
+//
+//        $projectItems = $query->get();
+//        foreach ($projectItems as $key => $item) {
+//            $data[$key] = (array)$item->test;
+//            $data[$key]['id'] = $item->id;
+//            $data[$key]['project_id'] = $item->project_id;
+//            $data[$key]['schedule'] = $item->schedule;
+//
+//        }
+//        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
+//    }
 
     /**
      * @param Request $request
@@ -174,11 +171,9 @@ class ProjectsController extends Controller
 
 
         $neProject = $this->projectRepository->create($request);
-
         if (!$neProject->saved) {
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'saving_error']);
         }
-
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
             'data' => 'ok',
@@ -297,5 +292,33 @@ class ProjectsController extends Controller
         }
         return $this->helpers->apiArrayResponseBuilder(200, 'success');
     }
+    public function userStats(Request $request): JsonResponse
+    {
 
+        $project = $request->post('data');
+        $total = 0;
+        $users = 0;
+
+        if ($audFile = $project['options']['files']['audience']) {
+
+            $path = str_replace('/storage', 'app/public', $audFile['path']);
+            $file = fopen(storage_path($path), 'r');
+
+            while ($raw = fgetcsv($file)) {
+                //    'name', 'phone', 'email'
+                if ($raw[0] && $raw[1] && $raw[2]) {
+                    $total++;
+                    $user = User::findByPhone($raw[1]);
+                    if ($user) {
+                        $users++;
+                    }
+                }
+            }
+        }
+        else {
+            $total = $users = User::count();
+        }
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', compact('total', 'users'));
+
+    }
 }

@@ -14,6 +14,7 @@
                             <p class="study__block-title">Вопрос: <b>{{ test.text }}</b></p>
 
                             <div class="study__block-content" v-if="(test.question.variants && test.question.type != 'text')">
+
                                 <div class="study__item" v-for="variant in test.question.variants">
                                     <div class="study__item-content">
                                         <div :class="(variant.right)?'study__answer active':'study__answer'">
@@ -39,6 +40,7 @@
                                         :variant="variant.variant"
                                         v-if="getStaticTest(variant.variant, tests[0]['id'])"/>
                                 </div>
+
                             </div>
                             <div class="study__block-content" v-else>
                                 <div class="study__table">
@@ -303,6 +305,7 @@
         },
         methods: {
             getStaticTest (title, test_id) {
+                console.log(this.passing_tests[test_id]);
                 if (this.passing_tests[test_id] && this.passing_tests[test_id][title]) {
                     return this.passing_tests[test_id][title].length;
                 }

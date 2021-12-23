@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 
@@ -11,32 +12,36 @@ class PassingProvider
         $this->user = $user;
     }
 
-    public function getIds( $entity) {
 
+    public function getIds($entity)
+    {
         $result = [];
-
-        if( !is_string( $entity ))
+        if (!is_string($entity)) {
             $entity = get_class($entity);
-
-        $data = Passing::where('entity_type', $entity)->where('user_id', $this->user->id);//->pluck('entity_id');
-
-        if( $response = $data->pluck('entity_id')->toArray()/*->get()->lists('entity_id')*/)
+        }
+        $data = Passing::where('entity_type', $entity)
+            ->where('user_id', $this->user->id)
+            ->where('status', '1');
+        if ($response = $data->pluck('entity_id')->toArray()/*->get()->lists('entity_id')*/) {
             $result = $response;
-
+        }
         return $result;
+    }
+
+    public function setId($entity, $status = Passing::PASSING_NOT_ACTIVE, $userVariants = [])
+    {
+        return Passing::updateOrCreate([
+            'entity_type' => get_class($entity),
+            'entity_id' => $entity->id,
+            'user_id' => $this->user->id
+        ], [
+            'status' => $status,
+            'answer' => $userVariants
+        ]);
 
     }
 
-    public function setId( $entity, $entityId, $status=Passing::PASSING_NOT_ACTIVE, $userVariants=[]) {
-        $model = new Passing();
-        $model->entity_type = get_class($entity);
-        $model->entity_id = $entityId;
-        $model->user_id = $this->user->id;
-        $model->status = $status;
-        $model->answer = $userVariants;
-        $model->save();
 
-        return $model;
-    }
+
 
 }
