@@ -17,7 +17,7 @@
                                 :value="test.cover"
                                 :error="coverError"
                                 @fileInput="test.cover = $event"
-                                type="cover"/>
+                                type="image"/>
                 </div>
             </div>
             <div class="articles_create-block">
@@ -31,32 +31,32 @@
 
                 <div class="articles_create__item half">
                     <div class="articles_create__item-title has_radio">
-                        <input type="checkbox" name="checkbox_file" v-model="isCheckedFile">
+                        <input type="radio" name="attach" value="image" v-model="test.question.fileType" @click="test.question.file = null">
                         <i></i>
-                        <p>Изображения</p>
+                        <p>Изображение</p>
                     </div>
-                    <div class="articles_create__item-content">
-                        <file-input :key="test.title + '-img'"
-                                    :value="test.question.img"
-                                    @fileInput="test.question.img = $event"
-                                    type="img"
-                                    :disabled="!isCheckedFile"/>
+                    <div class="articles_create__item-content" style="margin-top: 35px;">
+                        <file-input :key="JSON.stringify(test.question.file)"
+                                    :value="test.question.file"
+                                    @fileInput="test.question.file = $event"
+                                    :type="test.question.fileType"
+                                    :disabled="!test.question.fileType"/>
                     </div>
                 </div>
                 <div class="articles_create__item half"></div>
-                <div class="articles_create__item half">
+                <div class="articles_create__item half" style="margin-top: -35px;">
                     <div class="articles_create__item-title has_radio">
-                        <input type="checkbox" name="checkbox_video" v-model="isCheckedVideo">
+                        <input type="radio" name="attach" value="video" v-model="test.question.fileType" @click="test.question.file = null">
                         <i></i>
                         <p>Видео</p>
                     </div>
-                    <div class="articles_create__item-content">
-                        <file-input :key="test.title + '-video'"
-                                    :value="test.question.video"
-                                    @fileInput="test.question.video = $event"
-                                    type="video"
-                                    :disabled="!isCheckedVideo"/>
-                    </div>
+<!--                    <div class="articles_create__item-content">-->
+<!--                        <file-input :key="test.title + '-video'"-->
+<!--                                    :value="test.question.video"-->
+<!--                                    @fileInput="test.question.video = $event"-->
+<!--                                    type="video"-->
+<!--                                    :disabled="!isCheckedVideo"/>-->
+<!--                    </div>-->
                 </div>
             </div>
             <SimpleTestVariants :test.sync="test"
@@ -84,120 +84,6 @@
             </div>
         </div>
 
-
-        <!--<div class="card-body">
-
-            <fragment-form-text>
-                <input class="form-control" type="text" name="title" >
-            </fragment-form-text>
-
-            <template v-if="question.isComplex"></template>
-
-            <template v-else>
-                <div class="row mb-3">
-                    <div class="article-edit__text col-3">
-                        Узгодження
-                    </div>
-                    <div class="col-9">
-                        <textarea class="form-control" rows="4" v-model="question.agreement"></textarea>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="article-edit__text col-3">
-                        Опис
-                    </div>
-                    <div class="col-9">
-                        <textarea class="form-control" rows="4" v-model="question.description"></textarea>
-                    </div>
-                </div>
-            </template>
-
-
-            <div class="row mb-4">
-                <template v-if="question.isComplex">
-                    <div class="article-edit__text col-3">
-                        Вiдео
-                    </div>
-                    <div class="col-4">
-                        <label class="btn btn-outline-second btn-centered-content upload-cover is-small">
-                          <span class="input-file-label">
-                            <span class="icon-is-left icon-is-load-grey"></span><span v-if="question.media.video">{{ question.media.video.file_name }}</span><span v-else>Завантажити</span>
-                          </span>
-                            <input type="file" name="testCover" ref="testCover" v-on:change="handleUpload" img_type="video" class="input-file-hidden">
-                        </label>
-                    </div>
-                </template>
-                <template v-else>
-                    <div class="article-edit__text col-3">
-                        Обложка
-                    </div>
-                    <div class="col-4">
-                        <label class="btn btn-outline-second btn-centered-content upload-cover is-small">
-                          <span class="input-file-label">
-                            <span class="icon-is-left icon-is-load-grey"></span><span v-if="question.media.cover">{{ question.media.cover.file_name }}</span><span v-else>Завантажити</span>
-                          </span>
-                            <input type="file" name="testCover" ref="testCover" v-on:change="handleUpload" img_type="cover" class="input-file-hidden">
-                        </label>
-                    </div>
-                </template>
-            </div>
-            <div class="row mb-3">
-                <div class="article-edit__text col-3">
-                    Питання
-                </div>
-                <div class="col-9">
-                    <textarea class="form-control" name="text" rows="4" ></textarea>
-                </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="article-edit__text col-3">
-                    Категории
-                </div>
-                <div class="col-4">
-                    <label class="btn btn-outline-second btn-centered-content is-small">
-                        <select class="form-control" v-model="category">
-                            <option v-for="item in lists.categories" :value="item.id" :key="item.id">
-                                {{ item.name }}
-                            </option>
-                        </select>
-                    </label>
-                </div>
-
-            </div>
-
-            <div class="row">
-                <div class="col-12 text-center">
-                    <button type="button" class="btn btn-outline-primary" @click="addAnswerTest">
-                        Додати вiдповiдь
-                    </button>
-                </div>
-            </div>
-            <br>
-
-            <div class="row mb-4">
-                <div class="article-edit__text col-3">
-                    <div class="article-edit__btn-pos custom-checkbox">
-                        <input class="custom-checkbox__input" type="checkbox" name="is-article-link" id="is-article-link">
-                        <label for="is-article-link" class="custom-checkbox__label"></label>
-                    </div>
-                    Вивчити:
-                </div>
-                <div class="col-9">
-                    <div class="row">
-                        <div class="col-12 mb-2">
-                            <div class="input-group input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text is-text"></span>
-                                </div>
-                                <input type="text" class="form-control input-is-form is-text" placeholder="" aria-label="теги" v-model="question.link" >
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>-->
       <button class="articles_create-submit button-gradient" type="button"
               @click="$emit('input', test)">сохранить
       </button>
@@ -227,7 +113,9 @@ export default {
         return {
             files: {},
             video: null,
+
             toLearn: !!this.test.external_learn_url,
+
 
             isCheckedFile: false,
             isCheckedVideo: false,

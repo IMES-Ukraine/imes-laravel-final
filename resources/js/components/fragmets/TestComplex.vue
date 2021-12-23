@@ -27,7 +27,7 @@
                     <file-input :value="test.cover"
                                 :error="coverError"
                                 @fileInput="test.cover = $event"
-                                type="cover"/>
+                                type="image"/>
                 </div>
             </div>
             <div class="articles_create-block">
@@ -53,64 +53,6 @@
                     </div>
                 </div>
             </div>
-            <!--<div class="card-body">
-
-                <fragment-form-text>
-                    <input class="form-control" type="text" name="title" id="question_title" v-model="question.title">
-                </fragment-form-text>
-
-                <template v-if="question.isComplex"></template>
-
-                <div v-else>
-                    <div class="row mb-3">
-                        <div class="article-edit__text col-3">
-                            Узгодження
-                        </div>
-                        <div class="col-9">
-                            <textarea class="form-control" rows="4" v-model="question.agreement"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="article-edit__text col-3">
-                            Обложка
-                        </div>
-                        <div class="col-4">
-                            <label class="btn btn-outline-second btn-centered-content upload-cover is-small">
-                              <span class="input-file-label">
-                                <span class="icon-is-left icon-is-load-grey"></span><span v-if="question.media.cover">{{ question.media.cover.file_name }}</span><span v-else>Завантажити</span>
-                              </span>
-                                <input type="file" name="testCover" ref="testCover" v-on:change="handleUpload" img_type="cover" class="input-file-hidden">
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="article-edit__text col-3">
-                            Опис
-                        </div>
-                        <div class="col-9">
-                            <textarea class="form-control" rows="4" v-model="question.description"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-4">
-                    <div class="article-edit__text col-3">
-                        Категории
-                    </div>
-                    <div class="col-4">
-                        <label class="btn btn-outline-second btn-centered-content is-small">
-                            <select class="form-control" v-model="category">
-                                <option v-for="item in categoryList" :value="item.id" :key="item.id">
-                                    {{ item.name }}
-                                </option>
-                            </select>
-                        </label>
-                    </div>
-
-                </div>
-            </div>-->
 
             <div class="mb20"></div>
             <ComplexTestQuestion

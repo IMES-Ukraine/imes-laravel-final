@@ -17,14 +17,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="articles_create__item half">
-                            <p class="articles_create__item-title">Обложка</p>
-                            <file-input :key="question.itemId + '-cover'"
-                                        :value="question.cover"
-                                        @fileInput="question.cover = $event"
-                                        type="cover"/>
+<!--                        <div class="articles_create__item half">-->
+<!--                            <p class="articles_create__item-title">Обложка</p>-->
+<!--                            <file-input :key="question.itemId + '-cover'"-->
+<!--                                        :value="question.cover"-->
+<!--                                        @fileInput="question.cover = $event"-->
+<!--                                        type="cover"/>-->
 
-                        </div>
+<!--                        </div>-->
                     </div>
                     <div class="articles_create-block">
                         <div class="articles_create__item">
@@ -36,32 +36,32 @@
                         </div>
                         <div class="articles_create__item half">
                             <div class="articles_create__item-title has_radio">
-                                <input type="checkbox" name="checkbox_file" v-model="isCheckedFile">
+                                <input type="radio" name="attach" value="image" v-model="question.fileType" @click="question.file = null">
                                 <i></i>
                                 <p>Изображения</p>
                             </div>
-                            <div class="articles_create__item-content">
-                                <file-input :key="question.itemId + '-img'"
-                                            :value="question.img"
-                                            type="img"
-                                            @fileInput="question.img = $event"
-                                            :disabled="!isCheckedFile" />
+                            <div class="articles_create__item-content" style="margin-top: 35px;">
+                                <file-input :key="JSON.stringify(question.file)"
+                                            :value="question.file"
+                                            :type="question.fileType"
+                                            @fileInput="question.file = $event"
+                                            :disabled="!question.fileType" />
                             </div>
                         </div>
                         <div class="articles_create__item half"></div>
-                        <div class="articles_create__item half">
+                        <div class="articles_create__item half" style="margin-top: -35px;">
                             <div class="articles_create__item-title has_radio">
-                                <input type="checkbox" name="checkbox_video" v-model="isCheckedVideo">
+                                <input type="radio" name="attach" value="video" v-model="question.fileType" @click="question.file = null">
                                 <i></i>
                                 <p>Видео</p>
                             </div>
-                            <div class="articles_create__item-content">
-                                <file-input :key="question.itemId + '-video'"
-                                            :value="question.video"
-                                            type="video"
-                                            @fileInput="question.video = $event"
-                                            :disabled="!isCheckedVideo" />
-                            </div>
+<!--                            <div class="articles_create__item-content">-->
+<!--                                <file-input :key="question.itemId + '-video'"-->
+<!--                                            :value="question.video"-->
+<!--                                            type="video"-->
+<!--                                            @fileInput="question.video = $event"-->
+<!--                                            :disabled="!isCheckedVideo" />-->
+<!--                            </div>-->
                         </div>
                     </div>
                     <ComplexTestVariants :toValidate="toValidate" @input="getRadioType($event, index)" :errors="errorsParent" :i="index" :question.sync="question"/>

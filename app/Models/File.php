@@ -23,7 +23,7 @@ class File extends EloquentModel
 {
     const FIELD_COVER = 'cover';
     const FIELD_FEATURED = 'featured';
-    const FIELD_IMAGE = 'img';
+    const FIELD_IMAGE = 'image';
     const FIELD_VIDEO = 'video';
 
     /**

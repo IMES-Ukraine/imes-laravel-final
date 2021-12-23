@@ -51,24 +51,18 @@ class TestService
                     $img->save();
                 }
             }
-            if (isset($model['img']['id'])) {
-                $img = File::find($model['img']['id']);
-                if($img) {
-                    $img->attachment_id = $testId;
-                    $img->field = File::FIELD_IMAGE;
-                    $img->save();
+
+            if (isset($model['question']['file']['id'])) {
+                $file = File::find($model['question']['file']['id']);
+                if($file) {
+                    $file->attachment_id = $testId;
+                    $file->field = $model['question']['fileType'];
+                    $file->save();
                 }
             }
-            if (isset($model['video']['id'])) {
-                $img = File::find($model['video']['id']);
-                if($img) {
-                    $img->attachment_id = $testId;
-                    $img->field = File::FIELD_VIDEO;
-                    $img->save();
-                }
-            }
+
             if (isset($model['variants'])) {
-                foreach ($model['variants'] as $key => $variant) {
+                foreach ($model['variants'] as  $variant) {
                     if (isset($variant['media'][0])) {
                         $img = File::find($variant['media'][0]['id']);
                         $img->attachment_id = $testId;
