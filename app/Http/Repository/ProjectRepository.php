@@ -236,7 +236,6 @@ class ProjectRepository
                 $test_id = $test['id'];
                 $article_id = isset($item->articles[0]) ? $item->articles[0]['id'] : 0;
                 $passing = Passing::IsPassed(false, [$test_id])->get();
-
                 foreach ($passing as $pass) {
                     if ($pass->answer) {
                         foreach ($pass->answer as $answer) {

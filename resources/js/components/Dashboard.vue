@@ -82,11 +82,12 @@
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">{{ percentActive(content.test_status_active, content.test_total) }}% выполненых</p>
+                                <p class="dashboard_main__status-description">{{ percentActive(content.test_status_active, content.test_status_active + content.test_status_not_active) }}% выполненых</p>
+<!--                                <p class="dashboard_main__status-description">{{ percentActive(content.test_status_active, content.test_total) }}% выполненых</p>-->
                                 <div class="dashboard_main__status-line">
-                                    <span :style="'width:'+percentActive(content.test_status_active, content.test_total)+'%;'"></span>
+                                    <span :style="'width:'+percentActive(content.test_status_active, content.test_status_active + content.test_status_not_active)+'%;'"></span>
                                 </div>
-                                <p class="dashboard_main__status-description">{{ content.test_status_active }} активностей</p>
+                                <p class="dashboard_main__status-description">{{ content.test_status_active + content.test_status_not_active}} активностей</p>
                             </div>
                         </div>
                         <div class="dashboard_study__info">

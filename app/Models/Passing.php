@@ -48,12 +48,12 @@ class Passing extends Model
                 $q->where('ulogic_projects_passing.entity_type', TestQuestions::class)
                     ->whereIn('ulogic_projects_passing.entity_id', $test_ids);
 
-                $q->where('created_at', function ($q) use ($test_ids){
-                    $q->select(DB::raw('max(created_at) as created_at'))->from('ulogic_projects_passing')
-                        ->where('entity_type', TestQuestions::class)
-                        ->whereIn('entity_id', $test_ids)
-                        ->max('created_at');
-                });
+//                $q->where('created_at', function ($q) use ($test_ids){
+//                    $q->select(DB::raw('max(created_at) as created_at'))->from('ulogic_projects_passing')
+//                        ->where('entity_type', TestQuestions::class)
+//                        ->whereIn('entity_id', $test_ids)
+//                        ->max('created_at');
+//                });
 
             })->orWhere(function($q) use($articles_ids, $status, $result)
             {
@@ -92,12 +92,12 @@ class Passing extends Model
             $query->where('entity_type', TestQuestions::class)
                 ->whereIn('entity_id', $test_ids);
 
-            $query->where('created_at', function ($q) use ($test_ids){
-                $q->select(DB::raw('max(created_at) as created_at'))->from('ulogic_projects_passing')
-                    ->where('entity_type', TestQuestions::class)
-                    ->whereIn('entity_id', $test_ids)
-                    ->max('created_at');
-            });
+//            $query->where('created_at', function ($q) use ($test_ids){
+//                $q->select(DB::raw('max(created_at) as created_at'))->from('ulogic_projects_passing')
+//                    ->where('entity_type', TestQuestions::class)
+//                    ->whereIn('entity_id', $test_ids)
+//                    ->max('created_at');
+//            });
         }
     }
 
