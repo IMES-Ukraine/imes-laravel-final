@@ -251,8 +251,8 @@ export default {
             }
             if (this.haveArticle) {
                 res &= !!(parseInt(this.content.article.count))
-                    && !!(parseInt(this.content.article.points))
-                    && !!(parseInt(this.content.article.frequency));
+                    && !!(parseInt(this.content.article.points));
+                    // && !!(parseInt(this.content.article.frequency));
             }
             return res;
 
