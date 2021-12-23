@@ -46,6 +46,7 @@ class ProjectRepository
 
         $project = new Projects;
         $project->options = $projectTotal['options'];
+        $project->fillAudience();
         $project->status = Projects::STATUS_ACTIVE;
         $project->save();
 

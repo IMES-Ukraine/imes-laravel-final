@@ -65,7 +65,6 @@
                                                 @fileInput="project.options.files.audience = $event"
                                                 :extensions="['csv']"
                                                 attachment="project"/>
-                                            <span class="icon-left" v-if="project.options.selected.category">Загрузить персональную аудиторию</span>
                                         </div>
                                     </div>
                                 </div>
