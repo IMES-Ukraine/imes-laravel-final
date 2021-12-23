@@ -281,7 +281,7 @@
             percentActive(status, total) {
                 if (status) {
                     let result = status / total;
-                    result = result * 100;
+                    result = Math.ceil(result * 100);
                     return parseInt(result);
                 }
 
