@@ -106,7 +106,7 @@ Route::group(
 
 
 
-                Route::post('/file/{field}/{type?}', [ProjectsApiController::class, 'setImage']);
+                Route::post('/image/{field}/{type?}', [ProjectsApiController::class, 'setImage']);
                 Route::post('/file/{field}/{type?}', [ProjectsApiController::class, 'setImage']);
             }
         );
