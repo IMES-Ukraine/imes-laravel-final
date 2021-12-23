@@ -229,14 +229,16 @@ class ProjectRepository
         $users_total = UsersService::getTotal();
 
         foreach ($content as $key => $item) {
-            $test_id = $item->tests[0]['id'];
-            $article_id = isset($item->articles[0]) ? $item->articles[0]['id'] : 0;
-            $passing = Passing::where('entity_type', 'LIKE', Passing::PASSING_ENTITY_TYPE_TEST)->where('entity_id', $test_id)->get();
+            foreach ($item->tests as $test) {
+                $test_id = $test['id'];
+                $article_id = isset($item->articles[0]) ? $item->articles[0]['id'] : 0;
+                $passing = Passing::where('entity_type', TestQuestions::class)->where('entity_id', $test_id)->get();
 
-            foreach ($passing as $pass) {
-                if ($pass->answer) {
-                    foreach ($pass->answer as $answer) {
-                        $passing_tests[$test_id][$answer][] = $pass->user_id;
+                foreach ($passing as $pass) {
+                    if ($pass->answer) {
+                        foreach ($pass->answer as $answer) {
+                            $passing_tests[$test_id][$answer][] = $pass->user_id;
+                        }
                     }
                 }
             }
