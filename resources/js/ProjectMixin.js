@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {alphabet, getRandomId} from "./utils";
 import {PROJECT} from "./api/endpoints";
 
 export default {
