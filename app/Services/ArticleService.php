@@ -16,6 +16,7 @@ class ArticleService
 
         $model = new Articles();
         $model->title = $article['title'];
+        $model->author2 = $article['author2'];
         $model->slug = uniqid();
         $model->published = true;
         $model->content_html = '';
@@ -24,7 +25,7 @@ class ArticleService
         $model->is_popular = rand(0,1);
         $model->action = $action;
         $model->button = $action;
-        $model->user_id = $article['user_id'][0] ?? 0;
+        $model->user_id = $article['author']['id'];
 
         $content = [
             [

@@ -122,11 +122,11 @@
                     </div>
                     <div class="articles_create__addition-block">
                         <div class="articles_create__addition-field">
-                            <input type="text" id="new_user" v-model="new_user"/>
+                            <input type="text" id="new_user" v-model="article.author2" placeholder="Добавить автора"/>
                         </div>
-                        <button class="articles_create__addition-button" type="button"
-                                @click="AddNewUser">Добавить автора
-                        </button>
+<!--                        <button class="articles_create__addition-button" type="button"-->
+<!--                                @click="AddNewUser">Добавить автора-->
+<!--                        </button>-->
                     </div>
                 </div>
             </div>
@@ -257,11 +257,6 @@ export default {
 
     },
     methods: {
-        AddNewUser() {
-            this.$get(USER_CREATE_NAME + '/' + this.new_user).then(response => {
-                this.authors = response.data
-            })
-        },
         insertStore(value) {
             this.article.insert = value
         },
