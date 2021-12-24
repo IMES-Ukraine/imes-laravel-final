@@ -275,8 +275,8 @@
                 default: []
             },
             passing_tests: {
-                type: Object,
-                default: {}
+                type: Array,
+                default: []
             },
             content_id: {
                 type: Number,
