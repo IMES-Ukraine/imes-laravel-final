@@ -17,6 +17,7 @@ export default {
                     category: 1,
                     headings: 1,
                     author: null,
+                    author2: null,
                     button: null,
                     text_button: null,
                     recommended: [],
