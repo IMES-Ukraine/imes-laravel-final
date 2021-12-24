@@ -105,14 +105,7 @@ class Post extends Model
 //    ];
 
 
-    /**
-     * File file
-     * @return mixed
-     */
-    public function featured_images()
-    {
-        return $this->hasMany(File::class, 'attachment_id', 'id');
-    }
+
 
     /**
      * File file

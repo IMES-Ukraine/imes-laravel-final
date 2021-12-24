@@ -50,7 +50,7 @@ class ProjectRepository
         $project->status = Projects::STATUS_ACTIVE;
         $project->save();
 
-        TestService::setAttachment($projectTotal['options']['files'], $project->id);
+        $this->setAttachment($projectTotal['options']['files'], $project->id);
 
         if ($projectTotal['tag']) {
             TagService::addProjectTag($project->id, $projectTotal['tag']);
@@ -74,7 +74,7 @@ class ProjectRepository
                 $articleModel->research_id = (int)$research->id;
                 $articleModel->scheduled = $scheduled;
                 $articleModel->save();
-                TestService::setAttachment($content['article'], $articleModel->id);
+                $this->setAttachment($content['article'], $articleModel->id, );
             }
 
 
@@ -89,7 +89,7 @@ class ProjectRepository
                     $questionModel = TestQuestions::create((array)new Question($content['test']));
                     $questionModel->research_id = (int) $research->id;
                     $questionModel->save();
-                    TestService::setAttachment($content['test'], $questionModel->id);
+                    $this->setAttachment($content['test'], $questionModel->id);
 
                     $parentID = $questionModel->id;
                     $complex = $content['test']['complex_question'];
@@ -107,7 +107,7 @@ class ProjectRepository
                         $questionModel->parent_id = $parentID;
                         $questionModel->research_id = (int)$research->id;
                         $questionModel->save();
-                        TestService::setAttachment($question, $questionModel->id);
+                        $this->setAttachment($question, $questionModel->id);
 
 
                     }
@@ -117,7 +117,7 @@ class ProjectRepository
                     $questionModel = TestQuestions::create((array)new Question($content['test']));
                     $questionModel->research_id = (int)$research->id;
                     $questionModel->save();
-                    TestService::setAttachment($content['test'], $questionModel->id);
+                    $this->setAttachment($content['test'], $questionModel->id);
 
                 }
             }
@@ -309,6 +309,53 @@ class ProjectRepository
             'all_activities' => $all_activities,
             'user_total' => $users_total
         ]];
+    }
+
+    public function setAttachment($model, $entity_id)
+    {
+//        dd($model, $entity_id);
+        if ($entity_id) {
+            if (isset($model['cover']['id'])) {
+                $img = File::find($model['cover']['id']);
+                if($img) {
+                    $img->attachment_id = $entity_id;
+                    $img->field = File::FIELD_COVER;
+                    $img->save();
+                }
+            }
+
+            if (isset($model['question']['file']['id'])) {
+                $file = File::find($model['question']['file']['id']);
+                if($file) {
+                    $file->attachment_id = $entity_id;
+                    $file->field = $model['question']['fileType'];
+                    $file->save();
+                }
+            }
+
+            if (isset($model['variants'])) {
+                foreach ($model['variants'] as  $variant) {
+                    if (isset($variant['media'][0])) {
+                        $img = File::find($variant['media'][0]['id']);
+                        $img->attachment_id = $entity_id;
+                        $img->field = File::FIELD_IMAGE;
+                        $img->save();
+                    }
+                }
+            }
+
+            //Это галерея в статьях
+            if (isset($model['multiples'])){
+                foreach ($model['multiples'] as $featured){
+                    $img = File::find($featured['id']);
+                    if($img) {
+                        $img->attachment_id = $entity_id;
+                        $img->field = File::FIELD_FEATURED;
+                        $img->save();
+                    }
+                }
+            }
+        }
     }
 
 }
