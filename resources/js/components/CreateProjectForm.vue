@@ -369,7 +369,9 @@ export default {
         activity() {
             let sum = 0;
             for(let contIndex in this.project.content ){
-                sum += this.project.content[contIndex].test.count;
+                let testCount = this.project.content[contIndex].test.count || 0;
+                let articleCount = this.project.content[contIndex].article.count || 0;
+                sum += parseInt(testCount) + parseInt(articleCount);
             }
             return sum;
         }
