@@ -83,7 +83,6 @@ class UsersController extends Controller
                 ->groupBy('user_id')
                 ->paginate(self::COUNT_PER_PAGE);
         }
-        echo "<pre>"; print_r($results); echo "</pre>"; die();
 
         $data = json_decode($results->toJSON());
 
