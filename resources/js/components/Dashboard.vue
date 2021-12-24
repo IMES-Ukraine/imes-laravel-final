@@ -17,7 +17,7 @@
             </div>
             <div class="dashboard_main">
                 <div class="dashboard_main-head">
-                    <p class="dashboard_main-total">Активностей <b>{{ project.status_active }}</b></p>
+                    <p class="dashboard_main-total">Активностей <b>{{ project.all_activities }}</b></p>
                     <div class="dashboard_main__status">
                         <p class="dashboard_main__status-title">Статус активностей</p>
                         <div class="dashboard_main__status-content">
@@ -25,7 +25,7 @@
                             <div class="dashboard_main__status-line">
                                 <span :style="'width:'+percentActive(project.status_active, project.user_total)+'%;'"></span>
                             </div>
-                            <p class="dashboard_main__status-description">{{ project.status_active }} активностей</p>
+                            <p class="dashboard_main__status-description">{{ project.user_total }} активностей</p>
                         </div>
                     </div>
                 </div>
@@ -82,12 +82,12 @@
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">{{ percentActive(content.test_status_active, content.test_status_active + content.test_status_not_active) }}% выполненых</p>
+                                <p class="dashboard_main__status-description">{{ percentActive(content.test_status_active, project.user_total) }}% выполненых</p>
 <!--                                <p class="dashboard_main__status-description">{{ percentActive(content.test_status_active, content.test_total) }}% выполненых</p>-->
                                 <div class="dashboard_main__status-line">
-                                    <span :style="'width:'+percentActive(content.test_status_active, content.test_status_active + content.test_status_not_active)+'%;'"></span>
+                                    <span :style="'width:'+percentActive(content.test_status_active, project.user_total)+'%;'"></span>
                                 </div>
-                                <p class="dashboard_main__status-description">{{ content.test_status_active + content.test_status_not_active}} активностей</p>
+                                <p class="dashboard_main__status-description">{{ project.user_total}} активностей</p>
                             </div>
                         </div>
                         <div class="dashboard_study__info">
@@ -136,11 +136,11 @@
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
-                                <p class="dashboard_main__status-description">{{ percentActive(content.article_status_active, content.article_total) }}% выполненых</p>
+                                <p class="dashboard_main__status-description">{{ percentActive(content.article_status_active, project.user_total) }}% выполненых</p>
                                 <div class="dashboard_main__status-line">
-                                    <span :style="'width:'+percentActive(content.article_status_active, content.article_total)+'%;'"></span>
+                                    <span :style="'width:'+percentActive(content.article_status_active, project.user_total)+'%;'"></span>
                                 </div>
-                                <p class="dashboard_main__status-description">{{ content.article_status_active }} активностей</p>
+                                <p class="dashboard_main__status-description">{{ project.user_total }} активностей</p>
                             </div>
                         </div>
                         <div class="dashboard_study__info">

@@ -296,6 +296,8 @@ class ProjectRepository
 
         $total_status_not_participate = $users_total - ($total_status_active + $total_status_not_active);
 
+        $all_activities = $total_status_active+$total_status_not_active;
+
         return (object)['data' => [
             'project' => $project,
             'content' => $content,
@@ -304,6 +306,7 @@ class ProjectRepository
             'status_active' => $total_status_active,
             'status_not_active' => $total_status_not_active,
             'status_not_participate' => $total_status_not_participate,
+            'all_activities' => $all_activities,
             'user_total' => $users_total
         ]];
     }
