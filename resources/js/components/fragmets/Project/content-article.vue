@@ -36,7 +36,7 @@
             <p class="articles_create__item-title">Галерея</p>
             <div class="articles_create__item-content">
                 <div class="articles_create__media">
-                    <div v-for="file in article.multiples" v-bind:key="file.itemId" class="articles_create__media-item">
+                    <div v-for="file in article.featured_images" v-bind:key="file.itemId" class="articles_create__media-item">
                         <div class="articles_create__media-img">
                             <img :src="file.path" alt="">
                         </div>
@@ -318,7 +318,7 @@ console.log(this.article.title.trim());
                 }
             ).then((file) => {
                 let obj = file.data.data;
-                this.article.multiples.push(obj)
+                this.article.featured_images.push(obj)
                 $('#article_multiples').val(null);
             })
         },

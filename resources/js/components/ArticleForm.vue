@@ -210,12 +210,12 @@
                                     </div>
                                     <div class="articles_create__addition-block">
                                         <div class="articles_create__addition-field">
-                                            <input type="text" id="new_user" v-model="new_user"/>
-                                            <div class="errors" v-if="addUserError">{{ addUserError }}</div>
+                                            <input type="text" id="new_user" v-model="article.author2" placeholder="Добавить автора"/>
+<!--                                            <div class="errors" v-if="addUserError">{{ addUserError }}</div>-->
                                         </div>
-                                        <button class="articles_create__addition-button" type="button"
-                                                @click="AddNewUser">Добавить автора
-                                        </button>
+<!--                                        <button class="articles_create__addition-button" type="button"-->
+<!--                                                @click="AddNewUser">Добавить автора-->
+<!--                                        </button>-->
                                     </div>
                                 </div>
                             </div>
@@ -322,7 +322,7 @@ export default {
             button: '',
             textInsert: '',
             insert: [],
-            multiples: [],
+            featured_images: [],
             articleType: 1,
             type: 1,
             textLocale: 0,
@@ -344,6 +344,7 @@ export default {
                 recommended: [],
                 featured_images: [],
                 user_id: 0,
+                author2: null,
                 user: {
                     id: 0,
                     name: ''
@@ -437,7 +438,7 @@ export default {
             this.article.type = value
         },
         multiplesStore(value) {
-            this.article.multiples = value
+            this.article.featured_images = value
         },
         updateInsertTitle(value) {
             this.article.content[0].title = value
@@ -480,13 +481,7 @@ export default {
                     },
                 }
             ).then((file) => {
-                let obj = {
-                    itemId: 'article-' + getRandomId(),
-                    id: file.data.data.id,
-                    file_name: file.data.data.file_name,
-                    path: file.data.data.path
-                };
-                this.article.featured_images.push(obj)
+                this.article.featured_images.push(file.data.data)
                 $('#article_multiples').val(null);
             })
         },

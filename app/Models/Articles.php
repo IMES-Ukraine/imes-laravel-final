@@ -207,6 +207,18 @@ class Articles extends Post
         return $research ? Projects::find($research->project_id) : null;
     }
 
+    public static function setArticleAttachment($images, $article_id)
+    {
+        foreach ($images as $featured){
+            $img = File::find($featured['id']);
+            if($img) {
+                $img->attachment_id = $article_id;
+                $img->field = File::FIELD_FEATURED;
+                $img->save();
+            }
+        }
+    }
+
 
 
     /**

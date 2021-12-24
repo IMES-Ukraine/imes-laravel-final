@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Repository\ProjectRepository;
 use App\Models\File;
 use App\Models\PostTag;
 use App\Models\PostTimes;
@@ -280,19 +281,7 @@ class BlogController extends Controller
         }
 
         if ($saveStatus) {
-            //Пока у нас изображения в галерее не удаляются
-//            File::where('attachment_id', $model->id)->delete();
-            if ($request->featured_images) {
-                foreach ($request->featured_images as $image) {
-                    $fileImage = File::find($image['id']);
-                    $fileImage->attachment_id = $model->id;
-                    $fileImage->save();
-//                $model_gallery = new PostGallery();
-//                $model_gallery->post_id = $model->id;
-//                $model_gallery->cover_image = $value['path'];
-//                $model_gallery->save();
-                }
-            }
+            Articles::setArticleAttachment($request->featured_images, $model->id);
 
             PostTag::where('post_id', $model->id)->delete();
             if ($request->tags) {
