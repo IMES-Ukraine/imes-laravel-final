@@ -71,7 +71,7 @@ class Projects extends Model
     public function items()
     {
         return $this->hasMany(ProjectResearches::class, 'project_id', 'id')->with(['tests', 'articles']);
-        //return $this->hasMany('App\Models\ProjectItems', 'project_id', 'id');
+
     }
 
     public function fillAudience()
