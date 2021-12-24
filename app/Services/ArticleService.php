@@ -25,7 +25,7 @@ class ArticleService
         $model->is_popular = rand(0,1);
         $model->action = $action;
         $model->button = $action;
-        $model->user_id = $article['author']['id'];
+        $model->user_id = $article['author']['id'] ?? 0;
 
         $content = [
             [
