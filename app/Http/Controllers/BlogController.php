@@ -63,6 +63,7 @@ class BlogController extends Controller
      */
     public function show($id)
     {
+        /** @var Articles $article */
         $article = Articles::select('rainlab_blog_posts.*')
             ->with('cover_image')
             ->with('featured_images')
@@ -73,7 +74,7 @@ class BlogController extends Controller
             return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);
         }
 
-        $research = $article->getResearch();
+        $research = $article->research;
         $project = $article->getProject();
 
         $data = $article->toArray();

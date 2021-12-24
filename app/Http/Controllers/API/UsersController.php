@@ -75,14 +75,12 @@ class UsersController extends Controller
         $test_ids = TestService::pluckIDArticles($content_id);
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
-                ->whereNull('ulogic_projects_passing.user_id')
-                ->orWhereRaw('(status = ' . $status . ' AND `entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_TEST . '" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
-                ->paginate(self::COUNT_PER_PAGE);
+            $results = User::isNotPassed(false, $test_ids)->paginate(self::COUNT_PER_PAGE);
         } else {
             $results = Passing::with('user')
                 ->with('withdraw')
-                ->whereRaw('(status = ' . $status . ' AND `entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_TEST . '" AND `entity_id` IN(' . implode(",", $test_ids) . '))')
+                ->isPassed(false, $test_ids, $status)
+                ->groupBy('user_id')
                 ->paginate(self::COUNT_PER_PAGE);
         }
 
@@ -96,14 +94,11 @@ class UsersController extends Controller
         $articles_ids = ArticleService::pluckIDArticles($content_id);
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = User::leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.user_id', '=', 'users.id')
-                ->whereNull('ulogic_projects_passing.user_id')
-                ->orWhereRaw('(`ulogic_projects_passing`.`entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_POST . '" AND `ulogic_projects_passing`.`entity_id` NOT IN(' . implode(",", $articles_ids) . '))')
-                ->paginate(self::COUNT_PER_PAGE);
+            $results = User::isNotPassed($articles_ids, false)->paginate(self::COUNT_PER_PAGE);
         } else {
             $results = Passing::with('user')
                 ->with('withdraw')
-                ->whereRaw('(status = ' . $status . ' AND `entity_type` LIKE "' . Passing::PASSING_ENTITY_TYPE_POST . '" AND `entity_id` IN(' . implode(",", $articles_ids) . '))')
+                ->isPassed($articles_ids, false, $status)
                 ->paginate(self::COUNT_PER_PAGE);
         }
 
@@ -119,6 +114,7 @@ class UsersController extends Controller
             ->where('entity_type', 'LIKE', Passing::PASSING_ENTITY_TYPE_TEST)
             ->where('entity_id', $test_id)
             ->where('answer', 'LIKE', '%' . $variant . '%')
+            ->groupBy('user_id')
             ->paginate(self::COUNT_PER_PAGE);
 
         $data = json_decode($results->toJSON());
@@ -170,29 +166,6 @@ class UsersController extends Controller
         $verificationRequest->save();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $user->getAttributes());
-    }
-
-
-    public function createName($name)
-    {
-        $number = mt_rand(1, 4294967294);
-        $email = $number . '@imes.pro';
-        $password = Hash::make($name);
-
-        // create only name for users
-        $user = User::create([
-            'name' => $name,
-            'email' => $email,
-            'username' => $email,
-            'password' => $password,
-            'messaging_token' => 'eUpQSLg0fkqLqK8o7T5bD4:APA91bGfNkJ5cr8DXcLubsBlqBz7fSgz_BogwAC5muytt8jOF4VEk6_Vj9D_NMff0owflTvA9TFnEV-DneQJeUGshLktOjC2PUFsmSS4Gz_qTU7ycUh8Fbxi28i0h8pa28fL3jiuJ2g5'
-        ]);
-
-        $user->save();
-
-        $data = $this->user->all()->toArray();
-
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
 

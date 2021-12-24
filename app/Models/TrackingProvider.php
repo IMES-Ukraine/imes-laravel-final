@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 
@@ -36,69 +37,51 @@ class TrackingProvider
     {
         $article = Post::findOrFail($articleId);
 
-        if ( is_array($content = $article->content)) {
+        if (is_array($content = $article->content)) {
 
             $blockCount = count($content) - 1;
 
-            if ($blockCount === 0 ){
-                return  true;
+            if ($blockCount === 0) {
+                return true;
             }
 
             $totalSymbolsCount = 0;
-            $totalWordsCount = 0;
 
             foreach ($content as $contentBlock) {
 
-                $contentSymbolsCount = strlen($contentBlock->content);
-                $wordsArray = explode(' ', $contentBlock->content);
-
-                array_filter($wordsArray);
-
-                $totalWordsCount = $totalWordsCount + count($wordsArray);
+                $contentSymbolsCount = iconv_strlen($contentBlock->content);
                 $totalSymbolsCount = $totalSymbolsCount + $contentSymbolsCount;
             }
-
-            $track = NewsTracking::where('news_id', $articleId)
-                ->where('user_id', $this->user->id)
-                ->orderBy('created_at', 'asc')
-                ->skip(0)
-                ->take($blockCount)
-                ->get();
 
             $trackStarted = NewsTracking::where('news_id', $articleId)
                 ->where('user_id', $this->user->id)
                 ->whereNull('position')
                 ->orderBy('created_at', 'desc')
-                ->limit(1)
-                ->get();
+                ->first();
 
             $trackEnded = NewsTracking::where('news_id', $articleId)
                 ->where('user_id', $this->user->id)
                 ->where('position', $blockCount)
                 ->orderBy('created_at', 'desc')
-                //->orderBy('position', 'asc')
-                ->limit(1)
-                ->get();
+                ->first();
 
 
-            $totalReadingTimeSpent = 0;
+            if ($trackStarted && $trackEnded) {
 
-            if( isset($trackStarted[0]) && isset($trackEnded[0]) ) {
-
-                $startingDate = !empty( $trackStarted[0] ) ? Carbon::parse( $trackStarted[0]['created_at'] ) : Carbon::now();
-                $endingDate = !empty( $trackEnded[0] ) ? Carbon::parse( $trackEnded[0]['created_at'] ) : Carbon::now();
+                $startingDate = !empty($trackStarted) ? Carbon::parse($trackStarted->created_at) : Carbon::now();
+                $endingDate = !empty($trackEnded) ? Carbon::parse($trackEnded->created_at) : Carbon::now();
 
                 $timeDifference = $startingDate->diffInMinutes($endingDate);
 
-                if( $timeDifference == 0)
+                if ($timeDifference == 0) {
                     return false;
+                }
 
-                $userReadingTime = $totalWordsCount/$timeDifference;
-
-                return $userReadingTime < 180;
-
-            } else
+                $userReadingRate = $totalSymbolsCount / $timeDifference;
+                return $userReadingRate <= env('READING_SYMBOLS_PER_MINUTE');
+            } else {
                 return false;
+            }
 
             /*$startingDate = Carbon::parse($starting['created_at']);
             $endingDate   = Carbon::parse($ending['created_at']);*/

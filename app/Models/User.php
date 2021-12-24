@@ -9,6 +9,7 @@ use App\Http\Helpers;
 use App\Traits\JWT;
 use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -244,8 +245,14 @@ class User extends Authenticatable implements JWTSubject
             'basic_information' => $userInfo,
             'specialized_information' => new UserSpecializedInfo(),
             'financial_information' => new UserFinancialInfo(),
-            'messaging_token' => env('MESSAGING_TOKEN')
+            'firebase_token' => ''
         ]);
+    }
+
+    public function addBalance($sum)
+    {
+        $this->balance += $sum;
+        $this->save();
     }
 
 
@@ -253,7 +260,7 @@ class User extends Authenticatable implements JWTSubject
      * Get the cards of the users
      *
      */
-    public function user_cards()
+    public function user_cards(): HasMany
     {
         return $this->hasMany(UserCards::class);
     }

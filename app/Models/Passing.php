@@ -3,6 +3,7 @@ namespace App\Models;
 
 use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Model
@@ -15,27 +16,53 @@ class Passing extends Model
     const PASSING_ACTIVE = 1;
     const NO_STATUS = 9;
 
+    const PASSING_RESULT_ACTIVE = 1;
+    const PASSING_RESULT_NOT_ACTIVE = 0;
+    const NO_RESULT = 9;
+
     const PASSING_ENTITY_TYPE_POST = '%Post';
     const PASSING_ENTITY_TYPE_TEST = '%TestQuestions';
 
     protected $dates = ['deleted_at'];
+    protected $fillable = [
+        'entity_type',
+        'entity_id',
+        'user_id',
+        'status',
+        'answer'
+    ];
 
-    public function scopeIsPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS)
+    public function scopeIsPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS, $result = self::NO_RESULT)
     {
         if ($articles_ids && $test_ids) {
-            $query->where(function($q) use($test_ids, $status)
+            $query->where(function($q) use($test_ids, $status, $result)
             {
                 if ($status != self::NO_STATUS) {
                     $q->where('ulogic_projects_passing.status', $status);
                 }
 
+                if ($result != self::NO_RESULT) {
+                    $q->where('ulogic_projects_passing.result', $result);
+                }
+
                 $q->where('ulogic_projects_passing.entity_type', TestQuestions::class)
                     ->whereIn('ulogic_projects_passing.entity_id', $test_ids);
 
-            })->orWhere(function($q) use($articles_ids, $status)
+//                $q->where('created_at', function ($q) use ($test_ids){
+//                    $q->select(DB::raw('max(created_at) as created_at'))->from('ulogic_projects_passing')
+//                        ->where('entity_type', TestQuestions::class)
+//                        ->whereIn('entity_id', $test_ids)
+//                        ->max('created_at');
+//                });
+
+            })->orWhere(function($q) use($articles_ids, $status, $result)
             {
                 if ($status != self::NO_STATUS) {
                     $q->where('ulogic_projects_passing.status', $status);
+                }
+
+                if ($result != self::NO_RESULT) {
+                    $q->where('ulogic_projects_passing.result', $result);
                 }
 
                 $q->where('ulogic_projects_passing.entity_type', Post::class)
@@ -47,6 +74,10 @@ class Passing extends Model
                 $query->where('status', $status);
             }
 
+            if ($result != self::NO_RESULT) {
+                $query->where('result', $result);
+            }
+
             $query->where('entity_type', Post::class)
                 ->whereIn('entity_id', $articles_ids);
         } elseif ($test_ids) {
@@ -54,8 +85,19 @@ class Passing extends Model
                 $query->where('status', $status);
             }
 
+            if ($result != self::NO_RESULT) {
+                $query->where('result', $result);
+            }
+
             $query->where('entity_type', TestQuestions::class)
                 ->whereIn('entity_id', $test_ids);
+
+//            $query->where('created_at', function ($q) use ($test_ids){
+//                $q->select(DB::raw('max(created_at) as created_at'))->from('ulogic_projects_passing')
+//                    ->where('entity_type', TestQuestions::class)
+//                    ->whereIn('entity_id', $test_ids)
+//                    ->max('created_at');
+//            });
         }
     }
 

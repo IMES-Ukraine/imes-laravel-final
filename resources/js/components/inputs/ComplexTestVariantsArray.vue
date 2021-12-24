@@ -189,7 +189,10 @@ export default {
             if (this.question.type === 'variants') {
                 this.errorsLocal.variants = [];
                 for (const [index, value] of Object.entries(this.question.variants)) {
-                    if (!value.text || !value.text.trim()) {
+                    /*if (!value.text || !value.text.trim()) {
+                        this.errorsLocal.variants[index] = 'Текст ответа обязателен';
+                    }*/
+                    if (!value.title || !value.title.trim()) {
                         this.errorsLocal.variants[index] = 'Текст ответа обязателен';
                     }
                 }

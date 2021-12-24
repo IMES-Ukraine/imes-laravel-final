@@ -14,6 +14,7 @@
                             <p class="study__block-title">Вопрос: <b>{{ test.text }}</b></p>
 
                             <div class="study__block-content" v-if="(test.question.variants && test.question.type != 'text')">
+
                                 <div class="study__item" v-for="variant in test.question.variants">
                                     <div class="study__item-content">
                                         <div :class="(variant.right)?'study__answer active':'study__answer'">
@@ -39,6 +40,7 @@
                                         :variant="variant.variant"
                                         v-if="getStaticTest(variant.variant, tests[0]['id'])"/>
                                 </div>
+
                             </div>
                             <div class="study__block-content" v-else>
                                 <div class="study__table">
@@ -121,7 +123,7 @@
                         </div>
 
                         <template v-if="(test.type == 'complex' && test.picked == 'test')">
-                            <div class="study__block" v-for="complex_question in test.complex_question" v-if="(complex_question.variants && complex_question.type != 'text')" style="padding-bottom: 30px;">
+                            <!--<div class="study__block" v-for="complex_question in test.complex_question" v-if="(complex_question.variants && complex_question.type != 'text')" style="padding-bottom: 30px;">
                                 <div class="study__block-content">
                                 <p class="study__block-title">Вопрос: <b>{{ complex_question.text }}</b></p>
 
@@ -153,7 +155,39 @@
                                     </div>
                                 </div>
                                 </div>
+                            </div>-->
+                            <div class="study__block" v-for="complex_question in tests" v-if="(complex_question.variants && complex_question.test_type == 'child')" style="padding-bottom: 30px;">
+                                <div class="study__block-content">
+                                    <p class="study__block-title">Вопрос: <b>{{ complex_question.title }}</b></p>
+
+                                    <div class="study__item" v-for="variant in complex_question.variants.buttons">
+                                        <div class="study__item-content">
+                                            <div :class="(complex_question.variants.correct_answer[0] == variant.variant)?'study__answer active':'study__answer'">
+                                                <p class="study__answer-letter">{{ variant.variant }}</p>
+                                                <div class="study__answer-text" v-if="complex_question.type == 'media'">
+                                                    <img :src="variant.media[0]['path']" alt="" />
+                                                </div>
+                                                <p class="study__answer-text" v-else>{{ variant.title }}</p>
+                                            </div>
+                                            <div class="study__info">
+                                                <div class="study__info-block">
+                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.variant, complex_question.id), totalQuestionVariants(test.question.variants, complex_question.id)) }}%</p>
+                                                    <div class="dashboard_main__status-line">
+                                                        <span :style="'width:'+percent(getStaticTest(variant.variant, complex_question.id), totalQuestionVariants(test.question.variants, complex_question.id))+'%;'"></span>
+                                                    </div>
+                                                </div>
+                                                <p class="study__info-quantity">{{ getStaticTest(variant.variant, complex_question.id) }}</p>
+                                            </div>
+                                        </div>
+                                        <test-users-popup
+                                            :title="test.title + ' - ' + variant.variant"
+                                            :id="complex_question.id"
+                                            :variant="variant.variant"
+                                            v-if="getStaticTest(variant.variant, complex_question.id)"/>
+                                    </div>
+                                </div>
                             </div>
+
                             <template v-if="complex_moderations">
                                 <div class="study__block" v-for="(complex_test, key) in tests" v-if="complex_test.test_type=='child' && complex_test.answer_type=='text'">
 
@@ -241,8 +275,8 @@
                 default: []
             },
             passing_tests: {
-                type: Array,
-                default: []
+                type: Object,
+                default: {}
             },
             content_id: {
                 type: Number,
@@ -340,10 +374,12 @@
                 if (status == 'pending') {
                     this.$get(TEST_COMPLEX_CONFIRMATION + "/" + id + "/" + this.content_id).then();
 
-                    for (const [index, value] of Object.entries(this.moderations[test_id].data)) {
-                        if (value.id === id) {
-                            value.status = 'accept'
-                            return
+                    if (this.moderations) {
+                        for (const [index, value] of Object.entries(this.moderations[test_id].data)) {
+                            if (value.id === id) {
+                                value.status = 'accept'
+                                return
+                            }
                         }
                     }
                 }

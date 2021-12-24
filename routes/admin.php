@@ -92,21 +92,26 @@ Route::group(
                 'prefix' => 'project'
             ],
             function () {
+                Route::get('/', [ProjectsController::class, 'index']);
+
+
                 Route::post('/start/{id}', [ProjectsApiController::class, 'start']);
                 Route::post('/stop/{id}', [ProjectsApiController::class, 'stop']);
                 Route::get('/tags', [ProjectsApiController::class, 'tags']);
-                Route::get('/tests/{id?}', [ProjectsApiController::class, 'getTests']);
-                Route::get('/', [ProjectsController::class, 'index']);
+//                Route::get('/tests/{id?}', [ProjectsApiController::class, 'getTests']);
                 Route::post('/cover/{type}', [ProjectsApiController::class, 'setImage']);
                 Route::get('/{id}', [ProjectsApiController::class, 'show']);
+
                 Route::post('/{id}', [ProjectsApiController::class, 'update']);
                 Route::post('/', [ProjectsApiController::class, 'create']);
 
                 Route::delete('/destroy/{id}', [ProjectsApiController::class, 'destroy']);
 
+                Route::put('/stats', [ProjectsApiController::class, 'userStats']);
 
 
                 Route::post('/image/{field}/{type?}', [ProjectsApiController::class, 'setImage']);
+                Route::post('/file/{field}/{type?}', [ProjectsApiController::class, 'setImage']);
             }
         );
 
@@ -183,6 +188,7 @@ Route::group(
                 Route::get ('/passing-article-all/{content_id}/{status}',  [UsersController::class, 'passingArticleAll']);
                 Route::get ('/passing-test/{test_id}/{variant}',  [UsersController::class, 'passingTest']);
                 Route::get('/{id}', [UsersController::class, 'show']);
+
                 Route::delete('/destroy/{id}', [UsersController::class, 'destroy']);
                 Route::post('/balance', [UsersController::class, 'balance']);
                 Route::get('/create-name/{name}', [UsersController::class, 'createName']);

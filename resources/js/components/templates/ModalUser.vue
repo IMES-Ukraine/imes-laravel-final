@@ -85,13 +85,35 @@
                            v-model="data.specialized_information.additional_qualification">
                 </div>
             </div>
+            <div class="form-row" v-if="data.specialized_information && data.specialized_information.passport">
+                <div class="form-group col-12">
+                    <label class="form-control__label">Пасспорт</label>
+                    <button @click="windowImage(data.specialized_information.passport.path)" class="btn-watch">Смотреть</button>
+                    <img :src="data.specialized_information.passport.path" style="display: none;" alt=""/>
+                </div>
+            </div>
+            <div class="form-row" v-if="data.specialized_information && data.specialized_information.education_document">
+                <div class="form-group col-12">
+                    <label class="form-control__label">Документ об образовании</label>
+                    <button @click="windowImage(data.specialized_information.education_document.path)" class="btn-watch">Смотреть</button>
+                    <img :src="data.specialized_information.education_document.path" style="display: none;" alt=""/>
+                </div>
+            </div>
+            <div class="form-row" v-if="data.specialized_information && data.specialized_information.mic_id">
+                <div class="form-group col-12">
+                    <label class="form-control__label">ИИН</label>
+                    <button @click="windowImage(data.specialized_information.mic_id.path)" class="btn-watch">Смотреть</button>
+                    <img :src="data.specialized_information.mic_id.path" style="display: none;" alt=""/>
+                </div>
+            </div>
         </div>
     </b-modal>
 </template>
 
 <script>
-import {CLIENTS} from "../../api/endpoints";
-import ModalMixin from "../../ModalMixin";
+import {CLIENTS} from "../../api/endpoints"
+import ModalMixin from "../../ModalMixin"
+import { openImageWindow } from '../../utils'
 
 export default {
     name: "modal-user",
@@ -116,6 +138,9 @@ export default {
 
     },
     methods: {
+        windowImage(src) {
+            openImageWindow(src);
+        },
         saveData() {
             let this_reference = this;
             console.log(this.data);

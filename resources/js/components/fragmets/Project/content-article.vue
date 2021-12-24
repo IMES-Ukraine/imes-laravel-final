@@ -29,7 +29,7 @@
                         :value="article.cover"
                         @fileInput="article.cover = $event"
                         :error="errorArticleCover"
-                        type="cover"
+                        type="image"
                         attachment="articles"/>
         </div>
         <div class="articles_create__item half">

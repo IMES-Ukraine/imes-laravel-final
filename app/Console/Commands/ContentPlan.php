@@ -40,10 +40,14 @@ class ContentPlan extends Command
     {
         $times = PostTimes::all();
         $today_date = date("Y-m-d");
-        $today_time = date("H:i:s");
+        $today_hour = (int)date("H");
+        $today_minute = (int)date("i");
 
         foreach ($times as $value) {
-            if ($value->date < $today_date && $value->time < $today_time) {
+            $hour = (int)date("H", strtotime($value->time));
+            $minute = (int)date("i", strtotime($value->time));
+
+            if (($value->date == $today_date && $today_hour == $hour && $today_minute >= $minute) || ($value->date < $today_date)) {
                 PostTimes::find($value->id)->delete();
             }
         }

@@ -105,7 +105,6 @@ class Question
         }
 
         if ($this->isTextAnswerType) {
-
             $textVariant = $question['question']['variants'][0]['variant'];
             $this->correctAnswer[] = $textVariant;
         }
@@ -123,15 +122,12 @@ class Question
                 'data' => $question['article_id'] ? (int)$question['article_id'] : null,
             ];
 
-        if (isset($question['question']['video']) && isset($question['question']['video']['id'])) {
-
-            $videoId = $question['question']['video']['id'];
-            $videoFile = File::find($videoId);
+        if (isset($question['question']['fileType'])  && isset($question['question']['file']['path'])) {
             $options[] =
                 [
-                    'type' => 'video',
-                    'data' => $videoFile->path,
-                    'file' => $videoFile
+                    'type' => $question['question']['fileType'],
+                    'data' => $question['question']['file']['path'],
+                    'file' => $question['question']['file']
                 ];
         }
 

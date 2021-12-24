@@ -93,22 +93,22 @@
                                     </validation-provider>
                                 </div>
                             </div>
-                            <div class="articles_create__grid-block">
-                                <div class="articles_create__field_with_label">
-                                    <p class="articles_create__field_with_label-label">Частота</p>
-                                    <validation-provider
-                                        rules="required"
-                                        v-slot="{ errors }">
-                                        <input
-                                            class="form-control"
-                                            type="number"
-                                            @keypress="isNumber($event)"
-                                            name="name"
-                                            v-model="content.article.frequency">
-                                        <span class="errors">{{ errors[0] }}</span>
-                                    </validation-provider>
-                                </div>
-                            </div>
+<!--                            <div class="articles_create__grid-block">-->
+<!--                                <div class="articles_create__field_with_label">-->
+<!--                                    <p class="articles_create__field_with_label-label">Частота</p>-->
+<!--                                    <validation-provider-->
+<!--                                        rules="required"-->
+<!--                                        v-slot="{ errors }">-->
+<!--                                        <input-->
+<!--                                            class="form-control"-->
+<!--                                            type="number"-->
+<!--                                            @keypress="isNumber($event)"-->
+<!--                                            name="name"-->
+<!--                                            v-model="content.article.frequency">-->
+<!--                                        <span class="errors">{{ errors[0] }}</span>-->
+<!--                                    </validation-provider>-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -165,11 +165,11 @@
                                         </validation-provider>
                                     </div>
                                 </div>
-                                <div class="articles_create__grid-block">
-                                    <div class="articles_create__field_with_label">
-                                        <v-checkbox :value.sync="content.test.canRetake"/>
-                                    </div>
-                                </div>
+<!--                                <div class="articles_create__grid-block">-->
+<!--                                    <div class="articles_create__field_with_label">-->
+<!--                                        <v-checkbox :value.sync="content.test.canRetake"/>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                         </div>
                     </div>
                 </div>
@@ -251,8 +251,8 @@ export default {
             }
             if (this.haveArticle) {
                 res &= !!(parseInt(this.content.article.count))
-                    && !!(parseInt(this.content.article.points))
-                    && !!(parseInt(this.content.article.frequency));
+                    && !!(parseInt(this.content.article.points));
+                    // && !!(parseInt(this.content.article.frequency));
             }
             return res;
 

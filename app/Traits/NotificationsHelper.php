@@ -23,7 +23,7 @@ trait NotificationsHelper
     protected function sendNotificationToAll($type, $text, $extraFields = [], $title = '') {
 
         $title = $title??$text;
-        $userTokens = User::whereNotNull('messaging_token')->pluck( 'messaging_token')->toArray();
+        $userTokens = User::whereNotNull('firebase_token')->pluck( 'firebase_token')->toArray();
         $users = User::where('is_activated', 1)->pluck( 'id')->toArray();
 
 
@@ -99,7 +99,7 @@ trait NotificationsHelper
         }
 
         $this->sendNotification(
-            $user->messaging_token,
+            $user->firebase_token,
             $this->defaultPayload($text, $title),
             array_merge([
                 'user_id' => $notification->user_id,
