@@ -67,10 +67,6 @@ class ProjectsController extends Controller
     public function destroy($id)
     {
         $model = Projects::findOrFail($id);
-//        foreach ($model->items as $item) {
-//            $item->destroyData();
-//            $item->delete();
-//        }
 
         $model->update(['status' => Projects::STATUS_INACTIVE]);
         $model->delete();
@@ -88,27 +84,6 @@ class ProjectsController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
     }
 
-//    public function getTests($id = null)
-//    {
-//        $data = [];
-//        $query = ProjectResearches::query();
-//        if ($id) {
-//            $query->where(['project_id' => $id]);
-//        }
-//        if (!request()->input('all_items', 0)) {
-//            $query->where('schedule', '<=', date('Y-m-d H:i:s'));
-//        }
-//
-//        $projectItems = $query->get();
-//        foreach ($projectItems as $key => $item) {
-//            $data[$key] = (array)$item->test;
-//            $data[$key]['id'] = $item->id;
-//            $data[$key]['project_id'] = $item->project_id;
-//            $data[$key]['schedule'] = $item->schedule;
-//
-//        }
-//        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
-//    }
 
     /**
      * @param Request $request
@@ -232,6 +207,14 @@ class ProjectsController extends Controller
         $model->status = Projects::STATUS_ACTIVE;
         $model->save();
 
+        //активируем все статьи проекта
+        foreach ($model->items as $item){
+            foreach ($item->articles as $article){
+                $article->published = 1;
+                $article->save();
+            }
+        }
+
         return $this->helpers->apiArrayResponseBuilder(200, ['status' => Projects::STATUS_ACTIVE]);
     }
 
@@ -246,6 +229,14 @@ class ProjectsController extends Controller
         $model = Projects::findOrFail($id);
         $model->status = Projects::STATUS_INACTIVE;
         $model->save();
+
+        //инактивируем все статьи проекта
+        foreach ($model->items as $item){
+            foreach ($item->articles as $article){
+                $article->published = 0;
+                $article->save();
+            }
+        }
 
         return $this->helpers->apiArrayResponseBuilder(200, ['status' => Projects::STATUS_INACTIVE]);
     }

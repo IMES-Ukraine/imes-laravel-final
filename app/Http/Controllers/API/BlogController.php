@@ -12,6 +12,7 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Services\ArticleService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
@@ -53,22 +54,22 @@ class BlogController extends Controller
         ];
         //if (!isset($apiUser->id)) unset($relations['is_opened']);
 
-        //  Выдаём статьи всеъ типов
+        //  Выдаём статьи всех типов
         if ($type == Articles::ARTICLE) {
+            /** @var Builder $data */
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
                 ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
-                //->where( 'published_at', '<=', Carbon::now()
-                //->toDateTimeString())
+                ->where( 'published', 1)
                 ->isArticle()
-                ->isProjectActive()
                 ->isNotPassed($apiUser->id)
-                ->orderBy('rainlab_blog_posts.id', 'desc')
-                ->paginate($countOnPage);
+                ->orderBy('rainlab_blog_posts.id', 'desc');
+            $data = $data->paginate($countOnPage);
 
         } else {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
+                ->where( 'published', 1)
                 //->where( 'published_at', '<=', Carbon::now()
                 //->toDateTimeString())
                 ->isInformation()

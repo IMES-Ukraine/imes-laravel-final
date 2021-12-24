@@ -97,15 +97,6 @@ Route::group(
             function () {
                 Route::get('/', [ProjectsController::class, 'index']);
                 Route::get('/{id}', [ProjectsController::class, 'show']);
-
-//                Route::post('/start', [ProjectsController::class, 'start']);
-//                Route::post('/stop/{id}', [ProjectsController::class, 'stop']);
-//                Route::get('/tags', [ProjectsController::class, 'tags']);
-//                Route::get('/tests/{id?}', [ProjectsController::class, 'getTests']);
-//                Route::post('/cover/{type}', [ProjectsController::class, 'setImage']);
-//                Route::post('/image/{type}', [ProfileController::class, 'setImage']);
-//                Route::post('/{id}', [ProjectsController::class, 'update']);
-//                Route::post('/', [ProjectsController::class, 'create']);
             }
         );
 
