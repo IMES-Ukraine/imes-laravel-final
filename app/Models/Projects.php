@@ -23,7 +23,6 @@ class Projects extends Model
     const STATUS_COMPLETE = 'complete';
 
     protected $dates = ['deleted_at'];
-    //protected $jsonable = ['options'];
 
     /**
      * @var string The database table used by the model.

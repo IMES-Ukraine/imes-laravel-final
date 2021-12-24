@@ -69,6 +69,19 @@ class ProjectsController extends Controller
         $model = Projects::findOrFail($id);
 
         $model->update(['status' => Projects::STATUS_INACTIVE]);
+
+
+        //инактивируем статьи проекта
+        $this->setArticlesPublishedStatus($model, 0);
+
+//        удалим тесты проекта
+        foreach ($model->items as $item){
+            foreach ($item->tests as $test){
+                $test->delete();
+            }
+        }
+
+        //удалим и сам проект
         $model->delete();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success');
@@ -208,15 +221,20 @@ class ProjectsController extends Controller
         $model->save();
 
         //активируем все статьи проекта
-        foreach ($model->items as $item){
-            foreach ($item->articles as $article){
-                $article->published = 1;
-                $article->save();
-            }
-        }
+        $this->setArticlesPublishedStatus($model, 1);
 
         return $this->helpers->apiArrayResponseBuilder(200, ['status' => Projects::STATUS_ACTIVE]);
     }
+
+    private function setArticlesPublishedStatus($model, $status){
+        foreach ($model->items as $item){
+            foreach ($item->articles as $article){
+                $article->published = $status;
+                $article->save();
+            }
+        }
+    }
+
 
     /**
      * Stop the specified resource from storage.
@@ -231,12 +249,8 @@ class ProjectsController extends Controller
         $model->save();
 
         //инактивируем все статьи проекта
-        foreach ($model->items as $item){
-            foreach ($item->articles as $article){
-                $article->published = 0;
-                $article->save();
-            }
-        }
+        $this->setArticlesPublishedStatus($model, 0);
+
 
         return $this->helpers->apiArrayResponseBuilder(200, ['status' => Projects::STATUS_INACTIVE]);
     }
