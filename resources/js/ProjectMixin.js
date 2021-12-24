@@ -1,6 +1,5 @@
 import axios from 'axios';
-import {alphabet, checkIsImage, getRandomId} from "./utils";
-import {PROJECT, PROJECT_IMAGE} from "./api/endpoints";
+import {PROJECT} from "./api/endpoints";
 
 export default {
     data() {

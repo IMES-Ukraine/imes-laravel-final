@@ -345,15 +345,8 @@ class ProjectRepository
             }
 
             //Это галерея в статьях
-            if (isset($model['multiples'])){
-                foreach ($model['multiples'] as $featured){
-                    $img = File::find($featured['id']);
-                    if($img) {
-                        $img->attachment_id = $entity_id;
-                        $img->field = File::FIELD_FEATURED;
-                        $img->save();
-                    }
-                }
+            if (isset($model['featured_images'])){
+                Articles::setArticleAttachment($model['featured_images'], $entity_id);
             }
         }
     }
