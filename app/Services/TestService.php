@@ -39,39 +39,6 @@ class TestService
         return TestQuestions::select('id')->where('research_id', $content_id)->pluck('id')->toArray();
     }
 
-    public static function setAttachment($model, $testId)
-    {
-//        dd($model, $testId);
-        if ($testId) {
-            if (isset($model['cover']['id'])) {
-                $img = File::find($model['cover']['id']);
-                if($img) {
-                    $img->attachment_id = $testId;
-                    $img->field = File::FIELD_COVER;
-                    $img->save();
-                }
-            }
-
-            if (isset($model['question']['file']['id'])) {
-                $file = File::find($model['question']['file']['id']);
-                if($file) {
-                    $file->attachment_id = $testId;
-                    $file->field = $model['question']['fileType'];
-                    $file->save();
-                }
-            }
-
-            if (isset($model['variants'])) {
-                foreach ($model['variants'] as  $variant) {
-                    if (isset($variant['media'][0])) {
-                        $img = File::find($variant['media'][0]['id']);
-                        $img->attachment_id = $testId;
-                        $img->save();
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Return bonus

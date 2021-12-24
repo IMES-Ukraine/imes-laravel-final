@@ -1,10 +1,6 @@
 <?php
 
-use App\Models\Article;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\AdminController;
-use App\Http\Controllers\API\ProfileController;
-use App\Http\Controllers\API\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +15,7 @@ use App\Http\Controllers\API\UsersController;
 
 Route::get('/share/{id}', function ($id) {
 
-    $model = Article::find($id);
+    $model = \App\Models\Post::find($id);
     $content = json_decode($model->content);
 
     return view('share',[

@@ -171,14 +171,6 @@ class Articles extends Post
         return $this->hasOne('App\Models\PostTimes', 'post_id', 'id');
     }
 
-    /**
-     * Gallery articles
-     * @return mixed
-     */
-    public function gallery()
-    {
-        return $this->hasMany('App\Models\PostGallery', 'post_id', 'id');
-    }
 
     /**
      * Tags
@@ -187,6 +179,16 @@ class Articles extends Post
     public function tags()
     {
         return $this->hasOne(PostTag::class, 'post_id', 'id')->with('tags');
+    }
+
+    /**
+     * File file
+     * @return mixed
+     */
+    public function featured_images()
+    {
+        return $this->hasMany(File::class, 'attachment_id', 'id')
+            ->where('field', 'LIKE', File::FIELD_FEATURED );
     }
 
     /**

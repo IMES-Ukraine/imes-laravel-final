@@ -322,13 +322,7 @@ console.log(this.article.title.trim());
                     },
                 }
             ).then((file) => {
-                let obj = {
-                    itemId: 'img-' + getRandomId(),
-                    file: file.data.data.id,
-                    name: event.target.files[0].name,
-                    data: file.data,
-                    path: file.data.data.path
-                };
+                let obj = file.data.data;
                 this.article.multiples.push(obj)
                 $('#article_multiples').val(null);
             })
