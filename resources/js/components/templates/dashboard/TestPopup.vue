@@ -231,7 +231,7 @@
                                                     </div>
                                                     <div class="study__table-item">
                                                         <div class="study__table-controls">
-                                                            <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="acceptComplex(moderation.id, moderation.status, complex_test.id)"></button>
+                                                            <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id, moderation.status, complex_test.id)"></button>
                                                             <button :class="(moderation.status=='cancel')?class_minus + ' active':class_minus" type="button" :disabled="(moderation.status=='accept')?true:false" @click="decline(moderation.id)"></button>
                                                         </div>
                                                     </div>

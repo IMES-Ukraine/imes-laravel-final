@@ -149,7 +149,7 @@ class TestQuestions extends Model
             $q->select(DB::raw(1))->from('ulogic_projects_passing')
                     ->whereRaw('ulogic_projects_passing.entity_type = "' . quotemeta(self::class) . '"' )
                     ->whereRaw('ulogic_projects_passing.user_id = ' . $userId)
-                    ->whereRaw('ulogic_projects_passing.status = 1')
+                    ->whereRaw('ulogic_projects_passing.result = 1')
                     ->whereColumn('ulogic_projects_passing.entity_id', 'ulogic_tests_questions.id');
             });
     }

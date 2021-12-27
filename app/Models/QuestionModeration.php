@@ -27,7 +27,7 @@ class QuestionModeration extends Model
     ];
 
     public function question() {
-        return $this->hasMany('App\Models\TestQuestions', 'id' ,'question_id');
+        return $this->hasOne('App\Models\TestQuestions', 'id' ,'question_id');
     }
 
     public function user() {
