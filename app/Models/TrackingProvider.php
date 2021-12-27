@@ -17,20 +17,24 @@ class TrackingProvider
 
     public function startReading($articleId)
     {
-        $model = new NewsTracking();
-        $model->user_id = $this->user->id;
-        $model->position = null;
-        $model->news_id = $articleId;
-        $model->save();
+        NewsTracking::updateOrCreate([
+            'user_id' => $this->user->id,
+            'position' => null,
+            'news_id' => $articleId
+        ], [
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
     }
 
     public function setBlockReaded($articleId, $blockId = NULL)
     {
-        $model = new NewsTracking();
-        $model->user_id = $this->user->id;
-        $model->position = $blockId;
-        $model->news_id = $articleId;
-        $model->save();
+        NewsTracking::updateOrCreate([
+            'user_id' => $this->user->id,
+            'position' => $blockId,
+            'news_id' => $articleId
+        ], [
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
     }
 
     public function isReadClosely($articleId)
