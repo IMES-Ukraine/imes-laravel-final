@@ -294,3 +294,8 @@
         }
     }
 </script>
+<style scope>
+.dashboard_study-title, .dashboard_study__block-title{
+    height: 60px;
+}
+</style>

@@ -237,7 +237,7 @@ class TestService
         if ($resType == self::TEST_SUBMITTED && $userPassingBonus) {
             $apiUser->addBalance($userPassingBonus);
         }
-
+        $testStatus = $testStatus ===  Passing::PASSING_RESULT_ACTIVE ? TestQuestions::STATUS_PASSED : TestQuestions::STATUS_FAILED ;
         $data = $apiUser->makeHidden(User::TO_HIDE)->toArray();
         return compact('resType', 'userPassingBonus', 'testStatus', 'data');
     }
