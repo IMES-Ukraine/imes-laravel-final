@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,6 @@ class NewsTracking extends Model
      */
     public $timestamps = false;
 
-
     /**
      * @var string The database table used by the model.
      */
@@ -25,5 +25,11 @@ class NewsTracking extends Model
      * @var array Validation rules
      */
     public $rules = [
+    ];
+
+    protected $fillable = [
+        'user_id',
+        'position',
+        'news_id',
     ];
 }
