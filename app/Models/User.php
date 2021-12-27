@@ -135,7 +135,7 @@ class User extends Authenticatable implements JWTSubject
 
 
     const TO_HIDE = [
-        'messaging_token',
+        'messaging_token', 'firebase_token',
         'permissions', 'deleted_at', 'updated_at', 'activated_at',
         'basic_information', 'specialized_information', 'financial_information',
     ];
