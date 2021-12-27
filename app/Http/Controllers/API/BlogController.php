@@ -24,6 +24,7 @@ use App\Models\Opened;
 use App\Models\PassingProvider;
 use App\Models\TrackingProvider;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class BlogController extends Controller
 {
@@ -149,6 +150,7 @@ class BlogController extends Controller
         $tracking = new TrackingProvider(auth()->user());
         $tracking->startReading($id);
 
+        Log::info('Article started', [$id, date('Y-m-d H:i:s')]);
 
         $images = $post->featured_images;
 
@@ -170,7 +172,7 @@ class BlogController extends Controller
 
         $tracking = new TrackingProvider($userModel);
         $tracking->setBlockReaded($articleId, $blockId);
-
+Log::info('Block readed', [$articleId, $blockId, date('Y-m-d H:i:s')]);
         $article = Post::findOrFail($articleId);
 
         $learningBonus = $article->learning_bonus;

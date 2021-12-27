@@ -5,6 +5,7 @@ namespace App\Models;
 
 use App\Models\Post;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class TrackingProvider
 {
@@ -17,24 +18,26 @@ class TrackingProvider
 
     public function startReading($articleId)
     {
-        NewsTracking::updateOrCreate([
+        $model = NewsTracking::updateOrCreate([
             'user_id' => $this->user->id,
             'position' => null,
             'news_id' => $articleId
         ], [
             'created_at' => date('Y-m-d H:i:s')
         ]);
+        Log::info('startReading', $model->toArray());
     }
 
     public function setBlockReaded($articleId, $blockId = NULL)
     {
-        NewsTracking::updateOrCreate([
+        $model = NewsTracking::updateOrCreate([
             'user_id' => $this->user->id,
             'position' => $blockId,
             'news_id' => $articleId
         ], [
             'created_at' => date('Y-m-d H:i:s')
         ]);
+        Log::info('setBlockReaded', $model->toArray());
     }
 
     public function isReadClosely($articleId)
