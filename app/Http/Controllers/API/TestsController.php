@@ -154,19 +154,6 @@ class TestsController extends Controller
 
 
     /**
-     * @param $variants
-     * @return int
-     */
-    private function getFullVariantsCount($variants)
-    {
-        $fullCount = 0;
-        foreach ($variants as $v) {
-            $fullCount += count($v['variant']);
-        }
-        return $fullCount;
-    }
-
-    /**
      * Storing test results
      * @return JsonResponse
      */
@@ -176,146 +163,53 @@ class TestsController extends Controller
         $apiUser = auth()->user();
         $passed = new PassingProvider($apiUser);
 
+
         $variants = $request->post('data');
         if (!$variants) {
             return $this->helpers->apiArrayResponseBuilder(200);
         }
-        Log::info('Submitted test', [$request->post()]);
 
-        $ifComplexAll = true;
-        $isAllAnswersCorrect = true;
+        $firstTest = TestQuestions::find($variants[0]['test_id']);
+        $isTestsAll = TestService::getComplexAll(count($variants), $firstTest->research_id);
 
-        foreach ($variants as $variant) {
-            $submittedTest = TestQuestions::find($variant['test_id']);
-
-            if ($submittedTest->test_type == 'child') {
-                $ifComplexAll = TestService::getComplexAll(count($variants), $submittedTest->research_id);
-            }
-Log::info('$ifComplexAll, $variant', [$ifComplexAll, $variant]);
-            // Считаем баллы, если прилетел последний ответ (со всеми вопросами)
-            if ($ifComplexAll) {
-//                if ($variants > 1) {
-//                    $ifComplexAnswerQuestion = TestService::ifComplexAnswerQuestion($variants);
-//                }
-
-                if (in_array($variant['test_id'], $passed->getIds(TestQuestions::class))) {
-                    return $this->helpers->apiArrayResponseBuilder(200, 'success', [
-                        'data' => 'test already done',
-                        'type' => 'test_submit',
-                        'points' => 0,
-                        'status' => TestQuestions::STATUS_PASSED,
-                        'user' => $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray(),
-                    ]);
-                }
-                $passedModel = $passed->setId($submittedTest, Passing::PASSING_ACTIVE, $variant['variant']);
-
-
-                // Для дочерних тестов
-                if ($submittedTest->test_type == TestQuestions::TYPE_CHILD) {
-
-                    // Для сложного теста считаем бонус по родительскому.
-                    $parentId = $submittedTest->parent_id;
-                    $rootTest = TestQuestions::find($parentId);
-                    $fullPassingBonus = $rootTest->passing_bonus;
-
-                    //отметим активность родительского теста
-                    $parentPassed = $passed->setId($rootTest, Passing::PASSING_ACTIVE);
-                } else {
-                    $fullPassingBonus = $submittedTest->passing_bonus;
-                }
-
-                $userVariants = [];
-
-
-                if ($submittedTest->answer_type !== Question::ANSWER_TEXT) {
-                    $fullCount = $this->getFullVariantsCount($variants);
-                    $dummyAnswersCount = 0; //опросы
-                    $correctAnswersCount = 0; //тесты
-
-                    foreach ($variants as $var) {
-                        $userVariants = $var['variant'];
-                        $test = TestQuestions::find($var['test_id']);
-                        $correctAnswer = $test->variants['correct_answer'];
-
-                        if (empty($correctAnswer)) {
-                            $dummyAnswersCount++;
-                        } else {
-                            //TODO разобраться, может ли быть несколько правильных ответов к одному вопросу
-                            foreach ($correctAnswer as $answ) {
-                                if (in_array($answ, $userVariants)) {
-                                    $correctAnswersCount++;
-                                }
-                            }
-                        }
-                    }
-
-
-                    $accountingAnswersCount = $fullCount - $dummyAnswersCount;
-
-                    $testStatus = TestQuestions::STATUS_FAILED;
-                    $userPassingBonus = 0;
-
-
-                    if ($accountingAnswersCount > 0) {
-                        // Если есть вопросы с выбором ответов. Считаем сумму полученных бонусов
-                        $correctAnswersPercent = ($correctAnswersCount / $accountingAnswersCount) * 100;
-                        switch (true) {
-                            case ($correctAnswersPercent < 20):
-                                break;
-                            case ($correctAnswersPercent >= 20 && $correctAnswersPercent < 70):
-                                $userPassingBonus = $fullPassingBonus / 2;
-                                $testStatus = TestQuestions::STATUS_PASSED;
-                                break;
-                            case ($correctAnswersPercent >= 70):
-                                $userPassingBonus = $fullPassingBonus;
-                                $testStatus = TestQuestions::STATUS_PASSED;
-                                break;
-                            default :
-                        }
-                    } else {
-                        //иначе - мы в опроснике и отдаём сразу всю сумму бонусов
-                        $testStatus = TestQuestions::STATUS_PASSED;
-                        $userPassingBonus = $fullPassingBonus;
-                    }
-
-                    $isAllAnswersCorrect &= $testStatus == TestQuestions::STATUS_PASSED;
-
-                    $passedModel->result = $testStatus == TestQuestions::STATUS_PASSED;
-                    $passedModel->save();
-
-                    $apiUser->addBalance($userPassingBonus);
-
-                } else {
-
-                    // А это если текстовый ответ
-                    if (isset($variant['variant'])) {
-                        $userVariants = $variant['variant'];
-                    }
-
-                    $moderationModel = new QuestionModeration();
-                    $moderationModel->user_id = $apiUser->id;
-                    $moderationModel->question_id = $variant['test_id'];
-                    $moderationModel->answer = reset($userVariants);
-                    $moderationModel->save();
-
-                    $testStatus = TestQuestions::STATUS_PASSED;
-                    $userPassingBonus = 0;
-
-                }
-
-                $data = $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
-            }
+        // если не последний ответ - пропускаем
+        if (!$isTestsAll) {
+            return $this->helpers->apiArrayResponseBuilder(200, 'success');
         }
-        if ($isAllAnswersCorrect && isset($parentPassed)){
-            $parentPassed->result = 1;
-            $parentPassed->save();
+
+        // проверим, выполнен ли простой тест
+        if ($firstTest->test_type !== 'child') {
+            $testIDforCheck = $firstTest->id;
+        } // Иначе тест сложный - проверяем родительский тест
+        else if ($firstTest->parent_id) {
+            $parent = TestQuestions::find($firstTest->parent_id);
+            $testIDforCheck = $parent->id;
         }
+        else {
+            // Если у нас почему-то тут оказался родительский сложный тест - ничего не делаем.
+            return $this->helpers->apiArrayResponseBuilder(200, 'success');
+        }
+
+        // Проверяем собственно пройден ли тест
+        if (in_array($testIDforCheck, $passed->getResults(TestQuestions::class))) {
+            return $this->helpers->apiArrayResponseBuilder(200, 'success', [
+                'data' => 'test already done',
+                'type' => TestService::TEST_SUBMITTED,
+                'points' => 0,
+                'status' => TestQuestions::STATUS_PASSED,
+                'user' => $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray()
+            ]);
+        }
+
+        // Выполняем проверку правильности теста
+        $result = TestService::verifyTest($variants, $apiUser);
+
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
             'data' => 'ok',
-            'type' => 'test_submit',
-            'points' => $userPassingBonus,
-            'status' => $testStatus,
-            'user' => $data,
+            'type' => $result['resType'],
+            'points' => $result['userPassingBonus'],
+            'status' => $result['testStatus'],
+            'user' => $result['data'],
         ]);
     }
 
@@ -340,7 +234,8 @@ Log::info('$ifComplexAll, $variant', [$ifComplexAll, $variant]);
 
     }
 
-    public function update($id, Request $request)
+    public
+    function update($id, Request $request)
     {
 
         $status = $this->Test->where('id', $id)->update($request->input('data'));
@@ -356,7 +251,8 @@ Log::info('$ifComplexAll, $variant', [$ifComplexAll, $variant]);
         }
     }
 
-    public function delete($id)
+    public
+    function delete($id)
     {
 
         $this->Test->where('id', $id)->delete();
@@ -364,7 +260,8 @@ Log::info('$ifComplexAll, $variant', [$ifComplexAll, $variant]);
         return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
     }
 
-    public function destroy($id)
+    public
+    function destroy($id)
     {
 
         $this->Test->where('id', $id)->delete();

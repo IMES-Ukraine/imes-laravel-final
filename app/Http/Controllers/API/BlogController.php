@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Repository\ProjectRepository;
 use App\Models\File;
+use App\Models\Passing;
 use App\Models\PostTag;
 use App\Models\PostTimes;
 use App\Models\Recommended;
@@ -185,7 +186,7 @@ class BlogController extends Controller
             if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($articleId)) {
                 $userModel->addBalance($learningBonus);
                 $finalBonus = $learningBonus;
-                $passed->setId($article);
+                $passed->setId($article, Passing::PASSING_ACTIVE);
             }
 
             $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at', 'messaging_token', 'firebase_token'])->toArray();
