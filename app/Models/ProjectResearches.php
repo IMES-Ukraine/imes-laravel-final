@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -103,20 +104,20 @@ class ProjectResearches extends Model
 
     /**
      * All tests in research
-     * @return HasMany
+     * @return HasOne
      */
-    public function tests(): HasMany
+    public function  testObject(): HasOne
     {
-        return $this->hasMany(TestQuestions::class, 'research_id', 'id');
+        return $this->hasOne(TestQuestions::class, 'research_id', 'id');
     }
 
     /**
      * All articles in research
-     * @return HasMany
+     * @return HasOne
      */
-    public function articles(): HasMany
+    public function articleObject(): HasOne
     {
-        return $this->hasMany(Articles::class, 'research_id', 'id');
+        return $this->hasOne(Articles::class, 'research_id', 'id');
     }
 
 

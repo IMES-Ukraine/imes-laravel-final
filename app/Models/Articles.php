@@ -192,7 +192,7 @@ class Articles extends Post
      * Project
      * @return mixed
      */
-    public function getResearch()
+    public function research()
     {
         return $this->hasOne(ProjectResearches::class, 'id', 'research_id');
     }

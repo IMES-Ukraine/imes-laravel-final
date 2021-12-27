@@ -329,8 +329,8 @@ class BlogController extends Controller
         if (!$article) {
             return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);
         }
-        $article->makeHidden('research');
-        $data = $article->toArray();
+
+
 
         if (!$article->isOpened) {
             $model = new Opened();
@@ -340,7 +340,17 @@ class BlogController extends Controller
         }
 
         $research = $article->research;
-        $project = $article->getProject();
+        $article->makeHidden('research');
+        $data = $article->toArray();
+
+        if($research) {
+            $test = $research->testObject;
+            $passing = new PassingProvider($authUser);
+            $passedTests = $passing->getResults($test);
+            if (in_array($test->id, $passedTests)) {
+                $data['test_id'] = null;
+            }
+        }
 
 
         $user = User::where(['id' => $article->user_id])->select('id', 'name')->first();

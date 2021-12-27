@@ -100,11 +100,11 @@ class TestService
         $variants = [];
         if ($model->test_type == TestQuestions::TYPE_COMPLEX) {
             $childes = $model->complex;
-            foreach ($childes as $childe) {
+            foreach ($childes as $child) {
                 $passed = Passing::find(['entity_id' => $child->id, 'user_id' => $user->id]);
                 if ($passed) {
                     $variants[] = [
-                        'test_id' => $childe->id,
+                        'test_id' => $child->id,
                         'variant' => $passed->answer
                     ];
                 }
@@ -143,7 +143,6 @@ class TestService
 
             $passModel = $passed->setId($test, Passing::PASSING_ACTIVE, $userVariants);
 
-
             $fullPassingBonus = $test->passing_bonus;
             if (empty($correctAnswer)) {
                 // Если текущий тест - опросник или текст
@@ -156,11 +155,13 @@ class TestService
                         $resType = self::TEST_WILL_BE_MODERATED;
 
                         // Сделаем запись для модерации
-                        $moderationModel = new QuestionModeration();
-                        $moderationModel->user_id = $apiUser->id;
-                        $moderationModel->question_id = $var['test_id'];
-                        $moderationModel->answer = reset($userVariants);
-                        $moderationModel->save();
+                        QuestionModeration::updateOrCreate([
+                            'user_id' => $apiUser->id,
+                            'question_id' => $var['test_id']
+                        ], [
+                            'answer' => reset($userVariants),
+                            'status' => QuestionModeration::TEST_MODERATION_PENDING
+                        ]);
                     } else {
                         if ($passModel->result) {
                             // Если тест прошел удачную модерацию - учитываем его в числе правильных ответов.
@@ -178,7 +179,7 @@ class TestService
                 }
             } else {
                 //если мы в сложном тесте
-                if ($test->type === TestQuestions::TYPE_CHILD) {
+                if ($test->test_type === TestQuestions::TYPE_CHILD) {
                     //отметим родительский тест
                     $testParent = TestQuestions::find($test->parent_id);
                     $fullPassingBonus = $testParent->passing_bonus;
@@ -237,7 +238,7 @@ class TestService
             $apiUser->addBalance($userPassingBonus);
         }
 
-        $data = $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
+        $data = $apiUser->makeHidden(User::TO_HIDE)->toArray();
         return compact('resType', 'userPassingBonus', 'testStatus', 'data');
     }
 

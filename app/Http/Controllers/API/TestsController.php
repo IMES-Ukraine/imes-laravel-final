@@ -170,15 +170,22 @@ class TestsController extends Controller
         }
 
         $firstTest = TestQuestions::find($variants[0]['test_id']);
-        $isTestsAll = TestService::getComplexAll(count($variants), $firstTest->research_id);
+
+        $isTestsAll = $firstTest->test_type !== TestQuestions::TYPE_CHILD || TestService::getComplexAll(count($variants), $firstTest->research_id);
 
         // если не последний ответ - пропускаем
         if (!$isTestsAll) {
-            return $this->helpers->apiArrayResponseBuilder(200, 'success');
+            return $this->helpers->apiArrayResponseBuilder(200, 'success', [
+                'data' => 'not all tests',
+                'type' => TestService::TEST_SUBMITTED,
+                'points' => 0,
+                'status' => TestQuestions::STATUS_FAILED,
+                'user' => $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray()
+            ]);
         }
 
         // проверим, выполнен ли простой тест
-        if ($firstTest->test_type !== 'child') {
+        if ($firstTest->test_type === TestQuestions::TYPE_SIMPLE) {
             $testIDforCheck = $firstTest->id;
         } // Иначе тест сложный - проверяем родительский тест
         else if ($firstTest->parent_id) {
@@ -187,7 +194,13 @@ class TestsController extends Controller
         }
         else {
             // Если у нас почему-то тут оказался родительский сложный тест - ничего не делаем.
-            return $this->helpers->apiArrayResponseBuilder(200, 'success');
+            return $this->helpers->apiArrayResponseBuilder(200, 'success', [
+                'data' => 'complex test',
+                'type' => TestService::TEST_SUBMITTED,
+                'points' => 0,
+                'status' => TestQuestions::STATUS_FAILED,
+                'user' => $apiUser->makeHidden(User::TO_HIDE)->toArray()
+            ]);
         }
 
         // Проверяем собственно пройден ли тест
@@ -197,7 +210,7 @@ class TestsController extends Controller
                 'type' => TestService::TEST_SUBMITTED,
                 'points' => 0,
                 'status' => TestQuestions::STATUS_PASSED,
-                'user' => $apiUser->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray()
+                'user' => $apiUser->makeHidden(User::TO_HIDE)->toArray()
             ]);
         }
 
@@ -211,6 +224,7 @@ class TestsController extends Controller
             'status' => $result['testStatus'],
             'user' => $result['data'],
         ]);
+
     }
 
     public function store(Request $request)

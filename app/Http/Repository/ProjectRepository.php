@@ -4,7 +4,6 @@ namespace App\Http\Repository;
 
 
 use App\Http\Helpers;
-use App\Models\Article;
 use App\Models\Articles;
 use App\Models\File;
 use App\Models\Passing;
@@ -74,7 +73,7 @@ class ProjectRepository
                 $articleModel->research_id = (int)$research->id;
                 $articleModel->scheduled = $scheduled;
                 $articleModel->save();
-                $this->setAttachment($content['article'], $articleModel->id, );
+                $this->setAttachment($content['article'], $articleModel->id,);
             }
 
 
@@ -87,7 +86,7 @@ class ProjectRepository
                     $content['test']['article_id'] = $articleModel->id ?? null;
 
                     $questionModel = TestQuestions::create((array)new Question($content['test']));
-                    $questionModel->research_id = (int) $research->id;
+                    $questionModel->research_id = (int)$research->id;
                     $questionModel->save();
                     $this->setAttachment($content['test'], $questionModel->id);
 
@@ -173,7 +172,6 @@ class ProjectRepository
 
         foreach ($request->post('articles') as $article) {
 
-            $articleData = $request->input('content.article.points');
             //$request->post('content.article.points')
             $articleEntity = $article + [
                     'points' => $request->post('content.article.points'),
@@ -203,14 +201,14 @@ class ProjectRepository
 
         $project = Projects::with(['items'])
             ->where('id', $id)->first();
-        if (empty($project) ) {
+        if (empty($project)) {
             return (object)[
                 'data' => []
             ];
         }
         $project = $project->toArray();
 
-        $itemsQuery = ProjectResearches::with('tests')->with('articles')->where('project_id', $id);
+        $itemsQuery = ProjectResearches::with(['testObject', 'articleObject'])->where('project_id', $id);
         if (!request()->input('all_items', 0)) {
             $itemsQuery->where('schedule', '<=', date('Y-m-d H:i:s'));
         }
@@ -232,18 +230,17 @@ class ProjectRepository
 
         foreach ($content as $key => $item) {
             $article_id = 0;
-            foreach ($item->tests as $test) {
-                $test_id = $test['id'];
-                $article_id = isset($item->articles[0]) ? $item->articles[0]['id'] : 0;
-                $passing = Passing::IsPassed(false, [$test_id])->get();
-                foreach ($passing as $pass) {
-                    if ($pass->answer) {
-                        foreach ($pass->answer as $answer) {
-                            $passing_tests[$test_id][$answer][] = $pass->user_id;
-                        }
+            $test = $item->testObject()->first();
+            $test_id = $test->id ?? 0;
+            $passing = Passing::IsPassed(false, [$test_id])->get();
+            foreach ($passing as $pass) {
+                if ($pass->answer) {
+                    foreach ($pass->answer as $answer) {
+                        $passing_tests[$test_id][$answer][] = $pass->user_id;
                     }
                 }
             }
+            $article_id = $item->articleObject ? $item->articleObject->id : 0;
 
             //Status passing active
             $status_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_ACTIVE);
@@ -257,7 +254,7 @@ class ProjectRepository
 
                 if ($status_active && $article_status_active) {
                     $total_status_active += $status_active;
-                } elseif($status_active) {
+                } elseif ($status_active) {
                     $total_status_not_active += 1;
                 }
             }
@@ -296,7 +293,7 @@ class ProjectRepository
 
         $total_status_not_participate = $users_total - ($total_status_active + $total_status_not_active);
 
-        $all_activities = $total_status_active+$total_status_not_active;
+        $all_activities = $total_status_active + $total_status_not_active;
 
         return (object)['data' => [
             'project' => $project,
@@ -317,7 +314,7 @@ class ProjectRepository
         if ($entity_id) {
             if (isset($model['cover']['id'])) {
                 $img = File::find($model['cover']['id']);
-                if($img) {
+                if ($img) {
                     $img->attachment_id = $entity_id;
                     $img->field = File::FIELD_COVER;
                     $img->save();
@@ -326,7 +323,7 @@ class ProjectRepository
 
             if (isset($model['question']['file']['id'])) {
                 $file = File::find($model['question']['file']['id']);
-                if($file) {
+                if ($file) {
                     $file->attachment_id = $entity_id;
                     $file->field = $model['question']['fileType'];
                     $file->save();
@@ -334,7 +331,7 @@ class ProjectRepository
             }
 
             if (isset($model['variants'])) {
-                foreach ($model['variants'] as  $variant) {
+                foreach ($model['variants'] as $variant) {
                     if (isset($variant['media'][0])) {
                         $img = File::find($variant['media'][0]['id']);
                         $img->attachment_id = $entity_id;
@@ -345,7 +342,7 @@ class ProjectRepository
             }
 
             //Это галерея в статьях
-            if (isset($model['featured_images'])){
+            if (isset($model['featured_images'])) {
                 Articles::setArticleAttachment($model['featured_images'], $entity_id);
             }
         }

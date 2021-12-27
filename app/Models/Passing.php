@@ -29,7 +29,8 @@ class Passing extends Model
         'entity_id',
         'user_id',
         'status',
-        'answer'
+        'answer',
+        'updated_at'
     ];
 
     public function scopeIsPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS, $result = self::NO_RESULT)

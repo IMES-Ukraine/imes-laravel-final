@@ -26,19 +26,19 @@
                                         </div>
                                         <div class="study__info">
                                             <div class="study__info-block">
-                                                <p class="study__info-data">{{ percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
+                                                <p class="study__info-data">{{ percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id'])) }}%</p>
                                                 <div class="dashboard_main__status-line">
-                                                    <span :style="'width:'+percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
+                                                    <span :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
                                                 </div>
                                             </div>
-                                            <p class="study__info-quantity">{{ getStaticTest(variant.variant, tests[0]['id']) }}</p>
+                                            <p class="study__info-quantity">{{ getStaticTest(variant.variant, test['id']) }}</p>
                                         </div>
                                     </div>
                                     <test-users-popup
                                         :title="test.title + ' - ' + variant.variant"
-                                        :id="tests[0]['id']"
+                                        :id="test['id']"
                                         :variant="variant.variant"
-                                        v-if="getStaticTest(variant.variant, tests[0]['id'])"/>
+                                        v-if="getStaticTest(variant.variant, test['id'])"/>
                                 </div>
 
                             </div>
@@ -105,19 +105,19 @@
                                         </div>
                                         <div class="study__info">
                                             <div class="study__info-block">
-                                                <p class="study__info-data">{{ percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
+                                                <p class="study__info-data">{{ percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id'])) }}%</p>
                                                 <div class="dashboard_main__status-line">
-                                                    <span :style="'width:'+percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
+                                                    <span :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
                                                 </div>
                                             </div>
-                                            <p class="study__info-quantity">{{ getStaticTest(variant.variant, tests[0]['id']) }}</p>
+                                            <p class="study__info-quantity">{{ getStaticTest(variant.variant, test['id']) }}</p>
                                         </div>
                                     </div>
                                     <test-users-popup
                                         :title="test.title + ' - ' + variant.variant"
-                                        :id="tests[0]['id']"
+                                        :id="test['id']"
                                         :variant="variant.variant"
-                                        v-if="getStaticTest(variant.variant, tests[0]['id'])"/>
+                                        v-if="getStaticTest(variant.variant, test['id'])"/>
                                 </div>
                             </div>
                         </div>
@@ -139,19 +139,19 @@
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
-                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id'])) }}%</p>
+                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id'])) }}%</p>
                                                     <div class="dashboard_main__status-line">
-                                                        <span :style="'width:'+percent(getStaticTest(variant.variant, tests[0]['id']), totalQuestionVariants(test.question.variants, tests[0]['id']))+'%;'"></span>
+                                                        <span :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
                                                     </div>
                                                 </div>
-                                                <p class="study__info-quantity">{{ getStaticTest(variant.variant, tests[0]['id']) }}</p>
+                                                <p class="study__info-quantity">{{ getStaticTest(variant.variant, test['id']) }}</p>
                                             </div>
                                         </div>
                                         <test-users-popup
                                             :title="test.title + ' - ' + variant.variant"
-                                            :id="tests[0]['id']"
+                                            :id="test['id']"
                                             :variant="variant.variant"
-                                            v-if="getStaticTest(variant.variant, tests[0]['id'])"/>
+                                            v-if="getStaticTest(variant.variant, test['id'])"/>
                                     </div>
                                 </div>
                                 </div>
@@ -271,8 +271,8 @@
                 default: {}
             },
             tests: {
-                type: Array,
-                default: []
+                type: Object,
+                default: {}
             },
             passing_tests: {
                 type: Array,
@@ -322,7 +322,7 @@
                     page = 1;
                 }
 
-                for (const [index, test] of Object.entries(this.tests)) {
+                let test = this.test;
                     let test_id = test.id
                     if (test.test_type == "child") {
                         await this.$get(MODERATION + '/' + test_id + '?page=' + page)
@@ -338,7 +338,7 @@
                                 this.moderations = response.data;
                             });
                     }
-                }
+
             },
             totalQuestionVariants (variants, test_id) {
                 let total = 0;

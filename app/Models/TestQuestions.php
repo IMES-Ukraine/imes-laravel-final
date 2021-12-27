@@ -18,7 +18,7 @@ class TestQuestions extends Model
     const STATUS_FAILED = 'failed';
     const STATUS_SUBMITTED = 'submitted';
 
-    const TYPE_SIMPLE = 'simple';
+    const TYPE_SIMPLE = 'easy';
     const TYPE_COMPLEX = 'complex';
     const TYPE_CHILD = 'child';
 

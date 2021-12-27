@@ -69,7 +69,7 @@ class Projects extends Model
      */
     public function items()
     {
-        return $this->hasMany(ProjectResearches::class, 'project_id', 'id')->with(['tests', 'articles']);
+        return $this->hasMany(ProjectResearches::class, 'project_id', 'id')->with(['testObject', 'articleObject']);
 
     }
 
