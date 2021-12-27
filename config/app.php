@@ -236,4 +236,8 @@ return [
 
     ],
 
+    'params' => [
+        'maxReadingRate' => env('READING_SYMBOLS_PER_MINUTE')
+    ]
+
 ];

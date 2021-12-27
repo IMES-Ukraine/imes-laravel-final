@@ -147,7 +147,6 @@ class ProjectsController extends Controller
      */
     public function create(Request $request): JsonResponse
     {
-
         $rules = [
             'project' => 'required',
         ];

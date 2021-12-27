@@ -25,7 +25,6 @@ class TrackingProvider
         ], [
             'created_at' => date('Y-m-d H:i:s')
         ]);
-        Log::info('startReading', $model->toArray());
     }
 
     public function setBlockReaded($articleId, $blockId = NULL)
@@ -37,7 +36,6 @@ class TrackingProvider
         ], [
             'created_at' => date('Y-m-d H:i:s')
         ]);
-        Log::info('setBlockReaded', $model->toArray());
     }
 
     public function isReadClosely($articleId)
@@ -55,9 +53,8 @@ class TrackingProvider
             $totalSymbolsCount = 0;
 
             foreach ($content as $contentBlock) {
-
                 $contentSymbolsCount = iconv_strlen($contentBlock->content);
-                $totalSymbolsCount = $totalSymbolsCount + $contentSymbolsCount;
+                $totalSymbolsCount += $contentSymbolsCount;
             }
 
             $trackStarted = NewsTracking::where('news_id', $articleId)
@@ -83,9 +80,9 @@ class TrackingProvider
                 if ($timeDifference == 0) {
                     return false;
                 }
-
                 $userReadingRate = $totalSymbolsCount / $timeDifference;
-                return $userReadingRate <= env('READING_SYMBOLS_PER_MINUTE');
+
+                return $userReadingRate <= config('params')['maxReadingRate'];
             } else {
                 return false;
             }

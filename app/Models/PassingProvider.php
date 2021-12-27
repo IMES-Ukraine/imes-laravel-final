@@ -19,10 +19,12 @@ class PassingProvider
         if (!is_string($entity)) {
             $entity = get_class($entity);
         }
+
         $data = Passing::where('entity_type', $entity)
             ->where('user_id', $this->user->id)
-            ->where('status', '1');
-        if ($response = $data->pluck('entity_id')->toArray()/*->get()->lists('entity_id')*/) {
+            ->where('status', '1')
+            ->orderBy('entity_id', 'desc');
+        if ($response = $data->pluck('entity_id')->toArray()) {
             $result = $response;
         }
         return $result;
@@ -36,7 +38,8 @@ class PassingProvider
         }
         $data = Passing::where('entity_type', $entity)
             ->where('user_id', $this->user->id)
-            ->where('result', '1');
+            ->where('result', '1')
+        ->orderBy('entity_id', 'desc');
         if ($response = $data->pluck('entity_id')->toArray()/*->get()->lists('entity_id')*/) {
             $result = $response;
         }
@@ -51,7 +54,8 @@ class PassingProvider
             'user_id' => $this->user->id
         ], [
             'status' => $status,
-            'answer' => $userVariants
+            'answer' => $userVariants,
+            'updated_at' => date('Y-m-d H:i:s')
         ]);
 
     }
@@ -68,8 +72,6 @@ class PassingProvider
         ]);
 
     }
-
-
 
 
 }

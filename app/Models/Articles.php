@@ -23,8 +23,14 @@ class Articles extends Post
     const IS_SCHEDULED = 1;
 
     protected $appends = ['isAgreementAccepted', 'isOpened', 'isCommercial',
-        'projectId', 'test_id', 'summary', 'has_summary', 'tags', 'recommended'
+        'projectId', 'test_id', 'summary', 'has_summary', 'tags', 'recommended',
+        'author'
     ];
+
+    public function getAuthorAttribute()
+    {
+        return $this->author2;
+    }
 
     public function getIsAgreementAcceptedAttribute()
     {
@@ -179,14 +185,14 @@ class Articles extends Post
     public function featured_images()
     {
         return $this->hasMany(File::class, 'attachment_id', 'id')
-            ->where('field', 'LIKE', File::FIELD_FEATURED );
+            ->where('field', 'LIKE', File::FIELD_FEATURED);
     }
 
     /**
      * Project
      * @return mixed
      */
-    public function getResearch()
+    public function research()
     {
         return $this->hasOne(ProjectResearches::class, 'id', 'research_id');
     }
@@ -200,9 +206,9 @@ class Articles extends Post
 
     public static function setArticleAttachment($images, $article_id)
     {
-        foreach ($images as $featured){
+        foreach ($images as $featured) {
             $img = File::find($featured['id']);
-            if($img) {
+            if ($img) {
                 $img->attachment_id = $article_id;
                 $img->field = File::FIELD_FEATURED;
                 $img->save();

@@ -133,6 +133,13 @@ class User extends Authenticatable implements JWTSubject
         'financial_information' => 'array',
     ];
 
+
+    const TO_HIDE = [
+        'messaging_token',
+        'permissions', 'deleted_at', 'updated_at', 'activated_at',
+        'basic_information', 'specialized_information', 'financial_information',
+    ];
+
     public function scopeIsNotPassed($query, $articles_ids, $test_ids)
     {
         if ($articles_ids) {
@@ -179,7 +186,8 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    public function scopeIsVerified($query) {
+    public function scopeIsVerified($query)
+    {
         $query->where('is_verified', self::USER_IS_VERIFIED_TRUE);
     }
 
@@ -219,7 +227,6 @@ class User extends Authenticatable implements JWTSubject
         }
         return self::where('username', $username)->first();
     }
-
 
 
     public function city_info()

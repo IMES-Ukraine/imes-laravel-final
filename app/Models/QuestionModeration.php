@@ -25,6 +25,12 @@ class QuestionModeration extends Model
      */
     public $rules = [
     ];
+    protected $fillable = [
+      'user_id',
+      'question_id',
+      'answer',
+      'status'
+    ];
 
     public function question() {
         return $this->hasOne('App\Models\TestQuestions', 'id' ,'question_id');

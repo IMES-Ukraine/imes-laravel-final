@@ -78,7 +78,7 @@
                     <div class="dashboard_study__block">
                         <div class="dashboard_study__block-head">
                             <p class="dashboard_study__block-title">Тесты</p>
-                            <test-popup :id="key" :content_id="content.id" :project_id="project.project.id" :test="content.test" :tests="content.tests" :passing_tests="project.passing_tests" />
+                            <test-popup :id="key" :content_id="content.id" :project_id="project.project.id" :test="content.test" :tests="content.test" :passing_tests="project.passing_tests" />
                         </div>
                         <div class="dashboard_study__status">
                             <div class="dashboard_main__status-content width-100">
@@ -129,7 +129,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="dashboard_study__block width-full" v-if="content.articles[0]">
+                    <div class="dashboard_study__block width-full" v-if="content.article">
                         <div class="dashboard_study__block-head space-between">
                             <p class="dashboard_study__block-title">Статьи</p>
                             <a :href="'/admin/api/v1/export-users-article/' + project.project.id + '/' + content.id" class="dashboard_study__block-download"><span>Скачать отчёт пакета</span></a>
