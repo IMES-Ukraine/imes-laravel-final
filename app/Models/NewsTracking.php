@@ -31,5 +31,6 @@ class NewsTracking extends Model
         'user_id',
         'position',
         'news_id',
+        'created_at'
     ];
 }
