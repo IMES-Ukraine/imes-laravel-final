@@ -51,10 +51,7 @@ class BlogController extends Controller
 
         $type = $request->get('type', Articles::ARTICLE);
 
-        $relations = ['cover_image', /*'user', 'featured_images','content_images',*/
-            /*, 'recommended.post',  'is_opened' => function($q) use ($apiUser) { $q->where('user_id', '=', $apiUser->id); }n */
-        ];
-        //if (!isset($apiUser->id)) unset($relations['is_opened']);
+        $relations = ['cover_image'];
 
         //  Выдаём статьи всех типов
         if ($type == Articles::ARTICLE) {
@@ -150,8 +147,6 @@ class BlogController extends Controller
         $tracking = new TrackingProvider(auth()->user());
         $tracking->startReading($id);
 
-        Log::info('Article started', [$id, date('Y-m-d H:i:s')]);
-
         $images = $post->featured_images;
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [$post->toArray()] + [$images]);
@@ -172,7 +167,6 @@ class BlogController extends Controller
 
         $tracking = new TrackingProvider($userModel);
         $tracking->setBlockReaded($articleId, $blockId);
-Log::info('Block readed', [$articleId, $blockId, date('Y-m-d H:i:s')]);
         $article = Post::findOrFail($articleId);
 
         $learningBonus = $article->learning_bonus;
@@ -191,7 +185,7 @@ Log::info('Block readed', [$articleId, $blockId, date('Y-m-d H:i:s')]);
                 $passed->setId($article, Passing::PASSING_ACTIVE);
             }
 
-            $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at', 'messaging_token', 'firebase_token'])->toArray();
+            $data = $userModel->makeHidden(User::TO_HIDE)->toArray();
 
             Post::find($articleId)->increment('callbacks');
 
@@ -327,8 +321,7 @@ Log::info('Block readed', [$articleId, $blockId, date('Y-m-d H:i:s')]);
         $authUser = auth()->user();
 
 
-        $article = Articles::select('rainlab_blog_posts.*')
-            ->with('cover_image')
+        $article = Articles::with('cover_image')
             ->with('featured_images')
             ->where(['id' => $id])
             ->first();

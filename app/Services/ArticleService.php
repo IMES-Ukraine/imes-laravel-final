@@ -26,6 +26,7 @@ class ArticleService
         $model->action = $action;
         $model->button = $action;
         $model->user_id = $article['author']['id'] ?? 0;
+        $model->amount = $article['count'];
 
         $content = [
             [
