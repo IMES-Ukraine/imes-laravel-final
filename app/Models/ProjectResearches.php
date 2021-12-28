@@ -95,7 +95,15 @@ class ProjectResearches extends Model
         'test' => ['required'],
         'schedule' => ['required'],
     ];
+    protected $appends = ['fullTest'];
 
+    public function getFullTestAttribute()
+    {
+        $test = (array)$this->test;
+        $testQuestion = $this->testObject()->first() ? $this->testObject()->first()->toArray() : [];
+        $res =   array_merge_recursive_distinct($testQuestion, $test );
+        return $res;
+    }
 
     public function project(): BelongsTo
     {

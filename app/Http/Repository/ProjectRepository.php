@@ -212,7 +212,7 @@ class ProjectRepository
         if (!request()->input('all_items', 0)) {
             $itemsQuery->where('schedule', '<=', date('Y-m-d H:i:s'));
         }
-        $content = $itemsQuery->get();
+        $content = $itemsQuery->get()->makeHidden(['testObject', 'test', 'articleObject']);
 
         if (empty($content)) {
             return (object)[
@@ -230,7 +230,7 @@ class ProjectRepository
 
         foreach ($content as $key => $item) {
             $article_id = 0;
-            $test = $item->testObject()->first();
+            $test = $item->test_object;
             $test_id = $test->id ?? 0;
             $passing = Passing::IsPassed(false, [$test_id])->get();
             foreach ($passing as $pass) {

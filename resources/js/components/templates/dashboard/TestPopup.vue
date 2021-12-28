@@ -1,6 +1,8 @@
 <template>
     <div>
-        <button class="dashboard_study__block-more" type="button" data-toggle="modal" :data-target="'#db-test-popup-'+id">Подробней</button>
+        <button class="dashboard_study__block-more" type="button" data-toggle="modal"
+                :data-target="'#db-test-popup-'+id">Подробней
+        </button>
 
         <!-- modal -->
         <div class="modal fade" tabindex="-1" role="dialog" :id="'db-test-popup-'+id" aria-hidden="true">
@@ -8,30 +10,36 @@
                 <div class="study template_box modal-content margin-auto" v-if="test">
                     <p class="template_title">{{ test.title }}</p>
                     <button class="template_close" type="button" data-dismiss="modal"></button>
-                    <a :href="'/admin/api/v1/export-users-test/' + project_id + '/' + content_id" class="study-download"><span>Скачать отчёт пакета</span></a>
+                    <a :href="'/admin/api/v1/export-users-test/' + project_id + '/' + content_id"
+                       class="study-download"><span>Скачать отчёт пакета</span></a>
                     <div class="study-box">
                         <div class="study__block" v-if="(test.type == 'easy' && test.picked == 'test')">
                             <p class="study__block-title">Вопрос: <b>{{ test.text }}</b></p>
 
-                            <div class="study__block-content" v-if="(test.question.variants && test.question.type != 'text')">
+                            <div class="study__block-content"
+                                 v-if="(test.question.variants && test.question.type != 'text')">
 
                                 <div class="study__item" v-for="variant in test.question.variants">
                                     <div class="study__item-content">
                                         <div :class="(variant.right)?'study__answer active':'study__answer'">
                                             <p class="study__answer-letter">{{ variant.variant }}</p>
                                             <div class="study__answer-text" v-if="variant.media[0]">
-                                                <img :src="variant.media[0].path" alt="" />
+                                                <img :src="variant.media[0].path" alt=""/>
                                             </div>
                                             <p class="study__answer-text" v-else>{{ variant.title }}</p>
                                         </div>
                                         <div class="study__info">
                                             <div class="study__info-block">
-                                                <p class="study__info-data">{{ percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id'])) }}%</p>
+                                                <p class="study__info-data">{{
+                                                        percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))
+                                                    }}%</p>
                                                 <div class="dashboard_main__status-line">
-                                                    <span :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
+                                                    <span
+                                                        :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
                                                 </div>
                                             </div>
-                                            <p class="study__info-quantity">{{ getStaticTest(variant.variant, test['id']) }}</p>
+                                            <p class="study__info-quantity">
+                                                {{ getStaticTest(variant.variant, test['id']) }}</p>
                                         </div>
                                     </div>
                                     <test-users-popup
@@ -67,26 +75,39 @@
                                     <template v-if="moderations">
                                         <div class="study__table-block" v-for="(moderation, key) in moderations.data">
                                             <div class="study__table-item">
-                                                <p class="study__table-number">{{key + 1}}</p>
+                                                <p class="study__table-number">{{ key + 1 }}</p>
                                             </div>
                                             <div class="study__table-item">
-                                                <p class="study__table-id">{{(moderation.user)?moderation.user.id:0}}</p>
+                                                <p class="study__table-id">
+                                                    {{ (moderation.user) ? moderation.user.id : 0 }}</p>
                                             </div>
                                             <div class="study__table-item">
-                                                <p class="study__table-name">{{(moderation.user)?moderation.user.name:'Уже нет такого пользователя'}}</p>
+                                                <p class="study__table-name">
+                                                    {{
+                                                        (moderation.user) ? moderation.user.name : 'Уже нет такого пользователя'
+                                                    }}</p>
                                             </div>
                                             <div class="study__table-item">
-                                                <p class="study__table-description">{{moderation.answer}}</p>
+                                                <p class="study__table-description">{{ moderation.answer }}</p>
                                             </div>
                                             <div class="study__table-item">
                                                 <div class="study__table-controls">
-                                                    <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id, moderation.status)"></button>
-                                                    <button :class="(moderation.status=='cancel')?class_minus + ' active':class_minus" type="button" :disabled="(moderation.status=='accept')?true:false" @click="decline(moderation.id)"></button>
+                                                    <button
+                                                        :class="(moderation.status=='accept')?class_plus + ' active':class_plus"
+                                                        type="button"
+                                                        :disabled="(moderation.status=='cancel')?true:false"
+                                                        @click="accept(moderation.id, moderation.status)"></button>
+                                                    <button
+                                                        :class="(moderation.status=='cancel')?class_minus + ' active':class_minus"
+                                                        type="button"
+                                                        :disabled="(moderation.status=='accept')?true:false"
+                                                        @click="decline(moderation.id)"></button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="articles_pagination center">
-                                            <pagination :data="moderations" @pagination-change-page="getResults"></pagination>
+                                            <pagination :data="moderations"
+                                                        @pagination-change-page="getResults"></pagination>
                                         </div>
                                     </template>
                                 </div>
@@ -105,12 +126,16 @@
                                         </div>
                                         <div class="study__info">
                                             <div class="study__info-block">
-                                                <p class="study__info-data">{{ percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id'])) }}%</p>
+                                                <p class="study__info-data">{{
+                                                        percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))
+                                                    }}%</p>
                                                 <div class="dashboard_main__status-line">
-                                                    <span :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
+                                                    <span
+                                                        :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
                                                 </div>
                                             </div>
-                                            <p class="study__info-quantity">{{ getStaticTest(variant.variant, test['id']) }}</p>
+                                            <p class="study__info-quantity">
+                                                {{ getStaticTest(variant.variant, test['id']) }}</p>
                                         </div>
                                     </div>
                                     <test-users-popup
@@ -156,27 +181,34 @@
                                 </div>
                                 </div>
                             </div>-->
-                            <div class="study__block" v-for="complex_question in tests" v-if="(complex_question.variants && complex_question.test_type == 'child')" style="padding-bottom: 30px;">
+                            <div class="study__block" v-for="complex_question in tests"
+                                 v-if="(complex_question.variants && complex_question.test_type == 'child')"
+                                 style="padding-bottom: 30px;">
                                 <div class="study__block-content">
                                     <p class="study__block-title">Вопрос: <b>{{ complex_question.title }}</b></p>
 
                                     <div class="study__item" v-for="variant in complex_question.variants.buttons">
                                         <div class="study__item-content">
-                                            <div :class="(complex_question.variants.correct_answer[0] == variant.variant)?'study__answer active':'study__answer'">
+                                            <div
+                                                :class="(complex_question.variants.correct_answer[0] == variant.variant)?'study__answer active':'study__answer'">
                                                 <p class="study__answer-letter">{{ variant.variant }}</p>
                                                 <div class="study__answer-text" v-if="complex_question.type == 'media'">
-                                                    <img :src="variant.media[0]['path']" alt="" />
+                                                    <img :src="variant.media[0]['path']" alt=""/>
                                                 </div>
                                                 <p class="study__answer-text" v-else>{{ variant.title }}</p>
                                             </div>
                                             <div class="study__info">
                                                 <div class="study__info-block">
-                                                    <p class="study__info-data">{{ percent(getStaticTest(variant.variant, complex_question.id), totalQuestionVariants(test.question.variants, complex_question.id)) }}%</p>
+                                                    <p class="study__info-data">{{
+                                                            percent(getStaticTest(variant.variant, complex_question.id), totalQuestionVariants(test.question.variants, complex_question.id))
+                                                        }}%</p>
                                                     <div class="dashboard_main__status-line">
-                                                        <span :style="'width:'+percent(getStaticTest(variant.variant, complex_question.id), totalQuestionVariants(test.question.variants, complex_question.id))+'%;'"></span>
+                                                        <span
+                                                            :style="'width:'+percent(getStaticTest(variant.variant, complex_question.id), totalQuestionVariants(test.question.variants, complex_question.id))+'%;'"></span>
                                                     </div>
                                                 </div>
-                                                <p class="study__info-quantity">{{ getStaticTest(variant.variant, complex_question.id) }}</p>
+                                                <p class="study__info-quantity">
+                                                    {{ getStaticTest(variant.variant, complex_question.id) }}</p>
                                             </div>
                                         </div>
                                         <test-users-popup
@@ -189,7 +221,8 @@
                             </div>
 
                             <template v-if="complex_moderations">
-                                <div class="study__block" v-for="(complex_test, key) in tests" v-if="complex_test.test_type=='child' && complex_test.answer_type=='text'">
+                                <div class="study__block" v-for="(complex_test, key) in tests"
+                                     v-if="complex_test.test_type=='child' && complex_test.answer_type=='text'">
 
                                     <p class="study__block-title">Вопрос: <b>{{ complex_test.question }}</b></p>
 
@@ -216,28 +249,42 @@
                                                 </div>
                                             </div>
                                             <template v-if="complex_moderations[complex_test.id]">
-                                                <div class="study__table-block" v-for="(moderation, key) in complex_moderations[complex_test.id].data">
+                                                <div class="study__table-block"
+                                                     v-for="(moderation, key) in complex_moderations[complex_test.id].data">
                                                     <div class="study__table-item">
-                                                        <p class="study__table-number">{{key + 1}}</p>
+                                                        <p class="study__table-number">{{ key + 1 }}</p>
                                                     </div>
                                                     <div class="study__table-item">
-                                                        <p class="study__table-id">{{(moderation.user)?moderation.user.id:0}}</p>
+                                                        <p class="study__table-id">
+                                                            {{ (moderation.user) ? moderation.user.id : 0 }}</p>
                                                     </div>
                                                     <div class="study__table-item">
-                                                        <p class="study__table-name">{{(moderation.user)?moderation.user.name:'Уже нет такого пользователя'}}</p>
+                                                        <p class="study__table-name">
+                                                            {{
+                                                                (moderation.user) ? moderation.user.name : 'Уже нет такого пользователя'
+                                                            }}</p>
                                                     </div>
                                                     <div class="study__table-item">
-                                                        <p class="study__table-description">{{moderation.answer}}</p>
+                                                        <p class="study__table-description">{{ moderation.answer }}</p>
                                                     </div>
                                                     <div class="study__table-item">
                                                         <div class="study__table-controls">
-                                                            <button :class="(moderation.status=='accept')?class_plus + ' active':class_plus" type="button" :disabled="(moderation.status=='cancel')?true:false" @click="accept(moderation.id, moderation.status, complex_test.id)"></button>
-                                                            <button :class="(moderation.status=='cancel')?class_minus + ' active':class_minus" type="button" :disabled="(moderation.status=='accept')?true:false" @click="decline(moderation.id)"></button>
+                                                            <button
+                                                                :class="(moderation.status=='accept')?class_plus + ' active':class_plus"
+                                                                type="button"
+                                                                :disabled="(moderation.status=='cancel')?true:false"
+                                                                @click="accept(moderation.id, moderation.status, complex_test.id)"></button>
+                                                            <button
+                                                                :class="(moderation.status=='cancel')?class_minus + ' active':class_minus"
+                                                                type="button"
+                                                                :disabled="(moderation.status=='accept')?true:false"
+                                                                @click="decline(moderation.id)"></button>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="articles_pagination center">
-                                                    <pagination :data="complex_moderations[complex_test.id]" @pagination-change-page="getResults"></pagination>
+                                                    <pagination :data="complex_moderations[complex_test.id]"
+                                                                @pagination-change-page="getResults"></pagination>
                                                 </div>
                                             </template>
                                         </div>
@@ -253,153 +300,151 @@
 </template>
 
 <script>
-    import FragmentCloseItem from "../../fragmets/close-item"
-    import {TEST, MODERATION, TEST_CONFIRMATION, TEST_COMPLEX_CONFIRMATION, TEST_DECLINE} from "../../../api/endpoints"
-    import TestUsersPopup from "../../templates/dashboard/TestUsersPopup"
-    import VPreloader from "../../fragmets/preloader"
+import FragmentCloseItem from "../../fragmets/close-item"
+import {TEST, MODERATION, TEST_CONFIRMATION, TEST_COMPLEX_CONFIRMATION, TEST_DECLINE} from "../../../api/endpoints"
+import TestUsersPopup from "../../templates/dashboard/TestUsersPopup"
+import VPreloader from "../../fragmets/preloader"
 
-    export default {
-        name: "test-popup",
-        components: {FragmentCloseItem, TestUsersPopup, VPreloader},
-        props: {
-            id: {
-                type: Number,
-                default: 0
-            },
-            test: {
-                type: Object,
-                default: {}
-            },
-            tests: {
-                type: Object,
-                default: {}
-            },
-            passing_tests: {
-                type: Array,
-                default: []
-            },
-            content_id: {
-                type: Number,
-                default: 0
-            },
-            project_id: {
-                type: Number,
-                default: 0
+export default {
+    name: "test-popup",
+    components: {FragmentCloseItem, TestUsersPopup, VPreloader},
+    props: {
+        id: {
+            type: Number,
+            default: 0
+        },
+        test: {
+            type: Object,
+            default: {}
+        },
+        tests: {
+            type: Array,
+            default: []
+        },
+        passing_tests: {
+            type: Array,
+            default: []
+        },
+        content_id: {
+            type: Number,
+            default: 0
+        },
+        project_id: {
+            type: Number,
+            default: 0
+        }
+    },
+    data() {
+        return {
+            isOpen: false,
+            title: '',
+            question: '',
+            variants: [],
+            correct_answer: [],
+            test_type: '',
+            type: '',
+            moderations: {},
+            complex_moderations: {},
+            total_test: {},
+            class_plus: 'study__table-button study__table-button--plus',
+            class_minus: 'study__table-button study__table-button--minus'
+        }
+    },
+    methods: {
+        getStaticTest(title, test_id) {
+            if (this.passing_tests[test_id] && this.passing_tests[test_id][title]) {
+                return this.passing_tests[test_id][title].length;
+            }
+
+            return 0;
+        },
+        toggle() {
+            this.isOpen = this.isOpen === false;
+        },
+        close() {
+            this.$router.push({path: '/'})
+        },
+        async getResults(page) {
+            if (typeof page === 'undefined') {
+                page = 1;
+            }
+            let test = this.test;
+            let test_id = test.id
+            if (test.test_type == "child") {
+                await this.$get(MODERATION + '/' + test_id + '?page=' + page)
+                    .then(response => {
+                        this.$set(this.complex_moderations, test_id, response.data)
+                    });
+                console.log(this.complex_moderations[test_id]);
+            }
+
+            if (test.test_type == "easy") {
+                this.$get(MODERATION + '/' + test.id + '?page=' + page)
+                    .then(response => {
+                        this.moderations = response.data;
+                    });
             }
         },
-        data () {
-            return {
-                isOpen: false,
-                title: '',
-                question: '',
-                variants: [],
-                correct_answer: [],
-                test_type: '',
-                type: '',
-                moderations: {},
-                complex_moderations: {},
-                total_test: {},
-                class_plus: 'study__table-button study__table-button--plus',
-                class_minus: 'study__table-button study__table-button--minus'
+        totalQuestionVariants(variants, test_id) {
+            let total = 0;
+            let total_test = 0;
+            if (variants) {
+                for (let variant in variants) {
+                    total = this.getStaticTest(variants[variant].variant, test_id);
+
+                    if (total) {
+                        total_test += total;
+                    }
+                }
+            }
+
+            return total_test;
+        },
+        percent(status, total) {
+            return status ? parseInt(status * 100 / total) : 0
+        },
+        async accept(id, status) {
+            if (status == 'pending') {
+                this.$get(TEST_CONFIRMATION + "/" + id).then();
+
+                for (const [index, value] of Object.entries(this.moderations.data)) {
+                    if (value.id === id) {
+                        value.status = 'accept'
+                        return
+                    }
+                }
             }
         },
-        methods: {
-            getStaticTest (title, test_id) {
-                if (this.passing_tests[test_id] && this.passing_tests[test_id][title]) {
-                    return this.passing_tests[test_id][title].length;
-                }
+        async acceptComplex(id, status, test_id) {
+            if (status == 'pending') {
+                this.$get(TEST_COMPLEX_CONFIRMATION + "/" + id + "/" + this.content_id).then();
 
-                return 0;
-            },
-            toggle () {
-                this.isOpen = this.isOpen === false;
-            },
-            close () {
-                this.$router.push({ path: '/' })
-            },
-            async getResults (page) {
-                if (typeof page === 'undefined') {
-                    page = 1;
-                }
-
-                let test = this.test;
-                    let test_id = test.id
-                    if (test.test_type == "child") {
-                        await this.$get(MODERATION + '/' + test_id + '?page=' + page)
-                            .then(response => {
-                                this.$set(this.complex_moderations, test_id, response.data)
-                            });
-                        console.log(this.complex_moderations[test_id]);
-                    }
-
-                    if (test.test_type == "easy") {
-                        this.$get(MODERATION + '/' + test.id + '?page=' + page)
-                            .then(response => {
-                                this.moderations = response.data;
-                            });
-                    }
-
-            },
-            totalQuestionVariants (variants, test_id) {
-                let total = 0;
-                let total_test = 0;
-                if (variants) {
-                    for (let variant in variants) {
-                        total = this.getStaticTest(variants[variant].variant, test_id);
-
-                        if (total) {
-                            total_test += total;
-                        }
-                    }
-                }
-
-                return total_test;
-            },
-            percent(status, total) {
-                return status?parseInt(status * 100 / total):0
-            },
-            async accept(id, status) {
-                if (status == 'pending') {
-                    this.$get(TEST_CONFIRMATION + "/" + id).then();
-
-                    for (const [index, value] of Object.entries(this.moderations.data)) {
+                if (this.moderations) {
+                    for (const [index, value] of Object.entries(this.moderations[test_id].data)) {
                         if (value.id === id) {
                             value.status = 'accept'
                             return
                         }
                     }
                 }
-            },
-            async acceptComplex(id, status, test_id) {
-                if (status == 'pending') {
-                    this.$get(TEST_COMPLEX_CONFIRMATION + "/" + id + "/" + this.content_id).then();
-
-                    if (this.moderations) {
-                        for (const [index, value] of Object.entries(this.moderations[test_id].data)) {
-                            if (value.id === id) {
-                                value.status = 'accept'
-                                return
-                            }
-                        }
-                    }
-                }
-            },
-            async decline(id) {
-                this.$get(TEST_DECLINE + "/" + id).then();
-
-                for (const [index, value] of Object.entries(this.moderations.data)) {
-                    if (value.id === id) {
-                        value.status = 'cancel'
-                        return
-                    }
-                }
-            },
+            }
         },
-        created() {
-            //this.getResults(1);
+        async decline(id) {
+            this.$get(TEST_DECLINE + "/" + id).then();
+
+            for (const [index, value] of Object.entries(this.moderations.data)) {
+                if (value.id === id) {
+                    value.status = 'cancel'
+                    return
+                }
+            }
         },
-        beforeMount() {
-            this.getResults(1);
-        }
+    },
+    mounted() {
+        // this.getResults(1);
+    },
+    beforeMount() {
+        this.getResults(1);
     }
+}
 </script>

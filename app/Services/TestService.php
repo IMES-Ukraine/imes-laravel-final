@@ -111,7 +111,7 @@ class TestService
             }
 
         } else {
-            $passed = Passing::find(['entity_id' => $model->id, 'user_id' => $user->id]);
+            $passed = Passing::find(['entity_id' => $model->id, 'user_id' => $user->id])->first();
             if ($passed) {
                 $variants[] = [
                     'test_id' => $model->id,
@@ -124,6 +124,7 @@ class TestService
 
     public static function verifyTest($variants, $apiUser, $moderating = false): array
     {
+
         $passed = new PassingProvider($apiUser);
 
         //посчитаем общее число ответов и число правильных ответов
@@ -134,7 +135,7 @@ class TestService
 
         $resType = self::TEST_SUBMITTED;
 
-        foreach ($variants as $var) {
+        foreach ($variants as $key => $var) {
             $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
 
             $userVariants = $var['variant'];
@@ -144,6 +145,7 @@ class TestService
             $passModel = $passed->setId($test, Passing::PASSING_ACTIVE, $userVariants);
 
             $fullPassingBonus = $test->passing_bonus;
+
             if (empty($correctAnswer)) {
                 // Если текущий тест - опросник или текст
 
@@ -163,15 +165,16 @@ class TestService
                             'status' => QuestionModeration::TEST_MODERATION_PENDING
                         ]);
                     } else {
-                        if ($passModel->result) {
                             // Если тест прошел удачную модерацию - учитываем его в числе правильных ответов.
-                            $moderated = QuestionModeration::find(['question_id' => $test, 'user_id' => $apiUser->id]);
+                            $moderated = QuestionModeration::where('question_id', $test->id)->where( 'user_id', $apiUser->id)->first();
+
                             if ($moderated && $moderated->status === QuestionModeration::TEST_MODERATION_ACCEPT) {
+                                $passModel->answer =  [$moderated->answer];
+                                $passModel->save();
                                 $testStatus = Passing::PASSING_RESULT_ACTIVE;
                                 $correctAnswersCount++;
                             }
                         }
-                    }
                 } //Опросник
                 else {
                     $testStatus = Passing::PASSING_RESULT_ACTIVE;

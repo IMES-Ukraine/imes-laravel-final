@@ -22,7 +22,7 @@ class TestModerationController extends Controller
         if ($model->save()) {
             $variants = TestService::getAllVariants($model->question, $model->user);
             Log::info('moderate', $variants);
-            TestService::verifyTest($variants, $model->user, true);
+            return TestService::verifyTest($variants, $model->user, true);
         }
     }
 
