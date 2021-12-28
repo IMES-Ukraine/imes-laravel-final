@@ -99,9 +99,19 @@ class ProjectResearches extends Model
 
     public function getFullTestAttribute()
     {
+        $testQuestion = $this->testObject()->first();
         $test = (array)$this->test;
-        $testQuestion = $this->testObject()->first() ? $this->testObject()->first()->toArray() : [];
-        $res =   array_merge_recursive_distinct($testQuestion, $test );
+        $res = [];
+        if ($testQuestion) {
+            $res = TestQuestions::with(['cover_image', 'image', 'video', 'complex', 'featured_images', 'research'])
+                ->where(['id' => $testQuestion->id])
+                ->first()
+                ->makeHidden('research')
+                ->toArray();
+            $res['picked'] = $test['picked'];
+            $res['type'] = $res['test_type'];
+            $res['question'] = $test['question'];
+        }
         return $res;
     }
 
@@ -114,7 +124,7 @@ class ProjectResearches extends Model
      * All tests in research
      * @return HasOne
      */
-    public function  testObject(): HasOne
+    public function testObject(): HasOne
     {
         return $this->hasOne(TestQuestions::class, 'research_id', 'id');
     }

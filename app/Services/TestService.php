@@ -98,10 +98,10 @@ class TestService
     public static function getAllVariants($model, $user): array
     {
         $variants = [];
-        if ($model->test_type == TestQuestions::TYPE_COMPLEX) {
+        if ($model->test_type === TestQuestions::TYPE_COMPLEX) {
             $childes = $model->complex;
             foreach ($childes as $child) {
-                $passed = Passing::find(['entity_id' => $child->id, 'user_id' => $user->id]);
+                $passed = Passing::where('entity_id', $child->id)->where('user_id', $user->id)->first();
                 if ($passed) {
                     $variants[] = [
                         'test_id' => $child->id,
@@ -111,7 +111,7 @@ class TestService
             }
 
         } else {
-            $passed = Passing::find(['entity_id' => $model->id, 'user_id' => $user->id])->first();
+            $passed = Passing::where('entity_id',$model->id)->where('user_id', $user->id)->first();
             if ($passed) {
                 $variants[] = [
                     'test_id' => $model->id,
@@ -134,7 +134,6 @@ class TestService
         $fullPassingBonus = 0;
 
         $resType = self::TEST_SUBMITTED;
-
         foreach ($variants as $key => $var) {
             $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
 
@@ -145,7 +144,6 @@ class TestService
             $passModel = $passed->setId($test, Passing::PASSING_ACTIVE, $userVariants);
 
             $fullPassingBonus = $test->passing_bonus;
-
             if (empty($correctAnswer)) {
                 // Если текущий тест - опросник или текст
 
@@ -170,6 +168,7 @@ class TestService
 
                             if ($moderated && $moderated->status === QuestionModeration::TEST_MODERATION_ACCEPT) {
                                 $passModel->answer =  [$moderated->answer];
+                                $passModel->result =  Passing::PASSING_RESULT_ACTIVE;
                                 $passModel->save();
                                 $testStatus = Passing::PASSING_RESULT_ACTIVE;
                                 $correctAnswersCount++;

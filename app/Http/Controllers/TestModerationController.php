@@ -21,7 +21,6 @@ class TestModerationController extends Controller
 
         if ($model->save()) {
             $variants = TestService::getAllVariants($model->question, $model->user);
-            Log::info('moderate', $variants);
             return TestService::verifyTest($variants, $model->user, true);
         }
     }
@@ -38,13 +37,16 @@ class TestModerationController extends Controller
         $model->status = QuestionModeration::TEST_MODERATION_ACCEPT;
 
         if ($model->save()) {
-            $bonus = TestService::getTestBonus($model->question_id);
+            $variants = TestService::getAllVariants($model->question, $model->user);
+            return TestService::verifyTest($variants, $model->user, true);
 
-            $success = TestService::getAnswerCorrect($content_id, $model->user_id);
-
-            if ($bonus && $success) {
-                TestService::addBalanceAllTests($content_id, $model->user_id);
-            }
+//            $bonus = TestService::getTestBonus($model->question_id);
+//
+//            $success = TestService::getAnswerCorrect($content_id, $model->user_id);
+//
+//            if ($bonus && $success) {
+//                TestService::addBalanceAllTests($content_id, $model->user_id);
+//            }
         }
     }
 

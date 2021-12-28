@@ -13,7 +13,7 @@
                     <a :href="'/admin/api/v1/export-users-test/' + project_id + '/' + content_id"
                        class="study-download"><span>Скачать отчёт пакета</span></a>
                     <div class="study-box">
-                        <div class="study__block" v-if="(test.type == 'easy' && test.picked == 'test')">
+                        <div class="study__block" v-if="(test.test_type == 'easy' && test.picked == 'test')">
                             <p class="study__block-title">Вопрос: <b>{{ test.text }}</b></p>
 
                             <div class="study__block-content"
@@ -147,7 +147,7 @@
                             </div>
                         </div>
 
-                        <template v-if="(test.type == 'complex' && test.picked == 'test')">
+                        <template v-if="(test.test_type == 'complex' && test.picked == 'test')">
                             <!--<div class="study__block" v-for="complex_question in test.complex_question" v-if="(complex_question.variants && complex_question.type != 'text')" style="padding-bottom: 30px;">
                                 <div class="study__block-content">
                                 <p class="study__block-title">Вопрос: <b>{{ complex_question.text }}</b></p>
@@ -182,7 +182,7 @@
                                 </div>
                             </div>-->
                             <div class="study__block" v-for="complex_question in tests"
-                                 v-if="(complex_question.variants && complex_question.test_type == 'child')"
+                                 v-if="(complex_question.variants && complex_question.type !== 'text')"
                                  style="padding-bottom: 30px;">
                                 <div class="study__block-content">
                                     <p class="study__block-title">Вопрос: <b>{{ complex_question.title }}</b></p>
@@ -417,7 +417,7 @@ export default {
         },
         async acceptComplex(id, status, test_id) {
             if (status == 'pending') {
-                this.$get(TEST_COMPLEX_CONFIRMATION + "/" + id + "/" + this.content_id).then();
+                this.$get(TEST_CONFIRMATION + "/" + id + "/" + this.content_id).then();
 
                 if (this.moderations) {
                     for (const [index, value] of Object.entries(this.moderations[test_id].data)) {
