@@ -128,7 +128,7 @@ class TestsController extends Controller
             ->makeHidden('research');
 
         if (!empty($test)) {
-            $data = json_decode($test->toJson(), true);
+            $data = json_decode($test, true);
             $data = $this->setParamTypes($data);
             if (!$test->isOpened) {
                 $model = new TestOpened();
