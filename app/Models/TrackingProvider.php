@@ -82,7 +82,9 @@ class TrackingProvider
                 }
                 $userReadingRate = $totalSymbolsCount / $timeDifference;
 
-                return $userReadingRate <= config('params')['maxReadingRate'];
+                //TODO разобраться, почему пропадают параметры из конфига
+                $rate = config('params')['maxReadingRate'] ?? 2000;
+                return $userReadingRate <= $rate;
             } else {
                 return false;
             }
