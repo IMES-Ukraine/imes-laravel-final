@@ -370,20 +370,15 @@ export default {
             }
             let test = this.test;
             let test_id = test.id
-            if (test.test_type == "child") {
-                await this.$get(MODERATION + '/' + test_id + '?page=' + page)
-                    .then(response => {
-                        this.$set(this.complex_moderations, test_id, response.data)
-                    });
-                console.log(this.complex_moderations[test_id]);
-            }
 
-            if (test.test_type == "easy") {
-                this.$get(MODERATION + '/' + test.id + '?page=' + page)
-                    .then(response => {
+            await this.$get(MODERATION + '/' + test_id + '?page=' + page)
+                .then(response => {
+                    if (test.test_type == "complex") {
+                        this.$set(this.complex_moderations, test_id, response.data);
+                    } else {
                         this.moderations = response.data;
-                    });
-            }
+                    }
+                });
         },
         totalQuestionVariants(variants, test_id) {
             let total = 0;
