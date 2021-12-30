@@ -8,6 +8,7 @@ use App\Classes\UserSpecializedInfo;
 use App\Http\Helpers;
 use App\Traits\JWT;
 use App\Traits\JsonFieldTrait;
+use App\Traits\NotificationsHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -86,10 +87,14 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
+    use NotificationsHelper;
     use HasFactory, JWT, JsonFieldTrait;
 
     const USER_IS_VERIFIED_FALSE = 0;
     const USER_IS_VERIFIED_TRUE = 1;
+
+    const ENTYTY_TYPE_TEST = ' выполнение теста ';
+    const ENTYTY_TYPE_ARTICLE = ' чтение статьи ';
 
     /**
      * The attributes that are mass assignable.
@@ -256,10 +261,23 @@ class User extends Authenticatable implements JWTSubject
         ]);
     }
 
-    public function addBalance($sum)
+    public function addBalance($sum, $model=null, $entityType=null)
     {
         $this->balance += $sum;
-        $this->save();
+        if ($this->save() ) {
+            if ($model) {
+                if (get_class($model) === TestQuestions::class) {
+                    $this->sendNotificationToUser($this, Notifications::TYPE_REFILL,
+                        'Вам начислено ' . $sum . ' баллов за' . self::ENTYTY_TYPE_TEST . $model->title, [],
+                        'Вам начислены баллы');
+                }
+                if (get_class($model) === Post::class) {
+                    $this->sendNotificationToUser($this, Notifications::TYPE_REFILL,
+                        'Вам начислено ' . $sum . ' баллов за' . self::ENTYTY_TYPE_ARTICLE . $model->title, [],
+                        'Вам начислены баллы');
+                }
+            }
+        }
     }
 
 

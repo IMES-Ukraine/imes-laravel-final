@@ -3,6 +3,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 
+use App\Models\TestQuestions;
 use App\Services\TestService;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
@@ -47,15 +48,27 @@ class ModerationController extends Controller
      */
     public function test( $test_id )
     {
-        $results = $this->QuestionModeration
-            ->where('question_id', $test_id)
-            ->with('user')
-            ->paginate(15);
+        $test = TestQuestions::find($test_id);
+        if ($test->test_type === TestQuestions::TYPE_COMPLEX) {
+            $data = [];
+            foreach ($test->complex as $complexItem){
+                $results =  $this->QuestionModeration
+                    ->where('question_id', $complexItem->id)
+                    ->with('user')
+                    ->paginate(15);
+                $data[$complexItem->id] = json_decode($results->toJSON());
+            }
 
-        $data = json_decode($results->toJSON());
+        }
+        else {
+            $results = $this->QuestionModeration
+                ->where('question_id', $test_id)
+                ->with('user')
+                ->paginate(15);
 
-        return $this->helpers
-            ->apiArrayResponseBuilder(200, 'success', $data);
+            $data = json_decode($results->toJSON());
+        }
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
     public function show($id){
