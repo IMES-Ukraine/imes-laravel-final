@@ -152,6 +152,7 @@ class TestService
                     //Если мы не в режиме модерации
                     if (!$moderating) {
                         //Если хоть в одном тесте тип - текст - ставим флаг для всего набора тестов
+//                        $resType = self::TEST_SUBMITTED;
                         $resType = self::TEST_WILL_BE_MODERATED;
 
                         // Сделаем запись для модерации
@@ -182,7 +183,7 @@ class TestService
             } else {
                 //если мы в сложном тесте
                 if ($test->test_type === TestQuestions::TYPE_CHILD) {
-                    //отметим родительский тест
+                    //отметим родительский тест как открывавшийся
                     $testParent = TestQuestions::find($test->parent_id);
                     $fullPassingBonus = $testParent->passing_bonus;
                     $parentPassed = $passed->setId($testParent, Passing::PASSING_ACTIVE, []);
@@ -231,15 +232,18 @@ class TestService
         }
 
         //Если тест пройден - отметим и родительский тест
-        if ($testStatus === Passing::PASSING_RESULT_ACTIVE && isset($parentPassed)) {
+        if ($testStatus === Passing::PASSING_RESULT_ACTIVE && $resType === self::TEST_SUBMITTED && isset($parentPassed)) {
             $parentPassed->result = Passing::PASSING_RESULT_ACTIVE;
             $parentPassed->save();
         }
 
-        if ($resType == self::TEST_SUBMITTED && $userPassingBonus) {
+        if ($resType === self::TEST_SUBMITTED && $userPassingBonus) {
             $apiUser->addBalance($userPassingBonus);
         }
-        $testStatus = $testStatus ===  Passing::PASSING_RESULT_ACTIVE ? TestQuestions::STATUS_PASSED : TestQuestions::STATUS_FAILED ;
+        else {
+            $userPassingBonus = 0;
+        }
+        $testStatus = ($testStatus ===  Passing::PASSING_RESULT_ACTIVE) ? TestQuestions::STATUS_PASSED : TestQuestions::STATUS_FAILED ;
         $data = $apiUser->makeHidden(User::TO_HIDE)->toArray();
         return compact('resType', 'userPassingBonus', 'testStatus', 'data');
     }
