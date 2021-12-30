@@ -111,7 +111,7 @@ class TestService
             }
 
         } else {
-            $passed = Passing::where('entity_id',$model->id)->where('user_id', $user->id)->first();
+            $passed = Passing::where('entity_id', $model->id)->where('user_id', $user->id)->first();
             if ($passed) {
                 $variants[] = [
                     'test_id' => $model->id,
@@ -134,7 +134,7 @@ class TestService
         $fullPassingBonus = 0;
 
         $resType = self::TEST_SUBMITTED;
-        foreach ($variants as $key => $var) {
+        foreach ($variants as $var) {
             $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
 
             $userVariants = $var['variant'];
@@ -164,17 +164,17 @@ class TestService
                             'status' => QuestionModeration::TEST_MODERATION_PENDING
                         ]);
                     } else {
-                            // Если тест прошел удачную модерацию - учитываем его в числе правильных ответов.
-                            $moderated = QuestionModeration::where('question_id', $test->id)->where( 'user_id', $apiUser->id)->first();
+                        // Если тест прошел удачную модерацию - учитываем его в числе правильных ответов.
+                        $moderated = QuestionModeration::where('question_id', $test->id)->where('user_id', $apiUser->id)->first();
 
-                            if ($moderated && $moderated->status === QuestionModeration::TEST_MODERATION_ACCEPT) {
-                                $passModel->answer =  [$moderated->answer];
-                                $passModel->result =  Passing::PASSING_RESULT_ACTIVE;
-                                $passModel->save();
-                                $testStatus = Passing::PASSING_RESULT_ACTIVE;
-                                $correctAnswersCount++;
-                            }
+                        if ($moderated && $moderated->status === QuestionModeration::TEST_MODERATION_ACCEPT) {
+                            $passModel->answer = [$moderated->answer];
+                            $passModel->result = Passing::PASSING_RESULT_ACTIVE;
+                            $passModel->save();
+                            $testStatus = Passing::PASSING_RESULT_ACTIVE;
+                            $correctAnswersCount++;
                         }
+                    }
                 } //Опросник
                 else {
                     $testStatus = Passing::PASSING_RESULT_ACTIVE;
@@ -231,21 +231,28 @@ class TestService
             $userPassingBonus = $fullPassingBonus;
         }
 
-        //Если тест пройден - отметим и родительский тест
-        if ($testStatus === Passing::PASSING_RESULT_ACTIVE && $resType === self::TEST_SUBMITTED && isset($parentPassed)) {
-            $parentPassed->result = Passing::PASSING_RESULT_ACTIVE;
-            $parentPassed->save();
+        $testOutStatus = TestQuestions::STATUS_PASSED;
+        //Если тест пройден
+        if ($testStatus === Passing::PASSING_RESULT_ACTIVE && $resType === self::TEST_SUBMITTED && $userPassingBonus) {
+            $apiUser->addBalance($userPassingBonus);
+
+
+            // отметим и родительский тест
+            if (isset($parentPassed)) {
+                $parentPassed->result = Passing::PASSING_RESULT_ACTIVE;
+                $parentPassed->save();
+            }
+        } else {
+            $userPassingBonus = 0;
+            if ($resType === self::TEST_SUBMITTED) {
+                $testOutStatus = TestQuestions::STATUS_FAILED;
+            }
         }
 
-        if ($resType === self::TEST_SUBMITTED && $userPassingBonus) {
-            $apiUser->addBalance($userPassingBonus);
-        }
-        else {
-            $userPassingBonus = 0;
-        }
-        $testStatus = ($testStatus ===  Passing::PASSING_RESULT_ACTIVE) ? TestQuestions::STATUS_PASSED : TestQuestions::STATUS_FAILED ;
+        $resType = self::TEST_SUBMITTED;
         $data = $apiUser->makeHidden(User::TO_HIDE)->toArray();
-        return compact('resType', 'userPassingBonus', 'testStatus', 'data');
+
+        return compact('resType', 'userPassingBonus', 'testOutStatus', 'data');
     }
 
     /**

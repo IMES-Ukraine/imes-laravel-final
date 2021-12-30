@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class Helpers
 {
@@ -15,7 +16,7 @@ class Helpers
         ];
 
         $arr['data'] = (array)$data;
-
+Log::info('send to App', $arr);
         return response()->json($arr, $arr['status_code']);
     }
 

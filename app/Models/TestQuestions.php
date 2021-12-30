@@ -4,6 +4,7 @@ namespace App\Models;
 //imes-backend/plugins/ulogic/tests/models/Test.php
 use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
@@ -89,9 +90,9 @@ class TestQuestions extends Model
 
     /**
      * Featured images
-     * @return mixed
      */
-    public function featured_images() {
+    public function featured_images(): HasMany
+    {
         return $this->hasMany('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_IMAGE ]);
     }
 
@@ -121,7 +122,6 @@ class TestQuestions extends Model
 
     /**
      * Cover images
-     * @return mixed
      */
     public function research() {
         return $this->hasOne(ProjectResearches::class, 'id', 'research_id');
@@ -131,8 +131,9 @@ class TestQuestions extends Model
      * Сложные тесты
      * @return mixed
      */
-    public function complex() {
-        return $this->hasMany('App\Models\TestQuestions', 'parent_id', 'id');
+    public function complex()
+    {
+            return $this->hasMany(TestQuestions::class, 'parent_id', 'id');
     }
 
 
