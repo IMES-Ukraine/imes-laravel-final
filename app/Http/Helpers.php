@@ -16,7 +16,7 @@ class Helpers
         ];
 
         $arr['data'] = (array)$data;
-Log::info('send to App', $arr);
+//Log::info('send to App', $arr);
         return response()->json($arr, $arr['status_code']);
     }
 
