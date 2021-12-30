@@ -34,8 +34,6 @@ use function MongoDB\BSON\toJSON;
 
 class TestsController extends Controller
 {
-    use NotificationsHelper;
-
     protected $Test;
 
     protected $helpers;
@@ -225,12 +223,7 @@ class TestsController extends Controller
 
         // Выполняем проверку правильности теста
         $result = TestService::verifyTest($variants, $apiUser);
-        if ($result['userPassingBonus']){
-            $passedTest = TestQuestions::find($testIDforCheck);
-            $this->sendNotificationToUser($apiUser, Notifications::TYPE_REFILL,
-                'Вам начислено ' . $result['userPassingBonus'] . ' баллов за прохождение теста ' . $passedTest->question,
-                'Вам начислены баллы');
-        }
+        Log::info('Verify', $result);
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
             'data' => 'ok',

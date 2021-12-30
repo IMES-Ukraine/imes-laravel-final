@@ -98,8 +98,8 @@ class TestService
     public static function getAllVariants($model, $user): array
     {
         $variants = [];
-        if ($model->test_type === TestQuestions::TYPE_COMPLEX) {
-            $childes = $model->complex;
+        if ($model->test_type === TestQuestions::TYPE_CHILD) {
+            $childes = TestQuestions::where('parent_id', $model->parent_id)->get();
             foreach ($childes as $child) {
                 $passed = Passing::where('entity_id', $child->id)->where('user_id', $user->id)->first();
                 if ($passed) {
@@ -122,9 +122,9 @@ class TestService
         return $variants;
     }
 
-    public static function verifyTest($variants, $apiUser, $moderating = false): array
+    public static function verifyTest($variants, User $apiUser, $moderating = false): array
     {
-
+Log::info('Варианты на проверку', [$moderating, $variants]);
         $passed = new PassingProvider($apiUser);
 
         //посчитаем общее число ответов и число правильных ответов
@@ -178,16 +178,9 @@ class TestService
                 } //Опросник
                 else {
                     $testStatus = Passing::PASSING_RESULT_ACTIVE;
-                    $dummyAnswersCount++;
+                    $dummyAnswersCount += count($var['variant']);
                 }
             } else {
-                //если мы в сложном тесте
-                if ($test->test_type === TestQuestions::TYPE_CHILD) {
-                    //отметим родительский тест как открывавшийся
-                    $testParent = TestQuestions::find($test->parent_id);
-                    $fullPassingBonus = $testParent->passing_bonus;
-                    $parentPassed = $passed->setId($testParent, Passing::PASSING_ACTIVE, []);
-                }
 
                 //TODO разобраться, может ли быть несколько правильных ответов к одному вопросу
                 foreach ($correctAnswer as $answ) {
@@ -196,6 +189,17 @@ class TestService
                         $correctAnswersCount++;
                     }
                 }
+            }
+            //если мы в сложном тесте
+            if ($test->test_type === TestQuestions::TYPE_CHILD) {
+                //отметим родительский тест как открывавшийся
+                $testParent = TestQuestions::find($test->parent_id);
+                $passedTest = $testParent;
+                $fullPassingBonus = $testParent->passing_bonus;
+                $parentPassed = $passed->setId($testParent, Passing::PASSING_ACTIVE, []);
+            }
+            else {
+                $passedTest = $test;
             }
 
             $passModel->result = $testStatus;
@@ -230,12 +234,12 @@ class TestService
             $testStatus = Passing::PASSING_RESULT_ACTIVE;
             $userPassingBonus = $fullPassingBonus;
         }
-
+Log::info('Результаты теста ' . $passedTest->title . ' ' . $passedTest->id, [$fullCount, $dummyAnswersCount, $testStatus, $resType, $userPassingBonus]);
         $testOutStatus = TestQuestions::STATUS_PASSED;
         //Если тест пройден
         if ($testStatus === Passing::PASSING_RESULT_ACTIVE && $resType === self::TEST_SUBMITTED && $userPassingBonus) {
-            $apiUser->addBalance($userPassingBonus);
 
+            $apiUser->addBalance($userPassingBonus, $passedTest );
 
             // отметим и родительский тест
             if (isset($parentPassed)) {
