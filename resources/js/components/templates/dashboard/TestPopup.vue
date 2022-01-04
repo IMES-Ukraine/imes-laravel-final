@@ -182,7 +182,7 @@
                                 </div>
                             </div>-->
                             <div class="study__block" v-for="complex_question in tests"
-                                 v-if="(complex_question.variants && complex_question.type !== 'text')"
+                                 v-if="(complex_question.variants && complex_question.answer_type !== 'text')"
                                  style="padding-bottom: 30px;">
                                 <div class="study__block-content">
                                     <p class="study__block-title">Вопрос: <b>{{ complex_question.title }}</b></p>
@@ -192,7 +192,7 @@
                                             <div
                                                 :class="(complex_question.variants.correct_answer[0] == variant.variant)?'study__answer active':'study__answer'">
                                                 <p class="study__answer-letter">{{ variant.variant }}</p>
-                                                <div class="study__answer-text" v-if="complex_question.type == 'media'">
+                                                <div class="study__answer-text" v-if="complex_question.answer_type == 'media'">
                                                     <img :src="variant.media[0]['path']" alt=""/>
                                                 </div>
                                                 <p class="study__answer-text" v-else>{{ variant.title }}</p>
@@ -220,7 +220,7 @@
                                 </div>
                             </div>
 
-                            <template v-if="complex_moderations">
+                            <template v-if="moderations">
                                 <div class="study__block" v-for="(complex_test, key) in tests"
                                      v-if="complex_test.test_type=='child' && complex_test.answer_type=='text'">
 
@@ -248,9 +248,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <template v-if="complex_moderations[complex_test.id]">
+                                            <template v-if="moderations[complex_test.id]">
                                                 <div class="study__table-block"
-                                                     v-for="(moderation, key) in complex_moderations[complex_test.id].data">
+                                                     v-for="(moderation, key) in moderations[complex_test.id].data">
                                                     <div class="study__table-item">
                                                         <p class="study__table-number">{{ key + 1 }}</p>
                                                     </div>
@@ -273,17 +273,17 @@
                                                                 :class="(moderation.status=='accept')?class_plus + ' active':class_plus"
                                                                 type="button"
                                                                 :disabled="(moderation.status=='cancel')?true:false"
-                                                                @click="accept(moderation.id, moderation.status, complex_test.id)"></button>
+                                                                @click="acceptComplex(moderation.id, moderation.status, complex_test.id)"></button>
                                                             <button
                                                                 :class="(moderation.status=='cancel')?class_minus + ' active':class_minus"
                                                                 type="button"
                                                                 :disabled="(moderation.status=='accept')?true:false"
-                                                                @click="decline(moderation.id)"></button>
+                                                                @click="declineComplex(moderation.id)"></button>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="articles_pagination center">
-                                                    <pagination :data="complex_moderations[complex_test.id]"
+                                                    <pagination :data="moderations[complex_test.id]"
                                                                 @pagination-change-page="getResults"></pagination>
                                                 </div>
                                             </template>
@@ -344,7 +344,7 @@ export default {
             test_type: '',
             type: '',
             moderations: {},
-            complex_moderations: {},
+            moderations: {},
             total_test: {},
             class_plus: 'study__table-button study__table-button--plus',
             class_minus: 'study__table-button study__table-button--minus'
@@ -370,20 +370,11 @@ export default {
             }
             let test = this.test;
             let test_id = test.id
-            if (test.test_type == "child") {
-                await this.$get(MODERATION + '/' + test_id + '?page=' + page)
-                    .then(response => {
-                        this.$set(this.complex_moderations, test_id, response.data)
-                    });
-                console.log(this.complex_moderations[test_id]);
-            }
 
-            if (test.test_type == "easy") {
-                this.$get(MODERATION + '/' + test.id + '?page=' + page)
-                    .then(response => {
+            await this.$get(MODERATION + '/' + test_id + '?page=' + page)
+                .then(response => {
                         this.moderations = response.data;
-                    });
-            }
+                });
         },
         totalQuestionVariants(variants, test_id) {
             let total = 0;
@@ -417,7 +408,7 @@ export default {
         },
         async acceptComplex(id, status, test_id) {
             if (status == 'pending') {
-                this.$get(TEST_CONFIRMATION + "/" + id + "/" + this.content_id).then();
+                this.$get(TEST_CONFIRMATION + "/" + id).then();
 
                 if (this.moderations) {
                     for (const [index, value] of Object.entries(this.moderations[test_id].data)) {

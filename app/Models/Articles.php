@@ -106,7 +106,7 @@ class Articles extends Post
         $length = Config::get('rainlab.blog::summary_default_length', 600);
 
         return (
-            !!strlen(trim($this->excerpt)) ||
+        (bool) strlen(trim($this->excerpt)) ||
             strpos($this->content_html, $more) !== false ||
             strlen(strip_tags($this->content_html)/*Html::strip($this->content_html)*/) > $length
         );
@@ -123,15 +123,6 @@ class Articles extends Post
         return $query->where('type', self::INFORMATION);
     }
 
-    public function scopeIsNotPassed($query, $userId)
-    {
-        return $query->leftJoin('ulogic_projects_passing', 'ulogic_projects_passing.entity_id', '=', 'rainlab_blog_posts.id')
-            ->whereNotExists(function ($q) use ($userId) {
-                $q->select('ulogic_projects_passing.answer')
-                    ->where('ulogic_projects_passing.entity_type', Post::class)
-                    ->where('ulogic_projects_passing.user_id', $userId);
-            });
-    }
 
     public function scopeNotTimes($query)
     {

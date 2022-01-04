@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\File;
+use App\Models\Notifications;
 use App\Models\Passing;
 use App\Models\ProjectsAgreement;
 use App\Models\TestQuestions;
 use App\Services\TestService;
+use App\Traits\NotificationsHelper;
 use Exception;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\QueryException;
@@ -51,7 +53,7 @@ class TestsController extends Controller
     // Принудительная типизация уже сохраненных данных.
     private function setParamTypes($data)
     {
-        $data['research_id'] = $data['research_id'] ? (int)$data['research_id'] : null;
+        $data['research_id'] = isset($data['research_id']) ? (int)$data['research_id'] : null;
         foreach ($data['options'] as $key => $item) {
             if (isset($data['options'][$key]['type']) && $data['options'][$key]['type'] == Question::TYPE_TO_LEARN) {
                 $data['options'][$key]['data'] = $data['options'][$key]['data'] ? (int)$data['options'][$key]['data'] : null;
@@ -122,13 +124,24 @@ class TestsController extends Controller
     public function show($id)
     {
         $apiUser = auth()->user();
-        $test = TestQuestions::with(['cover_image', 'image', 'video', 'complex', 'featured_images'])
+        /** @var TestQuestions $test */
+        $test = TestQuestions::with(['cover_image', 'image', 'video',  'featured_images'])
             ->where(['id' => $id])
-            ->first()
-            ->makeHidden('research');
+            ->first();
+
 
         if (!empty($test)) {
-            $data = json_decode($test, true);
+            $test->makeHidden('research');
+
+            // Это костыль. Непонятно, почему вешается при обычном преобразовании $test->complex()->get()->toArray() - всё падает
+            $data = $test->attributesToArray();
+            $complex = $test->complex;
+            $res = [];
+            foreach ($complex as $item){
+                $res[] = $item->attributesToArray();
+            }
+            $data['complex'] = $res;
+
             $data = $this->setParamTypes($data);
             if (!$test->isOpened) {
                 $model = new TestOpened();
@@ -142,14 +155,8 @@ class TestsController extends Controller
             return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
         }
 
-        $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
+        return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
 
-    }
-
-
-    private function genSlug($str)
-    {
-        return preg_replace("/[^A-Za-z0-9]/", '', $str);
     }
 
 
@@ -216,12 +223,13 @@ class TestsController extends Controller
 
         // Выполняем проверку правильности теста
         $result = TestService::verifyTest($variants, $apiUser);
+        Log::info('Verify', $result);
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
             'data' => 'ok',
             'type' => $result['resType'],
             'points' => $result['userPassingBonus'],
-            'status' => $result['testStatus'],
+            'status' => $result['testOutStatus'],
             'user' => $result['data'],
         ]);
 

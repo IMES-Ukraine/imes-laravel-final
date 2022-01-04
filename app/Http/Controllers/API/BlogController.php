@@ -18,7 +18,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
 use App\Models\Post;
-use Auth;
 use App\Models\Articles;
 use App\Models\Opened;
 use App\Models\PassingProvider;
@@ -53,17 +52,20 @@ class BlogController extends Controller
 
         $relations = ['cover_image'];
 
+
+        $passed = Passing::where('entity_type', Post::class)->where('user_id', $apiUser->id)->pluck('entity_id')->toArray();
+
         //  Выдаём статьи всех типов
         if ($type == Articles::ARTICLE) {
             /** @var Builder $data */
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
+                ->whereNotIn('id', $passed)
                 ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
                 ->where( 'published', 1)
                 ->isArticle()
-                ->isNotPassed($apiUser->id)
-                ->orderBy('rainlab_blog_posts.id', 'desc');
-            $data = $data->paginate($countOnPage);
+                ->orderBy('rainlab_blog_posts.id', 'desc')
+            ->paginate($countOnPage);
 
         } else {
             $data = Articles::with($relations)
@@ -180,7 +182,7 @@ class BlogController extends Controller
             $passedIds = $passed->getIds(Post::class);
 
             if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($articleId)) {
-                $userModel->addBalance($learningBonus);
+                $userModel->addBalance($learningBonus, $article);
                 $finalBonus = $learningBonus;
                 $passed->setId($article, Passing::PASSING_ACTIVE);
             }
@@ -345,10 +347,12 @@ class BlogController extends Controller
 
         if($research) {
             $test = $research->testObject;
-            $passing = new PassingProvider($authUser);
-            $passedTests = $passing->getResults($test);
-            if (in_array($test->id, $passedTests)) {
-                $data['test_id'] = null;
+            if($test) {
+                $passing = new PassingProvider($authUser);
+                $passedTests = $passing->getResults($test);
+                if (in_array($test->id, $passedTests)) {
+                    $data['test_id'] = null;
+                }
             }
         }
 

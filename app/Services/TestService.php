@@ -98,8 +98,8 @@ class TestService
     public static function getAllVariants($model, $user): array
     {
         $variants = [];
-        if ($model->test_type === TestQuestions::TYPE_COMPLEX) {
-            $childes = $model->complex;
+        if ($model->test_type === TestQuestions::TYPE_CHILD) {
+            $childes = TestQuestions::where('parent_id', $model->parent_id)->get();
             foreach ($childes as $child) {
                 $passed = Passing::where('entity_id', $child->id)->where('user_id', $user->id)->first();
                 if ($passed) {
@@ -111,7 +111,7 @@ class TestService
             }
 
         } else {
-            $passed = Passing::where('entity_id',$model->id)->where('user_id', $user->id)->first();
+            $passed = Passing::where('entity_id', $model->id)->where('user_id', $user->id)->first();
             if ($passed) {
                 $variants[] = [
                     'test_id' => $model->id,
@@ -122,9 +122,9 @@ class TestService
         return $variants;
     }
 
-    public static function verifyTest($variants, $apiUser, $moderating = false): array
+    public static function verifyTest($variants, User $apiUser, $moderating = false): array
     {
-
+Log::info('Варианты на проверку', [$moderating, $variants]);
         $passed = new PassingProvider($apiUser);
 
         //посчитаем общее число ответов и число правильных ответов
@@ -134,7 +134,7 @@ class TestService
         $fullPassingBonus = 0;
 
         $resType = self::TEST_SUBMITTED;
-        foreach ($variants as $key => $var) {
+        foreach ($variants as $var) {
             $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
 
             $userVariants = $var['variant'];
@@ -152,6 +152,7 @@ class TestService
                     //Если мы не в режиме модерации
                     if (!$moderating) {
                         //Если хоть в одном тесте тип - текст - ставим флаг для всего набора тестов
+//                        $resType = self::TEST_SUBMITTED;
                         $resType = self::TEST_WILL_BE_MODERATED;
 
                         // Сделаем запись для модерации
@@ -163,30 +164,23 @@ class TestService
                             'status' => QuestionModeration::TEST_MODERATION_PENDING
                         ]);
                     } else {
-                            // Если тест прошел удачную модерацию - учитываем его в числе правильных ответов.
-                            $moderated = QuestionModeration::where('question_id', $test->id)->where( 'user_id', $apiUser->id)->first();
+                        // Если тест прошел удачную модерацию - учитываем его в числе правильных ответов.
+                        $moderated = QuestionModeration::where('question_id', $test->id)->where('user_id', $apiUser->id)->first();
 
-                            if ($moderated && $moderated->status === QuestionModeration::TEST_MODERATION_ACCEPT) {
-                                $passModel->answer =  [$moderated->answer];
-                                $passModel->result =  Passing::PASSING_RESULT_ACTIVE;
-                                $passModel->save();
-                                $testStatus = Passing::PASSING_RESULT_ACTIVE;
-                                $correctAnswersCount++;
-                            }
+                        if ($moderated && $moderated->status === QuestionModeration::TEST_MODERATION_ACCEPT) {
+                            $passModel->answer = [$moderated->answer];
+                            $passModel->result = Passing::PASSING_RESULT_ACTIVE;
+                            $passModel->save();
+                            $testStatus = Passing::PASSING_RESULT_ACTIVE;
+                            $correctAnswersCount++;
                         }
+                    }
                 } //Опросник
                 else {
                     $testStatus = Passing::PASSING_RESULT_ACTIVE;
-                    $dummyAnswersCount++;
+                    $dummyAnswersCount += count($var['variant']);
                 }
             } else {
-                //если мы в сложном тесте
-                if ($test->test_type === TestQuestions::TYPE_CHILD) {
-                    //отметим родительский тест
-                    $testParent = TestQuestions::find($test->parent_id);
-                    $fullPassingBonus = $testParent->passing_bonus;
-                    $parentPassed = $passed->setId($testParent, Passing::PASSING_ACTIVE, []);
-                }
 
                 //TODO разобраться, может ли быть несколько правильных ответов к одному вопросу
                 foreach ($correctAnswer as $answ) {
@@ -195,6 +189,17 @@ class TestService
                         $correctAnswersCount++;
                     }
                 }
+            }
+            //если мы в сложном тесте
+            if ($test->test_type === TestQuestions::TYPE_CHILD) {
+                //отметим родительский тест как открывавшийся
+                $testParent = TestQuestions::find($test->parent_id);
+                $passedTest = $testParent;
+                $fullPassingBonus = $testParent->passing_bonus;
+                $parentPassed = $passed->setId($testParent, Passing::PASSING_ACTIVE, []);
+            }
+            else {
+                $passedTest = $test;
             }
 
             $passModel->result = $testStatus;
@@ -229,19 +234,29 @@ class TestService
             $testStatus = Passing::PASSING_RESULT_ACTIVE;
             $userPassingBonus = $fullPassingBonus;
         }
+Log::info('Результаты теста ' . $passedTest->title . ' ' . $passedTest->id, [$fullCount, $dummyAnswersCount, $testStatus, $resType, $userPassingBonus]);
+        $testOutStatus = TestQuestions::STATUS_PASSED;
+        //Если тест пройден
+        if ($testStatus === Passing::PASSING_RESULT_ACTIVE && $resType === self::TEST_SUBMITTED && $userPassingBonus) {
 
-        //Если тест пройден - отметим и родительский тест
-        if ($testStatus === Passing::PASSING_RESULT_ACTIVE && isset($parentPassed)) {
-            $parentPassed->result = Passing::PASSING_RESULT_ACTIVE;
-            $parentPassed->save();
+            $apiUser->addBalance($userPassingBonus, $passedTest );
+
+            // отметим и родительский тест
+            if (isset($parentPassed)) {
+                $parentPassed->result = Passing::PASSING_RESULT_ACTIVE;
+                $parentPassed->save();
+            }
+        } else {
+            $userPassingBonus = 0;
+            if ($resType === self::TEST_SUBMITTED) {
+                $testOutStatus = TestQuestions::STATUS_FAILED;
+            }
         }
 
-        if ($resType == self::TEST_SUBMITTED && $userPassingBonus) {
-            $apiUser->addBalance($userPassingBonus);
-        }
-        $testStatus = $testStatus ===  Passing::PASSING_RESULT_ACTIVE ? TestQuestions::STATUS_PASSED : TestQuestions::STATUS_FAILED ;
+        $resType = self::TEST_SUBMITTED;
         $data = $apiUser->makeHidden(User::TO_HIDE)->toArray();
-        return compact('resType', 'userPassingBonus', 'testStatus', 'data');
+
+        return compact('resType', 'userPassingBonus', 'testOutStatus', 'data');
     }
 
     /**
