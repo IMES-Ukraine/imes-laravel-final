@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Notifications;
 use App\Models\NotificationsStatus;
 use Kreait\Firebase\Factory;
+use Kreait\Firebase\JWT\CustomTokenGenerator;
 use Kreait\Firebase\Messaging\CloudMessage;
 
 

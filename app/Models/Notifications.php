@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -8,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Notifications extends Model
 {
+    use JsonFieldTrait;
+
+
     const TYPE_MESSAGE  = 'MESSAGE';
     const TYPE_REFILL   = 'REFILL';
     const TYPE_WITHDRAW = 'WITHDRAW';

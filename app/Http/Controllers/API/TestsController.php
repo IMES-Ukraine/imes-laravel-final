@@ -67,7 +67,7 @@ class TestsController extends Controller
         $userModel = Auth::user();
 
         if (!$userModel->is_verified) {
-            return $this->helpers->apiArrayResponseBuilder(403, 'Пользователь не верифицирован', []);
+            return $this->helpers->apiArrayResponseBuilder(200, 'Пользователь не верифицирован', []);
         }
 
         $countOnPage = request()->get('count', 15);

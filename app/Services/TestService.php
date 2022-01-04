@@ -268,7 +268,9 @@ Log::info('Результаты теста ' . $passedTest->title . ' ' . $passe
     {
         $fullCount = 0;
         foreach ($variants as $v) {
+            if (is_array($v['variant'])){
             $fullCount += count($v['variant']);
+            }
         }
         return $fullCount;
     }
