@@ -63,6 +63,7 @@ class BlogController extends Controller
                 ->whereNotIn('id', $passed)
                 ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
                 ->where( 'published', 1)
+                ->checkCommercial($apiUser)
                 ->isArticle()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
             ->paginate($countOnPage);
@@ -71,9 +72,12 @@ class BlogController extends Controller
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
                 ->where( 'published', 1)
+                ->whereNotIn('id', $passed)
                 //->where( 'published_at', '<=', Carbon::now()
                 //->toDateTimeString())
+                ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
                 ->isInformation()
+                ->checkCommercial($apiUser)
                 ->notTimes()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
                 ->paginate($countOnPage);

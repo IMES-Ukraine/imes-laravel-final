@@ -130,6 +130,14 @@ class Articles extends Post
             ->whereNull('rainlab_blog_posts_times.date');
     }
 
+    public function scopeCheckCommercial($query, $user)
+    {
+        if(!$user->is_verified) {
+            $query->whereNull('research_id');
+        }
+        return $query;
+    }
+
 
     /**
      * Image in list
