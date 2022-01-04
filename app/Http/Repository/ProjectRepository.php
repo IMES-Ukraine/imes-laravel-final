@@ -257,6 +257,11 @@ class ProjectRepository
                 } elseif ($status_active) {
                     $total_status_not_active += 1;
                 }
+            }else{
+                //If there is not article in research
+                if($status_active){
+                    $total_status_active += $status_active;
+                }
             }
 
             //Status passing not active
@@ -287,6 +292,10 @@ class ProjectRepository
             }
 
             $content[$key]->offsetSet('article_id', $article_id);
+            if($content[$key]->article->title == NULL){
+                unset($content[$key]->article);
+            }
+
 
             $total += PassingService::getPassingTotal($item->id);
         }
