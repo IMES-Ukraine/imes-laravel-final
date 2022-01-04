@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
@@ -17,6 +18,7 @@ use Illuminate\Routing\Controller as BaseController;
 class AdminController extends BaseController
 {
     use NotificationsHelper;
+
     public $helpers;
 
     public function __construct(Helpers $helpers)
@@ -65,10 +67,14 @@ class AdminController extends BaseController
 
                 $user = User::where('id', $to)->whereNotNull('firebase_token')->first();
 
-                if ($user) {
-                    $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body, $extraFields, $title);
+                if ($user && $user->firebase_token) {
+                    if (strlen($user->firebase_token > 163)) {
+                        $user->firebase_token = null;
+                    } else {
+                        $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE, $body, $extraFields, $title);
 
-                    Session::flash('success', 'Вiдправлено успiшно!');
+                        Session::flash('success', 'Вiдправлено успiшно!');
+                    }
                 } else {
                     Session::flash('error', 'Firebase Token Error');
                 }
@@ -84,7 +90,7 @@ class AdminController extends BaseController
 
     public function verificationsList()
     {
-        $requests  = AccountVerificationRequests::with('user')->get()->toArray();
+        $requests = AccountVerificationRequests::with('user')->get()->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(
             200,
@@ -96,19 +102,19 @@ class AdminController extends BaseController
 
     public function acceptVerification($id): JsonResponse
     {
-        $user = User::find( $id );
+        $user = User::find($id);
         $user->is_verified = User::USER_IS_VERIFIED_TRUE;
         $user->save();
 
         // после подтверждения удаляем заявку из таблицы заявок
         $this->declineVerification($id);
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $user->toArray() );
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $user->toArray());
 
     }
 
     public function declineVerification($id)
     {
-        AccountVerificationRequests::where( ['user_id' =>  $id])->delete();
+        AccountVerificationRequests::where(['user_id' => $id])->delete();
     }
 
 }
