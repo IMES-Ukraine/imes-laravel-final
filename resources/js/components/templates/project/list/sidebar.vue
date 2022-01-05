@@ -7,7 +7,7 @@
         </span>
         <div class="sidebar__tags">
             <div class="sidebar__tags-item" v-for="field in tags">
-                <a class="sidebar__tags-link" :href="'/'+field.slug">{{ field.name }}</a>
+                <a class="sidebar__tags-link" :href="'/?tag='+field.slug">{{ field.name }}</a>
             </div>
         </div>
     </div>
@@ -29,7 +29,6 @@ export default {
     },
     mounted() {
         this.$get(TAGS).then(response => {
-            console.log(response.data);
             this.tags = response.data
         })
     },

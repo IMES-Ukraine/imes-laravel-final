@@ -45,14 +45,19 @@
                 return !!Object.keys(this.projectList).length;
             },
             getResults(page) {
+
                 let tag = '';
                 if (typeof page === 'undefined') {
                     page = 1;
                 }
 
-                if (this.$route.params.tag) {
+                /*if (this.$route.params.tag) {
                     tag = '&tag=' + this.$route.params.tag;
+                }*/
+                if (this.$route.query.tag) {
+                    tag = '&tag=' + this.$route.query.tag;
                 }
+
 
                 this.$get(ADMIN_PROJECT + '?page=' + page + tag)
                     .then(response => {

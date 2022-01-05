@@ -52,6 +52,8 @@ class ProjectsController extends Controller
      */
     public function index()
     {
+        //Controllers/ProjectController::index
+
         $countOnPage = 15;
         $data = Projects::with('tags')->with('items')->whereNull('deleted_at')->with('items')->orderBy('created_at', 'DESC')->paginate($countOnPage);
         $data = json_decode($data->toJSON());
@@ -92,9 +94,54 @@ class ProjectsController extends Controller
      */
     public function tags(): JsonResponse
     {
+        /* START Delete empty tags*/
+        //TODO: add this code to cron
+        $tagsProjects = DB::table('ulogic_projects_tags')->select('project_id', 'tag_id')->get();
+        $tP = $tagsProjects->toArray();
+        if(!empty($tP)){
+            $temp = [];
+            $tempTags = [];
+            foreach ($tP as $item) {
+                $temp[$item->project_id]=$item->project_id;
+                $tempTags[$item->project_id]=$item->tag_id;
+            }
+            if(!empty($temp)){
+                $proj = Projects::whereNull('deleted_at')->select('id')->whereIn('id',$temp)->get();
+                if(!empty($proj)){
+                    $tempProj = [];
+                    foreach ($proj as $item) {
+                        $tempProj[$item->id]=$item->id;
+                    }
+                }
+                if(!empty($tempProj)){
+                    foreach ($tempProj as $notDell) {
+                        unset($temp[$notDell]);
+                        unset($tempTags[$notDell]);
+                    }
+                    //Delete id in relation tag proj
+                    if(!empty($temp)){
+                        DB::table('ulogic_projects_tags')->whereIn('project_id', $temp)->delete();
+                        foreach ($tempTags as $tT) {
+                            //check if another proj with this tag
+                            $res = DB::table('ulogic_projects_tags')->where('tag_id', $tT)->first();
+                            if(!$res){
+                                //delete tag if not
+                                DB::table('tags')->where('id', $tT)->delete();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        /* END Delete empty tags*/
+
         $data = Tags::all();
 
-        return $this->helpers->apiArrayResponseBuilder(200, 'success', $data->toArray());
+        $r = $data->toArray();
+        $cnt = count($r);
+        $r[$cnt]['name']="Все проекты";
+        $r[$cnt]['slug']="";
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $r);
     }
 
 
