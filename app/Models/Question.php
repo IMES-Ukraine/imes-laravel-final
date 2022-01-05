@@ -130,8 +130,10 @@ class Question
                     'file' => $question['question']['file']
                 ];
         }
-
         $this->options = $options;
+
+
+
         $this->is_popular = rand(0, 1);
 
     }

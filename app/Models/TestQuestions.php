@@ -93,7 +93,7 @@ class TestQuestions extends Model
      */
     public function featured_images(): HasMany
     {
-        return $this->hasMany('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_IMAGE ]);
+        return $this->hasMany('App\Models\File', 'attachment_id', 'id')->where(['field' => File::FIELD_IMAGE, 'attachment_type' => self::class ]);
     }
 
     /**
@@ -154,4 +154,5 @@ class TestQuestions extends Model
                     ->whereColumn('ulogic_projects_passing.entity_id', 'ulogic_tests_questions.id');
             });
     }
+
 }

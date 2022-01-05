@@ -24,6 +24,7 @@ export default {
                     user_id: [],
                     chosenRecommended: [],
                     cover: null,
+                    featured_images: [],
                     media: {
                         cover: null
                     },
