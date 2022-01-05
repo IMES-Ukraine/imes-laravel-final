@@ -48,8 +48,8 @@ class ProfileController extends Controller
         $apiUser = Auth::user();
 
         $user = User::find($apiUser->id);
-        $user->firebase_token = $this->retrieveFirebaseToken();
-        $user->save();
+//        $user->firebase_token = $this->retrieveFirebaseToken();
+//        $user->save();
         $data = $user->toArray();
 
         foreach (['permissions', 'deleted_at', 'updated_at', 'activated_at'] as $v) {

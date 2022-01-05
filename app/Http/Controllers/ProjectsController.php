@@ -8,6 +8,7 @@ use App\Models\Tags;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProjectsController extends Controller
 {
@@ -32,6 +33,10 @@ class ProjectsController extends Controller
 
         $result = $query->orderBy('created_at', 'DESC')->paginate($countOnPage);
         $data = json_decode($result->toJSON());
+        //Delete bad tags if empty collection
+        if($result->total() == 0 && $request->post('tag') && $request->post('tag') != ''){
+            DB::table('tags')->where('slug', $request->post('tag'))->delete();
+        }
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 

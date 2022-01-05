@@ -60,19 +60,19 @@ class BlogController extends Controller
             /** @var Builder $data */
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
-                ->whereNotIn('id', $passed)
+                ->whereNotIn('rainlab_blog_posts.id', $passed)
                 ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
-                ->where( 'published', 1)
+                ->where('published', 1)
                 ->checkCommercial($apiUser)
                 ->isArticle()
                 ->orderBy('rainlab_blog_posts.id', 'desc')
-            ->paginate($countOnPage);
+                ->paginate($countOnPage);
 
         } else {
             $data = Articles::with($relations)
                 ->select('rainlab_blog_posts.*')
-                ->where( 'published', 1)
-                ->whereNotIn('id', $passed)
+                ->where('published', 1)
+                ->whereNotIn('rainlab_blog_posts.id', $passed)
                 //->where( 'published_at', '<=', Carbon::now()
                 //->toDateTimeString())
                 ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
@@ -327,15 +327,14 @@ class BlogController extends Controller
         $authUser = auth()->user();
 
 
-        $article = Articles::with('cover_image')
+        $article = Articles::find($id)
+            ->with('cover_image')
             ->with('featured_images')
-            ->where(['id' => $id])
             ->first();
 
         if (!$article) {
             return $this->helpers->apiArrayResponseBuilder(404, 'No article', ['id' => $id]);
         }
-
 
 
         if (!$article->isOpened) {
@@ -349,9 +348,9 @@ class BlogController extends Controller
         $article->makeHidden('research');
         $data = $article->toArray();
 
-        if($research) {
+        if ($research) {
             $test = $research->testObject;
-            if($test) {
+            if ($test) {
                 $passing = new PassingProvider($authUser);
                 $passedTests = $passing->getResults($test);
                 if (in_array($test->id, $passedTests)) {
