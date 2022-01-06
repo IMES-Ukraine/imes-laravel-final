@@ -42,8 +42,13 @@ class AuthController extends Controller
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        $data = User::where(['id' => auth()->user()->id])->get()->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->first();
-        return $this->respondWithToken($token, ['user' => $data]);
+        $user = User::where('id', auth()->user()->id)->where('is_activated', 1);
+        if (! $user->first()){
+            return response()->json(['error' => 'Disactivated'], 403);
+        }
+        $user = $user->get()->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->first();
+
+        return $this->respondWithToken($token, ['user' => $user]);
     }
 
     /**
