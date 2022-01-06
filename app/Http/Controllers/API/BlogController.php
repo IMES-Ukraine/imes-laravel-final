@@ -327,7 +327,7 @@ class BlogController extends Controller
         $authUser = auth()->user();
 
 
-        $article = Articles::find($id)
+        $article = Articles::where('id', $id)
             ->with('cover_image')
             ->with('featured_images')
             ->first();
