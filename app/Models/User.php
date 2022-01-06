@@ -250,7 +250,7 @@ class User extends Authenticatable implements JWTSubject
             'phone' => $phone,
             'email' => $email,
         ]);
-        Log::info('userCreate: ', [$username, $password, $passwordHash]);
+//        Log::info('userCreate: ', [$username, $password, $passwordHash]);
         return self::create([
             'phone' => $phone,
             'name' => $name ?? $phone,

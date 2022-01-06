@@ -240,6 +240,7 @@
                                     :taggable="true"
                                     :show-labels="false"
                                     :close-on-select="false"
+                                    @tag="addTag"
                                 />
                             </div>
                         </div>

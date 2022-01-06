@@ -227,15 +227,13 @@ class BlogController extends Controller
             $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => $model->errors]);
         }
         if ($request->featured_images) {
-            foreach ($request->featured_images as $image) {
-                $fileImage = File::find($image['id']);
-                $fileImage->attachment_id = $model->id;
-                $fileImage->save();
-//                $model_gallery = new PostGallery();
-//                $model_gallery->post_id = $model->id;
-//                $model_gallery->cover_image = $value['path'];
-//                $model_gallery->save();
-            }
+            Articles::setArticleAttachment($request->featured_images, $model->id);
+        }
+
+        $file = File::find($model->cover_image_id);
+        if ($file) {
+            $file->attachment_id = $model->id;
+            $file->save();
         }
         if ($request->tags) {
             foreach ($request->tags as $tag) {
@@ -362,7 +360,6 @@ class BlogController extends Controller
 
         $user = User::where(['id' => $article->user_id])->select('id', 'name')->first();
         $data['user'] = $user;
-
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
     }
 
