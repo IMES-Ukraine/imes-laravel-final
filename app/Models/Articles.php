@@ -184,7 +184,7 @@ class Articles extends Post
     public function featured_images()
     {
         return $this->hasMany(File::class, 'attachment_id', 'id')
-            ->where('field', 'LIKE', File::FIELD_FEATURED);
+            ->where('field', 'LIKE', File::FIELD_FEATURED)->orWhere('field', 'LIKE', File::FIELD_ARTICLE);
     }
 
     /**

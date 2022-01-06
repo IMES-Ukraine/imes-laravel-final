@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
@@ -39,7 +40,10 @@ class AuthController extends Controller
 
         $credentials = request(['username', 'password']);
 
-        if (!$token = auth()->attempt($credentials)) {
+        $token = auth()->attempt($credentials);
+        Log::info('Login: ', [$credentials, $token]);
+
+        if (!$token) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $user = User::where('id', auth()->user()->id)->where('is_activated', 1);
@@ -66,7 +70,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'такой пользователь уже зарегистрирован'], 401);
         }
 
-        $user = User::createNewUser($phone, $password, $name, $email);
+        $user = User::createNewUser($phone, $password, $name, $username);
 
 
         return response()->json(['message' => 'Пользователь успешно зарегистрирован', 'user' => $user]);
