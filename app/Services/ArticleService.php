@@ -6,6 +6,7 @@ use App\Models\File;
 use App\Models\Articles;
 use App\Models\Recommended;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ArticleService
 {
@@ -47,22 +48,10 @@ class ArticleService
 
         }
         $model->content = $content;
-
-        //$file = File::find($article['cover_image']['id']);
-
-//        $file = File::find($article['images']['cover']['id']);
-
-        // !!!
-
         $model->cover_image_id = $article['cover']['id'] ?? null;
-
-        //plugins_path() . '/ulogic/news/updates/news-featured.png';
-        //$model->featured_images = $file;
-        // !!!
         $model->published_at = time();
         $result = $model->save();
 
-        $file = File::find($article['cover']['id']);
         if ( $result ){
             $this->attachRecommended( $recommended, $model);
             $file = File::find($article['cover']['id']);
@@ -103,7 +92,7 @@ class ArticleService
      * @param Request $request
      * @return mixed
      */
-    public static function fillPost($model, Request $request)
+    public static function fillPost(Articles $model, Request $request)
     {
         $model->fill($request->post());
 

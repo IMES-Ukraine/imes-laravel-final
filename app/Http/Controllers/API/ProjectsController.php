@@ -219,7 +219,7 @@ class ProjectsController extends Controller
     /**
      * Set cover articles and license image
      */
-    public function setImage($field, $type = 'articles'): JsonResponse
+    public function setImage($field = File::FIELD_FEATURED, $type = 'articles'): JsonResponse
     {
         $attachment_type = self::ATTACHMENT_TYPE_ARTICLES;
 

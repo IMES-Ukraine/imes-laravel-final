@@ -88,8 +88,10 @@ class Articles extends Post
         foreach ($recList as $recItem) {
             if ($recItem->post) {
                 $recommended[] = [
-                    'id' => $recItem->post->id,
-                    'title' => $recItem->post->title
+                    'parent_id' => $this->id,
+                    'recommended_id' => $recItem->post->id,
+                    'title' => $recItem->post->title,
+//                    'post' => '',
                 ];
             }
         }

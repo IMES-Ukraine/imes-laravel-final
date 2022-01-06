@@ -99,7 +99,8 @@ Route::group(
                 Route::post('/stop/{id}', [ProjectsApiController::class, 'stop']);
                 Route::get('/tags', [ProjectsApiController::class, 'tags']);
 //                Route::get('/tests/{id?}', [ProjectsApiController::class, 'getTests']);
-                Route::post('/cover/{type}', [ProjectsApiController::class, 'setImage']);
+
+
                 Route::get('/{id}', [ProjectsApiController::class, 'show']);
 
                 Route::post('/{id}', [ProjectsApiController::class, 'update']);
@@ -110,6 +111,7 @@ Route::group(
                 Route::put('/stats', [ProjectsApiController::class, 'userStats']);
 
 
+                Route::post('/cover/{type}', [ProjectsApiController::class, 'setImage']);
                 Route::post('/image/{field}/{type?}', [ProjectsApiController::class, 'setImage']);
                 Route::post('/file/{field}/{type?}', [ProjectsApiController::class, 'setImage']);
             }
