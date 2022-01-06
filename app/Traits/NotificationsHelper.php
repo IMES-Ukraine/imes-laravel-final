@@ -27,9 +27,8 @@ trait NotificationsHelper
     protected function sendNotificationToAll($type, $text, $extraFields = [], $title = '') {
 
         $title = $title??$text;
-        $userTokens = User::whereNotNull('firebase_token')->pluck( 'firebase_token')->toArray();
 
-        $users = User::where('is_verified', 1)->select( 'id', 'firebase_token')->get();
+        $users = User::where('is_verified', 1)->where('is_activated', 1)->select( 'id', 'firebase_token')->get();
 
 
         $notification = new Notifications();
