@@ -107,6 +107,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'username',
         'phone',
+        'is_activated',
         'basic_information',
         'specialized_information',
         'financial_information'
@@ -242,18 +243,21 @@ class User extends Authenticatable implements JWTSubject
     public static function createNewUser($phone, $password = null, $name = null, $email = null)
     {
         $username = (new Helpers())->generateUserName($phone);
+        $email = $email ?? $username;
         $passwordHash = Hash::make($password ?? $username);
         $userInfo = new UserBasicInfo([
             'name' => $name ?? $phone,
             'phone' => $phone,
-            'email' => $email ?? '',
+            'email' => $email,
         ]);
+        Log::info('userCreate: ', [$username, $password, $passwordHash]);
         return self::create([
             'phone' => $phone,
             'name' => $name ?? $phone,
             'username' => $username,
-            'email' => $email ?? $username,
+            'email' => $email,
             'password' => $passwordHash,
+            'is_activated' => true,
             'basic_information' => $userInfo,
             'specialized_information' => new UserSpecializedInfo(),
             'financial_information' => new UserFinancialInfo(),

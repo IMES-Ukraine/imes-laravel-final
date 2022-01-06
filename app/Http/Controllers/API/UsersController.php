@@ -149,13 +149,11 @@ class UsersController extends Controller
         $phone = filter_var($request->post('phone'), FILTER_SANITIZE_NUMBER_INT);
         $phone = str_replace('+', '', $phone);
         $email = $request->post('email');
+        $password = $request->post('password');
 
         if ($errors = $this->validateUser(['email' => $email, 'phone' => $phone])) {
             return $this->helpers->apiArrayResponseBuilder(201, 'error', ['error' => $errors]);
         }
-
-        $password = Hash::make($request->post('password'));
-
 
         // create a user
         /** @var User $user */
