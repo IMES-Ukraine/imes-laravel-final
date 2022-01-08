@@ -17,16 +17,16 @@ class BannersController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $model = Banners::query()->findOrFail(1);
         $post = $request->post();
+        $model = Banners::updateOrCreate([
+            'id' => 1
+        ],
+        [
+            'image_id' => $post['image']['id'],
+            'url' => $post['url']
+        ]);
 
-        $model->image_id = $post['image']['id'];
-        $model->url = $post['url'];
-        $model->save();
-
-        $item = Banners::query()->with('image')->where(['type' => $model->type])->get();
-
-        return response()->json(compact('item') );
+        return response()->json(['item' => $model ]);
     }
 
     /**
