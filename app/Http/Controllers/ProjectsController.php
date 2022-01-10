@@ -8,6 +8,7 @@ use App\Models\Tags;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class ProjectsController extends Controller
@@ -44,10 +45,11 @@ class ProjectsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
+        /** @var Projects $model */
         $model = Projects::findOrFail($id);
         $model->delete();
 

@@ -78,8 +78,10 @@ class ProjectsController extends Controller
 
 //        удалим тесты проекта
         foreach ($model->items as $item){
-            foreach ($item->tests as $test){
-                $test->delete();
+            if($item->tests) {
+                foreach ($item->tests as $test) {
+                    $test->delete();
+                }
             }
         }
 
@@ -274,9 +276,11 @@ class ProjectsController extends Controller
 
     private function setArticlesPublishedStatus($model, $status){
         foreach ($model->items as $item){
-            foreach ($item->articles as $article){
-                $article->published = $status;
-                $article->save();
+            if($item->articles) {
+                foreach ($item->articles as $article) {
+                    $article->published = $status;
+                    $article->save();
+                }
             }
         }
     }

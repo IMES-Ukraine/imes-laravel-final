@@ -16,11 +16,12 @@ class BannersController extends Controller
 
     public function show($type)
     {
-        $result = Banners::where('type', $type)->with('image')->first()->toArray();
+        $result = Banners::where('type', $type)->first();
+//        $result = Banners::where('type', $type)->with('image')->first()->toArray();
 
         $data = [
-            'image' => ($result['image'])?$result['image']['path']:'',
-            'url' => $result['url']
+            'image' => $result->image->path ?? '',
+            'url' => $result->url
         ];
 
         if (count($data) > 0) {
