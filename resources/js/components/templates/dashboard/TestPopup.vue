@@ -23,7 +23,7 @@
                                     <div class="study__item-content">
                                         <div :class="(variant.right)?'study__answer active':'study__answer'">
                                             <p class="study__answer-letter">{{ variant.variant }}</p>
-                                            <div class="study__answer-text" v-if="variant.media[0]">
+                                            <div class="study__answer-text" v-if="variant.media && variant.media[0]">
                                                 <img :src="variant.media[0].path" alt=""/>
                                             </div>
                                             <p class="study__answer-text" v-else>{{ variant.title }}</p>
@@ -193,7 +193,7 @@
                                                 :class="(complex_question.variants.correct_answer[0] == variant.variant)?'study__answer active':'study__answer'">
                                                 <p class="study__answer-letter">{{ variant.variant }}</p>
                                                 <div class="study__answer-text" v-if="complex_question.answer_type == 'media'">
-                                                    <img :src="variant.media[0]['path']" alt=""/>
+                                                    <img :src="variant.file.path" alt=""/>
                                                 </div>
                                                 <p class="study__answer-text" v-else>{{ variant.title }}</p>
                                             </div>
