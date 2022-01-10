@@ -75,25 +75,27 @@ class Projects extends Model
 
     public function fillAudience()
     {
-        if (!$audFile = $this->options['files']['audience']) {
-            return false;
-        }
-        $path = str_replace('/storage', 'app/public', $audFile['path']);
-        $file = fopen(storage_path($path), 'r');
         $audience = [];
+        if (!$audFile = $this->options['files']['audience']) {
+            $audience = User::select('id')->isActive()->isVerified()->pluck('id');
+        }
+        else {
+            $path = str_replace('/storage', 'app/public', $audFile['path']);
+            $file = fopen(storage_path($path), 'r');
 
-        while ($raw = fgetcsv($file)) {
-            //    'name', 'phone', 'email'
-            if ($raw[0] && $raw[1] && $raw[2]) {
-                $user = User::findByPhone($raw[1]);
-                if (!$user) {
-                    $user = User::createNewUser($raw[1], '', $raw[0], $raw[2]);
+            while ($raw = fgetcsv($file)) {
+                //    'name', 'phone', 'email'
+                if ($raw[0] && $raw[1] && $raw[2]) {
+                    $user = User::findByPhone($raw[1]);
+                    if (!$user) {
+                        $user = User::createNewUser($raw[1], '', $raw[0], $raw[2]);
+                    }
+                    $audience[] = $user->id;
                 }
-                $audience[] = $user->id;
             }
         }
         $this->audience = $audience;
-        return true;
+        return $audience;
     }
 
 }

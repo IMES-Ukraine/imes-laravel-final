@@ -12,6 +12,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class Articles extends Post
@@ -114,6 +115,13 @@ class Articles extends Post
         );
     }
 
+
+    public function scopeAudience($query, $user)
+    {
+        return $query->leftJoin('project_researches', 'project_researches.id', '=', 'rainlab_blog_posts.research_id')
+            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
+            ->whereJsonContains('ulogic_projects_settings.audience', $user->id);
+    }
 
     public function scopeIsArticle($query)
     {

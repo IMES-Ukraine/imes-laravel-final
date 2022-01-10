@@ -43,7 +43,7 @@ class Question
     {
 
         $this->title = $question['title'];
-        $this->question = $question['text'];
+        $this->question = $question['text']?? '';
 
         $this->agreement = $question['question']['agreement'] ?? '';
         $this->test_type = $question['type'];
