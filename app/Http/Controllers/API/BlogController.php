@@ -58,8 +58,11 @@ class BlogController extends Controller
 
         $data = Articles::with($relations)
             ->select('rainlab_blog_posts.*')
+            ->leftJoin('project_researches', 'project_researches.id', '=', 'rainlab_blog_posts.research_id')
+            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
             ->whereNotIn('rainlab_blog_posts.id', $passed)
             ->where('published', 1)
+            ->isProjectActive()
             ->checkCommercial($apiUser)
             ->audience($apiUser)
             ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
