@@ -59,6 +59,9 @@ class TestsController extends Controller
                 $data['options'][$key]['data'] = $data['options'][$key]['data'] ? (int)$data['options'][$key]['data'] : null;
             }
         }
+        if($data['agreement'] == '') {
+            $data['isAgreementAccepted'] = true;
+        }
         return $data;
     }
 
