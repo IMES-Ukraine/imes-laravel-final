@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\ArticleService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
@@ -55,36 +56,28 @@ class BlogController extends Controller
 
         $passed = Passing::where('entity_type', Post::class)->where('user_id', $apiUser->id)->pluck('entity_id')->toArray();
 
+        $data = Articles::with($relations)
+            ->select('rainlab_blog_posts.*')
+            ->whereNotIn('rainlab_blog_posts.id', $passed)
+            ->where('published', 1)
+            ->checkCommercial($apiUser)
+            ->audience($apiUser)
+            ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
+            ->orderBy('rainlab_blog_posts.id', 'desc');
+
         //  Выдаём статьи всех типов
         if ($type == Articles::ARTICLE) {
-            /** @var Builder $data */
-            $data = Articles::with($relations)
-                ->select('rainlab_blog_posts.*')
-                ->whereNotIn('rainlab_blog_posts.id', $passed)
-                ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
-                ->where('published', 1)
-                ->checkCommercial($apiUser)
-                ->isArticle()
-                ->orderBy('rainlab_blog_posts.id', 'desc')
-                ->paginate($countOnPage);
-
+            $data->isArticle();
         } else {
-            $data = Articles::with($relations)
-                ->select('rainlab_blog_posts.*')
-                ->where('published', 1)
-                ->whereNotIn('rainlab_blog_posts.id', $passed)
-                //->where( 'published_at', '<=', Carbon::now()
-                //->toDateTimeString())
-                ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
-                ->isInformation()
-                ->checkCommercial($apiUser)
-                ->notTimes()
-                ->orderBy('rainlab_blog_posts.id', 'desc')
-                ->paginate($countOnPage);
+            $data->isInformation()
+                ->notTimes();
         }
+        $data = $data->paginate($countOnPage);
+
         $data->setCollection($data->makeHidden(['research', 'content']));
 
         $data = json_decode($data->toJSON());
+
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
 
         //if ($apiUser && $apiUser->hasAccess('news.access_news'))

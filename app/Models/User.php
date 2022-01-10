@@ -93,6 +93,9 @@ class User extends Authenticatable implements JWTSubject
     const USER_IS_VERIFIED_FALSE = 0;
     const USER_IS_VERIFIED_TRUE = 1;
 
+    const USER_IS_ACTIVATED_FALSE = 0;
+    const USER_IS_ACTIVATED_TRUE = 1;
+
     const ENTYTY_TYPE_TEST = ' выполнение теста ';
     const ENTYTY_TYPE_ARTICLE = ' чтение статьи ';
 
@@ -195,6 +198,11 @@ class User extends Authenticatable implements JWTSubject
     public function scopeIsVerified($query)
     {
         $query->where('is_verified', self::USER_IS_VERIFIED_TRUE);
+    }
+
+    public function scopeIsActive($query)
+    {
+        $query->where('is_activated', self::USER_IS_ACTIVATED_TRUE);
     }
 
     /**
