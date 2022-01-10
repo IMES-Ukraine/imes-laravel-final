@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\JsonFieldTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
@@ -123,8 +124,9 @@ class TestQuestions extends Model
     /**
      * Cover images
      */
-    public function research() {
-        return $this->hasOne(ProjectResearches::class, 'id', 'research_id');
+    public function research(): HasOne
+    {
+        return $this->hasOne(ProjectResearches::class, 'id', 'research_id')->with('project');
     }
 
     /**
@@ -137,11 +139,15 @@ class TestQuestions extends Model
     }
 
 
+
+    public function scopeAudience($query, $userId)
+    {
+        return $query->whereJsonContains('ulogic_projects_settings.audience', $userId);
+    }
+
     public function scopeIsProjectActive( $query)
     {
-        return $query->join('project_researches', 'project_researches.id',  '=', 'ulogic_tests_questions.research_id')
-            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
-            ->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
+        return $query->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
     }
 
     public function scopeIsNotPassed( $query, $userId)
