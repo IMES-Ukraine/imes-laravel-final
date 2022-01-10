@@ -181,7 +181,7 @@ class BlogController extends Controller
             $passed = new PassingProvider($userModel);
             $passedIds = $passed->getIds(Post::class);
 
-            if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($articleId)) {
+            if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($article)) {
                 $userModel->addBalance($learningBonus, $article);
                 $finalBonus = $learningBonus;
                 $passed->setId($article, Passing::PASSING_ACTIVE);

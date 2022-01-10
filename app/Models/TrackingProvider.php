@@ -38,10 +38,8 @@ class TrackingProvider
         ]);
     }
 
-    public function isReadClosely($articleId)
+    public function isReadClosely($article)
     {
-        $article = Post::findOrFail($articleId);
-
         if (is_array($content = $article->content)) {
 
             $blockCount = count($content) - 1;
@@ -57,13 +55,13 @@ class TrackingProvider
                 $totalSymbolsCount += $contentSymbolsCount;
             }
 
-            $trackStarted = NewsTracking::where('news_id', $articleId)
+            $trackStarted = NewsTracking::where('news_id', $article->id)
                 ->where('user_id', $this->user->id)
                 ->whereNull('position')
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            $trackEnded = NewsTracking::where('news_id', $articleId)
+            $trackEnded = NewsTracking::where('news_id', $article->id)
                 ->where('user_id', $this->user->id)
                 ->where('position', $blockCount)
                 ->orderBy('created_at', 'desc')
@@ -92,5 +90,6 @@ class TrackingProvider
             /*$startingDate = Carbon::parse($starting['created_at']);
             $endingDate   = Carbon::parse($ending['created_at']);*/
         }
+        return false;
     }
 }

@@ -18,6 +18,11 @@ class TestService
     const TEST_SUBMITTED = 'test_submit';
     const TEST_WILL_BE_MODERATED = 'test_moderate';
 
+    const TEST_RESULT_FAIL = 0;
+    const TEST_RESULT_SUCCESS = 1;
+    const TEST_RESULT_SURVEY = 2;
+
+
     /**
      * @param $type
      * @param $question
@@ -124,26 +129,33 @@ class TestService
 
     public static function verifyTest($variants, User $apiUser, $moderating = false): array
     {
-Log::info('Варианты на проверку', [$moderating, $variants]);
+        Log::info('Варианты на проверку', [$moderating, $variants]);
         $passed = new PassingProvider($apiUser);
 
         //посчитаем общее число ответов и число правильных ответов
-        $fullCount = self::getFullVariantsCount($variants);
-        $dummyAnswersCount = 0; //опросы
-        $correctAnswersCount = 0; //тесты - число правильных ответов у юзера
         $fullPassingBonus = 0;
+        $userPassingBonus = 0;
 
         $resType = self::TEST_SUBMITTED;
+
+        $results = [];
+        $passedTest = null;
+
         foreach ($variants as $var) {
             $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
 
             $userVariants = $var['variant'];
             $test = TestQuestions::find($var['test_id']);
+            $passedTest = $test;
+            $fullPassingBonus = $test->passing_bonus;
             $correctAnswer = $test->variants['correct_answer'];
 
+            //по умолчанию тест не пройден
+            $results[$var['test_id']] = self::TEST_RESULT_FAIL;
+
+            /** @var Passing $passModel */
             $passModel = $passed->setId($test, Passing::PASSING_ACTIVE, $userVariants);
 
-            $fullPassingBonus = $test->passing_bonus;
             if (empty($correctAnswer)) {
                 // Если текущий тест - опросник или текст
 
@@ -152,42 +164,58 @@ Log::info('Варианты на проверку', [$moderating, $variants]);
                     //Если мы не в режиме модерации
                     if (!$moderating) {
                         //Если хоть в одном тесте тип - текст - ставим флаг для всего набора тестов
-//                        $resType = self::TEST_SUBMITTED;
                         $resType = self::TEST_WILL_BE_MODERATED;
 
                         // Сделаем запись для модерации
                         QuestionModeration::updateOrCreate([
-                            'user_id' => $apiUser->id,
+                            'user_id'     => $apiUser->id,
                             'question_id' => $var['test_id']
                         ], [
                             'answer' => reset($userVariants),
                             'status' => QuestionModeration::TEST_MODERATION_PENDING
                         ]);
-                    } else {
+                    }
+                    else {
                         // Если тест прошел удачную модерацию - учитываем его в числе правильных ответов.
                         $moderated = QuestionModeration::where('question_id', $test->id)->where('user_id', $apiUser->id)->first();
 
-                        if ($moderated && $moderated->status === QuestionModeration::TEST_MODERATION_ACCEPT) {
-                            $passModel->answer = [$moderated->answer];
-                            $passModel->result = Passing::PASSING_RESULT_ACTIVE;
-                            $passModel->save();
-                            $testStatus = Passing::PASSING_RESULT_ACTIVE;
-                            $correctAnswersCount++;
+                        if ($moderated) {
+                            // Если ответ одобрен - засчитываем
+                            if ($moderated->status === QuestionModeration::TEST_MODERATION_ACCEPT) {
+
+                                $passModel->answer = [$moderated->answer];
+                                $passModel->result = Passing::PASSING_RESULT_ACTIVE;
+                                $passModel->save();
+                                $testStatus = Passing::PASSING_RESULT_ACTIVE;
+                                $results[$var['test_id']] = self::TEST_RESULT_SUCCESS;
+                            }
+                            else if ($moderated->status === QuestionModeration::TEST_MODERATION_CANCEL){
+                                $passModel->answer = [$moderated->answer];
+                                $passModel->result = Passing::PASSING_RESULT_NOT_ACTIVE;
+                                $passModel->save();
+                                $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
+                            }
+                            // Если еще на ожидании - отмечаем этот факт и не будем считать пока бонусы
+                            else {
+                                    $resType = self::TEST_WILL_BE_MODERATED;
+                            }
+                        }
+                        else {
+                            $resType = self::TEST_WILL_BE_MODERATED;
                         }
                     }
-                } //Опросник
+                }
+                    //Опросник
                 else {
                     $testStatus = Passing::PASSING_RESULT_ACTIVE;
-                    $dummyAnswersCount += count($var['variant']);
+                    $results[$var['test_id']] = self::TEST_RESULT_SURVEY;
                 }
             } else {
-
-                //TODO разобраться, может ли быть несколько правильных ответов к одному вопросу
-                foreach ($correctAnswer as $answ) {
-                    if (in_array($answ, $userVariants)) {
-                        $testStatus = Passing::PASSING_RESULT_ACTIVE;
-                        $correctAnswersCount++;
-                    }
+                // Это тест с вариантами
+                // если после вычитания массивов пусто - значит все ответы совпадают
+                if (!count(array_diff($correctAnswer, $userVariants) ) && !count(array_diff($userVariants, $correctAnswer)) ) {
+                    $results[$var['test_id']] = self::TEST_RESULT_SUCCESS;
+                    $testStatus = $testStatus = Passing::PASSING_RESULT_ACTIVE;
                 }
             }
             //если мы в сложном тесте
@@ -198,59 +226,74 @@ Log::info('Варианты на проверку', [$moderating, $variants]);
                 $fullPassingBonus = $testParent->passing_bonus;
                 $parentPassed = $passed->setId($testParent, Passing::PASSING_ACTIVE, []);
             }
-            else {
-                $passedTest = $test;
-            }
 
             $passModel->result = $testStatus;
             $passModel->save();
         }
+        Log::info('Массив ответов', $results);
 
-        //расчётное максимальное число правильных ответов
-        $accountingAnswersCount = $fullCount - $dummyAnswersCount;
 
-        // Проверяем общий результат
-        $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
-        $userPassingBonus = 0;
+        if ($passedTest && $resType != self::TEST_WILL_BE_MODERATED) {
 
-        if ($accountingAnswersCount > 0) {
-            // Если есть вопросы с выбором ответов. Считаем сумму полученных бонусов
-            $correctAnswersPercent = ($correctAnswersCount / $accountingAnswersCount) * 100;
-            switch (true) {
-                case ($correctAnswersPercent < 20):
-                    break;
-                case ($correctAnswersPercent >= 20 && $correctAnswersPercent < 70):
-                    $userPassingBonus = $fullPassingBonus / 2;
-                    $testStatus = Passing::PASSING_RESULT_ACTIVE;
-                    break;
-                case ($correctAnswersPercent >= 70):
-                    $userPassingBonus = $fullPassingBonus;
-                    $testStatus = Passing::PASSING_RESULT_ACTIVE;
-                    break;
-                default :
+            //считаем число правильных ответов и общее число значимых ответов
+            $accountingAnswersCount = 0;
+            $correctAnswersCount = 0;
+            foreach ($results as $id => $res){
+                if ($res <> self::TEST_RESULT_SURVEY){
+                    $accountingAnswersCount++;
+                    if ($res == self::TEST_RESULT_SUCCESS){
+                        $correctAnswersCount++;
+                    }
+                }
             }
-        } else {
-            //иначе - мы в одиночном опроснике и отдаём сразу всю сумму бонусов
-            $testStatus = Passing::PASSING_RESULT_ACTIVE;
-            $userPassingBonus = $fullPassingBonus;
-        }
-Log::info('Результаты теста ' . $passedTest->title . ' ' . $passedTest->id, [$fullCount, $dummyAnswersCount, $testStatus, $resType, $userPassingBonus]);
-        $testOutStatus = TestQuestions::STATUS_PASSED;
-        //Если тест пройден
-        if ($testStatus === Passing::PASSING_RESULT_ACTIVE && $resType === self::TEST_SUBMITTED && $userPassingBonus) {
 
-            $apiUser->addBalance($userPassingBonus, $passedTest );
-
-            // отметим и родительский тест
-            if (isset($parentPassed)) {
-                $parentPassed->result = Passing::PASSING_RESULT_ACTIVE;
-                $parentPassed->save();
-            }
-        } else {
+            // Проверяем общий результат
+            $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
             $userPassingBonus = 0;
-            if ($resType === self::TEST_SUBMITTED) {
+
+            if ($accountingAnswersCount > 0) {
+                // Если есть вопросы с выбором ответов. Считаем сумму полученных бонусов
+                $correctAnswersPercent = ($correctAnswersCount / $accountingAnswersCount) * 100;
+                switch (true) {
+                    case ($correctAnswersPercent < 20):
+                        break;
+                    case ($correctAnswersPercent >= 20 && $correctAnswersPercent < 70):
+                        $userPassingBonus = $fullPassingBonus / 2;
+                        $testStatus = Passing::PASSING_RESULT_ACTIVE;
+                        break;
+                    case ($correctAnswersPercent >= 70):
+                        $userPassingBonus = $fullPassingBonus;
+                        $testStatus = Passing::PASSING_RESULT_ACTIVE;
+                        break;
+                    default :
+                }
+            }
+            else {
+                //иначе - мы в одиночном опроснике и отдаём сразу всю сумму бонусов
+                $testStatus = Passing::PASSING_RESULT_ACTIVE;
+                $userPassingBonus = $fullPassingBonus;
+            }
+            Log::info('Результаты теста ' . $passedTest->title . ' / ' . $passedTest->id, [
+                $correctAnswersCount, $accountingAnswersCount, $testStatus, $resType, $userPassingBonus
+            ]);
+            $testOutStatus = TestQuestions::STATUS_PASSED;
+            //Если тест пройден
+            if ($testStatus === Passing::PASSING_RESULT_ACTIVE && $userPassingBonus) {
+
+                $apiUser->addBalance($userPassingBonus, $passedTest);
+
+                // отметим и родительский тест
+                if (isset($parentPassed)) {
+                    $parentPassed->result = Passing::PASSING_RESULT_ACTIVE;
+                    $parentPassed->save();
+                }
+            }
+            else {
                 $testOutStatus = TestQuestions::STATUS_FAILED;
             }
+        }
+        else {
+            $testOutStatus = TestQuestions::STATUS_PASSED;
         }
 
         $resType = self::TEST_SUBMITTED;
