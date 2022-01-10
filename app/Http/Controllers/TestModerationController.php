@@ -21,34 +21,10 @@ class TestModerationController extends Controller
 
         if ($model->save()) {
             $variants = TestService::getAllVariants($model->question, $model->user);
-            return TestService::verifyTest($variants, $model->user, true);
+            return $this->helpers->apiArrayResponseBuilder(200, 'test accepted', TestService::verifyTest($variants, $model->user, true) );
         }
     }
 
-    /**
-     * accept the specified resource from storage.
-     *
-     * @param integer $id
-     * @param integer $content_id
-     */
-    public function acceptComplex($id, $content_id)
-    {
-        $model = QuestionModeration::findOrFail($id);
-        $model->status = QuestionModeration::TEST_MODERATION_ACCEPT;
-
-        if ($model->save()) {
-            $variants = TestService::getAllVariants($model->question, $model->user);
-            return TestService::verifyTest($variants, $model->user, true);
-
-//            $bonus = TestService::getTestBonus($model->question_id);
-//
-//            $success = TestService::getAnswerCorrect($content_id, $model->user_id);
-//
-//            if ($bonus && $success) {
-//                TestService::addBalanceAllTests($content_id, $model->user_id);
-//            }
-        }
-    }
 
     /**
      * decline the specified resource from storage.
@@ -59,6 +35,9 @@ class TestModerationController extends Controller
     {
         $model = QuestionModeration::findOrFail($id);
         $model->status = QuestionModeration::TEST_MODERATION_CANCEL;
-        $model->save();
+        if ($model->save()) {
+            $variants = TestService::getAllVariants($model->question, $model->user);
+            return $this->helpers->apiArrayResponseBuilder(200, 'test declined', TestService::verifyTest($variants, $model->user, true) );
+        }
     }
 }

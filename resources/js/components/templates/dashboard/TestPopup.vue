@@ -95,13 +95,13 @@
                                                     <button
                                                         :class="(moderation.status=='accept')?class_plus + ' active':class_plus"
                                                         type="button"
-                                                        :disabled="(moderation.status=='cancel')?true:false"
-                                                        @click="accept(moderation.id, moderation.status)"></button>
+                                                        :disabled="moderation.status != 'cancel'"
+                                                        @click="moderated(moderation.id, 'accept')"></button>
                                                     <button
                                                         :class="(moderation.status=='cancel')?class_minus + ' active':class_minus"
                                                         type="button"
-                                                        :disabled="(moderation.status=='accept')?true:false"
-                                                        @click="decline(moderation.id)"></button>
+                                                        :disabled="moderation.status != 'pending'"
+                                                        @click="moderated(moderation.id, 'cancel')"></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -192,7 +192,8 @@
                                             <div
                                                 :class="(complex_question.variants.correct_answer[0] == variant.variant)?'study__answer active':'study__answer'">
                                                 <p class="study__answer-letter">{{ variant.variant }}</p>
-                                                <div class="study__answer-text" v-if="complex_question.answer_type == 'media'">
+                                                <div class="study__answer-text"
+                                                     v-if="complex_question.answer_type == 'media'">
                                                     <img :src="variant.file.path" alt=""/>
                                                 </div>
                                                 <p class="study__answer-text" v-else>{{ variant.title }}</p>
@@ -272,13 +273,13 @@
                                                             <button
                                                                 :class="(moderation.status=='accept')?class_plus + ' active':class_plus"
                                                                 type="button"
-                                                                :disabled="(moderation.status=='cancel')?true:false"
-                                                                @click="acceptComplex(moderation.id, moderation.status, complex_test.id)"></button>
+                                                                :disabled="moderation.status == 'cancel'"
+                                                                @click="moderated(moderation.id, 'accept', complex_test.id)"></button>
                                                             <button
                                                                 :class="(moderation.status=='cancel')?class_minus + ' active':class_minus"
                                                                 type="button"
-                                                                :disabled="(moderation.status=='accept')?true:false"
-                                                                @click="declineComplex(moderation.id)"></button>
+                                                                :disabled="moderation.status =='accept'"
+                                                                @click="moderated(moderation.id, 'cancel', complex_test.id)"></button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -344,7 +345,6 @@ export default {
             test_type: '',
             type: '',
             moderations: {},
-            moderations: {},
             total_test: {},
             class_plus: 'study__table-button study__table-button--plus',
             class_minus: 'study__table-button study__table-button--minus'
@@ -373,7 +373,7 @@ export default {
 
             await this.$get(MODERATION + '/' + test_id + '?page=' + page)
                 .then(response => {
-                        this.moderations = response.data;
+                    this.moderations = response.data;
                 });
         },
         totalQuestionVariants(variants, test_id) {
@@ -394,42 +394,33 @@ export default {
         percent(status, total) {
             return status ? parseInt(status * 100 / total) : 0
         },
-        async accept(id, status) {
-            if (status == 'pending') {
-                this.$get(TEST_CONFIRMATION + "/" + id).then();
 
-                for (const [index, value] of Object.entries(this.moderations.data)) {
-                    if (value.id === id) {
-                        value.status = 'accept'
-                        return
-                    }
+        async moderated(id, status, test_id = null) {
+            if (this.moderations) {
+                let url = TEST_CONFIRMATION;
+                if (status === 'cancel') {
+                    url = TEST_DECLINE;
                 }
-            }
-        },
-        async acceptComplex(id, status, test_id) {
-            if (status == 'pending') {
-                this.$get(TEST_CONFIRMATION + "/" + id).then();
+                this.$get(url + "/" + id).then();
 
-                if (this.moderations) {
+
+                if (test_id) {
                     for (const [index, value] of Object.entries(this.moderations[test_id].data)) {
                         if (value.id === id) {
-                            value.status = 'accept'
+                            value.status = status
+                            return
+                        }
+                    }
+                } else {
+                    for (const [index, value] of Object.entries(this.moderations.data)) {
+                        if (value.id === id) {
+                            value.status = status
                             return
                         }
                     }
                 }
             }
-        },
-        async decline(id) {
-            this.$get(TEST_DECLINE + "/" + id).then();
-
-            for (const [index, value] of Object.entries(this.moderations.data)) {
-                if (value.id === id) {
-                    value.status = 'cancel'
-                    return
-                }
-            }
-        },
+        }
     },
     mounted() {
         // this.getResults(1);
