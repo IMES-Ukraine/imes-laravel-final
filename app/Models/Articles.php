@@ -118,10 +118,7 @@ class Articles extends Post
 
     public function scopeAudience($query, $user)
     {
-        $query->leftJoin('project_researches', 'project_researches.id', '=', 'rainlab_blog_posts.research_id')
-            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id');
-
-        return $query->where(function ($q) use ($user) {
+      return $query->where(function ($q) use ($user) {
             return $q->whereJsonContains('ulogic_projects_settings.audience', $user->id)
                 ->orWhereNull('rainlab_blog_posts.research_id');
         });
@@ -150,6 +147,14 @@ class Articles extends Post
             $query->whereNull('rainlab_blog_posts.research_id');
         }
         return $query;
+    }
+
+    public function scopeIsProjectActive( $query)
+    {
+        return $query->where(function ($q) {
+            $q->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE)
+            ->orWhereNull('rainlab_blog_posts.research_id');
+        });
     }
 
 
