@@ -54,8 +54,9 @@
                 this.isOpen = this.isOpen === false;
             },
             destroy () {
-                this.$delete(PROJECT_DESTROY + this.$route.params.projectId).then()
-                window.location.href = '/'
+                axios.delete(PROJECT_DESTROY + this.$route.params.projectId).then(() => {
+                    window.location.href = '/'
+                });
             }
         }
     }

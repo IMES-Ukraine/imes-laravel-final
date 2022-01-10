@@ -19,7 +19,7 @@ class BannersController extends Controller
     {
         $post = $request->post();
         $model = Banners::updateOrCreate([
-            'id' => 1
+            'type' => 'card'
         ],
         [
             'image_id' => $post['image']['id'],

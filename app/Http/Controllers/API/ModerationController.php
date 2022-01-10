@@ -49,7 +49,7 @@ class ModerationController extends Controller
     public function test( $test_id )
     {
         $test = TestQuestions::find($test_id);
-        if ($test->test_type === TestQuestions::TYPE_COMPLEX) {
+        if ($test && $test->test_type === TestQuestions::TYPE_COMPLEX) {
             $data = [];
             foreach ($test->complex as $complexItem){
                 $results =  $this->QuestionModeration

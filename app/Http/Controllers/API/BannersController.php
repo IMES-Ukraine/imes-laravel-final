@@ -16,7 +16,7 @@ class BannersController extends Controller
 
     public function show($type)
     {
-        $result = Banners::find(1)->first();
+        $result = Banners::where('type', $type)->first();
 //        $result = Banners::where('type', $type)->with('image')->first()->toArray();
 
         $data = [
