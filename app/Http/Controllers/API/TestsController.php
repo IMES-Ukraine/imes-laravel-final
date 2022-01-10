@@ -79,7 +79,10 @@ class TestsController extends Controller
 
         $query = TestQuestions::select('ulogic_tests_questions.*')
             ->with(['cover_image', 'featured_images'])->where('ulogic_tests_questions.test_type', '!=', 'child')
+            ->leftJoin('project_researches', 'project_researches.id', '=', 'ulogic_tests_questions.research_id')
+            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
             ->isProjectActive()
+            ->audience($userModel->id)
             ->isNotPassed($userModel->id)
             ->orderBy('ulogic_tests_questions.id', 'desc');
         if (!\request()->input('all_items')) {
