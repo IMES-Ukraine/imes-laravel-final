@@ -265,6 +265,7 @@ import NotificationSidebar from "./templates/notification/sidebar";
 import {store} from "../firebase/app";
 
 import {collection, setDoc, getDoc, doc, onSnapshot} from "firebase/firestore";
+import {NOTIFICATION_TO} from "../api/endpoints";
 
 
 export default {
@@ -338,7 +339,6 @@ export default {
         },
 
         sendMessage(chatId) {
-            console.log(chatId, this.newMessage);
             let time = String(Date.now());
             let messData = {
                 content: this.newMessage,
@@ -348,28 +348,33 @@ export default {
             };
             setDoc(doc(doc(store, "sessions", chatId), 'messages', time ), messData).then( () => {
                 this.newMessage = '';
+                axios.post(NOTIFICATION_TO, {
+                    to: chatId,
+                    body: 'Вы получили сообщение от службы техподдержки. Зайдите в чат приложения',
+                    title: 'Сообщение в чате'
+                });
                 // this.chatWindow(this.currentChatId)
             });
         },
-        submitMessage(to, content) {
-
-            this.sessionRef.doc(to).set({
-                unreadCount: 0,
-            }, {merge: true});
-
-            this.sessionRef.doc(to).collection("messages").doc(String(Date.now())).set({
-                content: content,
-                fromUser: false,
-                isRead: false,
-                time: String(Date.now()),
-            })
-                .then(function () {
-                    $('.chat-sender__input').val('');
-                })
-                .catch(function (error) {
-                });
-
-        },
+        // submitMessage(to, content) {
+        //
+        //     this.sessionRef.doc(to).set({
+        //         unreadCount: 0,
+        //     }, {merge: true});
+        //
+        //     this.sessionRef.doc(to).collection("messages").doc(String(Date.now())).set({
+        //         content: content,
+        //         fromUser: false,
+        //         isRead: false,
+        //         time: String(Date.now()),
+        //     })
+        //         .then(function () {
+        //             $('.chat-sender__input').val('');
+        //         })
+        //         .catch(function (error) {
+        //         });
+        //
+        // },
     }
 }
 </script>
