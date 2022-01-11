@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Repository\ProjectRepository;
 use App\Models\File;
 use App\Models\Passing;
 use App\Models\PostTag;
@@ -12,9 +11,6 @@ use App\Models\Recommended;
 use App\Models\Tag;
 use App\Models\User;
 use App\Services\ArticleService;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
@@ -23,8 +19,7 @@ use App\Models\Articles;
 use App\Models\Opened;
 use App\Models\PassingProvider;
 use App\Models\TrackingProvider;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
+
 
 class BlogController extends Controller
 {
@@ -58,14 +53,15 @@ class BlogController extends Controller
 
         $data = Articles::with($relations)
             ->select('rainlab_blog_posts.*')
-            ->leftJoin('project_researches', 'project_researches.id', '=', 'rainlab_blog_posts.research_id')
-            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
+            ->quota()
             ->whereNotIn('rainlab_blog_posts.id', $passed)
             ->where('published', 1)
+            ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
+            ->leftJoin('project_researches', 'project_researches.id', '=', 'rainlab_blog_posts.research_id')
+            ->leftJoin('ulogic_projects_settings', 'ulogic_projects_settings.id', '=', 'project_researches.project_id')
             ->isProjectActive()
             ->checkCommercial($apiUser)
             ->audience($apiUser)
-            ->where('rainlab_blog_posts.scheduled', '<=', date('Y-m-d H:i:s'))
             ->orderBy('rainlab_blog_posts.id', 'desc');
 
         //  Выдаём статьи всех типов
@@ -183,6 +179,7 @@ class BlogController extends Controller
 
             if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($article)) {
                 $userModel->addBalance($learningBonus, $article);
+                $article->increment('passed');
                 $finalBonus = $learningBonus;
                 $passed->setId($article, Passing::PASSING_ACTIVE);
             }

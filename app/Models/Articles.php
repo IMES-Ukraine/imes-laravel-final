@@ -124,6 +124,14 @@ class Articles extends Post
         });
     }
 
+    public function scopeQuota($query)
+    {
+        return $query->where(function($q) {
+           $q->whereColumn('rainlab_blog_posts.passed', '<=', 'rainlab_blog_posts.amount')
+           ->orWhere('rainlab_blog_posts.amount', '<', 1);
+        });
+    }
+
     public function scopeIsArticle($query)
     {
         return $query->where('type', self::ARTICLE);

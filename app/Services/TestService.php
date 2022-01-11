@@ -282,7 +282,10 @@ class TestService
 
                 $apiUser->addBalance($userPassingBonus, $passedTest);
 
-                // отметим и родительский тест
+                //счетчик успешных прохождений теста
+                $passedTest->increment('passed');
+
+                // отметим как выполненный и родительский тест
                 if (isset($parentPassed)) {
                     $parentPassed->result = Passing::PASSING_RESULT_ACTIVE;
                     $parentPassed->save();

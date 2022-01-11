@@ -145,6 +145,14 @@ class TestQuestions extends Model
         return $query->whereJsonContains('ulogic_projects_settings.audience', $userId);
     }
 
+    public function scopeQuota($query)
+    {
+        return $query->where(function($q) {
+            $q->whereColumn('ulogic_tests_questions.passed', '<=', 'ulogic_tests_questions.amount')
+                ->orWhere('ulogic_tests_questions.amount', '<', 1);
+        });
+    }
+
     public function scopeIsProjectActive( $query)
     {
         return $query->where('ulogic_projects_settings.status', 'LIKE', Projects::STATUS_ACTIVE);
