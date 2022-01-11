@@ -105,16 +105,24 @@ class AdminController extends BaseController
         $user = User::find($id);
         $user->is_verified = User::USER_IS_VERIFIED_TRUE;
         $user->save();
+        $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE,
+            'Ваши учётные данные проверены и приняты модератором. Учетная запись получила статус верифицированной', [],
+            'Данные верифицированы');
 
         // после подтверждения удаляем заявку из таблицы заявок
-        $this->declineVerification($id);
+        AccountVerificationRequests::where(['user_id' => $id])->delete();
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $user->toArray());
 
     }
 
     public function declineVerification($id)
     {
+        $user = User::find($id);
+        $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE,
+            'Ваши учётные данные проверены и отклонены модератором. По всем вопросам обращайтесь в службу поддержки', [],
+            'Данные отклонены');
         AccountVerificationRequests::where(['user_id' => $id])->delete();
+        return $this->helpers->apiArrayResponseBuilder(200, 'success', $user->toArray());
     }
 
 }

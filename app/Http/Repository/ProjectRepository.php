@@ -6,17 +6,18 @@ namespace App\Http\Repository;
 use App\Http\Helpers;
 use App\Models\Articles;
 use App\Models\File;
+use App\Models\Notifications;
 use App\Models\Passing;
 use App\Models\ProjectResearches;
 use App\Models\Question;
-use App\Models\QuestionModeration;
 use App\Models\Test;
 use App\Models\TestQuestions;
+use App\Models\User;
 use App\Services\PassingService;
 use App\Services\TagService;
 use App\Services\UsersService;
+use App\Traits\NotificationsHelper;
 use Illuminate\Http\Request;
-use App\Models\ProjectItems;
 use App\Models\Projects;
 use App\Services\ArticleService;
 use App\Services\TestService;
@@ -24,6 +25,7 @@ use App\Services\TestService;
 
 class ProjectRepository
 {
+    use NotificationsHelper;
 
     protected $testService;
     protected $articleService;
@@ -54,6 +56,8 @@ class ProjectRepository
         if ($projectTotal['tag']) {
             TagService::addProjectTag($project->id, $projectTotal['tag']);
         }
+        $haveTests = false;
+        $haveArticles = false;
 
 
 //------------- content block
@@ -74,11 +78,13 @@ class ProjectRepository
                 $articleModel->scheduled = $scheduled;
                 $articleModel->save();
                 $this->setAttachment($content['article'], $articleModel->id,);
+                $haveArticles = true;
             }
 
 
 //------------  test
             if ($content['test']['title']) {
+                $haveTests = true;
                 //если сложный вопрос - пишем все части отдельно
                 if ($content['test']['type'] == 'complex') {
                     //Сначала записываем весь сложный вопрос в качестве родителя
@@ -125,9 +131,26 @@ class ProjectRepository
         }
 //------------- end content block
 
+        foreach ($project->audience as $recepientId) {
+            $user = User::find($recepientId);
+            if ($user) {
+
+                if ($haveTests) {
+                    $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE,
+                        'В приложении появились новые тесты. Попробуйте свои силы и заработайте баллы!', [],
+                        'Новые тесты');
+                }
+                if ($haveArticles) {
+                    $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE,
+                        'В приложении появились новые статьи. Узнайте новое  заработайте баллы!', [],
+                        'Новые статьи');
+                }
+            }
+        }
+
         return (object)[
             'saved' => true,
-            'data' => $project
+            'data'  => $project
         ];
 
 
@@ -167,7 +190,7 @@ class ProjectRepository
 
         $projectItems[] = [
             'type' => get_class($questionModel),
-            'id' => $test->entityId
+            'id'   => $test->entityId
         ];
 
         foreach ($request->post('articles') as $article) {
@@ -183,7 +206,7 @@ class ProjectRepository
 
         $projectItems[] = [
             'type' => get_class($articleModel),
-            'id' => $articleModel->id
+            'id'   => $articleModel->id
         ];
 
 
@@ -254,12 +277,14 @@ class ProjectRepository
 
                 if ($status_active && $article_status_active) {
                     $total_status_active += $status_active;
-                } elseif ($status_active) {
+                }
+                elseif ($status_active) {
                     $total_status_not_active += 1;
                 }
-            }else{
+            }
+            else {
                 //If there is not article in research
-                if($status_active){
+                if ($status_active) {
                     $total_status_active += $status_active;
                 }
             }
@@ -292,7 +317,7 @@ class ProjectRepository
             }
 
             $content[$key]->offsetSet('article_id', $article_id);
-            if($content[$key]->article->title == NULL){
+            if ($content[$key]->article->title == NULL) {
                 unset($content[$key]->article);
             }
 
@@ -304,17 +329,19 @@ class ProjectRepository
 
         $all_activities = $total_status_active + $total_status_not_active;
 
-        return (object)['data' => [
-            'project' => $project,
-            'content' => $content,
-            'passing_tests' => $passing_tests,
-            'total' => $total,
-            'status_active' => $total_status_active,
-            'status_not_active' => $total_status_not_active,
-            'status_not_participate' => $total_status_not_participate,
-            'all_activities' => $all_activities,
-            'user_total' => $users_total
-        ]];
+        return (object)[
+            'data' => [
+                'project'                => $project,
+                'content'                => $content,
+                'passing_tests'          => $passing_tests,
+                'total'                  => $total,
+                'status_active'          => $total_status_active,
+                'status_not_active'      => $total_status_not_active,
+                'status_not_participate' => $total_status_not_participate,
+                'all_activities'         => $all_activities,
+                'user_total'             => $users_total
+            ]
+        ];
     }
 
     public function setAttachment($model, $entity_id)

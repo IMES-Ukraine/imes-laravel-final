@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Helpers;
+use App\Models\Notifications;
 use App\Models\User;
+use App\Traits\NotificationsHelper;
 use Daaner\TurboSMS\Facades\TurboSMS;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,6 +18,7 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+    use NotificationsHelper;
     /**
      * Create a new AuthController instance.
      *
@@ -180,6 +183,7 @@ class AuthController extends Controller
         if (!$token = auth()->attempt(['username' => $user->username, 'password' => $user->username])) {
             return response()->json(['error' => 'Не удалось получить токен'], 401);
         }
+
         return response()->json(['token' => $token, 'user' => $user]);
 
     }
