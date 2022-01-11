@@ -392,7 +392,7 @@ export default {
             return total_test;
         },
         percent(status, total) {
-            return status ? parseInt(status * 100 / total) : 0
+            return total ? parseInt(status * 100 / total) : 0
         },
 
         async moderated(id, status, test_id = null) {

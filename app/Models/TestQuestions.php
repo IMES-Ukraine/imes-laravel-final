@@ -42,7 +42,8 @@ class TestQuestions extends Model
         'is_popular',
         'agreement',
         'schedule',
-        'can_retake'
+        'can_retake',
+        'received_variants'
     ];
 
     /**
@@ -53,6 +54,7 @@ class TestQuestions extends Model
     protected $casts = [
         'options' => 'array',
         'variants' => 'array',
+        'received_variants' => 'array'
     ];
 
     /**

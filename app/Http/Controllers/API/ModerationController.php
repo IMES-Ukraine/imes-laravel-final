@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 
 use App\Models\TestQuestions;
-use App\Services\TestService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
 use Illuminate\Support\Facades\Validator;
@@ -18,11 +19,12 @@ class ModerationController extends Controller
 
     public function __construct(QuestionModeration $QuestionModeration, Helpers $helpers)
     {
-        $this->QuestionModeration    = $QuestionModeration;
-        $this->helpers          = $helpers;
+        $this->QuestionModeration = $QuestionModeration;
+        $this->helpers = $helpers;
     }
 
-    public function index(){
+    public function index()
+    {
 
         //$data = $this->QuestionModeration->all()->toArray();
         $data = QuestionModeration::with('question')->get();
@@ -34,9 +36,10 @@ class ModerationController extends Controller
     /**
      * @param $status
      * @param $questionId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function review( $status, $questionId ) {
+    public function review($status, $questionId)
+    {
 
         return $this->helpers
             ->apiArrayResponseBuilder(200, 'success', []);
@@ -44,21 +47,20 @@ class ModerationController extends Controller
 
     /**
      * @param $test_id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function test( $test_id )
+    public function test($test_id): JsonResponse
     {
         $test = TestQuestions::find($test_id);
         if ($test && $test->test_type === TestQuestions::TYPE_COMPLEX) {
             $data = [];
-            foreach ($test->complex as $complexItem){
-                $results =  $this->QuestionModeration
+            foreach ($test->complex as $complexItem) {
+                $results = $this->QuestionModeration
                     ->where('question_id', $complexItem->id)
                     ->with('user')
                     ->paginate(15);
                 $data[$complexItem->id] = json_decode($results->toJSON());
             }
-
         }
         else {
             $results = $this->QuestionModeration
@@ -71,12 +73,13 @@ class ModerationController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    public function show($id){
+    public function show($id)
+    {
 
         $data = $this->QuestionModeration
-            ->where('id',$id)->first();
+            ->where('id', $id)->first();
 
-        if( count($data) > 0){
+        if (count($data) > 0) {
 
             return $this->helpers
                 ->apiArrayResponseBuilder(
@@ -91,22 +94,24 @@ class ModerationController extends Controller
                 400,
                 'bad request',
                 [
-                    'error' => 'invalid key']);
+                    'error' => 'invalid key'
+                ]);
 
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
         $arr = $request->all();
 
-        while ( $data = current($arr)) {
+        while ($data = current($arr)) {
             $this->QuestionModeration->{key($arr)} = $data;
             next($arr);
         }
 
         $validation = Validator::make($request->all(), $this->QuestionModeration->rules);
 
-        if( $validation->passes() ){
+        if ($validation->passes()) {
 
             $this->QuestionModeration->save();
 
@@ -115,8 +120,10 @@ class ModerationController extends Controller
                     201,
                     'created',
                     [
-                        'id' => $this->QuestionModeration->id]);
-        } else {
+                        'id' => $this->QuestionModeration->id
+                    ]);
+        }
+        else {
             return $this->helpers
                 ->apiArrayResponseBuilder(
                     400,
@@ -126,11 +133,12 @@ class ModerationController extends Controller
 
     }
 
-    public function update($id, Request $request){
+    public function update($id, Request $request)
+    {
 
         //$status = $this->QuestionModeration->where('id',$id)->update($data);
 
-        if( $status = 0 ){
+        if ($status = 0) {
 
             return $this->helpers
                 ->apiArrayResponseBuilder(
@@ -138,7 +146,8 @@ class ModerationController extends Controller
                     'success',
                     'Data has been updated successfully.');
 
-        }else{
+        }
+        else {
 
             return $this->helpers
                 ->apiArrayResponseBuilder(
@@ -149,17 +158,19 @@ class ModerationController extends Controller
         }
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
 
-        $this->QuestionModeration->where('id',$id)->delete();
+        $this->QuestionModeration->where('id', $id)->delete();
 
         return $this->helpers
             ->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
 
-        $this->QuestionModeration->where('id',$id)->delete();
+        $this->QuestionModeration->where('id', $id)->delete();
 
         return $this->helpers
             ->apiArrayResponseBuilder(

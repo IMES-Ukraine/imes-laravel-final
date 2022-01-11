@@ -11,7 +11,7 @@ use App\Models\QuestionModeration;
 use App\Models\TestQuestions as TestModel;
 use App\Models\TestQuestions;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
+
 
 class TestService
 {
@@ -115,7 +115,8 @@ class TestService
                 }
             }
 
-        } else {
+        }
+        else {
             $passed = Passing::where('entity_id', $model->id)->where('user_id', $user->id)->first();
             if ($passed) {
                 $variants[] = [
@@ -129,7 +130,7 @@ class TestService
 
     public static function verifyTest($variants, User $apiUser, $moderating = false): array
     {
-        Log::info('Варианты на проверку', [$moderating, $variants]);
+
         $passed = new PassingProvider($apiUser);
 
         //посчитаем общее число ответов и число правильных ответов
@@ -147,6 +148,9 @@ class TestService
             $userVariants = $var['variant'];
             $test = TestQuestions::find($var['test_id']);
             $passedTest = $test;
+
+            // Поле статистики ответов
+            $statVar = $test->received_variants;
             $fullPassingBonus = $test->passing_bonus;
             $correctAnswer = $test->variants['correct_answer'];
 
@@ -189,15 +193,17 @@ class TestService
                                 $testStatus = Passing::PASSING_RESULT_ACTIVE;
                                 $results[$var['test_id']] = self::TEST_RESULT_SUCCESS;
                             }
-                            else if ($moderated->status === QuestionModeration::TEST_MODERATION_CANCEL){
-                                $passModel->answer = [$moderated->answer];
-                                $passModel->result = Passing::PASSING_RESULT_NOT_ACTIVE;
-                                $passModel->save();
-                                $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
-                            }
-                            // Если еще на ожидании - отмечаем этот факт и не будем считать пока бонусы
                             else {
+                                if ($moderated->status === QuestionModeration::TEST_MODERATION_CANCEL) {
+                                    $passModel->answer = [$moderated->answer];
+                                    $passModel->result = Passing::PASSING_RESULT_NOT_ACTIVE;
+                                    $passModel->save();
+                                    $testStatus = Passing::PASSING_RESULT_NOT_ACTIVE;
+                                }
+                                // Если еще на ожидании - отмечаем этот факт и не будем считать пока бонусы
+                                else {
                                     $resType = self::TEST_WILL_BE_MODERATED;
+                                }
                             }
                         }
                         else {
@@ -205,15 +211,30 @@ class TestService
                         }
                     }
                 }
-                    //Опросник
+                //Опросник
                 else {
+                    // Занесем полученные ответы в статистику
+                    foreach ($userVariants as $item) {
+                        if (!isset($statVar[$item])){
+                            $statVar[$item] = 0;
+                        }
+                        $statVar[$item] ++;
+                    }
                     $testStatus = Passing::PASSING_RESULT_ACTIVE;
                     $results[$var['test_id']] = self::TEST_RESULT_SURVEY;
                 }
-            } else {
+            }
+            else {
                 // Это тест с вариантами
+                // Занесем полученные ответы в статистику
+                foreach ($userVariants as $item) {
+                    if (!isset($statVar[$item])){
+                        $statVar[$item] = 0;
+                    }
+                    $statVar[$item] ++;
+                }
                 // если после вычитания массивов пусто - значит все ответы совпадают
-                if (!count(array_diff($correctAnswer, $userVariants) ) && !count(array_diff($userVariants, $correctAnswer)) ) {
+                if (!count(array_diff($correctAnswer, $userVariants)) && !count(array_diff($userVariants, $correctAnswer))) {
                     $results[$var['test_id']] = self::TEST_RESULT_SUCCESS;
                     $testStatus = $testStatus = Passing::PASSING_RESULT_ACTIVE;
                 }
@@ -229,8 +250,11 @@ class TestService
 
             $passModel->result = $testStatus;
             $passModel->save();
+
+            //сохраним статистику вариантов
+            $test->received_variants =  $statVar;
+            $test->save();
         }
-        Log::info('Массив ответов', $results);
 
 
         if ($passedTest && $resType != self::TEST_WILL_BE_MODERATED) {
@@ -238,10 +262,10 @@ class TestService
             //считаем число правильных ответов и общее число значимых ответов
             $accountingAnswersCount = 0;
             $correctAnswersCount = 0;
-            foreach ($results as $id => $res){
-                if ($res <> self::TEST_RESULT_SURVEY){
+            foreach ($results as $id => $res) {
+                if ($res <> self::TEST_RESULT_SURVEY) {
                     $accountingAnswersCount++;
-                    if ($res == self::TEST_RESULT_SUCCESS){
+                    if ($res == self::TEST_RESULT_SUCCESS) {
                         $correctAnswersCount++;
                     }
                 }
@@ -273,9 +297,7 @@ class TestService
                 $testStatus = Passing::PASSING_RESULT_ACTIVE;
                 $userPassingBonus = $fullPassingBonus;
             }
-            Log::info('Результаты теста ' . $passedTest->title . ' / ' . $passedTest->id, [
-                $correctAnswersCount, $accountingAnswersCount, $testStatus, $resType, $userPassingBonus
-            ]);
+
             $testOutStatus = TestQuestions::STATUS_PASSED;
             //Если тест пройден
             if ($testStatus === Passing::PASSING_RESULT_ACTIVE && $userPassingBonus) {
@@ -314,8 +336,8 @@ class TestService
     {
         $fullCount = 0;
         foreach ($variants as $v) {
-            if (is_array($v['variant'])){
-            $fullCount += count($v['variant']);
+            if (is_array($v['variant'])) {
+                $fullCount += count($v['variant']);
             }
         }
         return $fullCount;
