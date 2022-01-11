@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Log;
 
 class TrackingProvider
 {
+
+    const SECONDS_IN_MINUTE = 60;
+    const SYMBOLS_PER_MINUTE = 2000;
+
     protected $user;
 
     public function __construct($user)
@@ -42,8 +46,9 @@ class TrackingProvider
     {
         if (is_array($content = $article->content)) {
 
-            $blockCount = count($content) - 1;
-
+            //What for?
+            //$blockCount = count($content) - 1;
+            $blockCount = count($content);
             if ($blockCount === 0) {
                 return true;
             }
@@ -61,28 +66,31 @@ class TrackingProvider
                 ->orderBy('created_at', 'desc')
                 ->first();
 
+            //decrement for sql
+            $blockCount -= 1;
             $trackEnded = NewsTracking::where('news_id', $article->id)
                 ->where('user_id', $this->user->id)
                 ->where('position', $blockCount)
                 ->orderBy('created_at', 'desc')
                 ->first();
-
-
             if ($trackStarted && $trackEnded) {
 
                 $startingDate = !empty($trackStarted) ? Carbon::parse($trackStarted->created_at) : Carbon::now();
                 $endingDate = !empty($trackEnded) ? Carbon::parse($trackEnded->created_at) : Carbon::now();
 
-                $timeDifference = $startingDate->diffInMinutes($endingDate);
-
+                //$timeDifference = $startingDate->diffInMinutes($endingDate);
+                $timeDifference = $startingDate->diffInSeconds($endingDate);
                 if ($timeDifference == 0) {
                     return false;
                 }
+                //???
                 $userReadingRate = $totalSymbolsCount / $timeDifference;
-
                 //TODO разобраться, почему пропадают параметры из конфига
-                $rate = config('params')['maxReadingRate'] ?? 2000;
-                return $userReadingRate <= $rate;
+                $rate = config('params')['maxReadingRate'] ?? self::SYMBOLS_PER_MINUTE;
+
+                $minimumReading = round(($totalSymbolsCount/$rate)*self::SECONDS_IN_MINUTE);
+                //return $userReadingRate <= $rate;
+                return $timeDifference >= $minimumReading;
             } else {
                 return false;
             }

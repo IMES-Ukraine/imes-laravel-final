@@ -92,7 +92,7 @@ class ArticleService
      * @param Request $request
      * @return mixed
      */
-    public static function fillPost(Articles $model, Request $request)
+    public static function fillPost($model, Request $request)
     {
         $model->fill($request->post());
 

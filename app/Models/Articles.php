@@ -92,7 +92,7 @@ class Articles extends Post
                     'parent_id' => $this->id,
                     'recommended_id' => $recItem->post->id,
                     'title' => $recItem->post->title,
-//                    'post' => '',
+                    'post' => $recItem->article,
                 ];
             }
         }
