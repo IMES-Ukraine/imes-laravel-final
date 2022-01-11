@@ -148,7 +148,7 @@ class TestQuestions extends Model
     public function scopeQuota($query)
     {
         return $query->where(function($q) {
-            $q->whereColumn('ulogic_tests_questions.passed', '<=', 'ulogic_tests_questions.amount')
+            $q->whereColumn('ulogic_tests_questions.passed', '<', 'ulogic_tests_questions.amount')
                 ->orWhere('ulogic_tests_questions.amount', '<', 1);
         });
     }
