@@ -30,16 +30,15 @@
                                         </div>
                                         <div class="study__info">
                                             <div class="study__info-block">
-                                                <p class="study__info-data">{{
-                                                        percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))
-                                                    }}%</p>
+                                                <p class="study__info-data">
+                                                    {{percent(test.received_variants[variant.variant], totalAnswers(test))}}%</p>
                                                 <div class="dashboard_main__status-line">
                                                     <span
                                                         :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
                                                 </div>
                                             </div>
                                             <p class="study__info-quantity">
-                                                {{ getStaticTest(variant.variant, test['id']) }}</p>
+                                                {{ test.received_variants[variant.variant] }}</p>
                                         </div>
                                     </div>
                                     <test-users-popup
@@ -126,16 +125,14 @@
                                         </div>
                                         <div class="study__info">
                                             <div class="study__info-block">
-                                                <p class="study__info-data">{{
-                                                        percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))
-                                                    }}%</p>
+                                                <p class="study__info-data">{{percent(test.received_variants[variant.variant], totalAnswers(test))}}%</p>
                                                 <div class="dashboard_main__status-line">
                                                     <span
                                                         :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
                                                 </div>
                                             </div>
                                             <p class="study__info-quantity">
-                                                {{ getStaticTest(variant.variant, test['id']) }}</p>
+                                                {{ test.received_variants[variant.variant] }}</p>
                                         </div>
                                     </div>
                                     <test-users-popup
@@ -201,7 +198,7 @@
                                             <div class="study__info">
                                                 <div class="study__info-block">
                                                     <p class="study__info-data">{{
-                                                            percent(getStaticTest(variant.variant, complex_question.id), totalQuestionVariants(test.question.variants, complex_question.id))
+                                                            percent(complex_question.received_variants[variant.variant], totalAnswers(complex_question))
                                                         }}%</p>
                                                     <div class="dashboard_main__status-line">
                                                         <span
@@ -209,7 +206,7 @@
                                                     </div>
                                                 </div>
                                                 <p class="study__info-quantity">
-                                                    {{ getStaticTest(variant.variant, complex_question.id) }}</p>
+                                                    {{ complex_question.received_variants[variant.variant] }}</p>
                                             </div>
                                         </div>
                                         <test-users-popup
@@ -351,6 +348,13 @@ export default {
         }
     },
     methods: {
+        totalAnswers(test) {
+            let sum = 0;
+            for (const index in test.received_variants) {
+                sum += parseInt(test.received_variants[index]);
+            }
+            return sum;
+        },
         getStaticTest(title, test_id) {
             if (this.passing_tests[test_id] && this.passing_tests[test_id][title]) {
                 return this.passing_tests[test_id][title].length;
@@ -392,7 +396,10 @@ export default {
             return total_test;
         },
         percent(status, total) {
-            return total ? parseInt(status * 100 / total) : 0
+            if (total && status) {
+                return parseInt(status * 100 / total);
+            }
+            return 0;
         },
 
         async moderated(id, status, test_id = null) {
