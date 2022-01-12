@@ -232,12 +232,20 @@ class Articles extends Post
 
     public static function setArticleAttachment($images, $article_id)
     {
+        // удалим старые картинки
+        $oldGallery = File::where('attachment_type', self::class)->where('attachment_id', $article_id)->get();
+        foreach ($oldGallery as $item){
+            $item->attachment_id = 0;
+            $item->save();
+        }
         foreach ($images as $featured) {
-            $img = File::find($featured['id']);
-            if ($img) {
-                $img->attachment_id = $article_id;
-                $img->field = File::FIELD_FEATURED;
-                $img->save();
+            if(isset($featured['id'])) {
+                $img = File::find($featured['id']);
+                if ($img) {
+                    $img->attachment_id = $article_id;
+                    $img->field = File::FIELD_FEATURED;
+                    $img->save();
+                }
             }
         }
     }

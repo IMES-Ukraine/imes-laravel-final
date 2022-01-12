@@ -46,7 +46,7 @@
                 <p class="preview__block-note">1 пользователь =  {{contentCount}} теста + {{contentCount}} статьи = {{projectPoints}} баллов </p>
             </div>
         </div>
-        <button class="articles_create-submit button-gradient" type="button" @click="finalStoreProject">запуск</button>
+        <button id='start' class="articles_create-submit button-gradient" type="button" @click="finalStoreProject">запуск</button>
     </div>
 </template>
 

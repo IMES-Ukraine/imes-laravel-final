@@ -200,6 +200,7 @@ export default {
             this.setStep(2);
         },
         finalStoreProject() {
+            document.getElementById('start').setAttribute('disabled', 'disabled');
             axios.post(PROJECT, {
                 project: this.project
             }).then((resp) => {
