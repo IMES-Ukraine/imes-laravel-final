@@ -30,7 +30,7 @@ class ExportUserView implements FromView
     {
         $research = ProjectResearches::select('id')->where('project_id', $this->project_id)->first();
         $articles_ids = ArticleService::pluckIDArticles($this->content_id??$research->id);
-        $test_ids = TestService::pluckIDArticles($this->content_id??$research->id);
+        $test_ids = TestService::pluckIDTests($this->content_id??$research->id);
 
         $results = Passing::with('user')->with('withdraw')->isPassed($articles_ids, $test_ids)->get();
 

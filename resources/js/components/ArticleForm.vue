@@ -211,12 +211,8 @@
 <!--                                    </div>-->
                                     <div class="articles_create__addition-block">
                                         <div class="articles_create__addition-field">
-                                            <input type="text" id="new_user" v-model="article.author2" placeholder="Добавить автора"/>
-<!--                                            <div class="errors" v-if="addUserError">{{ addUserError }}</div>-->
+                                            <input type="text" id="new_user" v-model="article.author2" placeholder="Указать автора"/>
                                         </div>
-<!--                                        <button class="articles_create__addition-button" type="button"-->
-<!--                                                @click="AddNewUser">Добавить автора-->
-<!--                                        </button>-->
                                     </div>
                                 </div>
                             </div>
