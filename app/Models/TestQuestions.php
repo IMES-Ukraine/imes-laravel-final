@@ -43,7 +43,9 @@ class TestQuestions extends Model
         'agreement',
         'schedule',
         'can_retake',
-        'received_variants'
+        'received_variants',
+        'amount',
+        'passed'
     ];
 
     /**

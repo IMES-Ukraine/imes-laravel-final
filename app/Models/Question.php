@@ -23,6 +23,7 @@ class Question
     public $cover_image;
     public $test_type;
     public $parent_id;
+    public $amount;
 
     public $description;
 
@@ -43,6 +44,7 @@ class Question
     {
 
         $this->title = $question['title'];
+        $this->amount = $question['count'];
         $this->question = $question['text']?? '';
 
         $this->agreement = $question['question']['agreement'] ?? '';
