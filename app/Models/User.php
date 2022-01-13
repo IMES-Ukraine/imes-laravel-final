@@ -132,14 +132,14 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $casts = [
-        'is_activated' => 'boolean',
-        'is_guest' => 'boolean',
-        'is_superuser' => 'boolean',
-        'is_verified' => 'boolean',
-        'email_verified_at' => 'datetime',
-        'basic_information' => 'array',
+        'is_activated'            => 'boolean',
+        'is_guest'                => 'boolean',
+        'is_superuser'            => 'boolean',
+        'is_verified'             => 'boolean',
+        'email_verified_at'       => 'datetime',
+        'basic_information'       => 'array',
         'specialized_information' => 'array',
-        'financial_information' => 'array',
+        'financial_information'   => 'array',
     ];
 
 
@@ -149,13 +149,15 @@ class User extends Authenticatable implements JWTSubject
         'basic_information', 'specialized_information', 'financial_information',
     ];
 
+    const NOT_SHOW = ['permissions', 'deleted_at', 'updated_at', 'activated_at'];
+
     public function scopeIsNotPassed($query, $articles_ids, $test_ids)
     {
         if ($articles_ids) {
             $in_articles = Passing::select('user_id')
                 ->where('ulogic_projects_passing.entity_type', Post::class)
                 ->whereIn('ulogic_projects_passing.entity_id', $articles_ids)
-                ->distinct();
+                ->get();
 
             $query->whereNotIn('id', $in_articles);
         }
@@ -164,7 +166,7 @@ class User extends Authenticatable implements JWTSubject
             $in_tests = Passing::select('user_id')
                 ->where('ulogic_projects_passing.entity_type', TestQuestions::class)
                 ->whereIn('ulogic_projects_passing.entity_id', $test_ids)
-                ->distinct();
+                ->get();
 
             $query->whereNotIn('id', $in_tests);
         }
@@ -177,7 +179,9 @@ class User extends Authenticatable implements JWTSubject
                 ->where('ulogic_projects_passing.entity_type', Post::class)
                 ->whereIn('ulogic_projects_passing.entity_id', $articles_ids);
 
-            if ($status) $query_article->where('status', $status);
+            if ($status) {
+                $query_article->where('status', $status);
+            }
 
             $in_articles = $query_article->distinct();
             $query->whereIn('id', $in_articles);
@@ -188,7 +192,9 @@ class User extends Authenticatable implements JWTSubject
                 ->where('ulogic_projects_passing.entity_type', TestQuestions::class)
                 ->whereIn('ulogic_projects_passing.entity_id', $test_ids);
 
-            if ($status) $query_test->where('status', $status);
+            if ($status) {
+                $query_test->where('status', $status);
+            }
 
             $in_tests = $query_test->distinct();
             $query->orWhereIn('id', $in_tests);
@@ -254,36 +260,49 @@ class User extends Authenticatable implements JWTSubject
         $email = $email ?? $username;
         $passwordHash = Hash::make($password ?? $username);
         $userInfo = new UserBasicInfo([
-            'name' => $name ?? $phone,
+            'name'  => $name ?? $phone,
             'phone' => $phone,
             'email' => $email,
         ]);
 //        Log::info('userCreate: ', [$username, $password, $passwordHash]);
         return self::create([
-            'phone' => $phone,
-            'name' => $name ?? $phone,
-            'username' => $username,
-            'email' => $email,
-            'password' => $passwordHash,
-            'is_activated' => true,
-            'basic_information' => $userInfo,
+            'phone'                   => $phone,
+            'name'                    => $name ?? $phone,
+            'username'                => $username,
+            'email'                   => $email,
+            'password'                => $passwordHash,
+            'is_activated'            => true,
+            'basic_information'       => $userInfo,
             'specialized_information' => new UserSpecializedInfo(),
-            'financial_information' => new UserFinancialInfo(),
-            'firebase_token' => ''
+            'financial_information'   => new UserFinancialInfo(),
+            'firebase_token'          => ''
         ]);
     }
 
-    public function addBalance($sum, $model=null, $entityType=null)
+    public function addBalance($sum, $model = null)
     {
         $this->balance += $sum;
-        if ($this->save() ) {
+        if ($this->save()) {
             if ($model) {
                 if (get_class($model) === TestQuestions::class) {
+                    Withdraw::create([
+                        'user_id' => $this->id,
+                        'total'   => $sum,
+                        'type'    => Withdraw::TYPE_TEST,
+                        'comment' => $model->title
+                    ]);
+
                     $this->sendNotificationToUser($this, Notifications::TYPE_REFILL,
                         'Вам начислено ' . $sum . ' баллов за' . self::ENTYTY_TYPE_TEST . $model->title, [],
                         'Вам начислены баллы');
                 }
                 if (get_class($model) === Post::class) {
+                    Withdraw::create([
+                        'user_id' => $this->id,
+                        'total'   => $sum,
+                        'type'    => Withdraw::TYPE_ARTICLE,
+                        'comment' => $model->title
+                    ]);
                     $this->sendNotificationToUser($this, Notifications::TYPE_REFILL,
                         'Вам начислено ' . $sum . ' баллов за' . self::ENTYTY_TYPE_ARTICLE . $model->title, [],
                         'Вам начислены баллы');

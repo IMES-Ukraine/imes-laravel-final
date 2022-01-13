@@ -46,9 +46,19 @@ class TestService
      * @param $content_id
      * @return array
      */
-    public static function pluckIDArticles($content_id)
+    public static function pluckIDTests($content_id)
     {
-        return TestQuestions::select('id')->where('research_id', $content_id)->pluck('id')->toArray();
+        return TestQuestions::select('id')
+            ->where('research_id', $content_id)
+            ->pluck('id')->toArray();
+    }
+
+    public static function pluckIDRootTests($content_id)
+    {
+        return TestQuestions::select('id')
+            ->where('research_id', $content_id)
+            ->where('test_type', '!=', TestQuestions::TYPE_CHILD)
+            ->pluck('id')->toArray();
     }
 
 
@@ -158,7 +168,7 @@ class TestService
             $results[$var['test_id']] = self::TEST_RESULT_FAIL;
 
             /** @var Passing $passModel */
-            $passModel = $passed->setId($test, Passing::PASSING_ACTIVE, $userVariants);
+            $passModel = $passed->setId($test, Passing::PASSING_NOT_ACTIVE, $userVariants);
 
             if (empty($correctAnswer)) {
                 // Если текущий тест - опросник или текст
@@ -241,12 +251,14 @@ class TestService
             }
             //если мы в сложном тесте
             if ($test->test_type === TestQuestions::TYPE_CHILD) {
-                //отметим родительский тест как открывавшийся
+
                 $testParent = TestQuestions::find($test->parent_id);
                 $passedTest = $testParent;
                 $fullPassingBonus = $testParent->passing_bonus;
-                $parentPassed = $passed->setId($testParent, Passing::PASSING_ACTIVE, []);
             }
+            //отметим тест как открывавшийся
+            $passedRoot = $passed->setId($passedTest, Passing::PASSING_ACTIVE, []);
+
 
             $passModel->result = $testStatus;
             $passModel->save();
@@ -262,7 +274,7 @@ class TestService
             //считаем число правильных ответов и общее число значимых ответов
             $accountingAnswersCount = 0;
             $correctAnswersCount = 0;
-            foreach ($results as $id => $res) {
+            foreach ($results as $res) {
                 if ($res <> self::TEST_RESULT_SURVEY) {
                     $accountingAnswersCount++;
                     if ($res == self::TEST_RESULT_SUCCESS) {
@@ -308,9 +320,9 @@ class TestService
                 $passedTest->increment('passed');
 
                 // отметим как выполненный и родительский тест
-                if (isset($parentPassed)) {
-                    $parentPassed->result = Passing::PASSING_RESULT_ACTIVE;
-                    $parentPassed->save();
+                if (isset($passedRoot)) {
+                    $passedRoot->result = Passing::PASSING_RESULT_ACTIVE;
+                    $passedRoot->save();
                 }
             }
             else {

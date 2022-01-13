@@ -222,14 +222,14 @@ class ProjectRepository
     public function find($id)
     {
 
-        $project = Projects::with(['items'])
+        $projectObj = Projects::with(['items'])
             ->where('id', $id)->first();
         if (empty($project)) {
             return (object)[
                 'data' => []
             ];
         }
-        $project = $project->toArray();
+        $project = $projectObj->toArray();
 
         $itemsQuery = ProjectResearches::with(['testObject', 'articleObject'])->where('project_id', $id);
         if (!request()->input('all_items', 0)) {
@@ -265,51 +265,33 @@ class ProjectRepository
             }
             $article_id = $item->articleObject ? $item->articleObject->id : 0;
 
+            $test_ids = TestService::pluckIDRootTests($item->id);
+            $article_ids = ArticleService::pluckIDArticles($item->id);
+
             //Status passing active
-            $status_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_ACTIVE);
-            $test_status_active = PassingService::getPassingTotalStatusTest($item->id, Passing::PASSING_ACTIVE, Passing::PASSING_RESULT_ACTIVE);
+            $test_status_active = Passing::select('*')->isEntityPassed(TestQuestions::class, $test_ids)->count();
+            $article_status_active = Passing::select('*')->isEntityPassed(Articles::class, $article_ids)->count();
+
+
             $content[$key]->offsetSet('test_status_active', $test_status_active);
+            $content[$key]->offsetSet('article_status_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE));
 
-            $article_status_active = 0;
-            if ($article_id) {
-                $article_status_active = PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE);
-                $content[$key]->offsetSet('article_status_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE));
 
-                if ($status_active && $article_status_active) {
-                    $total_status_active += $status_active;
-                }
-                elseif ($status_active) {
-                    $total_status_not_active += 1;
-                }
-            }
-            else {
-                //If there is not article in research
-                if ($status_active) {
-                    $total_status_active += $status_active;
-                }
-            }
 
             //Status passing not active
-            $status_not_active = PassingService::getPassingTotalStatus($item->id, Passing::PASSING_NOT_ACTIVE);
-            $total_status_not_active += $status_not_active;
-            $test_status_not_active = PassingService::getPassingTotalStatusTest($item->id, Passing::NO_STATUS, Passing::PASSING_RESULT_NOT_ACTIVE);
-            $content[$key]->offsetSet('test_status_not_active', $test_status_not_active);
+            $test_status_not_active = Passing::select('*')->isEntityNotPassed(TestQuestions::class, $test_ids)->count();
+            $article_status_not_active = Passing::select('*')->isEntityNotPassed(Articles::class, $article_ids)->count();
 
-            $article_status_not_active = 0;
-            if ($article_id) {
-                $article_status_not_active = PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_NOT_ACTIVE);
-                $content[$key]->offsetSet('article_status_not_active', $article_status_not_active);
-            }
+            $content[$key]->offsetSet('test_status_not_active', $test_status_not_active);
+            $content[$key]->offsetSet('article_status_not_active', $article_status_not_active);
 
             //Status passing not participate
-            $content[$key]->offsetSet('test_status_not_participate', $users_total - ($test_status_not_active + $test_status_active));
+            $content[$key]->offsetSet('test_status_not_participate', count($projectObj->notParticipateUserIds(false, $test_ids) ) );
+            $content[$key]->offsetSet('article_status_not_participate', count($projectObj->notParticipateUserIds($article_ids, false)) );
 
-            if ($article_id) {
-                $content[$key]->offsetSet('article_status_not_participate', $users_total - ($article_status_active + $article_status_not_active));
-            }
 
             //total
-            $content[$key]->offsetSet('test_total', PassingService::getPassingTotalTest($item->id));
+            $content[$key]->offsetSet('test_total', count($projectObj->audience));
 
             if ($article_id) {
                 $content[$key]->offsetSet('article_total', PassingService::getPassingTotalArticle($item->id));

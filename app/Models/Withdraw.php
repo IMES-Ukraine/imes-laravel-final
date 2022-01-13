@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Withdraw extends Model
 {
+    const TYPE_CARD = 'card';
+    const TYPE_TEST = 'test';
+    const TYPE_ARTICLE = 'article';
 
     protected $dates = ['deleted_at'];
 
@@ -16,6 +19,8 @@ class Withdraw extends Model
      * @var string The database table used by the model.
      */
     public $table = 'ulogic_profile_withdraw';
+
+    protected $fillable = ['user_id', 'total', 'type', 'comment'];
 
     /**
      * @var array Validation rules

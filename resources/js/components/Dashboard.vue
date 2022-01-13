@@ -98,7 +98,7 @@
                             <div class="dashboard_study__info-block">
                                 <p class="dashboard_study__info-data">{{ content.test_status_active }}</p>
                                 <users-popup
-                                    :title="'Выполнили активности'"
+                                    title="Выполнили активности"
                                     classButton="dashboard_study__info-button"
                                     :id="'test_status_active' + content.id"
                                     index="1"
@@ -110,7 +110,7 @@
                             <div class="dashboard_study__info-block">
                                 <p class="dashboard_study__info-data">{{ content.test_status_not_active }}</p>
                                 <users-popup
-                                    :title="'Не выполнили активности'"
+                                    title="Не выполнили активности"
                                     classButton="dashboard_study__info-button"
                                     :id="'test_status_not_active' + content.id"
                                     index="0"
@@ -122,7 +122,7 @@
                             <div class="dashboard_study__info-block">
                                 <p class="dashboard_study__info-data">{{ content.test_status_not_participate }}</p>
                                 <users-popup
-                                    :title="'Не участвовали'"
+                                    title="Не участвовали"
                                     classButton="dashboard_study__info-button"
                                     :id="'test_status_not_participate' + content.id"
                                     index="2"

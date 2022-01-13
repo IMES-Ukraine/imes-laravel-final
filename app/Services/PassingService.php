@@ -16,7 +16,7 @@ class PassingService
      */
     public static function getPassingTotal($content_id) {
         $articles_ids = ArticleService::pluckIDArticles($content_id);
-        $test_ids = TestService::pluckIDArticles($content_id);
+        $test_ids = TestService::pluckIDTests($content_id);
 
         return Passing::IsNotPassed($articles_ids, $test_ids)->count();
     }
@@ -28,7 +28,7 @@ class PassingService
      */
     public static function getPassingTotalStatus($content_id, $status) {
         $articles_ids = ArticleService::pluckIDArticles($content_id);
-        $test_ids = TestService::pluckIDArticles($content_id);
+        $test_ids = TestService::pluckIDRootTests($content_id);
 
         return Passing::IsPassed($articles_ids, $test_ids, $status)->count();
     }
@@ -39,7 +39,7 @@ class PassingService
      */
     public static function getNotUsersPassingTotal($content_id) {
         $articles_ids = ArticleService::pluckIDArticles($content_id);
-        $test_ids = TestService::pluckIDArticles($content_id);
+        $test_ids = TestService::pluckIDTests($content_id);
 
         return User::isNotPassed($articles_ids, $test_ids)->count();
     }
@@ -65,7 +65,7 @@ class PassingService
      * @return integer
      */
     public static function getPassingTotalStatusTest($content_id, $status, $result) {
-        $test_ids = TestService::pluckIDArticles($content_id);
+        $test_ids = TestService::pluckIDRootTests($content_id);
 
         if ($test_ids) {
             return Passing::IsPassed(false, $test_ids, $status, $result)->distinct()->orderBy('created_at')->count('user_id');
@@ -73,6 +73,7 @@ class PassingService
 
         return 0;
     }
+
 
     /**
      * @param $content_id
@@ -94,7 +95,7 @@ class PassingService
      * @return integer
      */
     public static function getPassingTotalTest($content_id) {
-        $test_ids = TestService::pluckIDArticles($content_id);
+        $test_ids = TestService::pluckIDTests($content_id);
 
         if ($test_ids) {
             return Passing::IsPassed(false, $test_ids)->count();

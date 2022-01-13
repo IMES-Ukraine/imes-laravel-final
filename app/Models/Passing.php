@@ -33,6 +33,39 @@ class Passing extends Model
         'updated_at'
     ];
 
+    public function scopeIsEntityPassed($query, $entityType, $ids )
+    {
+        // TODO это потом убрать. Статьи теперь тоже результатом отмечаются
+        if ($entityType !== TestQuestions::class) {
+            return $query->where('entity_type', $entityType)
+                ->whereIn('entity_id', $ids)
+                ->where('status', '1');
+        }
+        return $query->where('entity_type', $entityType)
+        ->whereIn('entity_id', $ids)
+        ->where('result', '1');
+    }
+
+    public function scopeIsEntityNotPassed($query, $entityType, $ids )
+    {
+        if ($entityType !== TestQuestions::class) {
+            return $query->where('entity_type', $entityType)
+                ->whereIn('entity_id', $ids)
+                ->where('status', '0');
+        }
+        return $query->where('entity_type', $entityType)
+        ->whereIn('entity_id', $ids)
+        ->where('result', '0');
+    }
+
+    public static function getTotalPassed($articles_ids, $test_ids)
+    {
+        return self::select('user_id')
+            ->isEntityPassed(TestQuestions::class, $test_ids)
+            ->isEntityPassed(Post::class, $articles_ids);
+
+    }
+
     public function scopeIsPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS, $result = self::NO_RESULT)
     {
         if ($articles_ids && $test_ids) {
@@ -93,12 +126,6 @@ class Passing extends Model
             $query->where('entity_type', TestQuestions::class)
                 ->whereIn('entity_id', $test_ids);
 
-//            $query->where('created_at', function ($q) use ($test_ids){
-//                $q->select(DB::raw('max(created_at) as created_at'))->from('ulogic_projects_passing')
-//                    ->where('entity_type', TestQuestions::class)
-//                    ->whereIn('entity_id', $test_ids)
-//                    ->max('created_at');
-//            });
         }
     }
 

@@ -38,7 +38,7 @@ class Projects extends Model
     protected $fillable = ['options', 'status'];
 
     protected $casts = [
-        'options' => 'array',
+        'options'  => 'array',
         'audience' => 'array',
     ];
 
@@ -97,5 +97,32 @@ class Projects extends Model
         $this->audience = $audience;
         return $audience;
     }
+
+    public function notParticipateUserIds($articles_ids, $test_ids)
+    {
+        $result = User::whereIn('id', $this->audience);
+
+        if ($articles_ids) {
+            $in_articles = Passing::select('user_id')
+                ->where('ulogic_projects_passing.entity_type', Post::class)
+                ->whereIn('ulogic_projects_passing.entity_id', $articles_ids)
+                ->get();
+
+            $result->whereNotIn('id', $in_articles);
+        }
+
+        if ($test_ids) {
+            $in_tests = Passing::select('user_id')
+                ->where('ulogic_projects_passing.entity_type', TestQuestions::class)
+                ->whereIn('ulogic_projects_passing.entity_id', $test_ids)
+                ->get();
+
+            $result->whereNotIn('id', $in_tests);
+        }
+
+        return $result->plack('id');
+    }
+
+
 
 }

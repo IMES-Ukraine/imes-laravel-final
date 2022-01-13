@@ -165,6 +165,8 @@ class BlogController extends Controller
 
         $tracking = new TrackingProvider($userModel);
         $tracking->setBlockReaded($articleId, $blockId);
+
+        //TODO везде перейти на класс Articles
         $article = Post::findOrFail($articleId);
 
         $learningBonus = $article->learning_bonus;
@@ -182,9 +184,10 @@ class BlogController extends Controller
                 $article->increment('passed');
                 $finalBonus = $learningBonus;
                 $passed->setId($article, Passing::PASSING_ACTIVE);
+                $passed->setResult($article, Passing::PASSING_RESULT_ACTIVE);
             }
 
-            $data = $userModel->makeHidden(User::TO_HIDE)->toArray();
+            $data = $userModel->makeHidden(User::NOT_SHOW)->toArray();
 
             Post::find($articleId)->increment('callbacks');
 

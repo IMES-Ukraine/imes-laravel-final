@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\ImageHelper;
@@ -48,19 +49,12 @@ class ProfileController extends Controller
         $apiUser = Auth::user();
 
         $user = User::find($apiUser->id);
-//        $user->firebase_token = $this->retrieveFirebaseToken();
-//        $user->save();
-        $data = $user->toArray();
 
-        foreach (['permissions', 'deleted_at', 'updated_at', 'activated_at'] as $v) {
-            unset($data[$v]);
-        }
-
-        //$data['firebase_token'] = $this->retrieveFirebaseToken();
+        $data = $user->makeHidden(User::NOT_SHOW)->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [
             'user' => $data,
-        //    'settings' => $this->getUserSettings(),
+
         ]);
     }
 
@@ -69,7 +63,6 @@ class ProfileController extends Controller
      * send request for verifying profile
      */
     public function verify(Request $request){
-
         $userModel = auth()->user();
 
         if ($userModel->is_verified){
@@ -95,7 +88,7 @@ class ProfileController extends Controller
             return $this->helpers->apiArrayResponseBuilder(401, 'error', $userModel->messages()->all());
         }
 
-        $data = $userModel->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
+        $data = $userModel->makeHidden(User::NOT_SHOW)->toArray();
 
         // Если юзер уже подал заявку на верификацию - заявку не дублируем
         if (!AccountVerificationRequests::where('user_id', $userModel->id)->first() ){
@@ -164,7 +157,7 @@ class ProfileController extends Controller
 
         $apiUser->update(['password' => Hash::make($request->post('password') )]);
 
-        $data = User::where(['id' => $apiUser->id])->first()->makeHidden(['permissions', 'deleted_at', 'updated_at', 'activated_at'])->toArray();
+        $data = User::where(['id' => $apiUser->id])->first()->makeHidden(User::NOT_SHOW)->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', ['user' => $data]);
     }

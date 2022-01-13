@@ -156,8 +156,7 @@ Route::group(
                     [ProfileController::class, 'token']);
 
                 Route::post('/withdraw',
-                    [ProfileController::class, 'withdraw'])
-                    ;
+                    [ProfileController::class, 'withdraw']);
 
                 Route::post('/verify',
                     [ProfileController::class, 'verify']);

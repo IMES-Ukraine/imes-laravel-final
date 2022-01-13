@@ -68,14 +68,14 @@
                 <div class="form-group col-12">
                     <label class="form-control__label">Номер лицензии</label>
                     <input class="form-control db-edit-modal__input" type="text"
-                           v-model="data.specialized_information.licenseNumber">
+                           v-model="data.specialized_information.license_number">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-12">
                     <label class="form-control__label">Период обучения</label>
                     <input class="form-control db-edit-modal__input" type="text"
-                           v-model="data.specialized_information.studyPeriod">
+                           v-model="data.specialized_information.study_period">
                 </div>
             </div>
             <div class="form-row">

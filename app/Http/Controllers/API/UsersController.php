@@ -10,7 +10,9 @@ use App\Http\Controllers\Controller;
 use App\Models\AccountVerificationRequests;
 use App\Models\Passing;
 use App\Models\ProjectResearches;
+use App\Models\TestQuestions;
 use App\Models\UserCards;
+use App\Models\Withdraw;
 use App\Services\ArticleService;
 use App\Services\TestService;
 use App\Services\UsersService;
@@ -22,11 +24,16 @@ use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class UsersController extends Controller
 {
     const COUNT_PER_PAGE = 15;
-    const STATUS_NOT_PARTICIPATE = 2;
+
+    const STATUS_NOT_PARTICIPATE = 2; //Не участвовали
+    const STATUS_PASSED = 1;          // Выполнили активности
+    const STATUS_NOT_PASSED = 0;      //Не выполнили активности
+
     protected $user;
 
     protected $helpers;
@@ -57,11 +64,12 @@ class UsersController extends Controller
     {
         $research = ProjectResearches::select('id')->where('project_id', $project_id)->first();
         $articles_ids = ArticleService::pluckIDArticles($research->id);
-        $test_ids = TestService::pluckIDArticles($research->id);
+        $test_ids = TestService::pluckIDTests($research->id);
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
             $results = User::isNotPassed($articles_ids, $test_ids)->paginate(self::COUNT_PER_PAGE);
-        } else {
+        }
+        else {
             $results = User::isPassed($articles_ids, $test_ids, $status)->paginate(self::COUNT_PER_PAGE);
         }
 
@@ -72,16 +80,27 @@ class UsersController extends Controller
 
     public function passingTestAll($content_id, $status)
     {
-        $test_ids = TestService::pluckIDArticles($content_id);
+        $test_ids = TestService::pluckIDRootTests($content_id);
 
-        if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = User::isNotPassed(false, $test_ids)->paginate(self::COUNT_PER_PAGE);
-        } else {
-            $results = Passing::with('user')
-                ->with('withdraw')
-                ->isPassed(false, $test_ids, $status)
-                ->groupBy('user_id')
-                ->paginate(self::COUNT_PER_PAGE);
+        switch ($status) {
+            case self::STATUS_NOT_PARTICIPATE:
+                $results = User::isNotPassed(false, $test_ids)->paginate(self::COUNT_PER_PAGE);
+                break;
+            case self::STATUS_NOT_PASSED:
+                $results = Passing::with('user')
+                    ->isEntityNotPassed(TestQuestions::class, $test_ids)
+                    ->groupBy('user_id')
+                    ->paginate(self::COUNT_PER_PAGE);
+                break;
+            case self::STATUS_PASSED:
+                $results = Passing::with('user')
+                    ->isEntityPassed(TestQuestions::class, $test_ids)
+                    ->groupBy('user_id')
+                    ->paginate(self::COUNT_PER_PAGE);
+                break;
+            default:
+                $results = [];
+
         }
 
         $data = json_decode($results->toJSON());
@@ -95,7 +114,8 @@ class UsersController extends Controller
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
             $results = User::isNotPassed($articles_ids, false)->paginate(self::COUNT_PER_PAGE);
-        } else {
+        }
+        else {
             $results = Passing::with('user')
                 ->with('withdraw')
                 ->isPassed($articles_ids, false, $status)
@@ -171,8 +191,8 @@ class UsersController extends Controller
     {
         $data = $this->user->where('id', $id)->first();
         if (!$data) {
-            $data = $this->user->where('basic_information', 'like', '%'.$id.'%')->first();
-            if(!$data){
+            $data = $this->user->where('basic_information', 'like', '%' . $id . '%')->first();
+            if (!$data) {
                 return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
             }
         }
@@ -195,7 +215,8 @@ class UsersController extends Controller
         if ($validation->passes()) {
             $this->user->save();
             return $this->helpers->apiArrayResponseBuilder(201, 'created', ['id' => $this->user->id]);
-        } else {
+        }
+        else {
             return $this->helpers->apiArrayResponseBuilder(400, 'fail', $validation->errors());
         }
 
@@ -206,12 +227,11 @@ class UsersController extends Controller
         $user = $this->user->find($id);
 
 
-
         $data = $request->input('data');
         $data['phone'] = filter_var($data['phone'], FILTER_SANITIZE_NUMBER_INT);
         $data['phone'] = str_replace('+', '', $data['phone']);
 
-        if (!$data['email']){
+        if (!$data['email']) {
             $data['email'] = $this->helpers->generateUserName($phone);
         }
 
@@ -226,7 +246,8 @@ class UsersController extends Controller
 
             return $this->helpers->apiArrayResponseBuilder(200, 'Дані було успішно оновлено.');
 
-        } else {
+        }
+        else {
 
             return $this->helpers->apiArrayResponseBuilder(400, 'Під час оновлення даних виникла помилка');
 
