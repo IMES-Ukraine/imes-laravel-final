@@ -60,7 +60,7 @@ class PassingProvider
 
     }
 
-    public function setResult($entity, $result = Passing::PASSING_RESULT_ACTIVE, $status = Passing::PASSING_NOT_ACTIVE)
+    public function setResult($entity, $result = Passing::PASSING_RESULT_ACTIVE, $status = Passing::PASSING_ACTIVE)
     {
         return Passing::updateOrCreate([
             'entity_type' => get_class($entity),
@@ -68,7 +68,8 @@ class PassingProvider
             'user_id' => $this->user->id
         ], [
             'result' => $result,
-            'status' => $status
+            'status' => $status,
+            'updated_at' => date('Y-m-d H:i:s')
         ]);
 
     }

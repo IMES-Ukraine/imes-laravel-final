@@ -246,7 +246,7 @@ class TestService
                 // если после вычитания массивов пусто - значит все ответы совпадают
                 if (!count(array_diff($correctAnswer, $userVariants)) && !count(array_diff($userVariants, $correctAnswer))) {
                     $results[$var['test_id']] = self::TEST_RESULT_SUCCESS;
-                    $testStatus = $testStatus = Passing::PASSING_RESULT_ACTIVE;
+                    $testStatus = Passing::PASSING_RESULT_ACTIVE;
                 }
             }
             //если мы в сложном тесте

@@ -95,13 +95,13 @@ class ProjectResearches extends Model
         'test' => ['required'],
         'schedule' => ['required'],
     ];
-    protected $appends = ['fullTest'];
+    protected $appends = ['fullTest', 'fullArticle'];
 
     public function getFullTestAttribute()
     {
         $testQuestion = $this->testObject()->first();
         $test = (array)$this->test;
-        $res = [];
+        $res = null;
         if ($testQuestion) {
             $res = TestQuestions::with(['cover_image', 'image', 'video', 'complex', 'featured_images', 'research'])
                 ->where(['id' => $testQuestion->id])
@@ -115,9 +115,23 @@ class ProjectResearches extends Model
         return $res;
     }
 
-    public function project(): BelongsTo
+    public function getFullArticleAttribute()
     {
-        return $this->belongsTo(Projects::class, 'project_id', 'id');
+        $article = $this->articleObject()->first();
+        $res = null;
+        if ($article) {
+            $res = Articles::with(['cover_image', 'featured_images'])
+                ->where(['id' => $article->id])
+                ->first()
+                ->makeHidden('research')
+                ->toArray();
+        }
+        return $res;
+    }
+
+    public function project(): HasOne
+    {
+        return $this->hasOne(Projects::class, 'id', 'project_id');
     }
 
     /**

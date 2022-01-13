@@ -2,29 +2,25 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Classes\UserBasicInfo;
-use App\Classes\UserFinancialInfo;
-use App\Classes\UserSpecializedInfo;
 use App\Exports\ExportUserView;
 use App\Http\Controllers\Controller;
 use App\Models\AccountVerificationRequests;
 use App\Models\Passing;
 use App\Models\ProjectResearches;
+use App\Models\Projects;
 use App\Models\TestQuestions;
 use App\Models\UserCards;
-use App\Models\Withdraw;
 use App\Services\ArticleService;
 use App\Services\TestService;
 use App\Services\UsersService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use Mockery\Generator\StringManipulation\Pass\Pass;
+
+
 
 class UsersController extends Controller
 {
@@ -62,12 +58,14 @@ class UsersController extends Controller
 
     public function passing($project_id, $status)
     {
-        $research = ProjectResearches::select('id')->where('project_id', $project_id)->first();
+        $research = ProjectResearches::where('project_id', $project_id)->first();
+
+        $project = $research->project;
         $articles_ids = ArticleService::pluckIDArticles($research->id);
         $test_ids = TestService::pluckIDTests($research->id);
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = User::isNotPassed($articles_ids, $test_ids)->paginate(self::COUNT_PER_PAGE);
+            $results = $project->notParticipateUserIds($articles_ids, $test_ids)->paginate(self::COUNT_PER_PAGE);
         }
         else {
             $results = User::isPassed($articles_ids, $test_ids, $status)->paginate(self::COUNT_PER_PAGE);
@@ -78,13 +76,17 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    public function passingTestAll($content_id, $status)
+    public function passingTestAll($content_id, $status): JsonResponse
     {
+        $research = ProjectResearches::where('id', $content_id)->first();
+        /** @var Projects $project */
+        $project = $research->project;
+
         $test_ids = TestService::pluckIDRootTests($content_id);
 
         switch ($status) {
             case self::STATUS_NOT_PARTICIPATE:
-                $results = User::isNotPassed(false, $test_ids)->paginate(self::COUNT_PER_PAGE);
+                $results = $project->notParticipateUserIds(false, $test_ids)->paginate(self::COUNT_PER_PAGE);
                 break;
             case self::STATUS_NOT_PASSED:
                 $results = Passing::with('user')
@@ -110,10 +112,13 @@ class UsersController extends Controller
 
     public function passingArticleAll($content_id, $status)
     {
+        $research = ProjectResearches::where('id', $content_id)->first();
+        $project = $research->project;
+
         $articles_ids = ArticleService::pluckIDArticles($content_id);
 
         if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = User::isNotPassed($articles_ids, false)->paginate(self::COUNT_PER_PAGE);
+            $results = $project->notParticipateUserIds($articles_ids, false)->paginate(self::COUNT_PER_PAGE);
         }
         else {
             $results = Passing::with('user')

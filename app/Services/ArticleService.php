@@ -12,7 +12,7 @@ class ArticleService
 {
     public function addArticle( $article) {
 
-        $recommended = $article['chosenRecommended'];
+        $recommended = $article['recommended'];
         $action = !empty($article['button']) ? $article['button'] : '';
 
         $model = new Articles();

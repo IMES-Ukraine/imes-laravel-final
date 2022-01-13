@@ -177,14 +177,14 @@ class BlogController extends Controller
             $lastBlock = key(array_slice($content, -1, 1, true));
 
             $passed = new PassingProvider($userModel);
-            $passedIds = $passed->getIds(Post::class);
+            $passedIds = $passed->getResults(Post::class);
+
 
             if (!in_array($articleId, $passedIds) && ($blockId == $lastBlock) && $tracking->isReadClosely($article)) {
                 $userModel->addBalance($learningBonus, $article);
                 $article->increment('passed');
                 $finalBonus = $learningBonus;
-                $passed->setId($article, Passing::PASSING_ACTIVE);
-                $passed->setResult($article, Passing::PASSING_RESULT_ACTIVE);
+                $passed->setResult($article);
             }
 
             $data = $userModel->makeHidden(User::NOT_SHOW)->toArray();

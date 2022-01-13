@@ -98,17 +98,21 @@ class Projects extends Model
         return $audience;
     }
 
+    /**
+     * @param $articles_ids
+     * @param $test_ids
+     * @return mixed
+     */
     public function notParticipateUserIds($articles_ids, $test_ids)
     {
         $result = User::whereIn('id', $this->audience);
-
         if ($articles_ids) {
             $in_articles = Passing::select('user_id')
                 ->where('ulogic_projects_passing.entity_type', Post::class)
                 ->whereIn('ulogic_projects_passing.entity_id', $articles_ids)
                 ->get();
 
-            $result->whereNotIn('id', $in_articles);
+            $result = $result->whereNotIn('id', $in_articles);
         }
 
         if ($test_ids) {
@@ -117,10 +121,9 @@ class Projects extends Model
                 ->whereIn('ulogic_projects_passing.entity_id', $test_ids)
                 ->get();
 
-            $result->whereNotIn('id', $in_tests);
+            $result = $result->whereNotIn('id', $in_tests);
         }
-
-        return $result->pluck('id');
+        return $result;
     }
 
 
