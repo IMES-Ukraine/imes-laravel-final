@@ -120,7 +120,7 @@ class Projects extends Model
             $result->whereNotIn('id', $in_tests);
         }
 
-        return $result->plack('id');
+        return $result->pluck('id');
     }
 
 

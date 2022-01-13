@@ -224,7 +224,7 @@ class ProjectRepository
 
         $projectObj = Projects::with(['items'])
             ->where('id', $id)->first();
-        if (empty($project)) {
+        if (empty($projectObj)) {
             return (object)[
                 'data' => []
             ];
@@ -274,7 +274,7 @@ class ProjectRepository
 
 
             $content[$key]->offsetSet('test_status_active', $test_status_active);
-            $content[$key]->offsetSet('article_status_active', PassingService::getPassingTotalStatusArticle($item->id, Passing::PASSING_ACTIVE));
+            $content[$key]->offsetSet('article_status_active', $article_status_active);
 
 
 
