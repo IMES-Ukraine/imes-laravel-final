@@ -34,7 +34,7 @@ class ExportUserView implements FromView
         $articles_ids = ArticleService::pluckIDArticles($this->content_id ?? $research->id);
         $test_ids = TestService::pluckIDRootTests($this->content_id ?? $research->id);
 
-        $results = Passing::with('user')->with('withdraw')
+        $results = Passing::with('user')
             ->where(function ($q) use ($articles_ids) {
                 $q->isEntityPassed(Post::class, $articles_ids);
             })
@@ -48,7 +48,7 @@ class ExportUserView implements FromView
                 $q->isEntityNotPassed(TestQuestions::class, $test_ids);
             })
             ->get();
-//        dd($results->toArray());
+
         return view('exports.users', [
             'results' => $results
         ]);

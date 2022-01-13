@@ -35,14 +35,25 @@ class Passing extends Model
         'updated_at'
     ];
 
+    protected $appends = ['withdraw'];
+
+    public function getWithdrawAttribute()
+    {
+        $test = Withdraw::where('user_id', $this->user_id)
+            ->where('entity_id', $this->entity_id)
+            ->where('type', Withdraw::TYPE_TEST)
+            ->first();
+        $article = Withdraw::where('user_id', $this->user_id)
+            ->where('entity_id', $this->entity_id)
+            ->where('type', Withdraw::TYPE_ARTICLE)
+            ->first();
+
+        return ['article' => $article->total ?? 0, 'test' => $test->total ?? 0];
+     }
+
+
     public function scopeIsEntityPassed($query, $entityType, $ids)
     {
-        // TODO это потом убрать. Статьи теперь тоже результатом отмечаются
-        if ($entityType !== TestQuestions::class) {
-            return $query->where('entity_type', $entityType)
-                ->whereIn('entity_id', $ids)
-                ->where('status', '1');
-        }
         return $query->where('entity_type', $entityType)
             ->whereIn('entity_id', $ids)
             ->where('result', '1');
@@ -50,15 +61,12 @@ class Passing extends Model
 
     public function scopeIsEntityNotPassed($query, $entityType, $ids)
     {
-        if ($entityType !== TestQuestions::class) {
-            return $query->where('entity_type', $entityType)
-                ->whereIn('entity_id', $ids)
-                ->where('status', '0');
-        }
         return $query->where('entity_type', $entityType)
             ->whereIn('entity_id', $ids)
             ->where('result', '0');
     }
+
+
 
     public function scopeGetTotalPassed($query, $articles_ids, $test_ids)
     {
@@ -190,8 +198,4 @@ class Passing extends Model
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function withdraw()
-    {
-        return $this->hasOne(Withdraw::class, 'user_id', 'user_id')->where('entity_id', $this->entity_id);
-    }
 }

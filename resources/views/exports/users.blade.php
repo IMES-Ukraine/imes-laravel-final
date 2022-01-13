@@ -38,14 +38,14 @@
     <tbody>
     @foreach($results as $value)
         <tr>
-            <td style="border: 1px solid grey;">{{ ($value->user['basic_information'] && isset($value->user['basic_information']['name']))?$value->user['basic_information']['name']:$value->user['name'] }} {{ ($value->user['basic_information'] && isset($value->user['basic_information']['surname']))?$value->user['basic_information']['surname']:'' }}</td>
-            <td style="border: 1px solid grey;">{{ ($value->user['specialized_information'] && isset($value->user['specialized_information']['specification']))?$value->user['specialized_information']['specification']:'' }}</td>
-            <td style="border: 1px solid grey;">{{ ($value->user['city_info'])?$value->user['city_info']['name']:'' }}</td>
-            <td style="border: 1px solid grey;">{{ ($value->user['specialized_information'] && isset($value->user['specialized_information']['workplace']))?$value->user['specialized_information']['workplace']:'' }}</td>
+            <td style="border: 1px solid grey;">{{ $value->user['basic_information']['name'] }}</td>
+            <td style="border: 1px solid grey;">{{ $value->user['specialized_information']['specification'] }}</td>
+            <td style="border: 1px solid grey;">{{ $value->user['specialized_information']['city'] }}</td>
+            <td style="border: 1px solid grey;">{{ $value->user['specialized_information']['workplace']}}</td>
             <td style="border: 1px solid grey;">{{ $value->user['phone'] }}</td>
-            <td style="border: 1px solid grey;"></td>
-            <td style="border: 1px solid grey;"></td>
-            <td style="border: 1px solid grey;"></td>
+            <td style="border: 1px solid grey;">{{ $value->user['balance'] }}</td>
+            <td style="border: 1px solid grey;">{{ $value->withdraw['article'] }}</td>
+            <td style="border: 1px solid grey;">{{ $value->withdraw['test'] }}</td>
             <td style="border: 1px solid grey;background-color: #E9EE4E"></td>
             <td style="border: 1px solid grey;background-color: #E9EE4E"></td>
             <!--<td style="border: 1px solid grey;"></td>
