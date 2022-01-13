@@ -349,6 +349,7 @@ export default {
 .dashboard_study__block-head {
     display: block;
     margin-top: 10px;
+    height: 55px;
 }
 
 </style>
