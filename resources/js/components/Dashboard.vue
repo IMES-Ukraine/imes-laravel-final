@@ -83,7 +83,7 @@
                     <div class="dashboard_study-title">
                         <div>{{ content.title }}</div>
                         <div>
-                            <a :href="'/admin/api/v1/export-users-article/' + project.project.id + '/' + content.id"
+                            <a :href="'/admin/api/v1/export-users-pack/' + project.project.id + '/' + content.id"
                                class="dashboard_study__block-download"><span>Скачать отчёт пакета</span>
                             </a>
                         </div>

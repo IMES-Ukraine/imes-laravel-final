@@ -334,7 +334,7 @@ class TestService
         }
 
         $resType = self::TEST_SUBMITTED;
-        $data = $apiUser->makeHidden(User::TO_HIDE)->toArray();
+        $data = $apiUser->makeHidden(User::NOT_SHOW)->toArray();
 
         return compact('resType', 'userPassingBonus', 'testOutStatus', 'data');
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exports;
 
 use App\Models\Articles;
@@ -29,11 +30,25 @@ class ExportUserView implements FromView
     public function view(): View
     {
         $research = ProjectResearches::select('id')->where('project_id', $this->project_id)->first();
-        $articles_ids = ArticleService::pluckIDArticles($this->content_id??$research->id);
-        $test_ids = TestService::pluckIDTests($this->content_id??$research->id);
 
-        $results = Passing::with('user')->with('withdraw')->isPassed($articles_ids, $test_ids)->get();
+        $articles_ids = ArticleService::pluckIDArticles($this->content_id ?? $research->id);
+        $test_ids = TestService::pluckIDRootTests($this->content_id ?? $research->id);
 
+        $results = Passing::with('user')->with('withdraw')
+            ->where(function ($q) use ($articles_ids) {
+                $q->isEntityPassed(Post::class, $articles_ids);
+            })
+            ->orWhere(function ($q) use ($articles_ids) {
+                $q->isEntityNotPassed(Post::class, $articles_ids);
+            })
+            ->orWhere(function ($q) use ($test_ids) {
+                $q->isEntityPassed(TestQuestions::class, $test_ids);
+            })
+            ->orWhere(function ($q) use ($test_ids) {
+                $q->isEntityNotPassed(TestQuestions::class, $test_ids);
+            })
+            ->get();
+//        dd($results->toArray());
         return view('exports.users', [
             'results' => $results
         ]);

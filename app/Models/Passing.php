@@ -192,6 +192,6 @@ class Passing extends Model
 
     public function withdraw()
     {
-        return $this->hasOne(Withdraw::class, 'id', 'user_id');
+        return $this->hasOne(Withdraw::class, 'user_id', 'user_id')->where('entity_id', $this->entity_id);
     }
 }
