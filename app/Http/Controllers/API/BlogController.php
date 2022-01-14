@@ -19,6 +19,7 @@ use App\Models\Articles;
 use App\Models\Opened;
 use App\Models\PassingProvider;
 use App\Models\TrackingProvider;
+use Illuminate\Support\Facades\Log;
 
 
 class BlogController extends Controller
@@ -144,6 +145,8 @@ class BlogController extends Controller
 
         $tracking = new TrackingProvider(auth()->user());
         $tracking->startReading($id);
+        $passed = new PassingProvider(auth()->user());
+        $passed->setId($post );
 
         $images = $post->featured_images;
 

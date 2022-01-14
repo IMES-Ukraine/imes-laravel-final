@@ -49,7 +49,7 @@ class Passing extends Model
             ->first();
 
         return ['article' => $article->total ?? 0, 'test' => $test->total ?? 0];
-     }
+    }
 
 
     public function scopeIsEntityPassed($query, $entityType, $ids)
@@ -67,42 +67,58 @@ class Passing extends Model
     }
 
 
-
     public function totalPassed($articles_ids, $test_ids)
     {
         $tests = [];
         $articles = [];
-        if (!empty($test_ids) ) {
-            (array)$tests = self::where('entity_type', TestQuestions::class)
-                    ->whereIn('entity_id', $test_ids)
+        if (!empty($test_ids)) {
+            foreach ($test_ids as $id) {
+                $q = self::where('entity_type', TestQuestions::class)
+                    ->where('entity_id', $id)
                     ->where('result', '1')
-                ->pluck('user_id')->toArray();
+                    ->pluck('user_id')
+                    ->toArray();
+                if (empty($tests)) {
+                    $tests = $q;
+                }
+                $tests = array_intersect($tests, $q);
+            }
 
         }
+
         if (!empty($articles_ids)) {
-            (array)$articles = self::where('entity_type', Post::class)
-                    ->whereIn('entity_id', $articles_ids)
+            foreach ($articles_ids as $id) {
+                $q = self::where('entity_type', Post::class)
+                    ->where('entity_id', $id)
                     ->where('result', '1')
-                ->pluck('user_id')->toArray();
+                    ->pluck('user_id')
+                    ->toArray();
+                if (empty($articles)) {
+                    $articles = $q;
+                }
+                $articles = array_intersect($articles, $q);
+            }
 
         }
-        if(!empty($tests) && !empty($articles) ) {
+
+        if (!empty($test_ids) && !empty($articles_ids)) {
             $res = array_intersect($tests, $articles);
         }
-        else if (!empty($tests)){
-            $res = $tests;
-        }
         else {
-            $res = $articles;
+            if (!empty($test_ids)) {
+                $res = $tests;
+            }
+            else {
+                $res = $articles;
+            }
         }
-
-       return $res;
-
+        return array_unique($res);
 
 
     }
 
-    public function scopeIsPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS, $result = self::NO_RESULT)
+    public
+    function scopeIsPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS, $result = self::NO_RESULT)
     {
         if ($articles_ids && $test_ids) {
             $query->where(function ($q) use ($test_ids, $status, $result) {
@@ -165,7 +181,8 @@ class Passing extends Model
         }
     }
 
-    public function scopeIsNotPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS)
+    public
+    function scopeIsNotPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS)
     {
         if ($articles_ids && $test_ids) {
             $query->where(function ($q) use ($test_ids, $status) {
@@ -207,17 +224,21 @@ class Passing extends Model
     /**
      * @var string The database table used by the model.
      */
-    public $table = 'ulogic_projects_passing';
+    public
+        $table = 'ulogic_projects_passing';
 
     /**
      * @var array Validation rules
      */
-    public $rules = [
+    public
+        $rules = [
     ];
 
-    protected $casts = ['answer' => 'object'];
+    protected
+        $casts = ['answer' => 'object'];
 
-    public function user()
+    public
+    function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }

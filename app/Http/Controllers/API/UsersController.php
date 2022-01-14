@@ -71,23 +71,25 @@ class UsersController extends Controller
             $articles_ids = array_merge($articles_ids, ArticleService::pluckIDArticles($item->id));
             $test_ids = array_merge($test_ids, TestService::pluckIDRootTests($item->id));
         }
-
+        $passed = Passing::totalPassed($articles_ids, $test_ids);
         switch ($status) {
             case self::STATUS_NOT_PARTICIPATE:
                 $results = $project->notParticipateUserIds($articles_ids, $test_ids)->paginate(self::COUNT_PER_PAGE);
                 break;
             case self::STATUS_PASSED:
-                $passed = Passing::totalPassed($articles_ids, $test_ids);
-                $results = User::whereIn('id', $passed)->paginate(self::COUNT_PER_PAGE);
+               $results = User::whereIn('id', $passed)->paginate(self::COUNT_PER_PAGE);
                 break;
             case self::STATUS_NOT_PASSED:
                 $results = Passing::with('user')->where(function ($q) use ($articles_ids) {
-                    $q->isEntityNotPassed(Post::class, $articles_ids);
+                    $q->where('entity_type', Post::class)
+                        ->whereIn('entity_id', $articles_ids);
                 })
                     ->orWhere(function ($q) use ($test_ids) {
-                        $q->isEntityNotPassed(TestQuestions::class, $test_ids);
+                        $q->where('entity_type', TestQuestions::class)
+                            ->whereIn('entity_id', $test_ids);
                     })
                     ->groupBy('user_id')
+                    ->whereNotIn('user_id', $passed)
                     ->paginate(self::COUNT_PER_PAGE);
                 break;
             default:
