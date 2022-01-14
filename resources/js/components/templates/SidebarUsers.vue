@@ -61,12 +61,22 @@
         },
         methods: {
             findUser(id) {
+                let a = this;
                 if (this.filter) {
                     this.$emit('update', id);
                 } else {
                     this.$get(USER + '/' + id).then(
+
                         response => {
-                            this.showModal(response.data);
+                            if(response.message !== 'error') {
+                                a.showModal(response.data);
+                            }
+                            else {
+                                a.$bvModal.msgBoxOk('Нет такого пользователя', {
+                                    footerClass: 'my-modal-footer',
+                                    bodyClass: 'my-modal-body'
+                                })
+                            }
                         }
                     )
                 }

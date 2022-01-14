@@ -21,22 +21,20 @@
                                         Заголовок обов'язковий
                                     </div>
                                 </div>
-                                <!-- article-title -->
-                                <article-input-title
-                                    v-bind:type.sync="type"
-                                    :articleType="articleType"
-                                    :title_error="title_error"
-                                    @update="articleTypeStore"
-                                />
-                                <!-- end-article-title -->
+                                <b-form-group v-slot="{ ariaDescribedby }">
+                                    <b-form-radio-group v-model="article.type"
+                                                        :aria-describedby="ariaDescribedby"
+                                                        class="articles_create__radio_circle-bloc"
+                                                        :options="articleTypes">
+                                    </b-form-radio-group>
+                                </b-form-group>
                             </div>
                         </div>
                         <div class="articles_create__item half">
                             <p class="articles_create__item-title">Обложка</p>
 
                             <div class="articles_create__item-content">
-                                <div
-                                    :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: article.cover_image.path} ] ">
+                                <div :class="['articles_create__item-file', 'width-auto buttonAddFile', {has_file: article.cover_image.path} ] ">
                                     <input
                                         type="file"
                                         name="addCover"
@@ -56,8 +54,8 @@
                             <p class="articles_create__item-title">Галерея</p>
                             <div class="articles_create__item-content">
                                 <div class="articles_create__media">
-                                    <div class="articles_create__media-list">
-                                        <div v-for="file in article.featured_images" :key="JSON.stringify(article)" class="articles_create__media-item">
+                                    <div class="articles_create__media-list" :key="JSON.stringify(article.featured_images)">
+                                        <div v-for="(file, index) in article.featured_images"  class="articles_create__media-item">
                                             <div class="articles_create__media-img">
                                                 <img :src="file.path" alt="">
                                             </div>
@@ -324,6 +322,10 @@ export default {
             articleType: 1,
             type: 1,
             textLocale: 0,
+            articleTypes: {
+                1: "Новини",
+                2: "Інформація"
+            },
             article: {
                 type: 1,
                 title: '',

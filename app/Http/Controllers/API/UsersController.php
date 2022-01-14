@@ -227,7 +227,7 @@ class UsersController extends Controller
         if (!$data) {
             $data = $this->user->where('basic_information', 'like', '%' . $id . '%')->first();
             if (!$data) {
-                return $this->helpers->apiArrayResponseBuilder(400, 'bad request', ['error' => 'invalid key']);
+                return $this->helpers->apiArrayResponseBuilder(200);
             }
         }
         $data = json_decode($data->toJSON());
