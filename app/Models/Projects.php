@@ -110,7 +110,7 @@ class Projects extends Model
             $in_articles = Passing::select('user_id')
                 ->where('ulogic_projects_passing.entity_type', Post::class)
                 ->whereIn('ulogic_projects_passing.entity_id', $articles_ids)
-                ->get();
+                ->pluck('user_id')->toArray();
 
             $result = $result->whereNotIn('id', $in_articles);
         }
@@ -119,7 +119,7 @@ class Projects extends Model
             $in_tests = Passing::select('user_id')
                 ->where('ulogic_projects_passing.entity_type', TestQuestions::class)
                 ->whereIn('ulogic_projects_passing.entity_id', $test_ids)
-                ->get();
+                ->pluck('user_id')->toArray();
 
             $result = $result->whereNotIn('id', $in_tests);
         }

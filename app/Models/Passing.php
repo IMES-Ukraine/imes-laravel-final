@@ -68,14 +68,38 @@ class Passing extends Model
 
 
 
-    public function scopeGetTotalPassed($query, $articles_ids, $test_ids)
+    public function totalPassed($articles_ids, $test_ids)
     {
+        $tests = [];
+        $articles = [];
         if (!empty($test_ids) ) {
-            $query->isEntityPassed(TestQuestions::class, $test_ids);
+            (array)$tests = self::where('entity_type', TestQuestions::class)
+                    ->whereIn('entity_id', $test_ids)
+                    ->where('result', '1')
+                ->pluck('user_id')->toArray();
+
         }
         if (!empty($articles_ids)) {
-            $query->isEntityPassed(Post::class, $articles_ids);
+            (array)$articles = self::where('entity_type', Post::class)
+                    ->whereIn('entity_id', $articles_ids)
+                    ->where('result', '1')
+                ->pluck('user_id')->toArray();
+
         }
+        if(!empty($tests) && !empty($articles) ) {
+            $res = array_intersect($tests, $articles);
+        }
+        else if (!empty($tests)){
+            $res = $tests;
+        }
+        else {
+            $res = $articles;
+        }
+
+       return $res;
+
+
+
     }
 
     public function scopeIsPassed($query, $articles_ids, $test_ids, $status = self::NO_STATUS, $result = self::NO_RESULT)

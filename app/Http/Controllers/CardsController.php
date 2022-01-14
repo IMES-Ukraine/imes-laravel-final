@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Cards;
 use App\Http\Requests\StoreCardsRequest;
+use App\Models\Notifications;
 use App\Models\UserCards;
 use App\Models\Withdraw;
 use App\Services\UsersService;
+use App\Traits\NotificationsHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class CardsController extends Controller
 {
-
+    use NotificationsHelper;
 
     /**
      * Display a listing of the resource.
@@ -82,7 +84,14 @@ class CardsController extends Controller
             $withdraw->type = 'card';
 
             $withdraw->save();
+
             UsersService::reduceBalance($user->id, $balance);
+
+//            $this->sendNotificationToUser($user, Notifications::TYPE_WITHDRAW,
+//                "Вы приобрели карту {$card->name}  за {$card->cost} баллов
+//                ", [],
+//                'Покупка за баллы');
+
         });
 
         return UserCards::where('user_id', $user->id)->with('card')->paginate();

@@ -180,10 +180,10 @@ class User extends Authenticatable implements JWTSubject
                 ->whereIn('ulogic_projects_passing.entity_id', $articles_ids);
 
             if ($status) {
-                $query_article->where('status', $status);
+                $query_article->where('result', $status);
             }
 
-            $in_articles = $query_article->distinct();
+            $in_articles = $query_article;
             $query->whereIn('id', $in_articles);
         }
 
@@ -193,11 +193,11 @@ class User extends Authenticatable implements JWTSubject
                 ->whereIn('ulogic_projects_passing.entity_id', $test_ids);
 
             if ($status) {
-                $query_test->where('status', $status);
+                $query_test->where('result', $status);
             }
 
-            $in_tests = $query_test->distinct();
-            $query->orWhereIn('id', $in_tests);
+            $in_tests = $query_test;
+            $query->whereIn('id', $in_tests);
         }
     }
 
@@ -319,6 +319,18 @@ class User extends Authenticatable implements JWTSubject
     public function user_cards(): HasMany
     {
         return $this->hasMany(UserCards::class);
+    }
+
+    public function setBalance($sum)
+    {
+        $this->balance = $this->balance + $sum;
+        $this->save();
+
+
+        $this->sendNotificationToUser($this, Notifications::TYPE_WITHDRAW,
+            "Вам начислено {$sum} баллов", [],
+            'Начислены баллы');
+
     }
 
 }

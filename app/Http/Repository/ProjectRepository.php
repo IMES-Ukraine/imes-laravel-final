@@ -300,7 +300,7 @@ class ProjectRepository
 
         }
 
-        $total_status_active = Passing::select('*')->getTotalPassed($totalArticleIds, $totalTestsIds)->count();
+        $total_status_active = count(Passing::totalPassed($totalArticleIds, $totalTestsIds) );
         $total_status_not_participate = $projectObj->notParticipateUserIds($totalArticleIds, $totalTestsIds)->count();
         $all_activities = $users_total - $total_status_not_participate;
         $total_status_not_active = $all_activities - $total_status_active;

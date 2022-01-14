@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Exports\ExportUserView;
 use App\Http\Controllers\Controller;
 use App\Models\AccountVerificationRequests;
+use App\Models\Notifications;
 use App\Models\Passing;
+use App\Models\Post;
 use App\Models\ProjectResearches;
 use App\Models\Projects;
 use App\Models\TestQuestions;
@@ -13,6 +15,7 @@ use App\Models\UserCards;
 use App\Services\ArticleService;
 use App\Services\TestService;
 use App\Services\UsersService;
+use App\Traits\NotificationsHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
@@ -21,9 +24,10 @@ use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 
 
-
 class UsersController extends Controller
 {
+    use NotificationsHelper;
+
     const COUNT_PER_PAGE = 15;
 
     const STATUS_NOT_PARTICIPATE = 2; //Не участвовали
@@ -64,11 +68,26 @@ class UsersController extends Controller
         $articles_ids = ArticleService::pluckIDArticles($research->id);
         $test_ids = TestService::pluckIDTests($research->id);
 
-        if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = $project->notParticipateUserIds($articles_ids, $test_ids)->paginate(self::COUNT_PER_PAGE);
-        }
-        else {
-            $results = User::isPassed($articles_ids, $test_ids, $status)->paginate(self::COUNT_PER_PAGE);
+        switch ($status) {
+            case self::STATUS_NOT_PARTICIPATE:
+                $results = $project->notParticipateUserIds($articles_ids, $test_ids)->paginate(self::COUNT_PER_PAGE);
+                break;
+            case self::STATUS_PASSED:
+                $results = User::isPassed($articles_ids, $test_ids, self::STATUS_PASSED)->paginate(self::COUNT_PER_PAGE);
+                break;
+            case self::STATUS_NOT_PASSED:
+                $results = Passing::with('user')->where(function ($q) use ($articles_ids) {
+                    $q->isEntityNotPassed(Post::class, $articles_ids);
+                })
+                    ->orWhere(function ($q) use ($test_ids) {
+                        $q->isEntityNotPassed(TestQuestions::class, $test_ids);
+                    })
+                    ->groupBy('user_id')
+                    ->paginate(self::COUNT_PER_PAGE);
+                break;
+            default:
+                $results = [];
+
         }
 
         $data = json_decode($results->toJSON());
@@ -76,7 +95,8 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    public function passingTestAll($content_id, $status): JsonResponse
+    public
+    function passingTestAll($content_id, $status): JsonResponse
     {
         $research = ProjectResearches::where('id', $content_id)->first();
         /** @var Projects $project */
@@ -110,7 +130,8 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    public function passingArticleAll($content_id, $status)
+    public
+    function passingArticleAll($content_id, $status)
     {
         $research = ProjectResearches::where('id', $content_id)->first();
         $project = $research->project;
@@ -122,7 +143,6 @@ class UsersController extends Controller
         }
         else {
             $results = Passing::with('user')
-                ->with('withdraw')
                 ->isPassed($articles_ids, false, $status)
                 ->paginate(self::COUNT_PER_PAGE);
         }
@@ -132,7 +152,8 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    public function passingTest($test_id, $variant)
+    public
+    function passingTest($test_id, $variant)
     {
         $results = Passing::with('user')
             ->with('withdraw')
@@ -147,7 +168,8 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    private function validateUser($data, $user = null)
+    private
+    function validateUser($data, $user = null)
     {
         $errors = '';
 
@@ -169,7 +191,8 @@ class UsersController extends Controller
         return $errors;
     }
 
-    public function create(Request $request)
+    public
+    function create(Request $request)
     {
         $phone = filter_var($request->post('phone'), FILTER_SANITIZE_NUMBER_INT);
         $phone = str_replace('+', '', $phone);
@@ -192,7 +215,8 @@ class UsersController extends Controller
     }
 
 
-    public function show($id)
+    public
+    function show($id)
     {
         $data = $this->user->where('id', $id)->first();
         if (!$data) {
@@ -205,7 +229,8 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
 
-    public function store(Request $request)
+    public
+    function store(Request $request)
     {
 
         $arr = $request->all();
@@ -227,7 +252,8 @@ class UsersController extends Controller
 
     }
 
-    public function update($id, Request $request)
+    public
+    function update($id, Request $request)
     {
         $user = $this->user->find($id);
 
@@ -259,7 +285,8 @@ class UsersController extends Controller
         }
     }
 
-    public function delete($id)
+    public
+    function delete($id)
     {
 
         $this->user->where('id', $id)->delete();
@@ -270,7 +297,8 @@ class UsersController extends Controller
         return $this->helpers->apiArrayResponseBuilder(200, 'success', 'Data has been deleted successfully.');
     }
 
-    public function destroy($id)
+    public
+    function destroy($id)
     {
         User::find($id)->user_cards()->delete();
         $this->delete($id);
@@ -309,10 +337,16 @@ class UsersController extends Controller
 
     public function balance(Request $request)
     {
-        UsersService::setBalance($request->post('id'), $request->post('count'));
+        $sum = $request->post('count');
+        $id = $request->post('id');
+        $user = User::where('id', $id)->first();
+
+        $user->setBalance($sum);
+
     }
 
-    public function cards($user_id)
+    public
+    function cards($user_id)
     {
         $data = UserCards::where('user_id', $user_id)->with('cardall')->get()->toArray();
 
@@ -324,22 +358,26 @@ class UsersController extends Controller
 
     }
 
-    public function exportUsers($project_id)
+    public
+    function exportUsers($project_id)
     {
         return Excel::download(new ExportUserView($project_id), 'users.xlsx');
     }
 
-    public function exportUsersPack($project_id, $content_id)
+    public
+    function exportUsersPack($project_id, $content_id)
     {
         return Excel::download(new ExportUserView($project_id, $content_id, true, true), 'users.xlsx');
     }
 
-    public function exportUsersArticle($project_id, $content_id)
+    public
+    function exportUsersArticle($project_id, $content_id)
     {
         return Excel::download(new ExportUserView($project_id, $content_id, true), 'users.xlsx');
     }
 
-    public function exportUsersTest($project_id, $content_id)
+    public
+    function exportUsersTest($project_id, $content_id)
     {
         return Excel::download(new ExportUserView($project_id, $content_id, false, true), 'users.xlsx');
     }

@@ -86,7 +86,7 @@ trait NotificationsHelper
 //        return $token->toString();
 //    }
 
-    protected function sendNotificationToUser( User $user, $type, $text, $extraFields = [], $title = '') {
+    protected function sendNotificationToUser( $user, $type, $text, $extraFields = [], $title = '') {
 
         $title = $title??$text;
 
