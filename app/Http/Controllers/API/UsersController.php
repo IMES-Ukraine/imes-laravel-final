@@ -62,18 +62,23 @@ class UsersController extends Controller
 
     public function passing($project_id, $status)
     {
-        $research = ProjectResearches::where('project_id', $project_id)->first();
+        $research = ProjectResearches::where('project_id', $project_id)->get();
+        $project = Projects::where('id', $project_id)->first();
 
-        $project = $research->project;
-        $articles_ids = ArticleService::pluckIDArticles($research->id);
-        $test_ids = TestService::pluckIDTests($research->id);
+        $articles_ids = [];
+        $test_ids = [];
+        foreach ($research as $item) {
+            $articles_ids = array_merge($articles_ids, ArticleService::pluckIDArticles($item->id));
+            $test_ids = array_merge($test_ids, TestService::pluckIDRootTests($item->id));
+        }
 
         switch ($status) {
             case self::STATUS_NOT_PARTICIPATE:
                 $results = $project->notParticipateUserIds($articles_ids, $test_ids)->paginate(self::COUNT_PER_PAGE);
                 break;
             case self::STATUS_PASSED:
-                $results = User::isPassed($articles_ids, $test_ids, self::STATUS_PASSED)->paginate(self::COUNT_PER_PAGE);
+                $passed = Passing::totalPassed($articles_ids, $test_ids);
+                $results = User::whereIn('id', $passed)->paginate(self::COUNT_PER_PAGE);
                 break;
             case self::STATUS_NOT_PASSED:
                 $results = Passing::with('user')->where(function ($q) use ($articles_ids) {
