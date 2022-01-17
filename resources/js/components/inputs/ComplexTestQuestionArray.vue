@@ -17,14 +17,14 @@
                                 </div>
                             </div>
                         </div>
-<!--                        <div class="articles_create__item half">-->
-<!--                            <p class="articles_create__item-title">Обложка</p>-->
-<!--                            <file-input :key="question.itemId + '-cover'"-->
-<!--                                        :value="question.cover"-->
-<!--                                        @fileInput="question.cover = $event"-->
-<!--                                        type="cover"/>-->
+                        <!--                        <div class="articles_create__item half">-->
+                        <!--                            <p class="articles_create__item-title">Обложка</p>-->
+                        <!--                            <file-input :key="question.itemId + '-cover'"-->
+                        <!--                                        :value="question.cover"-->
+                        <!--                                        @fileInput="question.cover = $event"-->
+                        <!--                                        type="cover"/>-->
 
-<!--                        </div>-->
+                        <!--                        </div>-->
                     </div>
                     <div class="articles_create-block">
                         <div class="articles_create__item">
@@ -36,7 +36,8 @@
                         </div>
                         <div class="articles_create__item half">
                             <div class="articles_create__item-title has_radio">
-                                <input type="radio" name="attach" value="image" v-model="question.fileType" @click="question.file = null">
+                                <input type="radio" name="attach" value="image" v-model="question.fileType"
+                                       @click="question.file = null">
                                 <i></i>
                                 <p>Изображения</p>
                             </div>
@@ -45,28 +46,32 @@
                                             :value="question.file"
                                             :type="question.fileType"
                                             @fileInput="question.file = $event"
-                                            :disabled="!question.fileType" />
+                                            :disabled="!question.fileType"/>
                             </div>
                         </div>
                         <div class="articles_create__item half"></div>
                         <div class="articles_create__item half" style="margin-top: -35px;">
                             <div class="articles_create__item-title has_radio">
-                                <input type="radio" name="attach" value="video" v-model="question.fileType" @click="question.file = null">
+                                <input type="radio" name="attach" value="video" v-model="question.fileType"
+                                       @click="question.file = null">
                                 <i></i>
                                 <p>Видео</p>
                             </div>
-<!--                            <div class="articles_create__item-content">-->
-<!--                                <file-input :key="question.itemId + '-video'"-->
-<!--                                            :value="question.video"-->
-<!--                                            type="video"-->
-<!--                                            @fileInput="question.video = $event"-->
-<!--                                            :disabled="!isCheckedVideo" />-->
-<!--                            </div>-->
+                            <!--                            <div class="articles_create__item-content">-->
+                            <!--                                <file-input :key="question.itemId + '-video'"-->
+                            <!--                                            :value="question.video"-->
+                            <!--                                            type="video"-->
+                            <!--                                            @fileInput="question.video = $event"-->
+                            <!--                                            :disabled="!isCheckedVideo" />-->
+                            <!--                            </div>-->
                         </div>
                     </div>
-                    <ComplexTestVariants :toValidate="toValidate" @input="getRadioType($event, index)" :errors="errorsParent" :i="index" :question.sync="question"/>
+                    <ComplexTestVariants :toValidate="toValidate"
+                                         @input="getRadioType($event, index)"
+                                         :errors="errorsParent" :i="index" :question.sync="question"/>
 
-                    <button class="articles_create-submit button-border mtb20" type="button" v-if="question.isCheckedVariant"
+                    <button class="articles_create-submit button-border mtb20" type="button"
+                            v-if="question.isCheckedVariant"
                             @click="addAnswerTest(question.variants.length, index + 1)">добавить ответ
                     </button>
                     <div class="articles_create-line"></div>
@@ -110,16 +115,21 @@ export default {
     watch: {
         toValidate() {
             this.varKey = Math.random();
+            this.errors =  {
+                title: [],
+                    text: []
+            }
+            console.log(this.varKey);
             for (let indexQuestion in this.complex_question) {
-                if (!this.complex_question[indexQuestion].title || this.complex_question[indexQuestion].title.trim()) {
+                console.log('title-' + indexQuestion, this.complex_question[indexQuestion].title);
+                if (!this.complex_question[indexQuestion].title || !this.complex_question[indexQuestion].title.trim()) {
                     this.errors.title[indexQuestion] = 'Назва обовʼязкова';
                 }
 
                 if (!this.complex_question[indexQuestion].text || !this.complex_question[indexQuestion].text.trim()) {
                     this.errors.text[indexQuestion] = 'Питання обовʼязкове'
                 }
-
-                if (Object.keys(this.errors).length) {
+                if (Object.keys(this.errors.title).length || Object.keys(this.errors.text).length) {
                     this.$store.commit('setTestError', true);
                 }
             }
@@ -136,7 +146,7 @@ export default {
                 }
             }
         },
-        getRadioType (value, index) {
+        getRadioType(value, index) {
             this.complex_question[index].isCheckedVariant = true;
 
             if (value == 'text') {

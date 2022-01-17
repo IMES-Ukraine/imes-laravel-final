@@ -177,12 +177,17 @@ export default {
                     isLocalErrors = true;
                 }
             }
-            this.$store.commit('setErrors', this.testErrors);
 
-            if (!isLocalErrors && !this.$store.state.testErrors) {
-                this.$store.commit('saveTest', this.test);
-                this.setStep(2);
-            }
+            this.$store.commit('setErrors', this.testErrors && this.$store.state.testErrors);
+
+            setTimeout( () => {
+                console.log('beforeSave', isLocalErrors, this.testErrors, this.$store.state.testErrors);
+                if (!isLocalErrors && !this.$store.state.testErrors) {
+                    this.$store.commit('saveTest', this.test);
+                    console.log('saved!')
+                     this.setStep(2);
+                }
+            }, 100); // чтобы успели отвалидироваться внутренние компоненты
         },
 
     },

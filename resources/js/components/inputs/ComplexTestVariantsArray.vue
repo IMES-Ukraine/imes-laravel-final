@@ -158,18 +158,19 @@ export default {
         return {
             localType: 'variants',
             errKey: Math.random(),
+            errorsLocal: []
         }
     },
     mounted() {
         this.localType = this.question.type;
     },
     computed: {
-        errorsLocal: {
+        haveErrors: {
             get: function () {
                 return this.errors;
             },
             set: function (newValue) {
-                this.$store.commit('setErrors', newValue);
+                this.$store.commit('setErrors', !!newValue.length);
             }
         }
     },
@@ -189,9 +190,7 @@ export default {
             if (this.question.type === 'variants') {
                 this.errorsLocal.variants = [];
                 for (const [index, value] of Object.entries(this.question.variants)) {
-                    /*if (!value.text || !value.text.trim()) {
-                        this.errorsLocal.variants[index] = 'Текст ответа обязателен';
-                    }*/
+
                     if (!value.title || !value.title.trim()) {
                         this.errorsLocal.variants[index] = 'Текст ответа обязателен';
                     }
@@ -210,11 +209,10 @@ export default {
                 this.errorsLocal.correct = this.notCorrectAnswer;
             }
             if (this.errorsLocal.length){
-                this.$store.dispatch('setTestError', true);
+                this.$store.commit('setTestError', true);
             }
-            else {
-                this.$store.dispatch('setTestError', false);
-            }
+
+            this.haveErrors = this.errorsLocal;
             this.errKey = Math.random();
         }
     },
