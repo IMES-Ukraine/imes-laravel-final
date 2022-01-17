@@ -161,7 +161,7 @@ export default {
             errorsLocal: {
                 variants: [],
                 media: [],
-                correct: []
+                correct: ''
             },
             haveErrors: false
         }
