@@ -34,15 +34,17 @@ const currentTime = () => {
 };
 const openImageWindow = (src) => {
     let image = new Image();
-    image.src = src;
-    let width = image.width;
-    let height = image.height;
-
-    if (height != 0) {
-        window.open(src, "Image", "width=" + width + ",height=" + height);
-    } else {
-        alert('Данной картинки не существует');
+    image.onload = function() {
+        let width = image.width;
+        let height = image.height;
+        if (height !== 0) {
+            window.open(src, "Image", "width=" + width + ",height=" + height);
+        } else {
+            alert('Данной картинки не существует');
+        }
     }
+    image.src = src;
+
 };
 const getRandomId = () => {
     return Math.random().toString(36).substr(2, 9)
