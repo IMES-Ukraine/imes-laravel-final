@@ -115,13 +115,11 @@ export default {
     watch: {
         toValidate() {
             this.varKey = Math.random();
-            this.errors =  {
+            this.errors = {
                 title: [],
-                    text: []
+                text: []
             }
-            console.log(this.varKey);
             for (let indexQuestion in this.complex_question) {
-                console.log('title-' + indexQuestion, this.complex_question[indexQuestion].title);
                 if (!this.complex_question[indexQuestion].title || !this.complex_question[indexQuestion].title.trim()) {
                     this.errors.title[indexQuestion] = 'Назва обовʼязкова';
                 }

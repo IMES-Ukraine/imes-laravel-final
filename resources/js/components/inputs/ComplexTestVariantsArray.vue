@@ -158,21 +158,16 @@ export default {
         return {
             localType: 'variants',
             errKey: Math.random(),
-            errorsLocal: []
+            errorsLocal: {
+                variants: [],
+                media: [],
+                correct: []
+            },
+            haveErrors: false
         }
     },
     mounted() {
         this.localType = this.question.type;
-    },
-    computed: {
-        haveErrors: {
-            get: function () {
-                return this.errors;
-            },
-            set: function (newValue) {
-                this.$store.commit('setErrors', !!newValue.length);
-            }
-        }
     },
     watch: {
         localType() {
@@ -187,12 +182,14 @@ export default {
             }
         },
         toValidate() {
+            this.haveErrors = false;
             if (this.question.type === 'variants') {
                 this.errorsLocal.variants = [];
                 for (const [index, value] of Object.entries(this.question.variants)) {
 
                     if (!value.title || !value.title.trim()) {
                         this.errorsLocal.variants[index] = 'Текст ответа обязателен';
+                        this.haveErrors = true;
                     }
                 }
             }
@@ -201,18 +198,18 @@ export default {
                 for (const [index, value] of Object.entries(this.question.variants)) {
                     if (!value.media.length) {
                         this.errorsLocal.media[index] = 'Изображение для  ответа обязательно';
+                        this.haveErrors = true;
                     }
                 }
             }
             this.errorsLocal.correct = '';
             if ((this.question.type !== 'text') && !this.question.correct.length) {
                 this.errorsLocal.correct = this.notCorrectAnswer;
+                this.haveErrors = true;
             }
-            if (this.errorsLocal.length){
+            if (this.haveErrors){
                 this.$store.commit('setTestError', true);
             }
-
-            this.haveErrors = this.errorsLocal;
             this.errKey = Math.random();
         }
     },

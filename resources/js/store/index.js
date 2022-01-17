@@ -182,7 +182,6 @@ export default new Vuex.Store({
         },
 
         setTestError(state, error) {
-            console.log('state errors', error);
             this.state.testErrors = error;
         },
 
