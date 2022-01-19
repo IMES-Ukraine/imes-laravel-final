@@ -289,7 +289,8 @@ class User extends Authenticatable implements JWTSubject
                         'user_id' => $this->id,
                         'total'   => $sum,
                         'type'    => Withdraw::TYPE_TEST,
-                        'comment' => $model->title
+                        'comment' => $model->title,
+                        'entity_id' => $model->id
                     ]);
 
                     $this->sendNotificationToUser($this, Notifications::TYPE_REFILL,
@@ -301,7 +302,8 @@ class User extends Authenticatable implements JWTSubject
                         'user_id' => $this->id,
                         'total'   => $sum,
                         'type'    => Withdraw::TYPE_ARTICLE,
-                        'comment' => $model->title
+                        'comment' => $model->title,
+                        'entity_id' => $model->id
                     ]);
                     $this->sendNotificationToUser($this, Notifications::TYPE_REFILL,
                         'Вам начислено ' . $sum . ' баллов за' . self::ENTYTY_TYPE_ARTICLE . $model->title, [],

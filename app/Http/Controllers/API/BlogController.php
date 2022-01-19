@@ -50,7 +50,7 @@ class BlogController extends Controller
         $relations = ['cover_image'];
 
 
-        $passed = Passing::where('entity_type', Post::class)->where('user_id', $apiUser->id)->pluck('entity_id')->toArray();
+        $passed = Passing::where('entity_type', Post::class)->where('user_id', $apiUser->id)->where('result', 1)->pluck('entity_id')->toArray();
 
         $data = Articles::with($relations)
             ->select('rainlab_blog_posts.*')
@@ -357,8 +357,8 @@ class BlogController extends Controller
         }
 
 
-        $user = User::where(['id' => $article->user_id])->select('id', 'name')->first();
-        $data['user'] = $user;
+//        $user = User::where(['id' => $article->user_id])->select('id', 'name')->first();
+        $data['user'] = $authUser;
         return $this->helpers->apiArrayResponseBuilder(200, 'success', [$data]);
     }
 

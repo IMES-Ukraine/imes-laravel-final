@@ -55,8 +55,11 @@ class TestService
 
     public static function pluckIDRootTests($content_id)
     {
+        if (! is_array($content_id)){
+            $content_id = [$content_id];
+        }
         return TestQuestions::select('id')
-            ->where('research_id', $content_id)
+            ->whereIn('research_id', $content_id)
             ->where('test_type', '!=', TestQuestions::TYPE_CHILD)
             ->pluck('id')->toArray();
     }

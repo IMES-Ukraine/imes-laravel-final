@@ -36,16 +36,16 @@
     </tr>-->
     </thead>
     <tbody>
-    @foreach($results as $value)
+    @foreach($results as $user_id => $data)
         <tr>
-            <td style="border: 1px solid grey;">{{ $value->user['basic_information']['name'] }}</td>
-            <td style="border: 1px solid grey;">{{ $value->user['specialized_information']['specification'] }}</td>
-            <td style="border: 1px solid grey;">{{ $value->user['specialized_information']['city'] }}</td>
-            <td style="border: 1px solid grey;">{{ $value->user['specialized_information']['workplace']}}</td>
-            <td style="border: 1px solid grey;">{{ $value->user['phone'] }}</td>
-            <td style="border: 1px solid grey;">{{ $value->user['balance'] }}</td>
-            <td style="border: 1px solid grey;">{{ $value->withdraw['article'] }}</td>
-            <td style="border: 1px solid grey;">{{ $value->withdraw['test'] }}</td>
+            <td style="border: 1px solid grey;">{{ $data['user']->basic_information['name'] }}</td>
+            <td style="border: 1px solid grey;">{{$data['user']->specialized_information['specification'] }}</td>
+            <td style="border: 1px solid grey;">{{ $data['user']->specialized_information['city'] }}</td>
+            <td style="border: 1px solid grey;">{{ $data['user']->specialized_information['workplace']}}</td>
+            <td style="border: 1px solid grey;">{{$data['user']->phone }}</td>
+            <td style="border: 1px solid grey;">{{ $data['bonus-article'] +  $data['bonus-test']}}</td>
+            <td style="border: 1px solid grey;">{{ $data['bonus-article'] }}</td>
+            <td style="border: 1px solid grey;">{{ $data['bonus-test'] }}</td>
             <td style="border: 1px solid grey;background-color: #E9EE4E"></td>
             <td style="border: 1px solid grey;background-color: #E9EE4E"></td>
             <!--<td style="border: 1px solid grey;"></td>

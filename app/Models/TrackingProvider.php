@@ -78,15 +78,13 @@ class TrackingProvider
                 $startingDate = !empty($trackStarted) ? Carbon::parse($trackStarted->created_at) : Carbon::now();
                 $endingDate = !empty($trackEnded) ? Carbon::parse($trackEnded->created_at) : Carbon::now();
 
-                //$timeDifference = $startingDate->diffInMinutes($endingDate);
+
                 $timeDifference = $startingDate->diffInSeconds($endingDate);
                 if ($timeDifference == 0) {
                     return false;
                 }
-                //???
-                $userReadingRate = $totalSymbolsCount / $timeDifference;
-                //TODO разобраться, почему пропадают параметры из конфига
-                $rate = config('params')['maxReadingRate'] ?? self::SYMBOLS_PER_MINUTE;
+
+                $rate = config('params.maxReadingRate') ?? self::SYMBOLS_PER_MINUTE;
 
                 $minimumReading = round(($totalSymbolsCount/$rate)*self::SECONDS_IN_MINUTE);
                 //return $userReadingRate <= $rate;
@@ -94,9 +92,6 @@ class TrackingProvider
             } else {
                 return false;
             }
-
-            /*$startingDate = Carbon::parse($starting['created_at']);
-            $endingDate   = Carbon::parse($ending['created_at']);*/
         }
         return false;
     }

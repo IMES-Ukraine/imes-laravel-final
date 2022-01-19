@@ -77,7 +77,7 @@ class Projects extends Model
     {
         $audience = [];
         if (!$audFile = $this->options['files']['audience']) {
-            $audience = User::select('id')->isActive()->isVerified()->pluck('id');
+            $audience = User::select('id')->isActive()->pluck('id');
         }
         else {
             $path = str_replace('/storage', 'app/public', $audFile['path']);

@@ -88,6 +88,7 @@ trait NotificationsHelper
 
     protected function sendNotificationToUser( $user, $type, $text, $extraFields = [], $title = '') {
 
+
         $title = $title??$text;
 
         $notification = new Notifications();
@@ -103,7 +104,9 @@ trait NotificationsHelper
         if( $notification->save()) {
             $extraFields['id'] = $notification->id;
         }
-
+        if (! $user->firebase_token){
+            return false;
+        }
         $this->sendNotification(
             $user->firebase_token,
             $this->defaultPayload($text, $title),

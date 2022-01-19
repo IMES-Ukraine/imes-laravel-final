@@ -84,7 +84,12 @@ class ArticleService
      * @return array
      */
     public static function pluckIDArticles($content_id) {
-        return Articles::select('id')->where('research_id', $content_id)->pluck('id')->toArray();
+        if (! is_array($content_id)){
+            $content_id = [$content_id];
+        }
+        return Articles::select('id')
+            ->whereIn('research_id', $content_id)
+            ->pluck('id')->toArray();
     }
 
     /**

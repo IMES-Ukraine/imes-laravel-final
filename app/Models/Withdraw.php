@@ -20,7 +20,7 @@ class Withdraw extends Model
      */
     public $table = 'ulogic_profile_withdraw';
 
-    protected $fillable = ['user_id', 'total', 'type', 'comment'];
+    protected $fillable = ['user_id', 'total', 'type', 'comment', 'entity_id'];
 
     /**
      * @var array Validation rules
