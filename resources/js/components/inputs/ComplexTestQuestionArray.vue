@@ -57,13 +57,6 @@
                                 <i></i>
                                 <p>Видео</p>
                             </div>
-                            <!--                            <div class="articles_create__item-content">-->
-                            <!--                                <file-input :key="question.itemId + '-video'"-->
-                            <!--                                            :value="question.video"-->
-                            <!--                                            type="video"-->
-                            <!--                                            @fileInput="question.video = $event"-->
-                            <!--                                            :disabled="!isCheckedVideo" />-->
-                            <!--                            </div>-->
                         </div>
                     </div>
                     <ComplexTestVariants :toValidate="toValidate"

@@ -50,13 +50,6 @@
                         <i></i>
                         <p>Видео</p>
                     </div>
-<!--                    <div class="articles_create__item-content">-->
-<!--                        <file-input :key="test.title + '-video'"-->
-<!--                                    :value="test.question.video"-->
-<!--                                    @fileInput="test.question.video = $event"-->
-<!--                                    type="video"-->
-<!--                                    :disabled="!isCheckedVideo"/>-->
-<!--                    </div>-->
                 </div>
             </div>
             <SimpleTestVariants :test.sync="test"

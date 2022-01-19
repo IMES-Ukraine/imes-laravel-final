@@ -58,13 +58,13 @@
                     <p>Медиа</p>
                 </div>
                 <div v-if="localType === 'media'" class="articles_create__item-content">
-                    <div class="articles_create__media">
-                        <div v-for="file in variant.media" v-bind:key="file.itemId" class="articles_create__media-item">
-                            <div class="articles_create__media-img">
-                                <img :src="file.path" alt="">
-                            </div>
-                        </div>
+                    <div class="articles_create__media" :key="JSON.stringify(variant.media)">
                         <div class="articles_create__media-add">
+                            <file-input :key="JSON.stringify(variant.media)"
+                                        :value="variant.media[0]"
+                                        @fileInput="variant.media[0] = $event"
+                                        type="image"
+                                        />
                             <input type="file" name="file" :id="'file-'+variant.itemId"
                                    :disabled=" localType != 'media'"
                                    @change="addMedia(index, variant.itemId, $event)">
@@ -75,84 +75,21 @@
                 <div v-if="errorsLocal.media" class="h20 mb20"></div>
             </div>
         </div>
-        <!--<div v-for="(variant, index) in variants" v-bind:key="variant.itemId">
-            <div class="row mb-4">
-                <div class="article-edit__text col-3">
-                    <div class="article-edit__btn-pos custom-checkbox">
-                        <input class="custom-checkbox__input" type="radio" v-bind:name="variant.itemId"
-                               v-bind:id="variant.itemId" v-model.lazy="answer.type" value="variants">
-                        <label v-bind:for="variant.itemId" class="custom-checkbox__label"></label>
-                        Готова вiдповiдь
-                    </div>
-                </div>
-                <div class="col-1">
-                    {{ variant.title }}
-                </div>
-                <div class="col-5">
-                    <div class="row">
-                        <div class="col-12 mb-2">
-                            <input class="form-control" type="text" name="title" placeholder=""
-                                   v-model.lazy="variant.variant">
-                        </div>
-                    </div>
-                </div>
-                <div class="article-edit__text col-3">
-                    <div class="article-edit__btn-pos custom-checkbox">
-                        <input class="custom-checkbox__input" type="checkbox" :name="'right-answer' + variant.itemId"
-                               v-bind:id="variant.itemId + variant.title" v-model.lazy="'right-answer' + variant.itemId"
-                               :value="variant.variant">
-                        <label v-bind:for="variant.itemId + variant.title" class="custom-checkbox__label"></label>
-                    </div>
-                    Правильна вiдповiдь
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="article-edit__text col-3">
-                    <div class="article-edit__btn-pos custom-checkbox">
-                        <input class="custom-checkbox__input" type="radio" v-bind:name="variant.itemId"
-                               v-bind:id="variant.itemId + '-field'" v-model.lazy="answer.type" value="text">
-                        <label v-bind:for="variant.itemId + '-field'" class="custom-checkbox__label"></label>
-                    </div>
-                    Поле для вiдповiдi
-                </div>
-                <div class="col-9">
-                    <textarea class="form-control" rows="4" v-model.lazy="variant.variant"></textarea>
-                </div>
-            </div>
-            <div class="row mb-4">
-                <div class="article-edit__text col-3">
-                    <div class="article-edit__btn-pos custom-checkbox">
-                        <input class="custom-checkbox__input" type="radio" v-bind:name="variant.itemId"
-                               v-bind:id="variant.itemId + '-media'" v-model.lazy="answer.type" value="card">
-                        <label v-bind:for="variant.itemId + '-media'" class="custom-checkbox__label"></label>
-                    </div>
-                    Медiа
-                </div>
-                <div class="col-4">
-                    <label class="btn btn-outline-second btn-centered-content upload-cover is-small">
-                            <span class="input-file-label">
-                                <span class="icon-is-left icon-is-load-grey"></span><span v-if="variant.file">{{
-                                    variant.file.file_name
-                                }}</span><span v-else>Завантажити</span>
-                            </span>
 
-                        <input type="file" name="testCover" img_type="button" class="input-file-hidden"
-                               v-on:change="handleUpload(index, $event)">
-                    </label>
-                </div>
-            </div>
-        </div>-->
     </div>
 </template>
 
 <script>
 import {PROJECT_IMAGE, TOKEN} from "../../api/endpoints";
-import store from "../../store";
 import ProjectMixin from "../../ProjectMixin";
+import FileInput from "./file-input";
 
 export default {
     name: 'SimpleTestVariantsArray',
     mixins: [ProjectMixin],
+    components: {
+        FileInput
+    },
     props: ['test', 'errors'],
     data() {
         return {
@@ -217,9 +154,7 @@ export default {
                     },
                 }
             ).then((file) => {
-                let q = [...this.test.question.variants[index].media];
-                q.push(file.data.data);
-                this.test.question.variants[index].media = [...q];
+                this.test.question.variants[index].media[0] = file.data.data;
                 $('#file-' + id).val(null);
             })
         }
