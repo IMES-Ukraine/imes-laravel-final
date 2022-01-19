@@ -57,7 +57,7 @@
                         :test.sync="test"
                         @input="storeTest($event)"
                         :toValidate="toValidate"
-                        :errors.sync="stateErrors"/>
+                        :errors.sync="testErrors"/>
                 </div>
                 <div class="mb20"></div>
 
@@ -183,7 +183,7 @@ export default {
             setTimeout( () => {
                 if (!isLocalErrors && !this.$store.state.testErrors) {
                     this.$store.commit('saveTest', this.test);
-                     this.setStep(2);
+                    this.setStep(2);
                 }
             }, 500); // чтобы успели отвалидироваться внутренние компоненты
         },

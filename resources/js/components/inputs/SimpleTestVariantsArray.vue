@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="articles_create-block" v-for="(variant, index) in test.question.variants" :key="variant.itemId"
+        <div class="articles_create-block" v-for="(variant, index) in test.question.variants"
              :id="'block-'+index">
             <div class="articles_create-line"></div>
             <div class="articles_create__item">
@@ -60,14 +60,11 @@
                 <div v-if="localType === 'media'" class="articles_create__item-content">
                     <div class="articles_create__media" :key="JSON.stringify(variant.media)">
                         <div class="articles_create__media-add">
-                            <file-input :key="JSON.stringify(variant.media)"
+                            <file-input :key="JSON.stringify(test.question.variants[index].media)"
                                         :value="variant.media[0]"
-                                        @fileInput="variant.media[0] = $event"
+                                        @fileInput="setMedia($event, index)"
                                         type="image"
                                         />
-                            <input type="file" name="file" :id="'file-'+variant.itemId"
-                                   :disabled=" localType != 'media'"
-                                   @change="addMedia(index, variant.itemId, $event)">
                         </div>
                     </div>
                 </div>
@@ -90,15 +87,16 @@ export default {
     components: {
         FileInput
     },
-    props: ['test', 'errors'],
+    props: ['test', 'errors', 'toValidate'],
     data() {
         return {
             localType: 'variants',
+            question: this.test.question,
         }
     },
     computed: {
       errorsLocal: {
-          get: function() { return this.errors },
+          get: function() { return this.errors || {}},
           set: function (newValue) {
               this.$store.commit('setErrors', newValue);
           }
@@ -110,7 +108,7 @@ export default {
     watch: {
         localType() {
             this.errorsLocal = [];
-            this.test.question.type = this.localType;
+            this.question.type = this.localType;
             if (this.localType === 'text') {
                 this.isText = true;
                 this.typeAnswerText(this.test.question.variants);
@@ -119,6 +117,37 @@ export default {
                 this.typeAnswerOther(this.test.question.variants);
             }
         },
+        toValidate() {
+            this.haveErrors = false;
+            if (this.question.type === 'variants') {
+                this.errorsLocal.variants = [];
+                for (const [index, value] of Object.entries(this.question.variants)) {
+
+                    if (!value.title || !value.title.trim()) {
+                        this.errorsLocal.variants[index] = 'Текст ответа обязателен';
+                        this.haveErrors = true;
+                    }
+                }
+            }
+            else if (this.question.type === 'media') {
+                this.errorsLocal.media = [];
+                for (const [index, value] of Object.entries(this.question.variants)) {
+                    if (!value.media.length || !value.media[0]) {
+                        this.errorsLocal.media[index] = 'Изображение для  ответа обязательно';
+                        this.haveErrors = true;
+                    }
+                }
+            }
+            this.errorsLocal.correct = '';
+            if ((this.question.type !== 'text') && !this.question.correct.length) {
+                this.errorsLocal.correct = this.notCorrectAnswer;
+                this.haveErrors = true;
+            }
+            if (this.haveErrors){
+                this.$store.commit('setTestError', true);
+            }
+            this.errKey = Math.random();
+        }
     },
     methods: {
 
@@ -136,28 +165,11 @@ export default {
                 }
             }
         },
-
-
-        addMedia(index, id, event) {
-            let imageForm = new FormData()
-            imageForm.append('file', event.target.files[0])
-
-            axios.post(
-                PROJECT_IMAGE + 'img/test',
-                imageForm,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    params: {
-                        access_token: TOKEN
-                    },
-                }
-            ).then((file) => {
-                this.test.question.variants[index].media[0] = file.data.data;
-                $('#file-' + id).val(null);
-            })
+        setMedia(media, index){
+            this.test.question.variants[index].media  = [];
+            this.test.question.variants[index].media.push(media);
         }
+
     },
 }
 </script>

@@ -31,7 +31,8 @@
 
                 <div class="articles_create__item half">
                     <div class="articles_create__item-title has_radio">
-                        <input type="radio" name="attach" value="image" v-model="test.question.fileType" @click="test.question.file = null">
+                        <input type="radio" name="attach" value="image" v-model="test.question.fileType"
+                               @click="test.question.file = null">
                         <i></i>
                         <p>Изображение</p>
                     </div>
@@ -46,7 +47,8 @@
                 <div class="articles_create__item half"></div>
                 <div class="articles_create__item half" style="margin-top: -35px;">
                     <div class="articles_create__item-title has_radio">
-                        <input type="radio" name="attach" value="video" v-model="test.question.fileType" @click="test.question.file = null">
+                        <input type="radio" name="attach" value="video" v-model="test.question.fileType"
+                               @click="test.question.file = null">
                         <i></i>
                         <p>Видео</p>
                     </div>
@@ -54,7 +56,8 @@
             </div>
             <SimpleTestVariants :test.sync="test"
                                 :errors.sync="errors"
-                                @input="getRadioType" />
+                                :toValidate="toValidate"
+                                @input="getRadioType"/>
 
             <button class="articles_create-submit button-border mtb20" v-if="isCheckedVariant" type="button"
                     @click="addAnswerTest(test.question.variants.length)">добавить ответ
@@ -77,9 +80,9 @@
             </div>
         </div>
 
-      <button class="articles_create-submit button-gradient" type="button"
-              @click="$emit('input', test)">сохранить
-      </button>
+        <button class="articles_create-submit button-gradient" type="button"
+                @click="$emit('input', test)">сохранить
+        </button>
     </div>
 </template>
 <script>
@@ -129,7 +132,7 @@ export default {
     },
     computed: {},
     methods: {
-        getRadioType (value) {
+        getRadioType(value) {
             this.isCheckedVariant = true;
 
             if (value == 'text') {

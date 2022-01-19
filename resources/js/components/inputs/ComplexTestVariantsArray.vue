@@ -49,7 +49,7 @@
                         <div class="articles_create__media-add">
                             <file-input :key="JSON.stringify(variant.media)"
                                         :value="variant.media[0]"
-                                        @fileInput="variant.media[0] = $event"
+                                        @fileInput="setMedia($event, index)"
                                         type="image"
                             />
                         </div>
@@ -117,7 +117,7 @@ export default {
             else if (this.question.type === 'media') {
                 this.errorsLocal.media = [];
                 for (const [index, value] of Object.entries(this.question.variants)) {
-                    if (!value.media.length) {
+                    if (!value.media.length || !value.media[0]) {
                         this.errorsLocal.media[index] = 'Изображение для  ответа обязательно';
                         this.haveErrors = true;
                     }
@@ -149,29 +149,11 @@ export default {
                 }
             }
         },
+        setMedia(media, index){
+            this.question.variants[index].media  = [];
+            this.question.variants[index].media.push(media);
+        }
 
-      addMedia(index, id, event) {
-        let imageForm = new FormData()
-        imageForm.append('file', event.target.files[0])
-
-        axios.post(
-            PROJECT_IMAGE + 'variant-' + index +'/test',
-            imageForm,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              },
-              params: {
-                access_token: TOKEN
-              },
-            }
-        ).then((file) => {
-          let q = [...this.question.variants[index].media];
-          q.push(file.data.data);
-          this.question.variants[index].media = [...q];
-          $('#file-' + id).val(null);
-        })
-      },
     },
     validations: {
         text: {
