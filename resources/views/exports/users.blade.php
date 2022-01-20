@@ -38,11 +38,11 @@
     <tbody>
     @foreach($results as $user_id => $data)
         <tr>
-            <td style="border: 1px solid grey;">{{ (string) $data['user']->basic_information['name'] }}</td>
+            <td style="border: 1px solid grey;">{{ $data['user']->basic_information['name'] }}</td>
             <td style="border: 1px solid grey;">{{$data['user']->specialized_information['specification'] }}</td>
             <td style="border: 1px solid grey;">{{ $data['user']->specialized_information['city'] }}</td>
             <td style="border: 1px solid grey;">{{ $data['user']->specialized_information['workplace']}}</td>
-            <td style="border: 1px solid grey;">{{'' . $data['user']->phone }}</td>
+            <td style="border: 1px solid grey;">{{ $data['user']->phone }}</td>
             <td style="border: 1px solid grey;">{{ $data['bonus-total']}}</td>
             <td style="border: 1px solid grey;">{{ $data['bonus-article'] }}</td>
             <td style="border: 1px solid grey;">{{ $data['bonus-test'] }}</td>

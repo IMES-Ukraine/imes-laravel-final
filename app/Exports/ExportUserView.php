@@ -16,8 +16,11 @@ use Maatwebsite\Excel\Concerns\FromView;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\StringValueBinder;
 
-class ExportUserView implements FromView
+
+class ExportUserView extends StringValueBinder implements WithCustomValueBinder, FromView
 {
     public $project_id;
     public $content_id;
