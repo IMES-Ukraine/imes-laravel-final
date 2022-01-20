@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Articles;
 use App\Models\Passing;
 use App\Models\Post;
 use App\Models\ProjectResearches;
@@ -11,10 +10,12 @@ use App\Models\TestQuestions;
 use App\Models\User;
 use App\Services\ArticleService;
 use App\Services\TestService;
-use Illuminate\Contracts\Queue\EntityNotFoundException;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\ItemNotFoundException;
 use Maatwebsite\Excel\Concerns\FromView;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+
 
 class ExportUserView implements FromView
 {
@@ -65,12 +66,16 @@ class ExportUserView implements FromView
             $res[$item->id]['user'] = $item;
             $res[$item->id]['bonus-article'] = 0;
             $res[$item->id]['bonus-test'] = 0;
+            $res[$item->id]['bonus-total'] = 0;
         }
         foreach ($results as $item){
             $res[$item->user_id]['bonus-article'] +=   $item->withdraw['article'];
             $res[$item->user_id]['bonus-test'] +=  $item->withdraw['test'];
+            $res[$item->user_id]['bonus-total'] +=  $item->withdraw['test'] + $item->withdraw['article'];
         }
-
+        usort($res, function ($a, $b) {
+            return (int) ($b['bonus-total'] - $a['bonus-total']);
+        });
 
         return view('exports.users', [
             'results' => $res
