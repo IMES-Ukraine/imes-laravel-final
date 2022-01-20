@@ -34,7 +34,7 @@
                                                     {{percent(test.received_variants[variant.variant], totalAnswers(test))}}%</p>
                                                 <div class="dashboard_main__status-line">
                                                     <span
-                                                        :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
+                                                        :style="'width:' + percent(test.received_variants[variant.variant], totalAnswers(test))+'%;'"></span>
                                                 </div>
                                             </div>
                                             <p class="study__info-quantity">
@@ -128,7 +128,7 @@
                                                 <p class="study__info-data">{{percent(test.received_variants[variant.variant], totalAnswers(test))}}%</p>
                                                 <div class="dashboard_main__status-line">
                                                     <span
-                                                        :style="'width:'+percent(getStaticTest(variant.variant, test['id']), totalQuestionVariants(test.question.variants, test['id']))+'%;'"></span>
+                                                        :style="'width:'+percent(test.received_variants[variant.variant], totalAnswers(test))+'%;'"></span>
                                                 </div>
                                             </div>
                                             <p class="study__info-quantity">
@@ -202,7 +202,7 @@
                                                         }}%</p>
                                                     <div class="dashboard_main__status-line">
                                                         <span
-                                                            :style="'width:'+percent(getStaticTest(variant.variant, complex_question.id), totalQuestionVariants(test.question.variants, complex_question.id))+'%;'"></span>
+                                                            :style="'width:'+percent(complex_question.received_variants[variant.variant], totalAnswers(complex_question))+'%;'"></span>
                                                     </div>
                                                 </div>
                                                 <p class="study__info-quantity">
