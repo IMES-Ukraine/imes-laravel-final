@@ -23,13 +23,14 @@
                 <div class="preview__block-wrap">
                     <div class="preview__block-item" v-for="item in project.content">
                         <div class="preview__study">
-                            <p class="preview__study-title">{{item.title}}</p>
+                            <p class="preview__study-title">{{ item.title }}</p>
                             <div class="preview__study-list">
-                                <p class="preview__study-item">{{ (item.test.title==null)?0:1 }} тестов</p>
-                                <p class="preview__study-item">{{ (item.article.title==null)?0:1 }} статей</p>
+                                <p class="preview__study-item">{{ (item.test.points) ? 1 : 0 }} тест(ов)</p>
+                                <p class="preview__study-item">{{ (item.article.points) ? 1 : 0 }} статья(ей)</p>
                             </div>
                         </div>
-                        <button class="preview__block-more" type="button" @click="editContent(item.title)">Подробнее</button>
+                        <button class="preview__block-more" type="button" @click="editContent(item.title)">Подробнее
+                        </button>
                     </div>
 
                 </div>
@@ -38,36 +39,43 @@
                 <p class="preview__block-title mt0">Тип подачи информации:</p>
                 <div class="preview__block-wrap">
                     <div class="preview__block-item">
-                        <p class="preview__block-type"><span>{{ types[project.options.presentation_type]}}</span></p>
+                        <p class="preview__block-type"><span>{{ types[project.options.presentation_type] }}</span></p>
                     </div>
                 </div>
             </div>
             <div class="preview__block">
-                <p class="preview__block-note">1 пользователь =  {{contentCount}} теста + {{contentCount}} статьи = {{projectPoints}} баллов </p>
+                <p class="preview__block-note">1 пользователь = {{ testCounts }} тест(ов)
+                    + {{ articlesCounts }} статья(ей) = {{ projectPoints }} баллов </p>
             </div>
         </div>
-        <button id='start' class="articles_create-submit button-gradient" type="button" @click="finalStoreProject">запуск</button>
+        <button id='start' class="articles_create-submit button-gradient" type="button" @click="finalStoreProject">
+            запуск
+        </button>
     </div>
 </template>
 
 <script>
 import ProjectMixin from "../../../ProjectMixin";
+
 export default {
     name: "project-preview",
     mixins: [ProjectMixin],
     data() {
-      return {
-          project: {...this.$store.state.project},
-          types: {
-              'at_once': 'Все сразу',
-              'scheduled': 'По графику',
-              'series': 'Последовательность'
-          }
-      }
+        return {
+            project: {...this.$store.state.project},
+            types: {
+                'at_once': 'Все сразу',
+                'scheduled': 'По графику',
+                'series': 'Последовательность'
+            },
+            projectPoints: 0,
+            testCounts: 0,
+            articlesCounts: 0
+        }
     },
     computed: {
         cover() {
-          return this.project.options.files.cover;
+            return this.project.options.files.cover;
         },
         category() {
             return this.findByValue(this.lists.categories, this.project.options.selected.category);
@@ -76,15 +84,28 @@ export default {
             return this.findByValue(this.lists.regions, this.project.options.selected.region);
         },
         contentCount() {
-          return Object.keys(this.project.content).length;
+            return Object.keys(this.project.content).length;
         },
-        projectPoints() {
-            let sum = 0;
+    },
+    mounted() {
+      this.getTotalCounts();
+    },
+    methods: {
+        getTotalCounts() {
+            this.projectPoints = 0;
+            this.articlesCounts = 0;
+            this.testCounts = 0;
             for (let index in this.project.content) {
-                sum = sum + parseInt(this.project.content[index].article.points)
-                    + parseInt(this.project.content[index].test.points);
+                if (this.project.content[index].article.points) {
+                    this.articlesCounts++;
+                    this.projectPoints += parseInt(this.project.content[index].article.points)
+                }
+                if (this.project.content[index].test.points) {
+                    this.testCounts++;
+                    this.projectPoints += parseInt(this.project.content[index].test.points);
+                }
+
             }
-            return sum;
         }
     }
 }
