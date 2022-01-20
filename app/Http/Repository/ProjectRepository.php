@@ -255,7 +255,8 @@ class ProjectRepository
 
         $totalTestsIds = [];
         $totalArticleIds = [];
-        $content = $contentItems->makeHidden(['testObject', 'test',  'articleObject', 'article']);
+        $content = $contentItems->makeHidden(['testObject', 'test', 'articleObject', 'article']);
+
 
         foreach ($contentItems as $key => $item) {
             $test = $item->test_object;
@@ -278,13 +279,14 @@ class ProjectRepository
             $totalArticleIds = array_merge($totalArticleIds, $article_ids);
 
             //Status passing active
-            $test_status_active = Passing::select('*')->isEntityPassed(TestQuestions::class, $test_ids)->count();
-            $article_status_active = Passing::select('*')->isEntityPassed(Post::class, $article_ids)->count();
+            $testPassedQueue = Passing::select('*')->isEntityPassed(TestQuestions::class, $test_ids);
+            $articlePassedQueue = Passing::select('*')->isEntityPassed(Post::class, $article_ids);
 
+            $test_status_active = $testPassedQueue->count();
+            $article_status_active = $articlePassedQueue->count();
 
             $content[$key]->offsetSet('test_status_active', $test_status_active);
             $content[$key]->offsetSet('article_status_active', $article_status_active);
-
 
 
             //Status passing not active
@@ -295,12 +297,13 @@ class ProjectRepository
             $content[$key]->offsetSet('article_status_not_active', $article_status_not_active);
 
             //Status passing not participate
-            $content[$key]->offsetSet('test_status_not_participate', $projectObj->notParticipateUserIds(false, $test_ids)->count() );
-            $content[$key]->offsetSet('article_status_not_participate', $projectObj->notParticipateUserIds($article_ids, false)->count() );
+            $content[$key]->offsetSet('test_status_not_participate', $projectObj->notParticipateUserIds(false, $test_ids)->count());
+            $content[$key]->offsetSet('article_status_not_participate', $projectObj->notParticipateUserIds($article_ids, false)->count());
 
         }
 
-        $total_status_active = count(Passing::totalPassed($totalArticleIds, $totalTestsIds) );
+        $total_status_active = count( Passing::totalPassed($totalTestsIds, $totalArticleIds) );
+
         $total_status_not_participate = $projectObj->notParticipateUserIds($totalArticleIds, $totalTestsIds)->count();
         $all_activities = $users_total - $total_status_not_participate;
         $total_status_not_active = $all_activities - $total_status_active;

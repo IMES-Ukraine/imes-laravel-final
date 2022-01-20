@@ -67,7 +67,7 @@ class Passing extends Model
     }
 
 
-    public function totalPassed($articles_ids, $test_ids)
+    public static function totalPassed($articles_ids, $test_ids)
     {
         $tests = [];
         $articles = [];
