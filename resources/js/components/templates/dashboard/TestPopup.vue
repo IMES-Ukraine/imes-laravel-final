@@ -94,12 +94,12 @@
                                                     <button
                                                         :class="(moderation.status=='accept')?class_plus + ' active':class_plus"
                                                         type="button"
-                                                        :disabled="moderation.status != 'cancel'"
+                                                        :disabled="moderation.status != 'accept'"
                                                         @click="moderated(moderation.id, 'accept')"></button>
                                                     <button
                                                         :class="(moderation.status=='cancel')?class_minus + ' active':class_minus"
                                                         type="button"
-                                                        :disabled="moderation.status != 'pending'"
+                                                        :disabled="moderation.status != 'cancel'"
                                                         @click="moderated(moderation.id, 'cancel')"></button>
                                                 </div>
                                             </div>
