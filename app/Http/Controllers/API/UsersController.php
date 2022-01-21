@@ -77,7 +77,7 @@ class UsersController extends Controller
                 $results = $project->notParticipateUserIds($articles_ids, $test_ids)->paginate(self::COUNT_PER_PAGE);
                 break;
             case self::STATUS_PASSED:
-               $results = User::whereIn('id', $passed)->paginate(self::COUNT_PER_PAGE);
+                $results = User::whereIn('id', $passed)->paginate(self::COUNT_PER_PAGE);
                 break;
             case self::STATUS_NOT_PASSED:
                 $results = Passing::with('user')->where(function ($q) use ($articles_ids) {
@@ -145,13 +145,20 @@ class UsersController extends Controller
 
         $articles_ids = ArticleService::pluckIDArticles($content_id);
 
-        if ($status == self::STATUS_NOT_PARTICIPATE) {
-            $results = $project->notParticipateUserIds($articles_ids, false)->paginate(self::COUNT_PER_PAGE);
-        }
-        else {
-            $results = Passing::with('user')
-                ->isPassed($articles_ids, false, $status)
-                ->paginate(self::COUNT_PER_PAGE);
+        switch ($status) {
+            case self::STATUS_NOT_PARTICIPATE:
+                $results = $project->notParticipateUserIds($articles_ids, false)->paginate(self::COUNT_PER_PAGE);
+                break;
+            case self::STATUS_PASSED:
+                $results = Passing::with('user')
+                    ->isEntityPassed(Post::class, $articles_ids,)
+                    ->paginate(self::COUNT_PER_PAGE);
+                break;
+            case self::STATUS_NOT_PASSED:
+                $results = Passing::with('user')
+                    ->isEntityNotPassed(Post::class, $articles_ids,)
+                    ->paginate(self::COUNT_PER_PAGE);
+                break;
         }
 
         $data = json_decode($results->toJSON());
