@@ -322,7 +322,7 @@ class BlogController extends Controller
     public function show($id)
     {
         $authUser = auth()->user();
-
+        //$authUser = User::where('id',413)->first();
 
         $article = Articles::where('id', $id)
             ->with('cover_image')

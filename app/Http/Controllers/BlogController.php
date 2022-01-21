@@ -51,7 +51,16 @@ class BlogController extends Controller
     public function list(Request $request): JsonResponse
     {
 
-        $data = Post::select('id', 'title')->paginate($request->get('count'))->toArray();
+
+        $relations = ['cover_image'];
+        $data = Articles::with($relations)
+            ->select('rainlab_blog_posts.id', 'rainlab_blog_posts.title')
+            ->whereNull('research_id')
+            ->notTimes()
+            ->orderBy('rainlab_blog_posts.id', 'desc')
+            ->paginate($request->get('count'))->toArray();
+
+        //$data = Post::select('id', 'title')->paginate($request->get('count'))->toArray();
 
         return $this->helpers->apiArrayResponseBuilder(200, 'success', $data);
     }
