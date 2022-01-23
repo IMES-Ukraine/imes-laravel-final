@@ -11,7 +11,6 @@ class TrackingProvider
 {
 
     const SECONDS_IN_MINUTE = 60;
-    const SYMBOLS_PER_MINUTE = 2000;
 
     protected $user;
 
@@ -84,7 +83,7 @@ class TrackingProvider
                     return false;
                 }
 
-                $rate = config('params.maxReadingRate') ?? self::SYMBOLS_PER_MINUTE;
+                $rate = config('params.SYMBOLS_PER_MINUTE');
 
                 $minimumReading = round(($totalSymbolsCount/$rate)*self::SECONDS_IN_MINUTE);
                 //return $userReadingRate <= $rate;
