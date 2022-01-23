@@ -21,7 +21,7 @@ class TrackingProvider
 
     public function startReading($articleId)
     {
-        $model = NewsTracking::updateOrCreate([
+       NewsTracking::updateOrCreate([
             'user_id' => $this->user->id,
             'position' => null,
             'news_id' => $articleId
@@ -32,7 +32,7 @@ class TrackingProvider
 
     public function setBlockReaded($articleId, $blockId = NULL)
     {
-        $model = NewsTracking::updateOrCreate([
+        NewsTracking::updateOrCreate([
             'user_id' => $this->user->id,
             'position' => $blockId,
             'news_id' => $articleId
