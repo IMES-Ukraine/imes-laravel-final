@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Projects;
+use App\Services\UsersService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use League\Flysystem\Exception;
@@ -105,6 +107,10 @@ class AdminController extends BaseController
         $user = User::find($id);
         $user->is_verified = User::USER_IS_VERIFIED_TRUE;
         $user->save();
+
+        $projectList = Projects::whereNull('deleted_at')->get();
+        UsersService::checkUserTargeting($id, $projectList);
+
         $this->sendNotificationToUser($user, Notifications::TYPE_MESSAGE,
             'Ваши учётные данные проверены и приняты модератором. Учетная запись получила статус верифицированной', [],
             'Данные верифицированы');

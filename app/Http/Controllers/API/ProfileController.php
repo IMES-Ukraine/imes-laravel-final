@@ -7,6 +7,8 @@ use App\Models\AccountRequests;
 use App\Models\Analytics;
 use App\Models\File;
 use App\Models\Notifications;
+use App\Models\Projects;
+use App\Services\UsersService;
 use App\Traits\NotificationsHelper;
 use App\Traits\UserSettings;
 use Illuminate\Auth\AuthenticationException;

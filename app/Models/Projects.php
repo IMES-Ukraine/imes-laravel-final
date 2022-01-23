@@ -126,6 +126,4 @@ class Projects extends Model
         return $result;
     }
 
-
-
 }
