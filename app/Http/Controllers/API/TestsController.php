@@ -141,7 +141,8 @@ class TestsController extends Controller
             $test->makeHidden('research');
 
             // Это костыль. Непонятно, почему вешается при обычном преобразовании $test->complex()->get()->toArray() - всё падает
-            $data = $test->attributesToArray();
+            $data = $test->toArray();
+
             $complex = $test->complex;
             $res = [];
             foreach ($complex as $item){
