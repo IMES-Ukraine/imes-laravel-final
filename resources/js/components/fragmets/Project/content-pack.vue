@@ -13,7 +13,7 @@
                         </div>
                         <div class="articles_create__grid-block">
                             <div class="articles_create__sorting">
-                                <input type="radio" name="sorting-1" disabled>
+                                <input type="radio" name="sorting-1" disabled style="cursor: not-allowed">
                                 <p><span class="icon-plus">Партнерский пакет №1</span></p>
                             </div>
                         </div>

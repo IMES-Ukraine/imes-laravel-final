@@ -110,7 +110,7 @@ export default {
             },
             lists: {
                 categories: [
-                    {text: 'ВСЕ', value: 1},
+                    {text: 'УСІ', value: 1},
                 ],
                 headings: [
                     {name: 'УСІ', id: 1},
@@ -132,6 +132,7 @@ export default {
             index_test: 0,
             isText: false,
             requiredErrorText: "Поле обязательное",
+            lengthErrorText: "Длина текста должна быть не менее 1000 символов",
             notImageText: "Файл должен иметь одно из расширений  'jpg', 'jpeg', 'png', 'tiff', 'gif' ",
             notCorrectAnswer: "Должен быть указан по крайней мере один правильный ответ"
         }
