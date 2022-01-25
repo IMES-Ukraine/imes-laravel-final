@@ -281,6 +281,28 @@ class User extends Authenticatable implements JWTSubject
 
     public function addBalance($sum, $model = null)
     {
+        //For tests and articles - check if balance record is exists
+        if($model){
+            $check = false;
+            $arWhere = [
+                'user_id' => $this->id,
+                'entity_id' => $model->id
+            ];
+            if (get_class($model) === TestQuestions::class) {
+                $check = true;
+                $arWhere['type']=Withdraw::TYPE_TEST;
+            }elseif(get_class($model) === Post::class){
+                $check = true;
+                $arWhere['type']=Withdraw::TYPE_ARTICLE;
+            }
+
+            if($check == true){
+                $isExists = Withdraw::where($arWhere)->count();
+                if($isExists > 0){
+                    return false;
+                }
+            }
+        }
         $this->balance += $sum;
         if ($this->save()) {
             if ($model) {
