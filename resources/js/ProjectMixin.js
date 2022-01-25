@@ -111,21 +111,12 @@ export default {
             lists: {
                 categories: [
                     {text: 'ВСЕ', value: 1},
-                    {text: 'Дерматология', value: 2},
-                    {text: 'Кардиология', value: 3},
-                    {text: 'Гастроэнтерология', value: 4},
                 ],
                 headings: [
-                    {name: 'ВСЕ', id: 1},
-                    {name: 'Дерматология', id: 2},
-                    {name: 'Кардиология', id: 3},
-                    {name: 'Гастроэнтерология', id: 4},
+                    {name: 'УСІ', id: 1},
                 ],
                 regions: [
                     {text: 'УСІ', value: 1},
-                    {text: 'Схід', value: 2},
-                    {text: 'Захід', value: 3},
-                    {text: 'Центр', value: 4},
                 ],
             },
             errorFile: '',

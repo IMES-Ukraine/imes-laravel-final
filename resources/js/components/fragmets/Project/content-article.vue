@@ -151,13 +151,13 @@
                         :text_button="text_button"
                         @update="buttonStore"
                     />
-                    <article-form-button
-                        :label="'Кнопка “Розпочати дослiдження”'"
-                        :id="'is-article-info'"
-                        :name="'is-article-info'"
-                        :text_button="text_button"
-                        @update="buttonStore"
-                    />
+<!--                    <article-form-button-->
+<!--                        :label="'Кнопка “Розпочати дослiдження”'"-->
+<!--                        :id="'is-article-info'"-->
+<!--                        :name="'is-article-info'"-->
+<!--                        :text_button="text_button"-->
+<!--                        @update="buttonStore"-->
+<!--                    />-->
         <div class="articles_create__item">
             <p class="articles_create__item-title">Реком. статьи</p>
             <div class="articles_create__item-content">

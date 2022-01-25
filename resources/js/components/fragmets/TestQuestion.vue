@@ -64,20 +64,20 @@
             </button>
             <div class="articles_create-line"></div>
 
-            <div class="articles_create-block">
-                <div class="articles_create__item">
-                    <div class="articles_create__item-title has_radio">
-                        <input type="checkbox" name="title_radio" v-model="toLearn">
-                        <i></i>
-                        <p>Изучить</p>
-                    </div>
-                    <div v-if="toLearn" class="articles_create__item-content">
-                        <div class="articles_create__name-block">
-                            <input type="text" name="name" placeholder="http//" v-model="test.external_learn_url">
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="articles_create-block">-->
+<!--                <div class="articles_create__item">-->
+<!--                    <div class="articles_create__item-title has_radio">-->
+<!--                        <input type="checkbox" name="title_radio" v-model="toLearn">-->
+<!--                        <i></i>-->
+<!--                        <p>Изучить</p>-->
+<!--                    </div>-->
+<!--                    <div v-if="toLearn" class="articles_create__item-content">-->
+<!--                        <div class="articles_create__name-block">-->
+<!--                            <input type="text" name="name" placeholder="http//" v-model="test.external_learn_url">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
 
         <button class="articles_create-submit button-gradient" type="button"

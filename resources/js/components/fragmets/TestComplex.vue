@@ -39,20 +39,20 @@
                     </div>
                 </div>
             </div>
-            <div class="articles_create-block">
-                <div class="articles_create__item">
-                    <div class="articles_create__item-title has_radio">
-                        <input type="checkbox" v-model="toLearn">
-                        <i></i>
-                        <p>Изучить</p>
-                    </div>
-                    <div class="articles_create__item-content">
-                        <div class="articles_create__name-block">
-                            <input type="text" name="name" placeholder="http//" v-model="test.external_learn_url">
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="articles_create-block" >-->
+<!--                <div class="articles_create__item">-->
+<!--                    <div class="articles_create__item-title has_radio">-->
+<!--                        <input type="checkbox" v-model="toLearn">-->
+<!--                        <i></i>-->
+<!--                        <p>Изучить</p>-->
+<!--                    </div>-->
+<!--                    <div class="articles_create__item-content">-->
+<!--                        <div class="articles_create__name-block">-->
+<!--                            <input type="text" name="name" placeholder="http//" v-model="test.external_learn_url">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <div class="mb20"></div>
             <ComplexTestQuestion

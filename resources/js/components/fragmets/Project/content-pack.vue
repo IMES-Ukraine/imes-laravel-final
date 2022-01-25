@@ -7,16 +7,17 @@
                     <div class="articles_create__grid width-half column-gap-50">
                         <div class="articles_create__grid-block">
                             <div class="articles_create__sorting">
-                                <input type="radio" name="sorting-1" checked="">
-                                <p><span class="icon-plus">Партнерский пакет №1</span></p>
+                                <input type="radio" name="sorting-1" checked>
+                                <p><span class="icon-plus">Уникальный пакет</span></p>
                             </div>
                         </div>
                         <div class="articles_create__grid-block">
                             <div class="articles_create__sorting">
-                                <input type="radio" name="sorting-1">
-                                <p><span class="icon-plus">Уникальный пакет</span></p>
+                                <input type="radio" name="sorting-1" disabled>
+                                <p><span class="icon-plus">Партнерский пакет №1</span></p>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
