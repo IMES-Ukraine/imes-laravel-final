@@ -137,9 +137,11 @@ class AuthController extends Controller
     {
         $phone = $request->phone;
         $code = substr(str_shuffle("0123456789"), 0, 6);
+
         //TODO Не забыть убрать заглушку и включить отправку СМС на проде
-        $code = '000000';
-       // $sended = TurboSMS::sendMessages($phone, 'Enter ' . $code . ' in application', 'sms');
+        //$code = '000000';
+
+        TurboSMS::sendMessages($phone, 'Enter ' . $code . ' in application', 'sms');
 
         $expiredAt = now()->addMinutes(env('SMS_CODE_TIMEOUT'));
         Cache::put($phone, ['code' => $code], $expiredAt);
