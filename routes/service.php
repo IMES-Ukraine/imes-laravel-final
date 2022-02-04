@@ -18,4 +18,5 @@ Route::group([
 ], function () {
     Route::post('auth', [AuthController::class, 'sms']);
     Route::post('verify', [AuthController::class, 'verify']);
+    Route::post('reset', [AuthController::class, 'reset']);
 });

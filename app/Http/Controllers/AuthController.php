@@ -26,7 +26,7 @@ class AuthController extends Controller
      */
     public function __construct(Helpers $helpers)
     {
-        $this->middleware('auth:api', ['except' => ['login', 'registration', 'sms', 'verify']]);
+        $this->middleware('auth:api', ['except' => ['login', 'registration', 'sms', 'verify', 'reset']]);
         $this->helpers      = $helpers;
     }
 
@@ -187,6 +187,46 @@ class AuthController extends Controller
         }
 
         return response()->json(['token' => $token, 'user' => $user]);
+
+    }
+
+    /**
+     * POST verify
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function reset(Request $request)
+    {
+        $phone = $request->phone;
+        $code = $request->code;
+        $token = false;
+
+        $verifyData = Cache::get($phone);
+        if (!$verifyData) {
+            return response()->json(['error' => 'Код подтверждения истек'], 401);
+        }
+
+        if (!hash_equals((string)$verifyData['code'], (string)$code)) {
+            return response()->json(['error' => 'Неверный код подтверждения'], 401);
+        }
+
+        $user = User::where(['phone' => $request->phone])->first();
+        if (!$user) {
+            return response()->json(['error' => 'Пользователя с таким номером не найдено'], 401);
+        }
+
+        $tempPass = rand(100000,99999999);
+        $passwordHash = Hash::make($tempPass);
+        $user->password = $passwordHash;
+        $user->save();
+
+        if (!$token = auth()->attempt(['username' => $user->username, 'password' => $tempPass])) {
+            return response()->json(['error' => 'Не удалось получить токен'], 401);
+        }
+
+        return response()->json(['token' => $token, 'user' => $user]);
+
 
     }
 }
